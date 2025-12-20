@@ -4,6 +4,7 @@ import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
 import { TierBadge } from '@/components/TierBadge';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -55,8 +56,14 @@ interface Course {
   icon: string | null;
   min_tier: PatreonTier;
   sort_order: number;
-  lesson_count?: number;
-  completed_count?: number;
+  lesson_count: number;
+  completed_count: number;
+}
+
+interface LessonProgress {
+  lesson_id: string;
+  completed: boolean;
+  lessons: { course_id: string } | null;
 }
 
 export default function Classroom() {
@@ -69,28 +76,57 @@ export default function Classroom() {
 
   useEffect(() => {
     async function fetchCourses() {
-      const { data, error } = await supabase
+      // Fetch courses with lesson counts
+      const { data: coursesData, error: coursesError } = await supabase
         .from('courses')
         .select(`
           *,
           lessons:lessons(count)
         `)
+        .eq('is_published', true)
         .order('sort_order');
 
-      if (error) {
-        console.error('Error fetching courses:', error);
-      } else if (data) {
-        const coursesWithCount = data.map(course => ({
-          ...course,
-          lesson_count: course.lessons?.[0]?.count || 0
-        }));
-        setCourses(coursesWithCount);
+      if (coursesError) {
+        console.error('Error fetching courses:', coursesError);
+        setLoading(false);
+        return;
       }
+
+      // Fetch user's lesson progress if logged in
+      let progressByCourse: Record<string, number> = {};
+      
+      if (user) {
+        const { data: progressData } = await supabase
+          .from('user_lesson_progress')
+          .select('lesson_id, completed, lessons!inner(course_id)')
+          .eq('user_id', user.id)
+          .eq('completed', true);
+
+        if (progressData) {
+          // Count completed lessons per course
+          progressData.forEach((p: LessonProgress) => {
+            const courseId = p.lessons?.course_id;
+            if (courseId) {
+              progressByCourse[courseId] = (progressByCourse[courseId] || 0) + 1;
+            }
+          });
+        }
+      }
+
+      const coursesWithProgress = (coursesData || []).map(course => ({
+        ...course,
+        lesson_count: course.lessons?.[0]?.count || 0,
+        completed_count: progressByCourse[course.id] || 0
+      }));
+      
+      setCourses(coursesWithProgress);
       setLoading(false);
     }
 
-    fetchCourses();
-  }, []);
+    if (!authLoading) {
+      fetchCourses();
+    }
+  }, [user, authLoading]);
 
   // Redirect to home if not logged in
   if (!authLoading && !user) {
@@ -197,24 +233,44 @@ export default function Classroom() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">
-                            {course.lesson_count} {course.lesson_count === 1 ? 'lesson' : 'lessons'}
-                          </span>
-                          {locked ? (
-                            <Button variant="outline" size="sm" asChild>
-                              <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
-                                Upgrade to Unlock
-                              </a>
-                            </Button>
-                          ) : (
-                            <Button variant="maroon" size="sm" asChild>
-                              <Link to={`/classroom/${course.slug}`}>
-                                Enter Course
-                                <ArrowRight className="ml-2 w-4 h-4" />
-                              </Link>
-                            </Button>
+                        <div className="space-y-3">
+                          {/* Progress bar for unlocked courses */}
+                          {!locked && course.lesson_count > 0 && (
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-muted-foreground">
+                                  {course.completed_count} of {course.lesson_count} complete
+                                </span>
+                                <span className="font-medium text-primary">
+                                  {Math.round((course.completed_count / course.lesson_count) * 100)}%
+                                </span>
+                              </div>
+                              <Progress 
+                                value={(course.completed_count / course.lesson_count) * 100} 
+                                className="h-1.5" 
+                              />
+                            </div>
                           )}
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">
+                              {course.lesson_count} {course.lesson_count === 1 ? 'lesson' : 'lessons'}
+                            </span>
+                            {locked ? (
+                              <Button variant="outline" size="sm" asChild>
+                                <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
+                                  Upgrade to Unlock
+                                </a>
+                              </Button>
+                            ) : (
+                              <Button variant="maroon" size="sm" asChild>
+                                <Link to={`/classroom/${course.slug}`}>
+                                  {course.completed_count > 0 ? 'Continue' : 'Start'}
+                                  <ArrowRight className="ml-2 w-4 h-4" />
+                                </Link>
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
