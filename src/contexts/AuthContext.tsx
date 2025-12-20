@@ -129,24 +129,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithPatreon = async () => {
     // Pass the app origin so the edge function knows where to redirect back
     const appOrigin = window.location.origin;
-    
+
+    const navigateToOAuth = (url: string) => {
+      // Patreon blocks rendering inside iframes (X-Frame-Options/CSP).
+      // Lovable preview runs inside an iframe, so open OAuth in a new tab there.
+      const inIframe = (() => {
+        try {
+          return window.self !== window.top;
+        } catch {
+          return true;
+        }
+      })();
+
+      if (inIframe) {
+        const opened = window.open(url, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+          // Fallback if popups are blocked
+          window.location.href = url;
+        }
+        return;
+      }
+
+      window.location.href = url;
+    };
+
     try {
-      // Get the Patreon OAuth URL from our edge function
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/patreon-auth?action=login&app_origin=${encodeURIComponent(appOrigin)}`
       );
-      
+
       if (!response.ok) {
         throw new Error('Failed to get Patreon auth URL');
       }
 
       const result = await response.json();
-      
+
       if (result.url) {
-        // Redirect to Patreon OAuth
-        // After Patreon auth, the user will be redirected to our edge function
-        // The edge function will handle session creation and redirect to /dashboard
-        window.location.href = result.url;
+        navigateToOAuth(result.url);
       } else {
         throw new Error('No auth URL returned');
       }
