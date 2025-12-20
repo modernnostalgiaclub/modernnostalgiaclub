@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
+import { supabase } from '@/integrations/supabase/client';
 import { Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -13,7 +16,8 @@ import {
   Users, 
   BookOpen,
   ArrowRight,
-  Zap
+  Zap,
+  TrendingUp
 } from 'lucide-react';
 
 const fadeIn = {
@@ -31,6 +35,43 @@ const stagger = {
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
+  const [progress, setProgress] = useState<{ completed: number; total: number } | null>(null);
+  const [progressLoading, setProgressLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!user) {
+        setProgressLoading(false);
+        return;
+      }
+      
+      try {
+        // Fetch total published lessons
+        const { count: totalLessons } = await supabase
+          .from('lessons')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_published', true);
+        
+        // Fetch user's completed lessons
+        const { count: completedLessons } = await supabase
+          .from('user_lesson_progress')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('completed', true);
+        
+        setProgress({
+          completed: completedLessons || 0,
+          total: totalLessons || 0
+        });
+      } catch (error) {
+        console.error('Error fetching progress:', error);
+      } finally {
+        setProgressLoading(false);
+      }
+    };
+    
+    fetchProgress();
+  }, [user]);
   
   // Redirect to home if not logged in
   if (!loading && !user) {
@@ -213,6 +254,38 @@ export default function Dashboard() {
                   </Link>
                 ))}
               </div>
+            </motion.div>
+            
+            {/* Learning Progress */}
+            <motion.div variants={fadeIn} className="mb-8">
+              <Card variant="elevated" className="p-6 border-maroon/20">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-maroon/20 rounded-lg">
+                    <TrendingUp className="w-6 h-6 text-maroon" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-display text-lg">Learning Progress</h3>
+                    <p className="text-sm text-muted-foreground">Your overall course completion</p>
+                  </div>
+                  {!progressLoading && progress && (
+                    <span className="text-2xl font-display text-maroon">
+                      {progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0}%
+                    </span>
+                  )}
+                </div>
+                {progressLoading ? (
+                  <Skeleton className="h-3 w-full" />
+                ) : progress && progress.total > 0 ? (
+                  <div className="space-y-2">
+                    <Progress value={(progress.completed / progress.total) * 100} className="h-3" />
+                    <p className="text-xs text-muted-foreground text-right">
+                      {progress.completed} of {progress.total} lessons completed
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No lessons available yet. Check back soon!</p>
+                )}
+              </Card>
             </motion.div>
             
             {/* Next Recommended Action */}
