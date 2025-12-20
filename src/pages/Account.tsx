@@ -93,7 +93,7 @@ export default function Account() {
             
             {/* Current Tier */}
             <motion.div variants={fadeIn} className="mb-8">
-              <Card variant="elevated" className="border-amber/30">
+              <Card variant="elevated" className="border-maroon/30">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>Current Tier</CardTitle>
@@ -104,7 +104,7 @@ export default function Account() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {TIER_INFO[user.tier].features.map((feature) => (
                       <div key={feature} className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-amber" />
+                        <Check className="w-4 h-4 text-maroon" />
                         <span className="text-sm">{feature}</span>
                       </div>
                     ))}
@@ -126,7 +126,7 @@ export default function Account() {
                     <Card 
                       key={tierId}
                       variant={isCurrent ? "elevated" : isLocked ? "default" : "feature"}
-                      className={isCurrent ? "border-amber/30" : ""}
+                      className={isCurrent ? "border-maroon/30" : ""}
                     >
                       <CardHeader>
                         <div className="flex items-start justify-between">
@@ -134,7 +134,7 @@ export default function Account() {
                             <div className="flex items-center gap-3 mb-2">
                               <CardTitle className="text-xl">{tier.name}</CardTitle>
                               {isCurrent && (
-                                <span className="text-xs bg-amber/20 text-amber px-2 py-0.5 rounded-full">
+                                <span className="text-xs bg-maroon/20 text-maroon px-2 py-0.5 rounded-full">
                                   Current
                                 </span>
                               )}
@@ -149,14 +149,14 @@ export default function Account() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
                           {tier.features.map((feature) => (
                             <div key={feature} className="flex items-center gap-2">
-                              <Check className={`w-4 h-4 ${isCurrent || !isLocked ? 'text-amber' : 'text-muted-foreground'}`} />
+                              <Check className={`w-4 h-4 ${isCurrent || !isLocked ? 'text-maroon' : 'text-muted-foreground'}`} />
                               <span className={`text-sm ${isLocked ? 'text-muted-foreground' : ''}`}>{feature}</span>
                             </div>
                           ))}
                         </div>
                         {!isCurrent && (
                           <Button 
-                            variant={isLocked ? "amber" : "outline"} 
+                            variant={isLocked ? "maroon" : "outline"} 
                             size="sm"
                             asChild
                           >

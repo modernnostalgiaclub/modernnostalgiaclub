@@ -59,13 +59,13 @@ export default function StudioFloor() {
               <Card variant="console" className="mb-8">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <Info className="w-5 h-5 text-amber shrink-0 mt-0.5" />
+                    <Info className="w-5 h-5 text-maroon shrink-0 mt-0.5" />
                     <div className="flex-1">
                       <p className="text-sm mb-3">
                         This Lab uses DISCO for professional catalog delivery. This mirrors real-world licensing workflows.
                       </p>
                       <div className="flex flex-wrap gap-3">
-                        <Button variant="amberOutline" size="sm" asChild>
+                        <Button variant="maroonOutline" size="sm" asChild>
                           <a href="https://disco.ac/signup?b=5076&u=23831" target="_blank" rel="noopener noreferrer">
                             Create a DISCO account
                             <ExternalLink className="ml-2 w-4 h-4" />
@@ -87,7 +87,7 @@ export default function StudioFloor() {
               lockedContent={
                 <div className="text-center py-12">
                   <p className="text-muted-foreground mb-4">Studio Floor access requires Creator Accelerator tier or higher.</p>
-                  <Button variant="amber" asChild>
+                  <Button variant="maroon" asChild>
                     <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
                       Upgrade on Patreon
                     </a>
@@ -161,7 +161,7 @@ export default function StudioFloor() {
                       </div>
                       
                       <div className="flex gap-3">
-                        <Button variant="amber">Submit</Button>
+                        <Button variant="maroon">Submit</Button>
                         <Button variant="outline" onClick={() => setShowForm(false)}>
                           Cancel
                         </Button>

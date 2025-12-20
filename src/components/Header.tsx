@@ -11,7 +11,7 @@ export function Header({ showNav = true, isLoggedIn = false }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logoCream} alt="ModernNostalgia.club" className="h-10 w-auto" />
+          <img src={logoCream} alt="ModernNostalgia.club" className="h-14 w-auto" />
         </Link>
         
         {showNav && (
@@ -58,7 +58,7 @@ export function Header({ showNav = true, isLoggedIn = false }: HeaderProps) {
           ) : (
             <Link 
               to="/dashboard" 
-              className="text-sm font-medium text-primary hover:text-amber-glow transition-colors"
+              className="text-sm font-medium text-primary hover:text-maroon-glow transition-colors"
             >
               Log in with Patreon
             </Link>

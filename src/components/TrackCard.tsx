@@ -28,7 +28,7 @@ export function TrackCard({ track, currentTier, onClick }: TrackCardProps) {
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-amber" />
+                <BookOpen className="w-5 h-5 text-maroon" />
                 <TierBadge tier={track.requiredTier} size="sm" />
               </div>
               <CardTitle>{track.title}</CardTitle>
@@ -48,7 +48,7 @@ export function TrackCard({ track, currentTier, onClick }: TrackCardProps) {
               {track.lessons.length} lessons
             </span>
             {hasAccess && (
-              <Button variant="amberOutline" size="sm">
+              <Button variant="maroonOutline" size="sm">
                 Start Track
               </Button>
             )}

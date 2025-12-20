@@ -32,7 +32,7 @@ const sections = [
     title: 'Wins',
     description: 'Share your victories. Placements, milestones, and breakthroughs.',
     posts: 12,
-    color: 'text-amber',
+    color: 'text-maroon',
   },
   {
     id: 'questions',
@@ -102,7 +102,7 @@ export default function Community() {
                       <CardDescription>{section.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button variant="amberOutline" size="sm" className="w-full">
+                      <Button variant="maroonOutline" size="sm" className="w-full">
                         Enter
                         <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>
@@ -117,7 +117,7 @@ export default function Community() {
               className="mt-12 p-6 bg-card/50 border border-border rounded-lg text-center"
             >
               <p className="text-sm text-muted-foreground">
-                Audio submissions and reviews happen in the <a href="/studio" className="text-primary hover:text-amber-glow">Studio Floor</a>, not here.
+                Audio submissions and reviews happen in the <a href="/studio" className="text-primary hover:text-maroon-glow">Studio Floor</a>, not here.
               </p>
             </motion.div>
           </motion.div>
