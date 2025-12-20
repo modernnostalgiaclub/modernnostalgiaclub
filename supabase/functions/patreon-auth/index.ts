@@ -59,6 +59,20 @@ function createErrorRedirect(baseUrl: string, errorMessage: string): string {
   return url.toString();
 }
 
+// Encode state as base64 for OAuth state parameter
+function encodeState(data: Record<string, string>): string {
+  return btoa(JSON.stringify(data));
+}
+
+// Decode state from base64
+function decodeState(state: string): Record<string, string> | null {
+  try {
+    return JSON.parse(atob(state));
+  } catch {
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
@@ -87,6 +101,9 @@ Deno.serve(async (req) => {
       })
     }
 
+    // Fixed redirect URI - no query parameters, just the base callback URL
+    const redirectUri = `${SUPABASE_URL}/functions/v1/patreon-auth`
+
     // Action: Get OAuth URL to redirect user to Patreon
     if (action === 'login') {
       const appOrigin = url.searchParams.get('app_origin')
@@ -106,15 +123,14 @@ Deno.serve(async (req) => {
         })
       }
       
-      // The callback will come back to this edge function, not the React app
-      // We pass the app_origin so we know where to redirect after auth
-      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/patreon-auth`
-      const callbackUrl = `${edgeFunctionUrl}?action=callback&app_origin=${encodeURIComponent(appOrigin)}`
+      // Use OAuth state parameter to pass the app origin
+      // This is the standard way to pass custom data through OAuth flows
+      const state = encodeState({ app_origin: appOrigin })
       
       const scopes = 'identity identity[email] identity.memberships'
-      const patreonAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${PATREON_CLIENT_ID}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=${encodeURIComponent(scopes)}`
+      const patreonAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${PATREON_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&state=${encodeURIComponent(state)}`
       
-      console.log(`Generated Patreon auth URL with callback: ${callbackUrl}`)
+      console.log(`Generated Patreon auth URL with redirect_uri: ${redirectUri}`)
       
       return new Response(JSON.stringify({ url: patreonAuthUrl }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -122,22 +138,28 @@ Deno.serve(async (req) => {
     }
 
     // Action: Handle OAuth callback with authorization code (Patreon redirects here directly)
-    if (action === 'callback') {
-      const code = url.searchParams.get('code')
-      const appOrigin = url.searchParams.get('app_origin')
-      const patreonError = url.searchParams.get('error')
+    // When no action is specified, this is the callback from Patreon
+    const code = url.searchParams.get('code')
+    const stateParam = url.searchParams.get('state')
+    const patreonError = url.searchParams.get('error')
+    
+    // If we have a code or error, this is a callback from Patreon
+    if (code || patreonError || stateParam) {
+      // Decode the state to get the app origin
+      const stateData = stateParam ? decodeState(stateParam) : null
+      const appOrigin = stateData?.app_origin || ALLOWED_ORIGINS[0]
       
       // If Patreon sent an error, redirect to app with error
       if (patreonError) {
         console.error('Patreon OAuth error:', patreonError)
         return new Response(null, {
           status: 302,
-          headers: { 'Location': createErrorRedirect(appOrigin || ALLOWED_ORIGINS[0], SAFE_ERROR_MESSAGES.AUTH_FAILED) },
+          headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.AUTH_FAILED) },
         })
       }
       
-      if (!appOrigin || !isValidRedirectUri(appOrigin)) {
-        console.error('Invalid or missing app_origin:', appOrigin)
+      if (!stateData || !isValidRedirectUri(appOrigin)) {
+        console.error('Invalid or missing state/app_origin:', stateParam, appOrigin)
         return new Response(null, {
           status: 302,
           headers: { 'Location': createErrorRedirect(ALLOWED_ORIGINS[0], SAFE_ERROR_MESSAGES.INVALID_REQUEST) },
@@ -153,11 +175,7 @@ Deno.serve(async (req) => {
 
       console.log('Exchanging authorization code for tokens...')
 
-      // Reconstruct the exact redirect_uri that was used in the authorize request
-      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/patreon-auth`
-      const callbackUrl = `${edgeFunctionUrl}?action=callback&app_origin=${encodeURIComponent(appOrigin)}`
-
-      // Exchange code for tokens
+      // Exchange code for tokens - use the same fixed redirect_uri
       const tokenResponse = await fetch('https://www.patreon.com/api/oauth2/token', {
         method: 'POST',
         headers: {
@@ -168,7 +186,7 @@ Deno.serve(async (req) => {
           grant_type: 'authorization_code',
           client_id: PATREON_CLIENT_ID,
           client_secret: PATREON_CLIENT_SECRET,
-          redirect_uri: callbackUrl,
+          redirect_uri: redirectUri,
         }),
       })
 
@@ -390,7 +408,10 @@ Deno.serve(async (req) => {
     console.error('Patreon auth error:', error)
     
     // Try to redirect to error page if we have a valid origin
-    const appOrigin = new URL(req.url).searchParams.get('app_origin')
+    const stateParam = new URL(req.url).searchParams.get('state')
+    const stateData = stateParam ? decodeState(stateParam) : null
+    const appOrigin = stateData?.app_origin
+    
     if (appOrigin && isValidRedirectUri(appOrigin)) {
       return new Response(null, {
         status: 302,
