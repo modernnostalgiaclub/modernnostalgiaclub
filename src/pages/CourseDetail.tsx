@@ -109,21 +109,29 @@ export default function CourseDetail() {
 
     if (lessonsError) {
       console.error('Error fetching lessons:', lessonsError);
-    } else {
-      setLessons(lessonsData || []);
-      if (lessonsData && lessonsData.length > 0) {
-        setActiveLesson(lessonsData[0]);
-      }
+      setLoading(false);
+      return;
     }
+    
+    setLessons(lessonsData || []);
 
     // Fetch user progress
+    let progressData: LessonProgress[] = [];
     if (user) {
-      const { data: progressData } = await supabase
+      const { data } = await supabase
         .from('user_lesson_progress')
         .select('lesson_id, completed')
         .eq('user_id', user.id);
 
-      setProgress(progressData || []);
+      progressData = data || [];
+      setProgress(progressData);
+    }
+
+    // Auto-select the first incomplete lesson, or first lesson if none started
+    if (lessonsData && lessonsData.length > 0) {
+      const completedIds = new Set(progressData.filter(p => p.completed).map(p => p.lesson_id));
+      const firstIncomplete = lessonsData.find((l: Lesson) => !completedIds.has(l.id));
+      setActiveLesson(firstIncomplete || lessonsData[0]);
     }
 
     setLoading(false);

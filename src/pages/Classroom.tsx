@@ -20,7 +20,8 @@ import {
   Lock,
   ArrowRight,
   CheckCircle,
-  Loader2
+  Loader2,
+  Play
 } from 'lucide-react';
 
 const fadeIn = {
@@ -60,16 +61,30 @@ interface Course {
   completed_count: number;
 }
 
+interface Lesson {
+  id: string;
+  title: string;
+  course_id: string;
+  sort_order: number;
+}
+
 interface LessonProgress {
   lesson_id: string;
   completed: boolean;
   lessons: { course_id: string } | null;
 }
 
+interface ContinueData {
+  courseSlug: string;
+  courseTitle: string;
+  lessonTitle: string;
+}
+
 export default function Classroom() {
   const { user, profile, loading: authLoading } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [continueData, setContinueData] = useState<ContinueData | null>(null);
 
   const userTier = (profile?.patreon_tier || 'lab-pass') as PatreonTier;
   const userTierIndex = tierOrder.indexOf(userTier);
@@ -94,6 +109,7 @@ export default function Classroom() {
 
       // Fetch user's lesson progress if logged in
       let progressByCourse: Record<string, number> = {};
+      let completedLessonIds: Set<string> = new Set();
       
       if (user) {
         const { data: progressData } = await supabase
@@ -109,6 +125,7 @@ export default function Classroom() {
             if (courseId) {
               progressByCourse[courseId] = (progressByCourse[courseId] || 0) + 1;
             }
+            completedLessonIds.add(p.lesson_id);
           });
         }
       }
@@ -120,13 +137,45 @@ export default function Classroom() {
       }));
       
       setCourses(coursesWithProgress);
+
+      // Find the first incomplete lesson for "continue where you left off"
+      if (user && coursesWithProgress.length > 0) {
+        // Find courses with progress but not completed
+        const inProgressCourse = coursesWithProgress.find(c => {
+          const courseIndex = tierOrder.indexOf(c.min_tier);
+          const isLocked = courseIndex > userTierIndex;
+          return !isLocked && c.completed_count > 0 && c.completed_count < c.lesson_count;
+        });
+
+        if (inProgressCourse) {
+          // Fetch lessons for this course to find the first incomplete one
+          const { data: lessonsData } = await supabase
+            .from('lessons')
+            .select('id, title, course_id, sort_order')
+            .eq('course_id', inProgressCourse.id)
+            .eq('is_published', true)
+            .order('sort_order');
+
+          if (lessonsData) {
+            const firstIncomplete = lessonsData.find((l: Lesson) => !completedLessonIds.has(l.id));
+            if (firstIncomplete) {
+              setContinueData({
+                courseSlug: inProgressCourse.slug,
+                courseTitle: inProgressCourse.title,
+                lessonTitle: firstIncomplete.title
+              });
+            }
+          }
+        }
+      }
+
       setLoading(false);
     }
 
     if (!authLoading) {
       fetchCourses();
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, userTierIndex]);
 
   // Redirect to home if not logged in
   if (!authLoading && !user) {
@@ -193,6 +242,33 @@ export default function Classroom() {
                 Structured learning for professional music industry workflows. This is not content dumping—this is professional training.
               </p>
             </motion.div>
+            
+            {/* Continue where you left off banner */}
+            {continueData && (
+              <motion.div variants={fadeIn} className="mb-8">
+                <Card variant="elevated" className="border-maroon/30 bg-maroon/5">
+                  <CardContent className="py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-maroon/20 rounded-lg">
+                        <Play className="w-5 h-5 text-maroon" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-muted-foreground">Continue where you left off</p>
+                        <p className="font-medium truncate">
+                          {continueData.courseTitle}: <span className="text-muted-foreground">{continueData.lessonTitle}</span>
+                        </p>
+                      </div>
+                      <Button variant="maroon" size="sm" asChild>
+                        <Link to={`/classroom/${continueData.courseSlug}`}>
+                          Continue
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
             
             <motion.div 
               variants={stagger}
