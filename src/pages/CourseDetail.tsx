@@ -16,6 +16,8 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   CheckCircle,
   Circle,
   Lock,
@@ -352,6 +354,45 @@ export default function CourseDetail() {
                         <div className="py-12 text-center text-muted-foreground">
                           <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
                           <p>Lesson content coming soon.</p>
+                        </div>
+                      )}
+                      
+                      {/* Next/Previous Navigation */}
+                      {lessons.length > 1 && (
+                        <div className="flex items-center justify-between pt-6 border-t border-border">
+                          {(() => {
+                            const currentIndex = lessons.findIndex(l => l.id === activeLesson.id);
+                            const prevLesson = currentIndex > 0 ? lessons[currentIndex - 1] : null;
+                            const nextLesson = currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null;
+                            
+                            return (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => prevLesson && setActiveLesson(prevLesson)}
+                                  disabled={!prevLesson}
+                                  className="gap-2"
+                                >
+                                  <ChevronLeft className="w-4 h-4" />
+                                  <span className="hidden sm:inline">Previous</span>
+                                </Button>
+                                
+                                <span className="text-sm text-muted-foreground">
+                                  {currentIndex + 1} / {lessons.length}
+                                </span>
+                                
+                                <Button
+                                  variant={nextLesson ? "maroon" : "outline"}
+                                  onClick={() => nextLesson && setActiveLesson(nextLesson)}
+                                  disabled={!nextLesson}
+                                  className="gap-2"
+                                >
+                                  <span className="hidden sm:inline">Next</span>
+                                  <ChevronRight className="w-4 h-4" />
+                                </Button>
+                              </>
+                            );
+                          })()}
                         </div>
                       )}
                     </CardContent>
