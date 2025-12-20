@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import logoCream from '@/assets/logo-cream.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LogOut, Loader2 } from 'lucide-react';
+import { LogOut, Loader2, Menu, X } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface HeaderProps {
   showNav?: boolean;
@@ -12,6 +14,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const { user, profile, loading, signInWithPatreon, signOut } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = !!user;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handlePatreonLogin = async () => {
     try {
@@ -25,9 +28,54 @@ export function Header({ showNav = true }: HeaderProps) {
     try {
       await signOut();
       navigate('/');
+      setMobileMenuOpen(false);
     } catch (error) {
       console.error('Failed to sign out:', error);
     }
+  };
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const NavLinks = ({ mobile = false }: { mobile?: boolean }) => {
+    const linkClasses = mobile 
+      ? "block py-3 text-lg text-foreground hover:text-primary transition-colors"
+      : "text-sm text-muted-foreground hover:text-foreground transition-colors";
+
+    if (isLoggedIn) {
+      return (
+        <>
+          <Link to="/dashboard" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Dashboard
+          </Link>
+          <Link to="/classroom" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Classroom
+          </Link>
+          <Link to="/studio" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Studio Floor
+          </Link>
+          <Link to="/community" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Community
+          </Link>
+          <Link to="/account" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Account
+          </Link>
+        </>
+      );
+    }
+    
+    return (
+      <>
+        <a href="#what-this-is" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          What This Is
+        </a>
+        <a href="#how-it-works" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          How It Works
+        </a>
+        <a href="#why-this-exists" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          Why This Exists
+        </a>
+      </>
+    );
   };
 
   return (
@@ -37,39 +85,10 @@ export function Header({ showNav = true }: HeaderProps) {
           <img src={logoCream} alt="ModernNostalgia.club" className="h-14 w-auto" />
         </Link>
         
+        {/* Desktop Navigation */}
         {showNav && (
           <nav className="hidden md:flex items-center gap-8">
-            {isLoggedIn ? (
-              <>
-                <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Dashboard
-                </Link>
-                <Link to="/classroom" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Classroom
-                </Link>
-                <Link to="/studio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Studio Floor
-                </Link>
-                <Link to="/community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Community
-                </Link>
-                <Link to="/account" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Account
-                </Link>
-              </>
-            ) : (
-              <>
-                <a href="#what-this-is" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  What This Is
-                </a>
-                <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  How It Works
-                </a>
-                <a href="#why-this-exists" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Why This Exists
-                </a>
-              </>
-            )}
+            <NavLinks />
           </nav>
         )}
         
@@ -77,7 +96,7 @@ export function Header({ showNav = true }: HeaderProps) {
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
-            <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-3">
               <Link to="/account" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {profile?.name || user?.email?.split('@')[0] || 'Account'}
               </Link>
@@ -94,10 +113,58 @@ export function Header({ showNav = true }: HeaderProps) {
             <Button 
               variant="ghost"
               onClick={handlePatreonLogin}
-              className="text-sm font-medium text-primary hover:text-maroon-glow transition-colors"
+              className="hidden md:inline-flex text-sm font-medium text-primary hover:text-maroon-glow transition-colors"
             >
               Log in with Patreon
             </Button>
+          )}
+
+          {/* Mobile Menu */}
+          {showNav && (
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-6 h-6" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] bg-background border-border">
+                <nav className="flex flex-col mt-8 space-y-2">
+                  <NavLinks mobile />
+                  
+                  <div className="pt-6 mt-6 border-t border-border">
+                    {loading ? (
+                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                    ) : isLoggedIn ? (
+                      <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                          Signed in as {profile?.name || user?.email?.split('@')[0]}
+                        </p>
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start"
+                          onClick={handleSignOut}
+                        >
+                          <LogOut className="w-4 h-4 mr-2" />
+                          Sign Out
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button 
+                        variant="maroon"
+                        className="w-full"
+                        onClick={() => {
+                          handlePatreonLogin();
+                          closeMobileMenu();
+                        }}
+                      >
+                        Log in with Patreon
+                      </Button>
+                    )}
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           )}
         </div>
       </div>
