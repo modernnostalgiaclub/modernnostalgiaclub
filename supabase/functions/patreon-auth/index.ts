@@ -1,9 +1,34 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// Allowed origins for CORS - restrict to known domains
+const ALLOWED_ORIGINS = [
+  'https://gpcpovoikxgkgnabumlx.lovableproject.com',
+  'https://lovable.app',
+  'http://localhost:5173',
+  'http://localhost:8080',
+];
+
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  // If origin is in allowed list, use it; otherwise use first allowed origin
+  const allowedOrigin = origin && ALLOWED_ORIGINS.some(allowed => 
+    origin === allowed || origin.endsWith('.lovable.app') || origin.endsWith('.lovableproject.com')
+  ) ? origin : ALLOWED_ORIGINS[0];
+  
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Credentials': 'true',
+  };
 }
+
+// Safe error messages for clients - never expose internal details
+const SAFE_ERROR_MESSAGES = {
+  INVALID_CODE: 'Invalid authorization code. Please try signing in again.',
+  AUTH_FAILED: 'Authentication failed. Please try again.',
+  SERVER_ERROR: 'An error occurred. Please try again later.',
+  MISSING_CREDENTIALS: 'Authentication service not properly configured.',
+  INVALID_REQUEST: 'Invalid request parameters.',
+} as const;
 
 // Patreon tier mapping based on pledge amount (in cents)
 function getTierFromPledge(pledgeCents: number): string {
@@ -12,7 +37,25 @@ function getTierFromPledge(pledgeCents: number): string {
   return 'lab-pass'; // $1+
 }
 
+// Validate redirect URI is from allowed origins
+function isValidRedirectUri(uri: string): boolean {
+  try {
+    const parsed = new URL(uri);
+    return ALLOWED_ORIGINS.some(allowed => {
+      const allowedUrl = new URL(allowed);
+      return parsed.origin === allowedUrl.origin || 
+             parsed.hostname.endsWith('.lovable.app') || 
+             parsed.hostname.endsWith('.lovableproject.com');
+    });
+  } catch {
+    return false;
+  }
+}
+
 Deno.serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -31,14 +74,29 @@ Deno.serve(async (req) => {
 
     if (!PATREON_CLIENT_ID || !PATREON_CLIENT_SECRET) {
       console.error('Missing Patreon credentials')
-      throw new Error('Patreon credentials not configured')
+      return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.MISSING_CREDENTIALS }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
     // Action: Get OAuth URL to redirect user to Patreon
     if (action === 'login') {
       const redirectUri = url.searchParams.get('redirect_uri')
       if (!redirectUri) {
-        throw new Error('redirect_uri is required')
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      
+      // Validate redirect URI is from allowed origins
+      if (!isValidRedirectUri(redirectUri)) {
+        console.error('Invalid redirect URI attempted:', redirectUri)
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
       
       const scopes = 'identity identity[email] identity.memberships'
@@ -57,10 +115,25 @@ Deno.serve(async (req) => {
       const redirectUri = url.searchParams.get('redirect_uri')
       
       if (!code) {
-        throw new Error('Authorization code is required')
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_CODE }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
       if (!redirectUri) {
-        throw new Error('redirect_uri is required')
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+
+      // Validate redirect URI
+      if (!isValidRedirectUri(redirectUri)) {
+        console.error('Invalid redirect URI in callback:', redirectUri)
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
 
       console.log('Exchanging authorization code for tokens...')
@@ -82,8 +155,11 @@ Deno.serve(async (req) => {
 
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text()
-        console.error('Token exchange failed:', errorText)
-        throw new Error(`Failed to exchange code for tokens: ${errorText}`)
+        console.error('Token exchange failed:', errorText) // Log internally only
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_CODE }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
 
       const tokens = await tokenResponse.json()
@@ -101,8 +177,11 @@ Deno.serve(async (req) => {
 
       if (!userResponse.ok) {
         const errorText = await userResponse.text()
-        console.error('Failed to get user info:', errorText)
-        throw new Error(`Failed to get Patreon user info: ${errorText}`)
+        console.error('Failed to get user info:', errorText) // Log internally only
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
 
       const userData = await userResponse.json()
@@ -147,7 +226,7 @@ Deno.serve(async (req) => {
         console.log(`Existing user found: ${userId}`)
 
         // Update profile (without tokens - they're stored separately)
-        await supabase
+        const { error: updateError } = await supabase
           .from('profiles')
           .update({
             patreon_tier: tier,
@@ -156,14 +235,22 @@ Deno.serve(async (req) => {
           })
           .eq('user_id', userId)
 
+        if (updateError) {
+          console.error('Failed to update profile:', updateError) // Log internally only
+        }
+
         // Update tokens in private table (service role only)
-        await supabase
+        const { error: tokenUpdateError } = await supabase
           .from('private.patreon_tokens')
           .upsert({
             user_id: userId,
             access_token: tokens.access_token,
             refresh_token: tokens.refresh_token,
           }, { onConflict: 'user_id' })
+
+        if (tokenUpdateError) {
+          console.error('Failed to update tokens:', tokenUpdateError) // Log internally only
+        }
       } else {
         // Create new user in Supabase Auth
         console.log('Creating new user...')
@@ -193,11 +280,18 @@ Deno.serve(async (req) => {
               userId = existingAuthUser.id
               console.log(`Found existing auth user by email: ${userId}`)
             } else {
-              throw createError
+              console.error('User creation failed:', createError) // Log internally only
+              return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              })
             }
           } else {
-            console.error('Failed to create user:', createError)
-            throw createError
+            console.error('Failed to create user:', createError) // Log internally only
+            return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
           }
         } else {
           userId = newUser.user!.id
@@ -217,8 +311,8 @@ Deno.serve(async (req) => {
           }, { onConflict: 'user_id' })
 
         if (profileError) {
-          console.error('Failed to create profile:', profileError)
-          throw profileError
+          console.error('Failed to create profile:', profileError) // Log internally only
+          // Don't fail the auth flow for profile creation issues
         }
 
         // Store tokens in private table (service role only)
@@ -231,8 +325,8 @@ Deno.serve(async (req) => {
           }, { onConflict: 'user_id' })
 
         if (tokenError) {
-          console.error('Failed to store tokens:', tokenError)
-          throw tokenError
+          console.error('Failed to store tokens:', tokenError) // Log internally only
+          // Don't fail the auth flow for token storage issues
         }
       }
 
@@ -243,13 +337,15 @@ Deno.serve(async (req) => {
       })
 
       if (magicLinkError) {
-        console.error('Failed to generate magic link:', magicLinkError)
-        throw magicLinkError
+        console.error('Failed to generate magic link:', magicLinkError) // Log internally only
+        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
 
       // Extract the token from the magic link
       const magicLinkUrl = new URL(magicLinkData.properties.action_link)
-      const token = magicLinkUrl.searchParams.get('token')
       const tokenHash = magicLinkData.properties.hashed_token
 
       console.log('Patreon OAuth successful, returning session data')
@@ -271,14 +367,17 @@ Deno.serve(async (req) => {
       })
     }
 
-    throw new Error(`Unknown action: ${action}`)
+    return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    // Log detailed error internally, return safe message to client
     console.error('Patreon auth error:', error)
     return new Response(JSON.stringify({ 
-      error: errorMessage 
+      error: SAFE_ERROR_MESSAGES.SERVER_ERROR 
     }), {
-      status: 400,
+      status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
