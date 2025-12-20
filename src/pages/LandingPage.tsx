@@ -56,10 +56,10 @@ export default function LandingPage() {
       <section className="relative pt-32 pb-24 hero-gradient overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-15"
+          className="absolute inset-0 bg-cover bg-center opacity-25"
           style={{ backgroundImage: `url(${bgHero})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/70 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             className="max-w-3xl mx-auto text-center"
@@ -125,10 +125,10 @@ export default function LandingPage() {
       <section id="what-this-is" className="relative py-24 border-t border-border/50 overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: `url(${bgSection1})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto"
@@ -177,10 +177,10 @@ export default function LandingPage() {
       <section id="how-it-works" className="relative py-24 bg-card/50 border-y border-border/50 overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: `url(${bgSection2})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto"
