@@ -71,10 +71,10 @@ export default {
           charcoal: "hsl(var(--studio-charcoal))",
         },
         "tape-label": "hsl(var(--tape-label))",
-        amber: {
-          DEFAULT: "hsl(var(--amber))",
-          muted: "hsl(var(--amber-muted))",
-          glow: "hsl(var(--amber-glow))",
+        maroon: {
+          DEFAULT: "hsl(var(--maroon))",
+          muted: "hsl(var(--maroon-muted))",
+          glow: "hsl(var(--maroon-glow))",
         },
       },
       borderRadius: {

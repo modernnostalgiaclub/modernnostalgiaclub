@@ -59,7 +59,7 @@ export default function Dashboard() {
           >
             {/* Welcome Panel */}
             <motion.div variants={fadeIn} className="mb-12">
-              <Card variant="elevated" className="p-8 border-amber/20">
+              <Card variant="elevated" className="p-8 border-maroon/20">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 mb-4">
@@ -124,7 +124,7 @@ export default function Dashboard() {
                       className="h-full hover:scale-[1.02] transition-transform"
                     >
                       <CardHeader>
-                        <item.icon className={`w-8 h-8 mb-2 ${item.available ? 'text-amber' : 'text-muted-foreground'}`} />
+                        <item.icon className={`w-8 h-8 mb-2 ${item.available ? 'text-maroon' : 'text-muted-foreground'}`} />
                         <CardTitle className="text-lg">{item.title}</CardTitle>
                         <CardDescription>
                           {item.available ? item.desc : 'Available in higher tiers'}
@@ -140,14 +140,14 @@ export default function Dashboard() {
             <motion.div variants={fadeIn}>
               <Card variant="console" className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-amber/20 rounded-lg">
-                    <Zap className="w-6 h-6 text-amber" />
+                  <div className="p-3 bg-maroon/20 rounded-lg">
+                    <Zap className="w-6 h-6 text-maroon" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-display text-lg mb-1">Next Recommended Action</h3>
                     <p className="text-muted-foreground">{nextAction.text}</p>
                   </div>
-                  <Button variant="amber" asChild>
+                  <Button variant="maroon" asChild>
                     <Link to={nextAction.link}>
                       Go
                       <ArrowRight className="ml-2 w-4 h-4" />
@@ -166,7 +166,7 @@ export default function Dashboard() {
                     key={feature}
                     className="flex items-center gap-3 p-4 bg-card border border-border rounded-lg"
                   >
-                    <span className="w-2 h-2 bg-amber rounded-full" />
+                    <span className="w-2 h-2 bg-maroon rounded-full" />
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}

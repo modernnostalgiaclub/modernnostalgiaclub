@@ -16,13 +16,13 @@ const buttonVariants = cva(
         ghost: "hover:bg-secondary hover:text-secondary-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         // Custom variants for ModernNostalgia
-        hero: "bg-primary text-primary-foreground font-semibold hover:bg-amber-glow shadow-lg glow-amber hover:scale-[1.02]",
+        hero: "bg-primary text-primary-foreground font-semibold hover:bg-maroon-glow shadow-lg glow-maroon hover:scale-[1.02]",
         heroOutline: "border-2 border-foreground/30 bg-transparent text-foreground hover:bg-foreground/5 hover:border-foreground/50",
         console: "console-button text-foreground border border-border/50 hover:border-border",
         patreon: "bg-[hsl(4_90%_60%)] text-foreground hover:bg-[hsl(4_90%_55%)] font-semibold shadow-lg",
         tierLocked: "bg-muted text-muted-foreground cursor-not-allowed opacity-60",
-        amber: "bg-amber text-primary-foreground hover:bg-amber-glow font-medium",
-        amberOutline: "border border-amber/50 text-amber hover:bg-amber/10 hover:border-amber",
+        maroon: "bg-maroon text-primary-foreground hover:bg-maroon-glow font-medium",
+        maroonOutline: "border border-maroon/50 text-maroon hover:bg-maroon/10 hover:border-maroon",
       },
       size: {
         default: "h-10 px-4 py-2",

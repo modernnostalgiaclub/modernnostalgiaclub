@@ -90,7 +90,7 @@ export default function ReferenceShelf() {
             {/* Example Tracks */}
             <motion.div variants={fadeIn} className="mb-12">
               <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <Music className="w-6 h-6 text-amber" />
+                <Music className="w-6 h-6 text-maroon" />
                 Example Tracks
               </h2>
               <div className="space-y-4">
@@ -99,11 +99,11 @@ export default function ReferenceShelf() {
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div>
-                          <span className="text-xs text-amber uppercase tracking-wider">{track.type}</span>
+                          <span className="text-xs text-maroon uppercase tracking-wider">{track.type}</span>
                           <CardTitle className="mt-1">{track.title}</CardTitle>
                           <CardDescription className="mt-2">{track.description}</CardDescription>
                         </div>
-                        <Button variant="amber" size="icon" asChild>
+                        <Button variant="maroon" size="icon" asChild>
                           <a href={track.discoLink} target="_blank" rel="noopener noreferrer">
                             <Play className="w-4 h-4" />
                           </a>
@@ -129,7 +129,7 @@ export default function ReferenceShelf() {
             {/* Case Studies */}
             <motion.div variants={fadeIn} className="mb-12">
               <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <FileText className="w-6 h-6 text-amber" />
+                <FileText className="w-6 h-6 text-maroon" />
                 Case Studies
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -159,7 +159,7 @@ export default function ReferenceShelf() {
                     <h3 className="font-medium mb-1">Sync-Ready Examples</h3>
                     <p className="text-sm text-muted-foreground">Curated playlist of tracks that meet sync standards</p>
                   </div>
-                  <Button variant="amberOutline" asChild>
+                  <Button variant="maroonOutline" asChild>
                     <a href="https://disco.ac" target="_blank" rel="noopener noreferrer">
                       Open in DISCO
                       <ExternalLink className="ml-2 w-4 h-4" />
