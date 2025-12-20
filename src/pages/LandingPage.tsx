@@ -2,7 +2,8 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { SectionLabel } from '@/components/SectionLabel';
-import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logoCream from '@/assets/logo-cream.png';
 import { 
@@ -11,7 +12,8 @@ import {
   Users, 
   TrendingUp,
   ArrowRight,
-  CheckCircle
+  CheckCircle,
+  Loader2
 } from 'lucide-react';
 
 const fadeIn = {
@@ -28,9 +30,24 @@ const stagger = {
 };
 
 export default function LandingPage() {
+  const { user, loading, signInWithPatreon } = useAuth();
+
+  // Redirect to dashboard if already logged in
+  if (!loading && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handlePatreonLogin = async () => {
+    try {
+      await signInWithPatreon();
+    } catch (error) {
+      console.error('Failed to initiate Patreon login:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background studio-grain">
-      <Header isLoggedIn={false} />
+      <Header />
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 hero-gradient overflow-hidden">
@@ -67,11 +84,20 @@ export default function LandingPage() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
               variants={fadeIn}
             >
-              <Button variant="hero" size="xl" asChild>
-                <Link to="/dashboard">
-                  Log in with Patreon
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
+              <Button 
+                variant="hero" 
+                size="xl" 
+                onClick={handlePatreonLogin}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    Log in with Patreon
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </>
+                )}
               </Button>
               <Button variant="heroOutline" size="xl" asChild>
                 <a href="#what-this-is">
@@ -116,13 +142,13 @@ export default function LandingPage() {
               ].map((item, i) => (
                 <motion.div 
                   key={item.title}
-                  className="p-6 bg-card border border-border rounded-lg hover:border-amber/30 transition-colors"
+                  className="p-6 bg-card border border-border rounded-lg hover:border-maroon/30 transition-colors"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <item.icon className="w-8 h-8 text-amber mb-4" />
+                  <item.icon className="w-8 h-8 text-maroon mb-4" />
                   <h3 className="font-display text-xl mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </motion.div>
@@ -162,7 +188,7 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <span className="text-5xl font-display text-amber/30">{step.num}</span>
+                  <span className="text-5xl font-display text-maroon/30">{step.num}</span>
                   <div>
                     <h3 className="font-display text-2xl mb-2">{step.title}</h3>
                     <p className="text-muted-foreground">{step.desc}</p>
@@ -212,7 +238,7 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <CheckCircle className="w-5 h-5 text-amber shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-maroon shrink-0" />
                   <span className="text-foreground">{item}</span>
                 </motion.div>
               ))}
@@ -237,11 +263,20 @@ export default function LandingPage() {
             <p className="text-muted-foreground mb-8">
               Join the lab. Start with what you have. Build what you need.
             </p>
-            <Button variant="hero" size="xl" asChild>
-              <Link to="/dashboard">
-                Log in with Patreon
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
+            <Button 
+              variant="hero" 
+              size="xl" 
+              onClick={handlePatreonLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  Log in with Patreon
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </>
+              )}
             </Button>
           </motion.div>
         </div>

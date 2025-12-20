@@ -2,9 +2,9 @@ import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { TierBadge } from '@/components/TierBadge';
-import { mockUser } from '@/lib/mockData';
+import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   GraduationCap, 
@@ -12,7 +12,8 @@ import {
   Users, 
   BookOpen,
   ArrowRight,
-  Zap
+  Zap,
+  Loader2
 } from 'lucide-react';
 
 const fadeIn = {
@@ -29,11 +30,27 @@ const stagger = {
 };
 
 export default function Dashboard() {
-  const user = mockUser;
-  const tierInfo = TIER_INFO[user.tier];
+  const { user, profile, loading } = useAuth();
+  
+  // Redirect to home if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background studio-grain flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const tier = (profile?.patreon_tier || 'lab-pass') as PatreonTier;
+  const tierInfo = TIER_INFO[tier];
+  const userName = profile?.name || user?.email?.split('@')[0] || 'Artist';
   
   const getNextAction = () => {
-    switch (user.tier) {
+    switch (tier) {
       case 'lab-pass':
         return { text: 'Start with Foundations of Artist Income', link: '/classroom' };
       case 'creator-accelerator':
@@ -47,7 +64,7 @@ export default function Dashboard() {
   
   return (
     <div className="min-h-screen bg-background studio-grain">
-      <Header isLoggedIn={true} />
+      <Header />
       
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
@@ -63,14 +80,14 @@ export default function Dashboard() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 mb-4">
-                      <TierBadge tier={user.tier} />
+                      <TierBadge tier={tier} />
                       <span className="text-sm text-green-400 flex items-center gap-1">
                         <span className="w-2 h-2 bg-green-400 rounded-full" />
                         Active
                       </span>
                     </div>
                     <h1 className="text-3xl md:text-4xl font-display">
-                      Welcome back, {user.name}
+                      Welcome back, {userName}
                     </h1>
                     <p className="text-muted-foreground">
                       You're here to turn creative work into sustainable income.
@@ -97,7 +114,7 @@ export default function Dashboard() {
                     title: 'Studio Floor', 
                     desc: 'Submissions & reviews',
                     link: '/studio',
-                    available: user.tier !== 'lab-pass'
+                    available: tier !== 'lab-pass'
                   },
                   { 
                     icon: Users, 
