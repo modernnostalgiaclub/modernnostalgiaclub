@@ -4,6 +4,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { VideoPlayer } from '@/components/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
@@ -12,14 +13,12 @@ import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Play, 
-  CheckCircle, 
-  Circle, 
+import {
+  ArrowLeft,
+  CheckCircle,
+  Circle,
   Lock,
-  BookOpen,
-  Clock
+  BookOpen
 } from 'lucide-react';
 
 const fadeIn = {
@@ -335,22 +334,12 @@ export default function CourseDetail() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {/* Video Player Placeholder */}
+                      {/* Video Player */}
                       {activeLesson.video_url && (
-                        <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                          <div className="text-center">
-                            <Play className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                            <p className="text-sm text-muted-foreground">Video Player</p>
-                            <a 
-                              href={activeLesson.video_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-primary text-sm hover:underline"
-                            >
-                              Open video in new tab
-                            </a>
-                          </div>
-                        </div>
+                        <VideoPlayer 
+                          url={activeLesson.video_url} 
+                          title={activeLesson.title} 
+                        />
                       )}
                       
                       {/* Lesson Content */}
