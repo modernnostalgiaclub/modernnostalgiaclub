@@ -82,6 +82,35 @@ export default function CourseDetail() {
     }
   }, [slug, user]);
 
+  // Keyboard navigation for lessons
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input or textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if (!activeLesson || lessons.length <= 1) return;
+
+      const currentIndex = lessons.findIndex(l => l.id === activeLesson.id);
+
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentIndex > 0) {
+          setActiveLesson(lessons[currentIndex - 1]);
+        }
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (currentIndex < lessons.length - 1) {
+          setActiveLesson(lessons[currentIndex + 1]);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeLesson, lessons]);
+
   async function fetchCourseData() {
     // Fetch course
     const { data: courseData, error: courseError } = await supabase
