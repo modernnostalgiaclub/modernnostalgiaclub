@@ -146,16 +146,24 @@ Deno.serve(async (req) => {
         userId = existingProfile.user_id
         console.log(`Existing user found: ${userId}`)
 
+        // Update profile (without tokens - they're stored separately)
         await supabase
           .from('profiles')
           .update({
             patreon_tier: tier,
-            patreon_access_token: tokens.access_token,
-            patreon_refresh_token: tokens.refresh_token,
             name,
             avatar_url: avatarUrl,
           })
           .eq('user_id', userId)
+
+        // Update tokens in private table (service role only)
+        await supabase
+          .from('private.patreon_tokens')
+          .upsert({
+            user_id: userId,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+          }, { onConflict: 'user_id' })
       } else {
         // Create new user in Supabase Auth
         console.log('Creating new user...')
@@ -196,7 +204,7 @@ Deno.serve(async (req) => {
           console.log(`Created new user: ${userId}`)
         }
 
-        // Create profile
+        // Create profile (without tokens)
         const { error: profileError } = await supabase
           .from('profiles')
           .upsert({
@@ -205,14 +213,26 @@ Deno.serve(async (req) => {
             name,
             patreon_id: patreonId,
             patreon_tier: tier,
-            patreon_access_token: tokens.access_token,
-            patreon_refresh_token: tokens.refresh_token,
             avatar_url: avatarUrl,
           }, { onConflict: 'user_id' })
 
         if (profileError) {
           console.error('Failed to create profile:', profileError)
           throw profileError
+        }
+
+        // Store tokens in private table (service role only)
+        const { error: tokenError } = await supabase
+          .from('private.patreon_tokens')
+          .upsert({
+            user_id: userId,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+          }, { onConflict: 'user_id' })
+
+        if (tokenError) {
+          console.error('Failed to store tokens:', tokenError)
+          throw tokenError
         }
       }
 

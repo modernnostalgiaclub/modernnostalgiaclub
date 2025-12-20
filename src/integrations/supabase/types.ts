@@ -21,9 +21,7 @@ export type Database = {
           email: string | null
           id: string
           name: string | null
-          patreon_access_token: string | null
           patreon_id: string | null
-          patreon_refresh_token: string | null
           patreon_tier: Database["public"]["Enums"]["patreon_tier"] | null
           updated_at: string
           user_id: string
@@ -34,9 +32,7 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string | null
-          patreon_access_token?: string | null
           patreon_id?: string | null
-          patreon_refresh_token?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
           updated_at?: string
           user_id: string
@@ -47,9 +43,7 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string | null
-          patreon_access_token?: string | null
           patreon_id?: string | null
-          patreon_refresh_token?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
           updated_at?: string
           user_id?: string
