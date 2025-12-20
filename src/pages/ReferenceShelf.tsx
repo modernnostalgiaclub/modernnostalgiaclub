@@ -67,7 +67,7 @@ const caseStudies = [
 export default function ReferenceShelf() {
   return (
     <div className="min-h-screen bg-background studio-grain">
-      <Header isLoggedIn={true} />
+      <Header />
       
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">

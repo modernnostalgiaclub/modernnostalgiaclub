@@ -3,15 +3,17 @@ import { SectionLabel } from '@/components/SectionLabel';
 import { TierBadge } from '@/components/TierBadge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { mockUser } from '@/lib/mockData';
-import { TIER_INFO, PatreonTier } from '@/lib/types';
+import { useAuth, PatreonTier } from '@/contexts/AuthContext';
+import { TIER_INFO } from '@/lib/types';
+import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Check, 
   ExternalLink,
   User,
   Mail,
-  Shield
+  Shield,
+  Loader2
 } from 'lucide-react';
 
 const fadeIn = {
@@ -30,12 +32,29 @@ const stagger = {
 const tierOrder: PatreonTier[] = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
 
 export default function Account() {
-  const user = mockUser;
-  const currentTierIndex = tierOrder.indexOf(user.tier);
+  const { user, profile, loading } = useAuth();
+  
+  // Redirect to home if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background studio-grain flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const tier = (profile?.patreon_tier || 'lab-pass') as PatreonTier;
+  const currentTierIndex = tierOrder.indexOf(tier);
+  const userName = profile?.name || user?.email?.split('@')[0] || 'Artist';
+  const userEmail = profile?.email || user?.email || '';
   
   return (
     <div className="min-h-screen bg-background studio-grain">
-      <Header isLoggedIn={true} />
+      <Header />
       
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
@@ -64,21 +83,23 @@ export default function Account() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between py-2 border-b border-border/50">
                     <span className="text-muted-foreground">Name</span>
-                    <span>{user.name}</span>
+                    <span>{userName}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-border/50">
                     <span className="text-muted-foreground flex items-center gap-2">
                       <Mail className="w-4 h-4" />
                       Email
                     </span>
-                    <span>{user.email}</span>
+                    <span>{userEmail}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-border/50">
                     <span className="text-muted-foreground flex items-center gap-2">
                       <Shield className="w-4 h-4" />
-                      Role
+                      Patreon Connected
                     </span>
-                    <span className="capitalize">{user.role}</span>
+                    <span className={profile?.patreon_id ? 'text-green-400' : 'text-muted-foreground'}>
+                      {profile?.patreon_id ? 'Yes' : 'No'}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <span className="text-muted-foreground">Status</span>
@@ -97,12 +118,12 @@ export default function Account() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>Current Tier</CardTitle>
-                    <TierBadge tier={user.tier} showPrice />
+                    <TierBadge tier={tier} showPrice />
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {TIER_INFO[user.tier].features.map((feature) => (
+                    {TIER_INFO[tier].features.map((feature) => (
                       <div key={feature} className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-maroon" />
                         <span className="text-sm">{feature}</span>
@@ -118,8 +139,8 @@ export default function Account() {
               <h2 className="font-display text-2xl mb-6">All Tier Options</h2>
               <div className="space-y-4">
                 {tierOrder.map((tierId, index) => {
-                  const tier = TIER_INFO[tierId];
-                  const isCurrent = tierId === user.tier;
+                  const tierInfo = TIER_INFO[tierId];
+                  const isCurrent = tierId === tier;
                   const isLocked = index > currentTierIndex;
                   
                   return (
@@ -132,7 +153,7 @@ export default function Account() {
                         <div className="flex items-start justify-between">
                           <div>
                             <div className="flex items-center gap-3 mb-2">
-                              <CardTitle className="text-xl">{tier.name}</CardTitle>
+                              <CardTitle className="text-xl">{tierInfo.name}</CardTitle>
                               {isCurrent && (
                                 <span className="text-xs bg-maroon/20 text-maroon px-2 py-0.5 rounded-full">
                                   Current
@@ -140,14 +161,14 @@ export default function Account() {
                               )}
                             </div>
                             <CardDescription className="text-lg font-display text-foreground">
-                              {tier.price}/month
+                              {tierInfo.price}/month
                             </CardDescription>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
-                          {tier.features.map((feature) => (
+                          {tierInfo.features.map((feature) => (
                             <div key={feature} className="flex items-center gap-2">
                               <Check className={`w-4 h-4 ${isCurrent || !isLocked ? 'text-maroon' : 'text-muted-foreground'}`} />
                               <span className={`text-sm ${isLocked ? 'text-muted-foreground' : ''}`}>{feature}</span>
