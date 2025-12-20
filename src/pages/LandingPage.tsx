@@ -6,6 +6,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logoCream from '@/assets/logo-cream.png';
+import bgHero from '@/assets/bg-hero.jpg';
+import bgSection1 from '@/assets/bg-section-1.jpg';
+import bgSection2 from '@/assets/bg-section-2.jpg';
 import { 
   GraduationCap, 
   Music2, 
@@ -51,7 +54,13 @@ export default function LandingPage() {
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 hero-gradient overflow-hidden">
-        <div className="container mx-auto px-6">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-15"
+          style={{ backgroundImage: `url(${bgHero})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/70 to-background" />
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             className="max-w-3xl mx-auto text-center"
             initial="hidden"
@@ -113,8 +122,14 @@ export default function LandingPage() {
       </section>
       
       {/* What This Is */}
-      <section id="what-this-is" className="py-24 border-t border-border/50">
-        <div className="container mx-auto px-6">
+      <section id="what-this-is" className="relative py-24 border-t border-border/50 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-10"
+          style={{ backgroundImage: `url(${bgSection1})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
@@ -159,8 +174,14 @@ export default function LandingPage() {
       </section>
       
       {/* How It Works */}
-      <section id="how-it-works" className="py-24 bg-card/50 border-y border-border/50">
-        <div className="container mx-auto px-6">
+      <section id="how-it-works" className="relative py-24 bg-card/50 border-y border-border/50 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-10"
+          style={{ backgroundImage: `url(${bgSection2})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             className="max-w-4xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
