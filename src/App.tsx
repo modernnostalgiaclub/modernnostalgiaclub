@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
+import CourseDetail from "./pages/CourseDetail";
 import StudioFloor from "./pages/StudioFloor";
 import Community from "./pages/Community";
 import ReferenceShelf from "./pages/ReferenceShelf";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/classroom" element={<ProtectedRoute><Classroom /></ProtectedRoute>} />
+            <Route path="/classroom/:slug" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
             <Route path="/studio" element={<ProtectedRoute><StudioFloor /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/reference" element={<ProtectedRoute><ReferenceShelf /></ProtectedRoute>} />
