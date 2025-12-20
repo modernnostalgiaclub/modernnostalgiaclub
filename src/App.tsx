@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
@@ -25,12 +26,12 @@ const App = () => (
           <Sonner />
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/classroom" element={<Classroom />} />
-            <Route path="/studio" element={<StudioFloor />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/reference" element={<ReferenceShelf />} />
-            <Route path="/account" element={<Account />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/classroom" element={<ProtectedRoute><Classroom /></ProtectedRoute>} />
+            <Route path="/studio" element={<ProtectedRoute><StudioFloor /></ProtectedRoute>} />
+            <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+            <Route path="/reference" element={<ProtectedRoute><ReferenceShelf /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
