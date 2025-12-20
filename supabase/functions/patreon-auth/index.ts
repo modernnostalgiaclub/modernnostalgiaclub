@@ -52,6 +52,13 @@ function isValidRedirectUri(uri: string): boolean {
   }
 }
 
+// Helper to create error redirect URL
+function createErrorRedirect(baseUrl: string, errorMessage: string): string {
+  const url = new URL('/auth/patreon/callback', baseUrl);
+  url.searchParams.set('error', encodeURIComponent(errorMessage));
+  return url.toString();
+}
+
 Deno.serve(async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
@@ -82,61 +89,73 @@ Deno.serve(async (req) => {
 
     // Action: Get OAuth URL to redirect user to Patreon
     if (action === 'login') {
-      const redirectUri = url.searchParams.get('redirect_uri')
-      if (!redirectUri) {
+      const appOrigin = url.searchParams.get('app_origin')
+      if (!appOrigin) {
         return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         })
       }
       
-      // Validate redirect URI is from allowed origins
-      if (!isValidRedirectUri(redirectUri)) {
-        console.error('Invalid redirect URI attempted:', redirectUri)
+      // Validate app origin is from allowed origins
+      if (!isValidRedirectUri(appOrigin)) {
+        console.error('Invalid app origin attempted:', appOrigin)
         return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         })
       }
+      
+      // The callback will come back to this edge function, not the React app
+      // We pass the app_origin so we know where to redirect after auth
+      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/patreon-auth`
+      const callbackUrl = `${edgeFunctionUrl}?action=callback&app_origin=${encodeURIComponent(appOrigin)}`
       
       const scopes = 'identity identity[email] identity.memberships'
-      const patreonAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${PATREON_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`
+      const patreonAuthUrl = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${PATREON_CLIENT_ID}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=${encodeURIComponent(scopes)}`
       
-      console.log(`Generated Patreon auth URL with redirect: ${redirectUri}`)
+      console.log(`Generated Patreon auth URL with callback: ${callbackUrl}`)
       
       return new Response(JSON.stringify({ url: patreonAuthUrl }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
-    // Action: Handle OAuth callback with authorization code
+    // Action: Handle OAuth callback with authorization code (Patreon redirects here directly)
     if (action === 'callback') {
       const code = url.searchParams.get('code')
-      const redirectUri = url.searchParams.get('redirect_uri')
+      const appOrigin = url.searchParams.get('app_origin')
+      const patreonError = url.searchParams.get('error')
+      
+      // If Patreon sent an error, redirect to app with error
+      if (patreonError) {
+        console.error('Patreon OAuth error:', patreonError)
+        return new Response(null, {
+          status: 302,
+          headers: { 'Location': createErrorRedirect(appOrigin || ALLOWED_ORIGINS[0], SAFE_ERROR_MESSAGES.AUTH_FAILED) },
+        })
+      }
+      
+      if (!appOrigin || !isValidRedirectUri(appOrigin)) {
+        console.error('Invalid or missing app_origin:', appOrigin)
+        return new Response(null, {
+          status: 302,
+          headers: { 'Location': createErrorRedirect(ALLOWED_ORIGINS[0], SAFE_ERROR_MESSAGES.INVALID_REQUEST) },
+        })
+      }
       
       if (!code) {
-        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_CODE }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
-      }
-      if (!redirectUri) {
-        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        })
-      }
-
-      // Validate redirect URI
-      if (!isValidRedirectUri(redirectUri)) {
-        console.error('Invalid redirect URI in callback:', redirectUri)
-        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_REQUEST }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        return new Response(null, {
+          status: 302,
+          headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.INVALID_CODE) },
         })
       }
 
       console.log('Exchanging authorization code for tokens...')
+
+      // Reconstruct the exact redirect_uri that was used in the authorize request
+      const edgeFunctionUrl = `${SUPABASE_URL}/functions/v1/patreon-auth`
+      const callbackUrl = `${edgeFunctionUrl}?action=callback&app_origin=${encodeURIComponent(appOrigin)}`
 
       // Exchange code for tokens
       const tokenResponse = await fetch('https://www.patreon.com/api/oauth2/token', {
@@ -149,16 +168,16 @@ Deno.serve(async (req) => {
           grant_type: 'authorization_code',
           client_id: PATREON_CLIENT_ID,
           client_secret: PATREON_CLIENT_SECRET,
-          redirect_uri: redirectUri,
+          redirect_uri: callbackUrl,
         }),
       })
 
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text()
-        console.error('Token exchange failed:', errorText) // Log internally only
-        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.INVALID_CODE }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        console.error('Token exchange failed:', errorText)
+        return new Response(null, {
+          status: 302,
+          headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.INVALID_CODE) },
         })
       }
 
@@ -177,10 +196,10 @@ Deno.serve(async (req) => {
 
       if (!userResponse.ok) {
         const errorText = await userResponse.text()
-        console.error('Failed to get user info:', errorText) // Log internally only
-        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        console.error('Failed to get user info:', errorText)
+        return new Response(null, {
+          status: 302,
+          headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.AUTH_FAILED) },
         })
       }
 
@@ -225,7 +244,7 @@ Deno.serve(async (req) => {
         userId = existingProfile.user_id
         console.log(`Existing user found: ${userId}`)
 
-        // Update profile (without tokens - they're stored separately)
+        // Update profile
         const { error: updateError } = await supabase
           .from('profiles')
           .update({
@@ -236,10 +255,10 @@ Deno.serve(async (req) => {
           .eq('user_id', userId)
 
         if (updateError) {
-          console.error('Failed to update profile:', updateError) // Log internally only
+          console.error('Failed to update profile:', updateError)
         }
 
-        // Update tokens in private table (service role only)
+        // Update tokens in private table
         const { error: tokenUpdateError } = await supabase
           .from('private.patreon_tokens')
           .upsert({
@@ -249,7 +268,7 @@ Deno.serve(async (req) => {
           }, { onConflict: 'user_id' })
 
         if (tokenUpdateError) {
-          console.error('Failed to update tokens:', tokenUpdateError) // Log internally only
+          console.error('Failed to update tokens:', tokenUpdateError)
         }
       } else {
         // Create new user in Supabase Auth
@@ -280,17 +299,17 @@ Deno.serve(async (req) => {
               userId = existingAuthUser.id
               console.log(`Found existing auth user by email: ${userId}`)
             } else {
-              console.error('User creation failed:', createError) // Log internally only
-              return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
-                status: 400,
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              console.error('User creation failed:', createError)
+              return new Response(null, {
+                status: 302,
+                headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.AUTH_FAILED) },
               })
             }
           } else {
-            console.error('Failed to create user:', createError) // Log internally only
-            return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
-              status: 400,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            console.error('Failed to create user:', createError)
+            return new Response(null, {
+              status: 302,
+              headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.AUTH_FAILED) },
             })
           }
         } else {
@@ -298,7 +317,7 @@ Deno.serve(async (req) => {
           console.log(`Created new user: ${userId}`)
         }
 
-        // Create profile (without tokens)
+        // Create profile
         const { error: profileError } = await supabase
           .from('profiles')
           .upsert({
@@ -311,11 +330,10 @@ Deno.serve(async (req) => {
           }, { onConflict: 'user_id' })
 
         if (profileError) {
-          console.error('Failed to create profile:', profileError) // Log internally only
-          // Don't fail the auth flow for profile creation issues
+          console.error('Failed to create profile:', profileError)
         }
 
-        // Store tokens in private table (service role only)
+        // Store tokens in private table
         const { error: tokenError } = await supabase
           .from('private.patreon_tokens')
           .upsert({
@@ -325,45 +343,41 @@ Deno.serve(async (req) => {
           }, { onConflict: 'user_id' })
 
         if (tokenError) {
-          console.error('Failed to store tokens:', tokenError) // Log internally only
-          // Don't fail the auth flow for token storage issues
+          console.error('Failed to store tokens:', tokenError)
         }
       }
 
       // Generate a magic link for the user to sign in
+      // The redirect URL is where the user ends up after clicking the magic link
+      const finalRedirectUrl = `${appOrigin}/dashboard`
+      
       const { data: magicLinkData, error: magicLinkError } = await supabase.auth.admin.generateLink({
         type: 'magiclink',
         email,
+        options: {
+          redirectTo: finalRedirectUrl,
+        }
       })
 
       if (magicLinkError) {
-        console.error('Failed to generate magic link:', magicLinkError) // Log internally only
-        return new Response(JSON.stringify({ error: SAFE_ERROR_MESSAGES.AUTH_FAILED }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        console.error('Failed to generate magic link:', magicLinkError)
+        return new Response(null, {
+          status: 302,
+          headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.AUTH_FAILED) },
         })
       }
 
-      // Extract the token from the magic link
-      const magicLinkUrl = new URL(magicLinkData.properties.action_link)
-      const tokenHash = magicLinkData.properties.hashed_token
+      // SERVER-SIDE SESSION CREATION:
+      // Instead of returning the token to the client, redirect the user directly to the magic link
+      // This way the token never touches client-side JavaScript
+      const magicLinkUrl = magicLinkData.properties.action_link
+      
+      console.log('Patreon OAuth successful, redirecting to magic link for session creation')
 
-      console.log('Patreon OAuth successful, returning session data')
-
-      return new Response(JSON.stringify({
-        success: true,
-        email,
-        token_hash: tokenHash,
-        user: {
-          id: userId,
-          email,
-          name,
-          avatar_url: avatarUrl,
-          patreon_id: patreonId,
-          tier,
-        },
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      // Redirect user to the magic link - Supabase will handle session creation
+      return new Response(null, {
+        status: 302,
+        headers: { 'Location': magicLinkUrl },
       })
     }
 
@@ -374,6 +388,16 @@ Deno.serve(async (req) => {
   } catch (error: unknown) {
     // Log detailed error internally, return safe message to client
     console.error('Patreon auth error:', error)
+    
+    // Try to redirect to error page if we have a valid origin
+    const appOrigin = new URL(req.url).searchParams.get('app_origin')
+    if (appOrigin && isValidRedirectUri(appOrigin)) {
+      return new Response(null, {
+        status: 302,
+        headers: { 'Location': createErrorRedirect(appOrigin, SAFE_ERROR_MESSAGES.SERVER_ERROR) },
+      })
+    }
+    
     return new Response(JSON.stringify({ 
       error: SAFE_ERROR_MESSAGES.SERVER_ERROR 
     }), {

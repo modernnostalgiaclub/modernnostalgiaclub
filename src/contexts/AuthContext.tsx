@@ -127,19 +127,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithPatreon = async () => {
-    const redirectUri = `${window.location.origin}/auth/patreon/callback`;
+    // Pass the app origin so the edge function knows where to redirect back
+    const appOrigin = window.location.origin;
     
     try {
-      const { data, error } = await supabase.functions.invoke('patreon-auth', {
-        body: null,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // Get the auth URL
+      // Get the Patreon OAuth URL from our edge function
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/patreon-auth?action=login&redirect_uri=${encodeURIComponent(redirectUri)}`
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/patreon-auth?action=login&app_origin=${encodeURIComponent(appOrigin)}`
       );
       
       if (!response.ok) {
@@ -149,6 +143,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await response.json();
       
       if (result.url) {
+        // Redirect to Patreon OAuth
+        // After Patreon auth, the user will be redirected to our edge function
+        // The edge function will handle session creation and redirect to /dashboard
         window.location.href = result.url;
       } else {
         throw new Error('No auth URL returned');
