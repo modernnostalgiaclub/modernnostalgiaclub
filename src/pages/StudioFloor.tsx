@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { mockSubmissions, mockUser } from '@/lib/mockData';
+import { useAuth } from '@/contexts/AuthContext';
+import { isValidDiscoUrl } from '@/lib/urlValidation';
 import { motion } from 'framer-motion';
 import { Plus, ExternalLink, Info } from 'lucide-react';
 
@@ -28,9 +30,25 @@ const stagger = {
 
 export default function StudioFloor() {
   const user = mockUser;
+  const { hasRole } = useAuth();
   const [showForm, setShowForm] = useState(false);
+  const [discoUrl, setDiscoUrl] = useState('');
+  const [discoError, setDiscoError] = useState('');
   
   const userSubmissions = mockSubmissions.filter(s => s.userId === user.id);
+
+  // Validate DISCO URL on change
+  const handleDiscoUrlChange = (value: string) => {
+    setDiscoUrl(value);
+    if (value && !isValidDiscoUrl(value)) {
+      setDiscoError('Please enter a valid DISCO URL (https://disco.ac/...)');
+    } else {
+      setDiscoError('');
+    }
+  };
+
+  // Server-side role check - only show internal notes if user has admin/moderator role from database
+  const canViewInternalNotes = hasRole('admin') || hasRole('moderator');
   
   return (
     <div className="min-h-screen bg-background studio-grain">
@@ -145,10 +163,20 @@ export default function StudioFloor() {
                       
                       <div className="space-y-2">
                         <Label htmlFor="disco">DISCO Playlist Link</Label>
-                        <Input id="disco" placeholder="https://disco.ac/playlist/..." />
-                        <p className="text-xs text-muted-foreground">
-                          Paste the share link from your DISCO playlist
-                        </p>
+                        <Input 
+                          id="disco" 
+                          placeholder="https://disco.ac/playlist/..." 
+                          value={discoUrl}
+                          onChange={(e) => handleDiscoUrlChange(e.target.value)}
+                          className={discoError ? 'border-destructive' : ''}
+                        />
+                        {discoError ? (
+                          <p className="text-xs text-destructive">{discoError}</p>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">
+                            Paste the share link from your DISCO playlist
+                          </p>
+                        )}
                       </div>
                       
                       <div className="space-y-2">
@@ -176,11 +204,11 @@ export default function StudioFloor() {
                 <h2 className="font-display text-2xl mb-6">Your Submissions</h2>
                 {userSubmissions.length > 0 ? (
                   <div className="space-y-4">
-                    {userSubmissions.map((submission) => (
+                {userSubmissions.map((submission) => (
                       <SubmissionCard 
                         key={submission.id} 
                         submission={submission}
-                        showInternalNotes={user.role === 'admin' || user.role === 'moderator'}
+                        showInternalNotes={canViewInternalNotes}
                       />
                     ))}
                   </div>

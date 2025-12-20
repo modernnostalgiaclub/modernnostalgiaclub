@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 export type PatreonTier = 'lab-pass' | 'creator-accelerator' | 'creative-economy-lab';
+export type AppRole = 'admin' | 'moderator' | 'user';
 
 interface Profile {
   id: string;
@@ -18,7 +19,9 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  roles: AppRole[];
   loading: boolean;
+  hasRole: (role: AppRole) => boolean;
   signInWithPatreon: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -29,6 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch profile data
@@ -51,6 +55,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Fetch user roles from database (server-side source of truth)
+  const fetchUserRoles = async (userId: string): Promise<AppRole[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Error fetching user roles:', error);
+        return [];
+      }
+      return data?.map(r => r.role as AppRole) || [];
+    } catch (error) {
+      console.error('Error fetching user roles:', error);
+      return [];
+    }
+  };
+
+  // Check if user has a specific role (uses server-fetched roles)
+  const hasRole = (role: AppRole): boolean => {
+    return roles.includes(role);
+  };
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -58,13 +86,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer profile fetch to avoid deadlocks
+        // Defer profile and roles fetch to avoid deadlocks
         if (session?.user) {
           setTimeout(() => {
-            fetchProfile(session.user.id).then(setProfile);
+            Promise.all([
+              fetchProfile(session.user.id),
+              fetchUserRoles(session.user.id)
+            ]).then(([profileData, userRoles]) => {
+              setProfile(profileData);
+              setRoles(userRoles);
+            });
           }, 0);
         } else {
           setProfile(null);
+          setRoles([]);
         }
       }
     );
@@ -75,8 +110,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        fetchProfile(session.user.id).then((profileData) => {
+        Promise.all([
+          fetchProfile(session.user.id),
+          fetchUserRoles(session.user.id)
+        ]).then(([profileData, userRoles]) => {
           setProfile(profileData);
+          setRoles(userRoles);
           setLoading(false);
         });
       } else {
@@ -126,6 +165,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setSession(null);
       setProfile(null);
+      setRoles([]);
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -133,7 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signInWithPatreon, signOut }}>
+    <AuthContext.Provider value={{ user, session, profile, roles, loading, hasRole, signInWithPatreon, signOut }}>
       {children}
     </AuthContext.Provider>
   );
