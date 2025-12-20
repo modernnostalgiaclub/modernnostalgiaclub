@@ -15,6 +15,7 @@ import ReferenceShelf from "./pages/ReferenceShelf";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
+import AuthDiagnostics from "./pages/AuthDiagnostics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
+            <Route path="/auth/diagnostics" element={<AuthDiagnostics />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
