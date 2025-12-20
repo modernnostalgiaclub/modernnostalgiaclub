@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { VideoPlayer } from '@/components/VideoPlayer';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Progress } from '@/components/ui/progress';
@@ -344,11 +345,7 @@ export default function CourseDetail() {
                       
                       {/* Lesson Content */}
                       {activeLesson.content && (
-                        <div className="prose prose-invert max-w-none">
-                          <div className="whitespace-pre-wrap text-foreground/80">
-                            {activeLesson.content}
-                          </div>
-                        </div>
+                        <MarkdownRenderer content={activeLesson.content} />
                       )}
 
                       {!activeLesson.video_url && !activeLesson.content && (
