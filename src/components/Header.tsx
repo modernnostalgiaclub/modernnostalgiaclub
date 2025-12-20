@@ -2,6 +2,7 @@ import { useState } from 'react';
 import logoCream from '@/assets/logo-cream.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LogOut, Loader2, Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,7 +12,7 @@ interface HeaderProps {
 }
 
 export function Header({ showNav = true }: HeaderProps) {
-  const { user, profile, loading, signInWithPatreon, signOut } = useAuth();
+  const { user, profile, loading, hasRole, signInWithPatreon, signOut } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,6 +43,7 @@ export function Header({ showNav = true }: HeaderProps) {
       : "text-sm text-muted-foreground hover:text-foreground transition-colors";
 
     if (isLoggedIn) {
+      const isAdminOrMod = hasRole('admin') || hasRole('moderator');
       return (
         <>
           <Link to="/dashboard" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
@@ -59,6 +61,12 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/account" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Account
           </Link>
+          {isAdminOrMod && (
+            <Link to="/admin" className={`${linkClasses} flex items-center gap-1`} onClick={mobile ? closeMobileMenu : undefined}>
+              <Shield className="h-3 w-3" />
+              Admin
+            </Link>
+          )}
         </>
       );
     }

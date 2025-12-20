@@ -12,6 +12,7 @@ import StudioFloor from "./pages/StudioFloor";
 import Community from "./pages/Community";
 import ReferenceShelf from "./pages/ReferenceShelf";
 import Account from "./pages/Account";
+import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/reference" element={<ProtectedRoute><ReferenceShelf /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
