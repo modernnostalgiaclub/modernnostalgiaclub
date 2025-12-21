@@ -1,14 +1,48 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// Allowed origins for CORS - restrict to known domains
+const ALLOWED_ORIGINS = [
+  'https://gpcpovoikxgkgnabumlx.lovableproject.com',
+  'https://modernnostalgiaclub.lovable.app',
+  'https://modernnostalgia.club',
+  'https://www.modernnostalgia.club',
+  'https://lovable.app',
+  'http://localhost:5173',
+  'http://localhost:8080',
+];
+
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  // Check if the origin is in our allowed list or matches our patterns
+  const isAllowedOrigin = origin && ALLOWED_ORIGINS.some(allowed => {
+    try {
+      const allowedUrl = new URL(allowed);
+      const originUrl = new URL(origin);
+      return originUrl.origin === allowedUrl.origin || 
+             originUrl.hostname.endsWith('.lovable.app') || 
+             originUrl.hostname.endsWith('.lovableproject.com') ||
+             originUrl.hostname === 'modernnostalgia.club' ||
+             originUrl.hostname.endsWith('.modernnostalgia.club');
+    } catch {
+      return false;
+    }
+  });
+
+  const allowedOrigin = isAllowedOrigin ? origin : ALLOWED_ORIGINS[0];
+  
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin!,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Credentials': 'true',
+  };
 }
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
