@@ -14,7 +14,10 @@ import {
   CheckCircle,
   Upload,
   Link,
-  Share2
+  Share2,
+  Download,
+  BookOpen,
+  Wrench
 } from 'lucide-react';
 
 const fadeIn = {
@@ -33,19 +36,72 @@ const stagger = {
 const exampleTracks = [
   {
     id: '1',
-    title: 'Sync-Ready Instrumental',
+    title: 'Example Sync Song',
     artist: 'Lab Example',
     type: 'Approved Example',
-    description: 'A properly structured sync-ready track with complete metadata.',
-    discoLink: 'https://disco.ac/playlist/example',
+    description: 'A properly structured sync-ready track with complete metadata and alternate versions.',
+    discoLink: 'https://s.disco.ac/yqpvfrvazuwo',
   },
   {
     id: '2',
-    title: 'Before & After: Catalog Organization',
-    artist: 'Case Study',
-    type: 'Case Study',
-    description: 'How one artist reorganized their catalog for better sync opportunities.',
-    discoLink: 'https://disco.ac/playlist/example2',
+    title: 'The Free Artist Survival Guide',
+    artist: 'Modernnostalgia.club',
+    type: 'Free Download',
+    description: 'A comprehensive manifesto on Direct-to-Fan strategies, sync licensing, and building a sustainable music career.',
+    discoLink: '/downloads/The_Free_Artist_Survival_Guide.pdf',
+    isDownload: true,
+  },
+];
+
+const resources = [
+  {
+    id: '1',
+    title: 'NAV Business Credit',
+    description: 'Build business credit and access funding options for your music career.',
+    url: 'https://nav.nkwcmr.net/7a49Dy',
+    category: 'Business',
+  },
+  {
+    id: '2',
+    title: 'DISCO',
+    description: 'Industry-standard platform for music delivery and catalog management.',
+    url: 'https://disco.ac/signup?b=5076&u=23831',
+    category: 'Music Tools',
+  },
+  {
+    id: '3',
+    title: 'Swayzio',
+    description: 'Music management and sync licensing platform for independent artists.',
+    url: 'https://swayzio.com/?via=GeOh',
+    category: 'Music Tools',
+  },
+  {
+    id: '4',
+    title: 'Lovable',
+    description: 'Build websites and apps for your music brand without coding.',
+    url: 'https://lovable.dev/invite/VK4R8ZA',
+    category: 'Tech Tools',
+  },
+  {
+    id: '5',
+    title: 'Pro Tools Intro',
+    description: 'Free DAW to start recording and producing your music at home.',
+    url: 'https://www.avid.com/pro-tools',
+    category: 'Recording',
+  },
+  {
+    id: '6',
+    title: 'ASCAP',
+    description: 'Performance Rights Organization - register your songs to collect royalties.',
+    url: 'https://www.ascap.com',
+    category: 'Business',
+  },
+  {
+    id: '7',
+    title: 'BMI',
+    description: 'Performance Rights Organization - another option for royalty collection.',
+    url: 'https://www.bmi.com',
+    category: 'Business',
   },
 ];
 
@@ -93,11 +149,11 @@ export default function ReferenceShelf() {
               </p>
             </motion.div>
             
-            {/* Example Tracks */}
+            {/* Example Tracks & Resources */}
             <motion.div variants={fadeIn} className="mb-12">
               <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
                 <Music className="w-6 h-6 text-maroon" />
-                Example Tracks
+                Example Tracks & Downloads
               </h2>
               <div className="space-y-4">
                 {exampleTracks.map((track) => (
@@ -110,8 +166,13 @@ export default function ReferenceShelf() {
                           <CardDescription className="mt-2">{track.description}</CardDescription>
                         </div>
                         <Button variant="maroon" size="icon" asChild>
-                          <a href={track.discoLink} target="_blank" rel="noopener noreferrer">
-                            <Play className="w-4 h-4" />
+                          <a 
+                            href={track.discoLink} 
+                            target={track.isDownload ? "_self" : "_blank"} 
+                            rel={track.isDownload ? undefined : "noopener noreferrer"}
+                            download={track.isDownload ? true : undefined}
+                          >
+                            {track.isDownload ? <Download className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                           </a>
                         </Button>
                       </div>
@@ -120,12 +181,50 @@ export default function ReferenceShelf() {
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">by {track.artist}</span>
                         <Button variant="outline" size="sm" asChild>
-                          <a href={track.discoLink} target="_blank" rel="noopener noreferrer">
-                            View on DISCO
-                            <ExternalLink className="ml-2 w-4 h-4" />
+                          <a 
+                            href={track.discoLink} 
+                            target={track.isDownload ? "_self" : "_blank"} 
+                            rel={track.isDownload ? undefined : "noopener noreferrer"}
+                            download={track.isDownload ? true : undefined}
+                          >
+                            {track.isDownload ? 'Download PDF' : 'View on DISCO'}
+                            {track.isDownload ? <Download className="ml-2 w-4 h-4" /> : <ExternalLink className="ml-2 w-4 h-4" />}
                           </a>
                         </Button>
                       </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Resources */}
+            <motion.div variants={fadeIn} className="mb-12">
+              <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
+                <Wrench className="w-6 h-6 text-maroon" />
+                Artist Resources
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Essential tools and services mentioned in The Free Artist Survival Guide. Start building your sustainable music career.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {resources.map((resource) => (
+                  <Card key={resource.id} variant="feature" className="hover:scale-[1.01] transition-transform">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="text-xs text-maroon uppercase tracking-wider">{resource.category}</span>
+                          <CardTitle className="text-lg mt-1">{resource.title}</CardTitle>
+                        </div>
+                        <Button variant="maroon" size="icon" asChild>
+                          <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{resource.description}</p>
                     </CardContent>
                   </Card>
                 ))}
