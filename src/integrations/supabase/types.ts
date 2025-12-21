@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      beat_license_submissions: {
+        Row: {
+          artist_name: string | null
+          beats_interested: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          license_option: string
+          payment_status: string
+          special_requests: string | null
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          artist_name?: string | null
+          beats_interested: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          license_option: string
+          payment_status?: string
+          special_requests?: string | null
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          artist_name?: string | null
+          beats_interested?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          license_option?: string
+          payment_status?: string
+          special_requests?: string | null
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       community_comments: {
         Row: {
           content: string
