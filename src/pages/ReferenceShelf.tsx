@@ -58,6 +58,15 @@ const exampleTracks = [
     discoLink: '/reference/30-day-tracker',
     isInternal: true,
   },
+  {
+    id: '4',
+    title: 'Exclusive Beat License',
+    artist: 'Ge Oh x ModernNostalgia',
+    type: 'CEL Members Only',
+    description: 'Exclusive beat licensing at member rates. $60 per beat + 50/50 splits. Free mix & master included.',
+    discoLink: '/reference/beat-license',
+    isInternal: true,
+  },
 ];
 
 const resources = [

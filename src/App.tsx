@@ -13,6 +13,7 @@ import StudioFloor from "./pages/StudioFloor";
 import Community from "./pages/Community";
 import ReferenceShelf from "./pages/ReferenceShelf";
 import ImplementationTracker from "./pages/ImplementationTracker";
+import BeatLicense from "./pages/BeatLicense";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/reference" element={<ProtectedRoute><ReferenceShelf /></ProtectedRoute>} />
             <Route path="/reference/30-day-tracker" element={<ProtectedRoute><ImplementationTracker /></ProtectedRoute>} />
+            <Route path="/reference/beat-license" element={<ProtectedRoute><BeatLicense /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
