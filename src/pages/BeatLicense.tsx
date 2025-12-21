@@ -270,11 +270,14 @@ export default function BeatLicense() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="aspect-video w-full rounded-lg overflow-hidden bg-muted">
+                  <div className="w-full rounded-lg overflow-hidden bg-muted flex justify-center">
                     <iframe 
-                      src="https://s.disco.ac/hgnndtgtsalk"
-                      className="w-full h-full border-0"
-                      allow="autoplay; encrypted-media"
+                      id="disco-playlist-26502910"
+                      name="disco-playlist-26502910"
+                      src="https://geohworks.disco.ac/e/p/26502910?download=false&s=lc7jQiCWvb7h6ujqq9peGPKSAiI%3AbPIauN2n&artwork=true&color=%234E98FF&theme=white"
+                      className="disco-embed border-0"
+                      width="480"
+                      height="395"
                       allowFullScreen
                       title="DISCO Beat Catalog"
                     />
@@ -282,7 +285,7 @@ export default function BeatLicense() {
                   <div className="mt-4 text-center">
                     <Button variant="outline" size="sm" asChild>
                       <a 
-                        href="https://s.disco.ac/hgnndtgtsalk" 
+                        href="https://geohworks.disco.ac/e/p/26502910" 
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
