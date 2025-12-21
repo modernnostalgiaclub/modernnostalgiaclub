@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Lock, ExternalLink, ArrowRight } from "lucide-react";
+import { Calendar, Lock, ExternalLink, ArrowRight, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,34 +34,48 @@ const stagger = {
 export const PatreonBlog = () => {
   const [posts, setPosts] = useState<PatreonPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userTier, setUserTier] = useState<string>("public");
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+
+  const fetchPosts = async (cursor?: string) => {
+    try {
+      if (cursor) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+      
+      const { data, error: fnError } = await supabase.functions.invoke("patreon-posts", {
+        body: cursor ? { cursor } : {},
+      });
+      
+      if (fnError) {
+        throw new Error(fnError.message);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (cursor) {
+        setPosts((prev) => [...prev, ...(data.posts || [])]);
+      } else {
+        setPosts(data.posts || []);
+      }
+      setUserTier(data.userTier || "public");
+      setNextCursor(data.nextCursor || null);
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+      setError(err instanceof Error ? err.message : "Failed to load posts");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        
-        const { data, error: fnError } = await supabase.functions.invoke("patreon-posts");
-        
-        if (fnError) {
-          throw new Error(fnError.message);
-        }
-
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        setPosts(data.posts || []);
-        setUserTier(data.userTier || "public");
-      } catch (err) {
-        console.error("Error fetching posts:", err);
-        setError(err instanceof Error ? err.message : "Failed to load posts");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPosts();
   }, []);
 
@@ -131,7 +145,7 @@ export const PatreonBlog = () => {
           variants={stagger}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {posts.slice(0, 6).map((post) => (
+          {posts.map((post) => (
             <motion.div key={post.id} variants={fadeIn}>
               <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow group">
                 {post.thumbnail && (
@@ -186,7 +200,7 @@ export const PatreonBlog = () => {
           ))}
         </motion.div>
 
-        {posts.length > 6 && (
+        {nextCursor && (
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -194,14 +208,20 @@ export const PatreonBlog = () => {
             variants={fadeIn}
             className="text-center mt-10"
           >
-            <Button variant="outline" size="lg" asChild>
-              <a
-                href="https://www.patreon.com/modernnostalgiaclub/posts"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View All Posts <ExternalLink className="h-4 w-4 ml-2" />
-              </a>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={() => fetchPosts(nextCursor)}
+              disabled={loadingMore}
+            >
+              {loadingMore ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>Load More Posts</>
+              )}
             </Button>
           </motion.div>
         )}
