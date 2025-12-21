@@ -1,0 +1,121 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+const PATREON_API_BASE = "https://www.patreon.com/api/oauth2/v2";
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const CREATOR_ACCESS_TOKEN = Deno.env.get("PATREON_CREATOR_ACCESS_TOKEN");
+    if (!CREATOR_ACCESS_TOKEN) {
+      throw new Error("PATREON_CREATOR_ACCESS_TOKEN is not configured");
+    }
+
+    // Get the user's tier from the request (if authenticated)
+    let userTier = "public";
+    const authHeader = req.headers.get("authorization");
+    
+    if (authHeader) {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseKey, {
+        global: { headers: { Authorization: authHeader } }
+      });
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("patreon_tier")
+          .eq("user_id", user.id)
+          .single();
+        
+        if (profile?.patreon_tier) {
+          userTier = profile.patreon_tier;
+        }
+      }
+    }
+
+    console.log("Fetching posts for user tier:", userTier);
+
+    // First, get the campaign ID
+    const identityResponse = await fetch(
+      `${PATREON_API_BASE}/identity?include=campaign&fields[campaign]=created_at,creation_name,patron_count`,
+      {
+        headers: {
+          Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    if (!identityResponse.ok) {
+      const errorText = await identityResponse.text();
+      console.error("Patreon identity error:", errorText);
+      throw new Error(`Failed to fetch Patreon identity: ${identityResponse.status}`);
+    }
+
+    const identityData = await identityResponse.json();
+    const campaignId = identityData.included?.[0]?.id;
+
+    if (!campaignId) {
+      throw new Error("Could not find Patreon campaign ID");
+    }
+
+    console.log("Campaign ID:", campaignId);
+
+    // Fetch posts from the campaign
+    const postsResponse = await fetch(
+      `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,teaser_text,thumbnail&page[count]=10`,
+      {
+        headers: {
+          Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    if (!postsResponse.ok) {
+      const errorText = await postsResponse.text();
+      console.error("Patreon posts error:", errorText);
+      throw new Error(`Failed to fetch Patreon posts: ${postsResponse.status}`);
+    }
+
+    const postsData = await postsResponse.json();
+    console.log("Fetched posts count:", postsData.data?.length || 0);
+
+    // Map the posts to a simpler format
+    const posts = postsData.data?.map((post: any) => ({
+      id: post.id,
+      title: post.attributes.title,
+      teaser: post.attributes.teaser_text || post.attributes.content?.substring(0, 200),
+      content: post.attributes.content,
+      publishedAt: post.attributes.published_at,
+      url: post.attributes.url,
+      thumbnail: post.attributes.thumbnail?.url || null,
+      // For tier-based access, we'd check post.relationships.access_rules
+      // For now, show teaser to all, full content to logged-in users
+      isFullAccess: userTier !== "public",
+    })) || [];
+
+    return new Response(JSON.stringify({ posts, userTier }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+
+  } catch (error) {
+    console.error("Error fetching Patreon posts:", error);
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
+  }
+});

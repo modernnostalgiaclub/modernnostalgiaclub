@@ -2,6 +2,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { SectionLabel } from '@/components/SectionLabel';
+import { PatreonBlog } from '@/components/PatreonBlog';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -267,6 +268,9 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+      
+      {/* Blog Section - Patreon Posts */}
+      <PatreonBlog />
       
       {/* CTA Section */}
       <section className="py-24 bg-card/50 border-t border-border/50">
