@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SectionLabel } from '@/components/SectionLabel';
 import { PatreonBlog } from '@/components/PatreonBlog';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logoCream from '@/assets/logo-cream.png';
 import bgHero from '@/assets/bg-hero.jpg';
@@ -18,8 +18,15 @@ import {
   ArrowRight,
   CheckCircle,
   Loader2,
-  ExternalLink
+  ExternalLink,
+  ChevronDown
 } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -164,27 +171,78 @@ export default function LandingPage() {
               Artists learn how money actually moves, build catalogs the right way, and practice professional workflows used in sync, licensing, and direct-to-fan careers.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Accordion type="single" collapsible className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { icon: GraduationCap, title: 'Classroom', desc: 'Structured training tracks' },
-                { icon: Music2, title: 'Studio Floor', desc: 'Professional submissions' },
-                { icon: Users, title: 'Community', desc: 'Focused discussions' },
-                { icon: TrendingUp, title: 'Reference Shelf', desc: 'Industry examples' },
+                { 
+                  icon: GraduationCap, 
+                  title: 'Classroom', 
+                  desc: 'Structured training tracks',
+                  details: 'Deep-dive courses on sync licensing, catalog building, direct-to-fan revenue, and the business side of music. Learn professional workflows used by working artists—not theory, but practical systems you can implement today.'
+                },
+                { 
+                  icon: Music2, 
+                  title: 'Studio Floor', 
+                  desc: 'Professional submissions',
+                  details: 'Submit your tracks for professional feedback and review. Get actionable notes on mix quality, sync-readiness, and market positioning. This is where your music gets the honest critique it needs to compete.'
+                },
+                { 
+                  icon: Users, 
+                  title: 'Community', 
+                  desc: 'Focused discussions',
+                  details: 'Connect with other artists building sustainable careers. Share wins, ask questions, and collaborate on opportunities. No fluff—just focused conversations about what actually works in the modern music economy.'
+                },
+                { 
+                  icon: TrendingUp, 
+                  title: 'Reference Shelf', 
+                  desc: 'Industry examples',
+                  details: 'Real-world case studies of successful sync placements, licensing deals, and artist business models. See exactly how other artists structure their income streams and learn from their strategies.'
+                },
               ].map((item, i) => (
-                <motion.div 
-                  key={item.title}
-                  className="p-6 bg-card border border-border rounded-lg hover:border-maroon/30 transition-colors"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
+                <AccordionItem 
+                  key={item.title} 
+                  value={item.title}
+                  className="bg-card border border-border rounded-lg hover:border-maroon/30 transition-colors data-[state=open]:border-maroon/50"
                 >
-                  <item.icon className="w-8 h-8 text-maroon mb-4" />
-                  <h3 className="font-display text-xl mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </motion.div>
+                  <AccordionTrigger className="p-6 hover:no-underline [&[data-state=open]>div>.chevron]:rotate-180">
+                    <div className="flex flex-col items-start text-left w-full">
+                      <div className="flex items-center justify-between w-full mb-4">
+                        <item.icon className="w-8 h-8 text-maroon" />
+                        <ChevronDown className="chevron w-5 h-5 text-muted-foreground transition-transform duration-200" />
+                      </div>
+                      <h3 className="font-display text-xl mb-2">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
+                      {item.details}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button 
+                        variant="maroon" 
+                        size="sm"
+                        onClick={handleJoinPatreon}
+                        className="flex-1"
+                      >
+                        Join on Patreon
+                        <ExternalLink className="w-3 h-3 ml-1.5" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        asChild
+                        className="flex-1"
+                      >
+                        <Link to="/lab-application">
+                          Apply for Creator Lab
+                          <ArrowRight className="w-3 h-3 ml-1.5" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </motion.div>
         </div>
       </section>
