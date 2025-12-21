@@ -8,7 +8,6 @@ export type AppRole = 'admin' | 'moderator' | 'user';
 interface Profile {
   id: string;
   user_id: string;
-  email: string | null;
   name: string | null;
   patreon_id: string | null;
   patreon_tier: PatreonTier;
