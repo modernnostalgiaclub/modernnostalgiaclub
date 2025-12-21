@@ -235,16 +235,29 @@ export default function Account() {
                           ))}
                         </div>
                         {!isCurrent && (
-                          <Button 
-                            variant={isLocked ? "maroon" : "outline"} 
-                            size="sm"
-                            asChild
-                          >
-                            <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
-                              {isLocked ? 'Upgrade' : 'Manage on Patreon'}
-                              <ExternalLink className="ml-2 w-4 h-4" />
-                            </a>
-                          </Button>
+                          tierId === 'creative-economy-lab' ? (
+                            <Button 
+                              variant={isLocked ? "maroon" : "outline"} 
+                              size="sm"
+                              asChild
+                            >
+                              <a href="/apply">
+                                Apply for Lab Access
+                                <ExternalLink className="ml-2 w-4 h-4" />
+                              </a>
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant={isLocked ? "maroon" : "outline"} 
+                              size="sm"
+                              asChild
+                            >
+                              <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer">
+                                {isLocked ? 'Upgrade' : 'Manage on Patreon'}
+                                <ExternalLink className="ml-2 w-4 h-4" />
+                              </a>
+                            </Button>
+                          )
                         )}
                       </CardContent>
                     </Card>
@@ -258,7 +271,7 @@ export default function Account() {
               className="mt-8 text-center"
             >
               <Button variant="outline" asChild>
-                <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer">
                   Manage Membership on Patreon
                   <ExternalLink className="ml-2 w-4 h-4" />
                 </a>
