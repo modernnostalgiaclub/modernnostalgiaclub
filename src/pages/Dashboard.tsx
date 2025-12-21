@@ -8,8 +8,9 @@ import { TierBadge } from '@/components/TierBadge';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { supabase } from '@/integrations/supabase/client';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { 
   GraduationCap, 
   Music2, 
@@ -35,8 +36,23 @@ const stagger = {
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [progress, setProgress] = useState<{ completed: number; total: number } | null>(null);
   const [progressLoading, setProgressLoading] = useState(true);
+
+  // Show welcome toast for returning members
+  useEffect(() => {
+    if (searchParams.get('welcome') === 'true' && profile) {
+      const userName = profile.name || 'back';
+      toast.success(`Welcome ${userName}!`, {
+        description: "You're logged in and ready to go.",
+        duration: 4000,
+      });
+      // Remove the welcome param from URL without refresh
+      searchParams.delete('welcome');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams, profile]);
   
   useEffect(() => {
     const fetchProgress = async () => {

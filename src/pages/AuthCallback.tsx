@@ -64,11 +64,11 @@ export default function AuthCallback() {
           }
         }
 
-        setStatus('Welcome to ModernNostalgia.club!');
+        setStatus('Welcome back! Redirecting to your dashboard...');
         
-        // Redirect to dashboard
+        // Redirect to dashboard with welcome flag
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/dashboard?welcome=true');
         }, 1000);
       } catch (err) {
         console.error('Auth callback error:', err);
