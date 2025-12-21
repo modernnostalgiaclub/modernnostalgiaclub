@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { TierBadge } from '@/components/TierBadge';
+import { TwoFactorSettings } from '@/components/TwoFactorSettings';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
@@ -48,10 +49,11 @@ const stagger = {
 const tierOrder: PatreonTier[] = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
 
 export default function Account() {
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, loading, signOut, hasRole } = useAuth();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const isAdmin = hasRole('admin');
   
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
@@ -170,6 +172,13 @@ export default function Account() {
                 </CardContent>
               </Card>
             </motion.div>
+
+            {/* Two-Factor Authentication (Admin Only) */}
+            {isAdmin && (
+              <motion.div variants={fadeIn} className="mb-8">
+                <TwoFactorSettings />
+              </motion.div>
+            )}
             
             {/* Current Tier */}
             <motion.div variants={fadeIn} className="mb-8">

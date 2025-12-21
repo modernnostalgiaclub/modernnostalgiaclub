@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthenticatorAssuranceLevels } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 export type PatreonTier = 'lab-pass' | 'creator-accelerator' | 'creative-economy-lab';
@@ -23,10 +23,13 @@ interface AuthContextType {
   profile: Profile | null;
   roles: AppRole[];
   loading: boolean;
+  mfaRequired: boolean;
+  mfaVerified: boolean;
   hasRole: (role: AppRole) => boolean;
   hasAccessToTier: (requiredTier: PatreonTier) => boolean;
   signInWithPatreon: () => Promise<void>;
   signOut: () => Promise<void>;
+  refreshMFAStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaVerified, setMfaVerified] = useState(false);
 
   // Fetch profile data
   const fetchProfile = async (userId: string) => {
@@ -96,6 +101,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return userTierIndex >= requiredTierIndex;
   };
 
+  // Check MFA status for the current session
+  const checkMFAStatus = async () => {
+    try {
+      const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      
+      if (error) {
+        console.error('Error checking MFA status:', error);
+        return;
+      }
+
+      // User has MFA enrolled and needs to verify
+      const needsMFA = data.nextLevel === 'aal2' && data.currentLevel === 'aal1';
+      const hasVerifiedMFA = data.currentLevel === 'aal2';
+      
+      setMfaRequired(needsMFA);
+      setMfaVerified(hasVerifiedMFA);
+    } catch (error) {
+      console.error('Error checking MFA status:', error);
+    }
+  };
+
+  const refreshMFAStatus = async () => {
+    await checkMFAStatus();
+  };
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -113,10 +143,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               setProfile(profileData);
               setRoles(userRoles);
             });
+            checkMFAStatus();
           }, 0);
         } else {
           setProfile(null);
           setRoles([]);
+          setMfaRequired(false);
+          setMfaVerified(false);
         }
       }
     );
@@ -135,6 +168,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setRoles(userRoles);
           setLoading(false);
         });
+        checkMFAStatus();
       } else {
         setLoading(false);
       }
@@ -199,6 +233,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(null);
       setProfile(null);
       setRoles([]);
+      setMfaRequired(false);
+      setMfaVerified(false);
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -206,7 +242,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, roles, loading, hasRole, hasAccessToTier, signInWithPatreon, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      profile, 
+      roles, 
+      loading, 
+      mfaRequired, 
+      mfaVerified, 
+      hasRole, 
+      hasAccessToTier, 
+      signInWithPatreon, 
+      signOut,
+      refreshMFAStatus 
+    }}>
       {children}
     </AuthContext.Provider>
   );
