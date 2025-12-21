@@ -4,12 +4,12 @@ import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { EditPostDialog } from '@/components/EditPostDialog';
 import { MarkdownRenderer } from '@/components/MarkdownRenderer';
+import { RichTextEditor } from '@/components/RichTextEditor';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Navigate, useSearchParams } from 'react-router-dom';
@@ -552,31 +552,36 @@ export default function Community() {
                 )}
 
                 {/* New Comment Form */}
-                <form onSubmit={handleCreateComment} className="flex gap-3">
-                  <Avatar className="w-8 h-8 shrink-0">
-                    <AvatarImage src={profile?.avatar_url || undefined} />
-                    <AvatarFallback className="text-xs">
-                      {profile?.name?.[0]?.toUpperCase() || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 flex gap-2">
-                    <Input
-                      placeholder="Write a comment..."
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      disabled={submittingComment}
-                    />
+                <form onSubmit={handleCreateComment} className="space-y-3">
+                  <div className="flex gap-3">
+                    <Avatar className="w-8 h-8 shrink-0 mt-1">
+                      <AvatarImage src={profile?.avatar_url || undefined} />
+                      <AvatarFallback className="text-xs">
+                        {profile?.name?.[0]?.toUpperCase() || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <RichTextEditor
+                        placeholder="Write a comment... (supports **bold**, *italic*, [links](url), ![images](url))"
+                        value={newComment}
+                        onChange={setNewComment}
+                        disabled={submittingComment}
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
                     <Button 
                       type="submit" 
                       variant="maroon" 
-                      size="icon"
                       disabled={submittingComment || !newComment.trim()}
                     >
                       {submittingComment ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       ) : (
-                        <Send className="w-4 h-4" />
+                        <Send className="w-4 h-4 mr-2" />
                       )}
+                      Post Comment
                     </Button>
                   </div>
                 </form>
@@ -654,12 +659,13 @@ export default function Community() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="content">Content</Label>
-                          <Textarea
+                          <RichTextEditor
                             id="content"
-                            placeholder="Share your thoughts..."
-                            rows={4}
+                            placeholder="Share your thoughts... Use **bold**, *italic*, [links](url), and ![images](url)"
+                            rows={6}
                             value={newPostContent}
-                            onChange={(e) => setNewPostContent(e.target.value)}
+                            onChange={setNewPostContent}
+                            disabled={submittingPost}
                           />
                         </div>
                         <div className="flex gap-3">

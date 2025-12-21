@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/RichTextEditor';
 import { Loader2 } from 'lucide-react';
 
 interface Post {
@@ -34,7 +34,7 @@ export function EditPostDialog({
 }: EditPostDialogProps) {
   return (
     <Dialog open={!!post} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Edit Post</DialogTitle>
           <DialogDescription>
@@ -53,17 +53,14 @@ export function EditPostDialog({
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-content">Content</Label>
-            <Textarea
+            <RichTextEditor
               id="edit-content"
               value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              onChange={setEditContent}
               placeholder="Post content..."
               rows={10}
-              className="font-mono text-sm"
+              disabled={saving}
             />
-            <p className="text-xs text-muted-foreground">
-              Supports markdown: **bold**, [links](url), etc.
-            </p>
           </div>
         </div>
         <div className="flex justify-end gap-3">
