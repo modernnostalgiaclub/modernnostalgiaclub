@@ -391,7 +391,7 @@ export default function ReferenceShelf() {
             </motion.div>
             
             {/* Artist Money & Credit Coach */}
-            <motion.div variants={fadeIn} className="mb-12">
+            <motion.div variants={fadeIn}>
               <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
                 <DollarSign className="w-6 h-6 text-maroon" />
                 Artist Money & Credit Coach
@@ -400,25 +400,6 @@ export default function ReferenceShelf() {
                 Get personalized financial guidance for building credit, managing irregular income, and growing your music business.
               </p>
               <ArtistMoneyCoach />
-            </motion.div>
-            
-            {/* Reference Playlists */}
-            <motion.div variants={fadeIn}>
-              <h2 className="font-display text-2xl mb-6">Reference Playlists</h2>
-              <Card variant="console" className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium mb-1">Sync-Ready Examples</h3>
-                    <p className="text-sm text-muted-foreground">Curated playlist of tracks that meet sync standards</p>
-                  </div>
-                  <Button variant="maroonOutline" asChild>
-                    <a href="https://disco.ac" target="_blank" rel="noopener noreferrer">
-                      Open in DISCO
-                      <ExternalLink className="ml-2 w-4 h-4" />
-                    </a>
-                  </Button>
-                </div>
-              </Card>
             </motion.div>
           </motion.div>
         </div>
