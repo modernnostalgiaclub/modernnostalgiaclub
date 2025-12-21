@@ -5,21 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ArtistMoneyCoach } from '@/components/ArtistMoneyCoach';
 import { 
   Music, 
-  FileText, 
-  BarChart3,
   ExternalLink,
   Play,
   HelpCircle,
   CheckCircle,
-  Upload,
-  Link as LinkIcon,
-  Share2,
   Download,
-  BookOpen,
   Wrench,
-  Calendar
+  Calendar,
+  DollarSign
 } from 'lucide-react';
 
 const fadeIn = {
@@ -116,26 +112,7 @@ const resources = [
   },
 ];
 
-const caseStudies = [
-  {
-    id: '1',
-    title: 'From Zero to Sync: A 6-Month Journey',
-    category: 'Sync Licensing',
-    reads: 156,
-  },
-  {
-    id: '2',
-    title: 'Building a $2k/mo Direct-to-Fan Income',
-    category: 'Direct Revenue',
-    reads: 243,
-  },
-  {
-    id: '3',
-    title: 'Metadata That Got Me Placed',
-    category: 'Catalog Management',
-    reads: 189,
-  },
-];
+// Case studies removed - replaced with AI Money Coach
 
 export default function ReferenceShelf() {
   return (
@@ -413,28 +390,16 @@ export default function ReferenceShelf() {
               </Card>
             </motion.div>
             
-            {/* Case Studies */}
+            {/* Artist Money & Credit Coach */}
             <motion.div variants={fadeIn} className="mb-12">
               <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <FileText className="w-6 h-6 text-maroon" />
-                Case Studies
+                <DollarSign className="w-6 h-6 text-maroon" />
+                Artist Money & Credit Coach
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {caseStudies.map((study) => (
-                  <Card key={study.id} variant="feature" className="cursor-pointer hover:scale-[1.02] transition-transform">
-                    <CardHeader>
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider">{study.category}</span>
-                      <CardTitle className="text-lg mt-1">{study.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <BarChart3 className="w-4 h-4" />
-                        {study.reads} reads
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <p className="text-muted-foreground mb-6">
+                Get personalized financial guidance for building credit, managing irregular income, and growing your music business.
+              </p>
+              <ArtistMoneyCoach />
             </motion.div>
             
             {/* Reference Playlists */}
