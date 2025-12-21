@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { EditPostDialog } from '@/components/EditPostDialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Navigate, useSearchParams } from 'react-router-dom';
@@ -24,7 +25,9 @@ import {
   Plus,
   Send,
   Loader2,
-  Clock
+  Clock,
+  Pencil,
+  Pin
 } from 'lucide-react';
 
 const fadeIn = {
@@ -85,7 +88,8 @@ interface Comment {
 }
 
 export default function Community() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, hasRole } = useAuth();
+  const isAdmin = hasRole('admin');
   const [searchParams, setSearchParams] = useSearchParams();
   
   const [sections, setSections] = useState<Section[]>([]);
@@ -107,6 +111,12 @@ export default function Community() {
   const [submittingPost, setSubmittingPost] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
+  
+  // Edit state for admins
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   // Fetch sections with post counts
   useEffect(() => {
@@ -343,6 +353,46 @@ export default function Community() {
     setSubmittingComment(false);
   };
 
+  const openEditDialog = (post: Post, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingPost(post);
+    setEditTitle(post.title);
+    setEditContent(post.content);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingPost || !editTitle.trim() || !editContent.trim()) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    setSavingEdit(true);
+
+    const { error } = await supabase
+      .from('community_posts')
+      .update({
+        title: editTitle.trim(),
+        content: editContent.trim(),
+      })
+      .eq('id', editingPost.id);
+
+    if (error) {
+      console.error('Error updating post:', error);
+      toast.error('Failed to update post');
+    } else {
+      toast.success('Post updated!');
+      // Update local state
+      setPosts(prev => prev.map(p => 
+        p.id === editingPost.id 
+          ? { ...p, title: editTitle.trim(), content: editContent.trim() }
+          : p
+      ));
+      setEditingPost(null);
+    }
+
+    setSavingEdit(false);
+  };
+
   const navigateToSection = (slug: string) => {
     setSearchParams({ section: slug });
   };
@@ -389,6 +439,7 @@ export default function Community() {
     const sectionData = sections.find(s => s.slug === currentSection);
     
     return (
+      <>
       <div className="min-h-screen bg-background studio-grain">
         <Header />
         <main className="pt-24 pb-16">
@@ -417,7 +468,12 @@ export default function Community() {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <CardTitle className="text-xl">{currentPost.title}</CardTitle>
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-xl">{currentPost.title}</CardTitle>
+                          {currentPost.is_pinned && (
+                            <Pin className="w-4 h-4 text-primary" />
+                          )}
+                        </div>
                         <CardDescription className="flex items-center gap-2 mt-1">
                           <span>{currentPost.profiles?.name || 'Anonymous'}</span>
                           <span>•</span>
@@ -425,6 +481,15 @@ export default function Community() {
                           <span>{new Date(currentPost.created_at).toLocaleDateString()}</span>
                         </CardDescription>
                       </div>
+                      {isAdmin && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => openEditDialog(currentPost, e)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -519,6 +584,17 @@ export default function Community() {
           </div>
         </main>
       </div>
+      <EditPostDialog
+        post={editingPost}
+        onClose={() => setEditingPost(null)}
+        editTitle={editTitle}
+        setEditTitle={setEditTitle}
+        editContent={editContent}
+        setEditContent={setEditContent}
+        onSave={handleSaveEdit}
+        saving={savingEdit}
+      />
+      </>
     );
   }
 
@@ -528,6 +604,7 @@ export default function Community() {
     const IconComponent = iconMap[sectionData?.icon || 'message-square'] || MessageSquare;
 
     return (
+      <>
       <div className="min-h-screen bg-background studio-grain">
         <Header />
         <main className="pt-24 pb-16">
@@ -636,7 +713,12 @@ export default function Community() {
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <CardTitle className="text-lg">{post.title}</CardTitle>
+                                <div className="flex items-center gap-2">
+                                  <CardTitle className="text-lg">{post.title}</CardTitle>
+                                  {post.is_pinned && (
+                                    <Pin className="w-4 h-4 text-primary" />
+                                  )}
+                                </div>
                                 <CardDescription className="flex items-center gap-3 mt-1">
                                   <span>{post.profiles?.name || 'Anonymous'}</span>
                                   <span className="flex items-center gap-1">
@@ -649,6 +731,16 @@ export default function Community() {
                                   </span>
                                 </CardDescription>
                               </div>
+                              {isAdmin && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="shrink-0"
+                                  onClick={(e) => openEditDialog(post, e)}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                              )}
                             </div>
                           </CardHeader>
                           <CardContent className="pt-0">
@@ -674,11 +766,22 @@ export default function Community() {
           </div>
         </main>
       </div>
+      <EditPostDialog
+        post={editingPost}
+        onClose={() => setEditingPost(null)}
+        editTitle={editTitle}
+        setEditTitle={setEditTitle}
+        editContent={editContent}
+        setEditContent={setEditContent}
+        onSave={handleSaveEdit}
+        saving={savingEdit}
+      />
+      </>
     );
   }
 
-  // View: Sections Overview
   return (
+    <>
     <div className="min-h-screen bg-background studio-grain">
       <Header />
       
@@ -749,5 +852,16 @@ export default function Community() {
         </div>
       </main>
     </div>
+      <EditPostDialog
+        post={editingPost}
+        onClose={() => setEditingPost(null)}
+        editTitle={editTitle}
+        setEditTitle={setEditTitle}
+        editContent={editContent}
+        setEditContent={setEditContent}
+        onSave={handleSaveEdit}
+        saving={savingEdit}
+      />
+    </>
   );
 }
