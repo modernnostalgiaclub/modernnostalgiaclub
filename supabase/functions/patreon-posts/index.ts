@@ -14,6 +14,8 @@ serve(async (req) => {
   }
 
   try {
+    const { cursor } = await req.json().catch(() => ({}));
+    
     const CREATOR_ACCESS_TOKEN = Deno.env.get("PATREON_CREATOR_ACCESS_TOKEN");
     if (!CREATOR_ACCESS_TOKEN) {
       throw new Error("PATREON_CREATOR_ACCESS_TOKEN is not configured");
@@ -72,14 +74,16 @@ serve(async (req) => {
     console.log("Campaign ID:", campaignId);
 
     // Fetch posts from the campaign - using only valid Patreon API v2 fields
-    const postsResponse = await fetch(
-      `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,is_public&page[count]=10`,
-      {
-        headers: {
-          Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}`,
-        },
-      }
-    );
+    let postsUrl = `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,is_public&page[count]=6`;
+    if (cursor) {
+      postsUrl += `&page[cursor]=${cursor}`;
+    }
+    
+    const postsResponse = await fetch(postsUrl, {
+      headers: {
+        Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}`,
+      },
+    });
 
     if (!postsResponse.ok) {
       const errorText = await postsResponse.text();
@@ -103,7 +107,10 @@ serve(async (req) => {
       isFullAccess: userTier !== "public",
     })) || [];
 
-    return new Response(JSON.stringify({ posts, userTier }), {
+    // Get next cursor for pagination
+    const nextCursor = postsData.meta?.pagination?.cursors?.next || null;
+
+    return new Response(JSON.stringify({ posts, userTier, nextCursor }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
