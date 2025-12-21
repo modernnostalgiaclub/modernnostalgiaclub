@@ -220,7 +220,7 @@ export default function AuthDiagnostics() {
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Email</dt>
-                      <dd>{profile.email || 'N/A'}</dd>
+                      <dd>{user?.email || 'N/A'}</dd>
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Patreon ID</dt>

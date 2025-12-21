@@ -4,7 +4,6 @@ import { User, Submission, Track, PatreonTier } from './types';
 export const mockUser: User = {
   id: '1',
   name: 'Demo Artist',
-  email: 'demo@example.com',
   tier: 'creator-accelerator',
   status: 'active',
   role: 'member',

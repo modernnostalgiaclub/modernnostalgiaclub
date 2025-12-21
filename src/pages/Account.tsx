@@ -109,7 +109,7 @@ export default function Account() {
   const tier = (profile?.patreon_tier || 'lab-pass') as PatreonTier;
   const currentTierIndex = tierOrder.indexOf(tier);
   const userName = profile?.name || user?.email?.split('@')[0] || 'Artist';
-  const userEmail = profile?.email || user?.email || '';
+  const userEmail = user?.email || '';
   
   return (
     <div className="min-h-screen bg-background studio-grain">

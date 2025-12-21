@@ -21,7 +21,7 @@ import type { Database } from '@/integrations/supabase/types';
 type Course = Database['public']['Tables']['courses']['Row'];
 type Lesson = Database['public']['Tables']['lessons']['Row'];
 type Submission = Database['public']['Tables']['submissions']['Row'] & {
-  profiles?: { name: string | null; email: string | null } | null;
+  profiles?: { name: string | null } | null;
 };
 type PatreonTier = Database['public']['Enums']['patreon_tier'];
 type SubmissionStatus = Database['public']['Enums']['submission_status'];
@@ -633,7 +633,7 @@ function SubmissionsReviewer() {
   async function fetchSubmissions() {
     const { data, error } = await supabase
       .from('submissions')
-      .select('*, profiles!submissions_user_id_fkey(name, email)')
+      .select('*, profiles!submissions_user_id_fkey(name)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -734,7 +734,7 @@ function SubmissionsReviewer() {
               </Button>
             </CardTitle>
             <CardDescription>
-              By {selectedSubmission.profiles?.name || selectedSubmission.profiles?.email || 'Unknown'} •
+              By {selectedSubmission.profiles?.name || 'Unknown'} •
               {selectedSubmission.submission_type.replace('-', ' ')}
             </CardDescription>
           </CardHeader>
@@ -818,7 +818,7 @@ function SubmissionsReviewer() {
                   <div>
                     <h3 className="font-semibold">{submission.title}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {submission.profiles?.name || submission.profiles?.email || 'Unknown'} •
+                      {submission.profiles?.name || 'Unknown'} •
                       {submission.submission_type.replace('-', ' ')} •
                       {new Date(submission.created_at).toLocaleDateString()}
                     </p>
@@ -844,7 +844,6 @@ type Profile = {
   id: string;
   user_id: string;
   name: string | null;
-  email: string | null;
   patreon_tier: PatreonTier | null;
   avatar_url: string | null;
 };
@@ -916,7 +915,7 @@ function UsersManager() {
       return;
     }
 
-    toast.success(`Updated ${editingUser.name || editingUser.email} tier to ${tierLabel(selectedTier)}`);
+    toast.success(`Updated ${editingUser.name || 'user'} tier to ${tierLabel(selectedTier)}`);
     setEditingUser(null);
     fetchData();
   }
@@ -959,7 +958,7 @@ function UsersManager() {
       }
     }
 
-    toast.success(`Updated roles for ${editingUser.name || editingUser.email}`);
+    toast.success(`Updated roles for ${editingUser.name || 'user'}`);
     setEditingUser(null);
     fetchData();
   }
@@ -975,8 +974,7 @@ function UsersManager() {
   const filteredProfiles = profiles.filter(p => {
     const query = searchQuery.toLowerCase();
     return (
-      (p.name?.toLowerCase().includes(query) || false) ||
-      (p.email?.toLowerCase().includes(query) || false)
+      (p.name?.toLowerCase().includes(query) || false)
     );
   });
 
@@ -1024,7 +1022,7 @@ function UsersManager() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search by name or email..."
+              placeholder="Search by name..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -1038,7 +1036,7 @@ function UsersManager() {
           <CardHeader>
             <CardTitle>Edit User</CardTitle>
             <CardDescription>
-              Managing: {editingUser.name || editingUser.email}
+              Managing: {editingUser.name || 'User'}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -1119,7 +1117,7 @@ function UsersManager() {
                   )}
                   <div>
                     <p className="font-medium">{profile.name || 'Unnamed User'}</p>
-                    <p className="text-sm text-muted-foreground">{profile.email}</p>
+                    <p className="text-sm text-muted-foreground">ID: {profile.user_id.slice(0, 8)}...</p>
                   </div>
                   <Badge variant="outline" className={tierColor(profile.patreon_tier)}>
                     {tierLabel(profile.patreon_tier)}

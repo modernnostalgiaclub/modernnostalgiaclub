@@ -345,7 +345,6 @@ Deno.serve(async (req) => {
           .from('profiles')
           .upsert({
             user_id: userId,
-            email,
             name,
             patreon_id: patreonId,
             patreon_tier: tier,
