@@ -71,9 +71,9 @@ serve(async (req) => {
 
     console.log("Campaign ID:", campaignId);
 
-    // Fetch posts from the campaign
+    // Fetch posts from the campaign - using only valid Patreon API v2 fields
     const postsResponse = await fetch(
-      `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,teaser_text,thumbnail&page[count]=10`,
+      `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,is_public&page[count]=10`,
       {
         headers: {
           Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}`,
@@ -94,13 +94,12 @@ serve(async (req) => {
     const posts = postsData.data?.map((post: any) => ({
       id: post.id,
       title: post.attributes.title,
-      teaser: post.attributes.teaser_text || post.attributes.content?.substring(0, 200),
+      teaser: post.attributes.content?.substring(0, 200) || "",
       content: post.attributes.content,
       publishedAt: post.attributes.published_at,
       url: post.attributes.url,
-      thumbnail: post.attributes.thumbnail?.url || null,
-      // For tier-based access, we'd check post.relationships.access_rules
-      // For now, show teaser to all, full content to logged-in users
+      isPublic: post.attributes.is_public,
+      // Show full content only to logged-in users with a tier
       isFullAccess: userTier !== "public",
     })) || [];
 
