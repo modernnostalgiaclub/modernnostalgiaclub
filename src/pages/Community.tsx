@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { EditPostDialog } from '@/components/EditPostDialog';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Navigate, useSearchParams } from 'react-router-dom';
@@ -493,7 +494,7 @@ export default function Community() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="whitespace-pre-wrap">{currentPost.content}</p>
+                    <MarkdownRenderer content={currentPost.content} className="prose-sm" />
                   </CardContent>
                 </Card>
               </motion.div>
@@ -536,7 +537,7 @@ export default function Community() {
                                 {new Date(comment.created_at).toLocaleDateString()}
                               </span>
                             </div>
-                            <p className="text-sm">{comment.content}</p>
+                            <MarkdownRenderer content={comment.content} className="text-sm prose-sm" />
                           </div>
                         </motion.div>
                       ))}
@@ -745,7 +746,7 @@ export default function Community() {
                           </CardHeader>
                           <CardContent className="pt-0">
                             <p className="text-sm text-muted-foreground line-clamp-2">
-                              {post.content}
+                              {post.content.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_#`]/g, '')}
                             </p>
                           </CardContent>
                         </Card>
