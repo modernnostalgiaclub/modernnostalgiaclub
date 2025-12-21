@@ -1,7 +1,10 @@
 project_id = "gpcpovoikxgkgnabumlx"
 
+[functions.artist-money-coach]
+verify_jwt = true
+
 [functions.beat-license-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.delete-account]
 verify_jwt = false
