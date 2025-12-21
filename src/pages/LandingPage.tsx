@@ -177,7 +177,7 @@ export default function LandingPage() {
                   icon: GraduationCap, 
                   title: 'Classroom', 
                   desc: 'Structured training tracks',
-                  details: 'Deep-dive courses on sync licensing, catalog building, direct-to-fan revenue, and the business side of music. Learn professional workflows used by working artists—not theory, but practical systems you can implement today.'
+                  details: 'Deep-dive courses on sync licensing, catalog building, direct-to-fan revenue, and the business side of music. Learn professional workflows used by working artists: not theory, but practical systems you can implement today.'
                 },
                 { 
                   icon: Music2, 
@@ -189,7 +189,7 @@ export default function LandingPage() {
                   icon: Users, 
                   title: 'Community', 
                   desc: 'Focused discussions',
-                  details: 'Connect with other artists building sustainable careers. Share wins, ask questions, and collaborate on opportunities. No fluff—just focused conversations about what actually works in the modern music economy.'
+                  details: 'Connect with other artists building sustainable careers. Share wins, ask questions, and collaborate on opportunities. No fluff, just focused conversations about what actually works in the modern music economy.'
                 },
                 { 
                   icon: TrendingUp, 
