@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -52,7 +52,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
             <TabsTrigger value="courses" className="gap-2">
               <BookOpen className="h-4 w-4" />
               Courses
@@ -64,6 +64,10 @@ export default function Admin() {
             <TabsTrigger value="submissions" className="gap-2">
               <Users className="h-4 w-4" />
               Submissions
+            </TabsTrigger>
+            <TabsTrigger value="users" className="gap-2">
+              <Shield className="h-4 w-4" />
+              Users
             </TabsTrigger>
           </TabsList>
 
@@ -77,6 +81,10 @@ export default function Admin() {
 
           <TabsContent value="submissions">
             <SubmissionsReviewer />
+          </TabsContent>
+
+          <TabsContent value="users">
+            <UsersManager />
           </TabsContent>
         </Tabs>
       </main>
@@ -827,6 +835,193 @@ function SubmissionsReviewer() {
             </Card>
           ))
         )}
+      </div>
+    </div>
+  );
+}
+
+type Profile = {
+  id: string;
+  user_id: string;
+  name: string | null;
+  email: string | null;
+  patreon_tier: PatreonTier | null;
+  avatar_url: string | null;
+};
+
+function UsersManager() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingUser, setEditingUser] = useState<Profile | null>(null);
+  const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  async function fetchProfiles() {
+    setLoading(true);
+    // Admins need to see all profiles - use service role via edge function or RLS policy
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      toast.error('Failed to load users');
+      console.error('Error fetching profiles:', error);
+      setLoading(false);
+      return;
+    }
+    setProfiles(data || []);
+    setLoading(false);
+  }
+
+  async function handleUpdateTier() {
+    if (!editingUser) return;
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ patreon_tier: selectedTier })
+      .eq('id', editingUser.id);
+
+    if (error) {
+      toast.error('Failed to update user tier');
+      console.error('Error updating tier:', error);
+      return;
+    }
+
+    toast.success(`Updated ${editingUser.name || editingUser.email} to ${selectedTier}`);
+    setEditingUser(null);
+    fetchProfiles();
+  }
+
+  const filteredProfiles = profiles.filter(p => {
+    const query = searchQuery.toLowerCase();
+    return (
+      (p.name?.toLowerCase().includes(query) || false) ||
+      (p.email?.toLowerCase().includes(query) || false)
+    );
+  });
+
+  const tierLabel = (tier: PatreonTier | null) => {
+    switch (tier) {
+      case 'lab-pass': return 'Lab Pass';
+      case 'creator-accelerator': return 'Creator Accelerator';
+      case 'creative-economy-lab': return 'Creative Economy Lab';
+      default: return 'Lab Pass';
+    }
+  };
+
+  const tierColor = (tier: PatreonTier | null) => {
+    switch (tier) {
+      case 'creative-economy-lab': return 'bg-primary/20 text-primary border-primary/30';
+      case 'creator-accelerator': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      default: return 'bg-muted text-muted-foreground';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-16 w-full" />)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>User Management</CardTitle>
+          <CardDescription>Search users and grant tier access</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or email..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {editingUser && (
+        <Card className="border-primary/30">
+          <CardHeader>
+            <CardTitle>Grant Access</CardTitle>
+            <CardDescription>
+              Updating tier for: {editingUser.name || editingUser.email}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Select Tier</Label>
+              <Select value={selectedTier} onValueChange={(v: PatreonTier) => setSelectedTier(v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="lab-pass">Lab Pass ($1)</SelectItem>
+                  <SelectItem value="creator-accelerator">Creator Accelerator ($10)</SelectItem>
+                  <SelectItem value="creative-economy-lab">Creative Economy Lab ($150)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleUpdateTier}>Save Changes</Button>
+              <Button variant="outline" onClick={() => setEditingUser(null)}>Cancel</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          {filteredProfiles.length} user{filteredProfiles.length !== 1 ? 's' : ''} found
+        </p>
+        
+        {filteredProfiles.map(profile => (
+          <Card key={profile.id}>
+            <CardContent className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-4">
+                {profile.avatar_url ? (
+                  <img 
+                    src={profile.avatar_url} 
+                    alt={profile.name || 'User'} 
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                    <Users className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                )}
+                <div>
+                  <p className="font-medium">{profile.name || 'Unnamed User'}</p>
+                  <p className="text-sm text-muted-foreground">{profile.email}</p>
+                </div>
+                <Badge variant="outline" className={tierColor(profile.patreon_tier)}>
+                  {tierLabel(profile.patreon_tier)}
+                </Badge>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setEditingUser(profile);
+                  setSelectedTier(profile.patreon_tier || 'lab-pass');
+                }}
+              >
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit Tier
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   );

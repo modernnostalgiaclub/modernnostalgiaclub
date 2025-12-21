@@ -15,6 +15,9 @@ interface Profile {
   avatar_url: string | null;
 }
 
+// Tier hierarchy for access checks
+const TIER_HIERARCHY: PatreonTier[] = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -22,6 +25,7 @@ interface AuthContextType {
   roles: AppRole[];
   loading: boolean;
   hasRole: (role: AppRole) => boolean;
+  hasAccessToTier: (requiredTier: PatreonTier) => boolean;
   signInWithPatreon: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -77,6 +81,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check if user has a specific role (uses server-fetched roles)
   const hasRole = (role: AppRole): boolean => {
     return roles.includes(role);
+  };
+
+  // Check if user has access to a tier (admins always have access to all tiers)
+  const hasAccessToTier = (requiredTier: PatreonTier): boolean => {
+    // Admins have access to everything
+    if (roles.includes('admin')) {
+      return true;
+    }
+    
+    const userTier = profile?.patreon_tier || 'lab-pass';
+    const userTierIndex = TIER_HIERARCHY.indexOf(userTier);
+    const requiredTierIndex = TIER_HIERARCHY.indexOf(requiredTier);
+    
+    return userTierIndex >= requiredTierIndex;
   };
 
   useEffect(() => {
@@ -189,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, roles, loading, hasRole, signInWithPatreon, signOut }}>
+    <AuthContext.Provider value={{ user, session, profile, roles, loading, hasRole, hasAccessToTier, signInWithPatreon, signOut }}>
       {children}
     </AuthContext.Provider>
   );
