@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -13,11 +14,12 @@ import {
   HelpCircle,
   CheckCircle,
   Upload,
-  Link,
+  Link as LinkIcon,
   Share2,
   Download,
   BookOpen,
-  Wrench
+  Wrench,
+  Calendar
 } from 'lucide-react';
 
 const fadeIn = {
@@ -50,6 +52,15 @@ const exampleTracks = [
     description: 'A comprehensive manifesto on Direct-to-Fan strategies, sync licensing, and building a sustainable music career.',
     discoLink: '/downloads/The_Free_Artist_Survival_Guide.pdf',
     isDownload: true,
+  },
+  {
+    id: '3',
+    title: '30-Day Implementation Tracker',
+    artist: 'Modernnostalgia.club',
+    type: 'Interactive Tool',
+    description: 'A printable 30-day action plan to organize, create, publish, and monetize your music career.',
+    discoLink: '/reference/30-day-tracker',
+    isInternal: true,
   },
 ];
 
@@ -165,32 +176,49 @@ export default function ReferenceShelf() {
                           <CardTitle className="mt-1">{track.title}</CardTitle>
                           <CardDescription className="mt-2">{track.description}</CardDescription>
                         </div>
-                        <Button variant="maroon" size="icon" asChild>
-                          <a 
-                            href={track.discoLink} 
-                            target={track.isDownload ? "_self" : "_blank"} 
-                            rel={track.isDownload ? undefined : "noopener noreferrer"}
-                            download={track.isDownload ? true : undefined}
-                          >
-                            {track.isDownload ? <Download className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                          </a>
-                        </Button>
+                        {track.isInternal ? (
+                          <Button variant="maroon" size="icon" asChild>
+                            <Link to={track.discoLink}>
+                              <Calendar className="w-4 h-4" />
+                            </Link>
+                          </Button>
+                        ) : (
+                          <Button variant="maroon" size="icon" asChild>
+                            <a 
+                              href={track.discoLink} 
+                              target={track.isDownload ? "_self" : "_blank"} 
+                              rel={track.isDownload ? undefined : "noopener noreferrer"}
+                              download={track.isDownload ? true : undefined}
+                            >
+                              {track.isDownload ? <Download className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                            </a>
+                          </Button>
+                        )}
                       </div>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">by {track.artist}</span>
-                        <Button variant="outline" size="sm" asChild>
-                          <a 
-                            href={track.discoLink} 
-                            target={track.isDownload ? "_self" : "_blank"} 
-                            rel={track.isDownload ? undefined : "noopener noreferrer"}
-                            download={track.isDownload ? true : undefined}
-                          >
-                            {track.isDownload ? 'Download PDF' : 'View on DISCO'}
-                            {track.isDownload ? <Download className="ml-2 w-4 h-4" /> : <ExternalLink className="ml-2 w-4 h-4" />}
-                          </a>
-                        </Button>
+                        {track.isInternal ? (
+                          <Button variant="outline" size="sm" asChild>
+                            <Link to={track.discoLink}>
+                              Open Tracker
+                              <ExternalLink className="ml-2 w-4 h-4" />
+                            </Link>
+                          </Button>
+                        ) : (
+                          <Button variant="outline" size="sm" asChild>
+                            <a 
+                              href={track.discoLink} 
+                              target={track.isDownload ? "_self" : "_blank"} 
+                              rel={track.isDownload ? undefined : "noopener noreferrer"}
+                              download={track.isDownload ? true : undefined}
+                            >
+                              {track.isDownload ? 'Download PDF' : 'View on DISCO'}
+                              {track.isDownload ? <Download className="ml-2 w-4 h-4" /> : <ExternalLink className="ml-2 w-4 h-4" />}
+                            </a>
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
