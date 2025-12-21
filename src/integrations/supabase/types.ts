@@ -319,6 +319,87 @@ export type Database = {
           },
         ]
       }
+      tracker_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          day_number: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          day_number: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          day_number?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tracker_reflections: {
+        Row: {
+          created_at: string
+          id: string
+          reflection_text: string | null
+          updated_at: string
+          user_id: string
+          week_number: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reflection_text?: string | null
+          updated_at?: string
+          user_id: string
+          week_number: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reflection_text?: string | null
+          updated_at?: string
+          user_id?: string
+          week_number?: number
+        }
+        Relationships: []
+      }
+      tracker_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_lesson_progress: {
         Row: {
           completed: boolean | null
