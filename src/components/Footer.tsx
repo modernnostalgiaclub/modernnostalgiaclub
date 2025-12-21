@@ -70,9 +70,14 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} ModernNostalgia.club. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Building the future of the creative economy.
-          </p>
+          <div className="flex items-center gap-4">
+            <Link to="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Terms of Service
+            </Link>
+            <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

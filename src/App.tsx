@@ -17,6 +17,8 @@ import Admin from "./pages/Admin";
 import AuthCallback from "./pages/AuthCallback";
 import AuthDiagnostics from "./pages/AuthDiagnostics";
 import LabApplication from "./pages/LabApplication";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +43,8 @@ const App = () => (
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             <Route path="/auth/diagnostics" element={<AuthDiagnostics />} />
             <Route path="/apply" element={<LabApplication />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
