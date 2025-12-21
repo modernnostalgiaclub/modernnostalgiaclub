@@ -14,13 +14,21 @@ interface HeaderProps {
 }
 
 export function Header({ showNav = true }: HeaderProps) {
-  const { user, profile, loading, hasRole, signOut } = useAuth();
+  const { user, profile, loading, hasRole, signInWithPatreon, signOut } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleJoinPatreon = () => {
     window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleMemberLogin = async () => {
+    try {
+      await signInWithPatreon();
+    } catch (error) {
+      console.error('Failed to initiate Patreon login:', error);
+    }
   };
 
   const handleSignOut = async () => {
@@ -157,17 +165,28 @@ export function Header({ showNav = true }: HeaderProps) {
                         </Button>
                       </div>
                     ) : (
-                      <Button 
-                        variant="maroon"
-                        className="w-full"
-                        onClick={() => {
-                          handleJoinPatreon();
-                          closeMobileMenu();
-                        }}
-                      >
-                        Join on Patreon
-                        <ExternalLink className="w-3 h-3 ml-1.5" />
-                      </Button>
+                      <div className="space-y-3">
+                        <Button 
+                          variant="maroon"
+                          className="w-full"
+                          onClick={() => {
+                            handleJoinPatreon();
+                            closeMobileMenu();
+                          }}
+                        >
+                          Join on Patreon
+                          <ExternalLink className="w-3 h-3 ml-1.5" />
+                        </Button>
+                        <button
+                          onClick={() => {
+                            handleMemberLogin();
+                            closeMobileMenu();
+                          }}
+                          className="w-full text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+                        >
+                          Already a member? Log in
+                        </button>
+                      </div>
                     )}
                   </div>
                 </nav>

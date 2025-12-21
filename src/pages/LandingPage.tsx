@@ -37,7 +37,7 @@ const stagger = {
 const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
 
 export default function LandingPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, signInWithPatreon } = useAuth();
 
   // Redirect to dashboard if already logged in
   if (!loading && user) {
@@ -46,6 +46,14 @@ export default function LandingPage() {
 
   const handleJoinPatreon = () => {
     window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleMemberLogin = async () => {
+    try {
+      await signInWithPatreon();
+    } catch (error) {
+      console.error('Failed to initiate Patreon login:', error);
+    }
   };
 
   return (
@@ -90,29 +98,37 @@ export default function LandingPage() {
             </motion.p>
             
             <motion.div 
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              className="flex flex-col items-center gap-4"
               variants={fadeIn}
             >
-              <Button 
-                variant="hero" 
-                size="xl" 
-                onClick={handleJoinPatreon}
-                disabled={loading}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button 
+                  variant="hero" 
+                  size="xl" 
+                  onClick={handleJoinPatreon}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      Join on Patreon
+                      <ExternalLink className="ml-2 w-5 h-5" />
+                    </>
+                  )}
+                </Button>
+                <Button variant="heroOutline" size="xl" asChild>
+                  <a href="#what-this-is">
+                    Explore the Lab
+                  </a>
+                </Button>
+              </div>
+              <button
+                onClick={handleMemberLogin}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
               >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    Join on Patreon
-                    <ExternalLink className="ml-2 w-5 h-5" />
-                  </>
-                )}
-              </Button>
-              <Button variant="heroOutline" size="xl" asChild>
-                <a href="#what-this-is">
-                  Explore the Lab
-                </a>
-              </Button>
+                Already a member? Log in
+              </button>
             </motion.div>
           </motion.div>
         </div>
@@ -302,6 +318,12 @@ export default function LandingPage() {
                 </>
               )}
             </Button>
+            <button
+              onClick={handleMemberLogin}
+              className="mt-4 text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+            >
+              Already a member? Log in
+            </button>
           </motion.div>
         </div>
       </section>
