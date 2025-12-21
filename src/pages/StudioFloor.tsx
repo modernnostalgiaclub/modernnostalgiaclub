@@ -85,7 +85,7 @@ export default function StudioFloor() {
   async function fetchSubmissions() {
     const { data, error } = await supabase
       .from('submissions')
-      .select('*')
+      .select('id, user_id, title, submission_type, disco_url, notes, status, reviewer_notes, reviewed_at, reviewed_by, created_at, updated_at')
       .order('created_at', { ascending: false });
 
     if (error) {
