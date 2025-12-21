@@ -17,7 +17,8 @@ import {
   TrendingUp,
   ArrowRight,
   CheckCircle,
-  Loader2
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 
 const fadeIn = {
@@ -33,20 +34,18 @@ const stagger = {
   }
 };
 
+const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
+
 export default function LandingPage() {
-  const { user, loading, signInWithPatreon } = useAuth();
+  const { user, loading } = useAuth();
 
   // Redirect to dashboard if already logged in
   if (!loading && user) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handlePatreonLogin = async () => {
-    try {
-      await signInWithPatreon();
-    } catch (error) {
-      console.error('Failed to initiate Patreon login:', error);
-    }
+  const handleJoinPatreon = () => {
+    window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -97,15 +96,15 @@ export default function LandingPage() {
               <Button 
                 variant="hero" 
                 size="xl" 
-                onClick={handlePatreonLogin}
+                onClick={handleJoinPatreon}
                 disabled={loading}
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    Log in with Patreon
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    Join on Patreon
+                    <ExternalLink className="ml-2 w-5 h-5" />
                   </>
                 )}
               </Button>
@@ -291,15 +290,15 @@ export default function LandingPage() {
             <Button 
               variant="hero" 
               size="xl" 
-              onClick={handlePatreonLogin}
+              onClick={handleJoinPatreon}
               disabled={loading}
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Log in with Patreon
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  Join on Patreon
+                  <ExternalLink className="ml-2 w-5 h-5" />
                 </>
               )}
             </Button>

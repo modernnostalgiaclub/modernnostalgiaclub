@@ -2,27 +2,25 @@ import { useState } from 'react';
 import logoCream from '@/assets/logo-cream.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield } from 'lucide-react';
+import { Shield, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LogOut, Loader2, Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+
+const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
 
 interface HeaderProps {
   showNav?: boolean;
 }
 
 export function Header({ showNav = true }: HeaderProps) {
-  const { user, profile, loading, hasRole, signInWithPatreon, signOut } = useAuth();
+  const { user, profile, loading, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handlePatreonLogin = async () => {
-    try {
-      await signInWithPatreon();
-    } catch (error) {
-      console.error('Failed to initiate Patreon login:', error);
-    }
+  const handleJoinPatreon = () => {
+    window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
   };
 
   const handleSignOut = async () => {
@@ -120,10 +118,11 @@ export function Header({ showNav = true }: HeaderProps) {
           ) : (
             <Button 
               variant="ghost"
-              onClick={handlePatreonLogin}
+              onClick={handleJoinPatreon}
               className="hidden md:inline-flex text-sm font-medium text-primary hover:text-maroon-glow transition-colors"
             >
-              Log in with Patreon
+              Join on Patreon
+              <ExternalLink className="w-3 h-3 ml-1.5" />
             </Button>
           )}
 
@@ -162,11 +161,12 @@ export function Header({ showNav = true }: HeaderProps) {
                         variant="maroon"
                         className="w-full"
                         onClick={() => {
-                          handlePatreonLogin();
+                          handleJoinPatreon();
                           closeMobileMenu();
                         }}
                       >
-                        Log in with Patreon
+                        Join on Patreon
+                        <ExternalLink className="w-3 h-3 ml-1.5" />
                       </Button>
                     )}
                   </div>
