@@ -472,6 +472,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      user_has_tier_access: {
+        Args: { required_tier: Database["public"]["Enums"]["patreon_tier"] }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
