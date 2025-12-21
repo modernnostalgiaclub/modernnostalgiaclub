@@ -3,6 +3,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 // Allowed origins for CORS - restrict to known domains
 const ALLOWED_ORIGINS = [
   'https://gpcpovoikxgkgnabumlx.lovableproject.com',
+  'https://modernnostalgiaclub.lovable.app',
+  'https://modernnostalgia.club',
+  'https://www.modernnostalgia.club',
   'https://lovable.app',
   'http://localhost:5173',
   'http://localhost:8080',
@@ -45,7 +48,9 @@ function isValidRedirectUri(uri: string): boolean {
       const allowedUrl = new URL(allowed);
       return parsed.origin === allowedUrl.origin || 
              parsed.hostname.endsWith('.lovable.app') || 
-             parsed.hostname.endsWith('.lovableproject.com');
+             parsed.hostname.endsWith('.lovableproject.com') ||
+             parsed.hostname === 'modernnostalgia.club' ||
+             parsed.hostname.endsWith('.modernnostalgia.club');
     });
   } catch {
     return false;
