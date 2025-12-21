@@ -849,32 +849,56 @@ type Profile = {
   avatar_url: string | null;
 };
 
+type UserRole = {
+  id: string;
+  user_id: string;
+  role: 'admin' | 'moderator' | 'user';
+};
+
+type AppRole = 'admin' | 'moderator' | 'user';
+
 function UsersManager() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [userRoles, setUserRoles] = useState<Record<string, AppRole[]>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingUser, setEditingUser] = useState<Profile | null>(null);
   const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
+  const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
 
   useEffect(() => {
-    fetchProfiles();
+    fetchData();
   }, []);
 
-  async function fetchProfiles() {
+  async function fetchData() {
     setLoading(true);
-    // Admins need to see all profiles - use service role via edge function or RLS policy
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
+    
+    // Fetch profiles and roles in parallel
+    const [profilesRes, rolesRes] = await Promise.all([
+      supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+      supabase.from('user_roles').select('*')
+    ]);
 
-    if (error) {
+    if (profilesRes.error) {
       toast.error('Failed to load users');
-      console.error('Error fetching profiles:', error);
+      console.error('Error fetching profiles:', profilesRes.error);
       setLoading(false);
       return;
     }
-    setProfiles(data || []);
+
+    // Group roles by user_id
+    const rolesMap: Record<string, AppRole[]> = {};
+    if (rolesRes.data) {
+      for (const role of rolesRes.data) {
+        if (!rolesMap[role.user_id]) {
+          rolesMap[role.user_id] = [];
+        }
+        rolesMap[role.user_id].push(role.role as AppRole);
+      }
+    }
+
+    setProfiles(profilesRes.data || []);
+    setUserRoles(rolesMap);
     setLoading(false);
   }
 
@@ -892,9 +916,60 @@ function UsersManager() {
       return;
     }
 
-    toast.success(`Updated ${editingUser.name || editingUser.email} to ${selectedTier}`);
+    toast.success(`Updated ${editingUser.name || editingUser.email} tier to ${tierLabel(selectedTier)}`);
     setEditingUser(null);
-    fetchProfiles();
+    fetchData();
+  }
+
+  async function handleUpdateRoles() {
+    if (!editingUser) return;
+
+    const userId = editingUser.user_id;
+    const currentRoles = userRoles[userId] || [];
+
+    // Determine roles to add and remove
+    const rolesToAdd = selectedRoles.filter(r => !currentRoles.includes(r));
+    const rolesToRemove = currentRoles.filter(r => !selectedRoles.includes(r));
+
+    // Remove roles
+    for (const role of rolesToRemove) {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', role);
+      
+      if (error) {
+        toast.error(`Failed to remove ${role} role`);
+        console.error('Error removing role:', error);
+        return;
+      }
+    }
+
+    // Add roles
+    for (const role of rolesToAdd) {
+      const { error } = await supabase
+        .from('user_roles')
+        .insert({ user_id: userId, role });
+      
+      if (error) {
+        toast.error(`Failed to add ${role} role`);
+        console.error('Error adding role:', error);
+        return;
+      }
+    }
+
+    toast.success(`Updated roles for ${editingUser.name || editingUser.email}`);
+    setEditingUser(null);
+    fetchData();
+  }
+
+  function toggleRole(role: AppRole) {
+    setSelectedRoles(prev => 
+      prev.includes(role) 
+        ? prev.filter(r => r !== role)
+        : [...prev, role]
+    );
   }
 
   const filteredProfiles = profiles.filter(p => {
@@ -922,6 +997,14 @@ function UsersManager() {
     }
   };
 
+  const roleColor = (role: AppRole) => {
+    switch (role) {
+      case 'admin': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'moderator': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      default: return 'bg-muted text-muted-foreground';
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -935,7 +1018,7 @@ function UsersManager() {
       <Card>
         <CardHeader>
           <CardTitle>User Management</CardTitle>
-          <CardDescription>Search users and grant tier access</CardDescription>
+          <CardDescription>Search users, grant tier access, and manage roles</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="relative">
@@ -953,14 +1036,15 @@ function UsersManager() {
       {editingUser && (
         <Card className="border-primary/30">
           <CardHeader>
-            <CardTitle>Grant Access</CardTitle>
+            <CardTitle>Edit User</CardTitle>
             <CardDescription>
-              Updating tier for: {editingUser.name || editingUser.email}
+              Managing: {editingUser.name || editingUser.email}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* Tier Selection */}
             <div className="space-y-2">
-              <Label>Select Tier</Label>
+              <Label>Membership Tier</Label>
               <Select value={selectedTier} onValueChange={(v: PatreonTier) => setSelectedTier(v)}>
                 <SelectTrigger>
                   <SelectValue />
@@ -971,10 +1055,40 @@ function UsersManager() {
                   <SelectItem value="creative-economy-lab">Creative Economy Lab ($150)</SelectItem>
                 </SelectContent>
               </Select>
+              <Button onClick={handleUpdateTier} size="sm" className="mt-2">
+                Update Tier
+              </Button>
             </div>
-            <div className="flex gap-2">
-              <Button onClick={handleUpdateTier}>Save Changes</Button>
-              <Button variant="outline" onClick={() => setEditingUser(null)}>Cancel</Button>
+
+            {/* Role Selection */}
+            <div className="space-y-2 pt-4 border-t border-border">
+              <Label>User Roles</Label>
+              <p className="text-sm text-muted-foreground mb-3">
+                Select roles to grant special permissions
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(['admin', 'moderator'] as AppRole[]).map(role => (
+                  <Button
+                    key={role}
+                    variant={selectedRoles.includes(role) ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => toggleRole(role)}
+                    className={selectedRoles.includes(role) ? roleColor(role) : ''}
+                  >
+                    {selectedRoles.includes(role) && <Check className="h-3 w-3 mr-1" />}
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </Button>
+                ))}
+              </div>
+              <Button onClick={handleUpdateRoles} size="sm" className="mt-2">
+                Update Roles
+              </Button>
+            </div>
+
+            <div className="pt-4 border-t border-border">
+              <Button variant="outline" onClick={() => setEditingUser(null)}>
+                Close
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -985,43 +1099,53 @@ function UsersManager() {
           {filteredProfiles.length} user{filteredProfiles.length !== 1 ? 's' : ''} found
         </p>
         
-        {filteredProfiles.map(profile => (
-          <Card key={profile.id}>
-            <CardContent className="flex items-center justify-between py-4">
-              <div className="flex items-center gap-4">
-                {profile.avatar_url ? (
-                  <img 
-                    src={profile.avatar_url} 
-                    alt={profile.name || 'User'} 
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <Users className="w-5 h-5 text-muted-foreground" />
+        {filteredProfiles.map(profile => {
+          const roles = userRoles[profile.user_id] || [];
+          
+          return (
+            <Card key={profile.id}>
+              <CardContent className="flex items-center justify-between py-4">
+                <div className="flex items-center gap-4 flex-wrap">
+                  {profile.avatar_url ? (
+                    <img 
+                      src={profile.avatar_url} 
+                      alt={profile.name || 'User'} 
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      <Users className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium">{profile.name || 'Unnamed User'}</p>
+                    <p className="text-sm text-muted-foreground">{profile.email}</p>
                   </div>
-                )}
-                <div>
-                  <p className="font-medium">{profile.name || 'Unnamed User'}</p>
-                  <p className="text-sm text-muted-foreground">{profile.email}</p>
+                  <Badge variant="outline" className={tierColor(profile.patreon_tier)}>
+                    {tierLabel(profile.patreon_tier)}
+                  </Badge>
+                  {roles.map(role => (
+                    <Badge key={role} variant="outline" className={roleColor(role)}>
+                      {role.charAt(0).toUpperCase() + role.slice(1)}
+                    </Badge>
+                  ))}
                 </div>
-                <Badge variant="outline" className={tierColor(profile.patreon_tier)}>
-                  {tierLabel(profile.patreon_tier)}
-                </Badge>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  setEditingUser(profile);
-                  setSelectedTier(profile.patreon_tier || 'lab-pass');
-                }}
-              >
-                <Pencil className="h-4 w-4 mr-2" />
-                Edit Tier
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setEditingUser(profile);
+                    setSelectedTier(profile.patreon_tier || 'lab-pass');
+                    setSelectedRoles(userRoles[profile.user_id] || []);
+                  }}
+                >
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
