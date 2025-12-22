@@ -91,6 +91,9 @@ export function Header({ showNav = true }: HeaderProps) {
         <a href="#why-this-exists" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
           Why This Exists
         </a>
+        <a href="#partners" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          Partners
+        </a>
       </>
     );
   };
