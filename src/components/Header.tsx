@@ -61,8 +61,8 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/studio" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Studio Floor
           </Link>
-          <Link to="/reference-shelf" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
-            Reference Shelf
+          <Link to="/reference" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Reference
           </Link>
           <Link to="/community" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Community
