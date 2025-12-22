@@ -19,7 +19,11 @@ import {
   CheckCircle,
   Loader2,
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  Building2,
+  Calendar,
+  Briefcase,
+  Handshake
 } from 'lucide-react';
 import {
   Accordion,
@@ -351,6 +355,144 @@ export default function LandingPage() {
       
       {/* Blog Section - Patreon Posts */}
       <PatreonBlog />
+      
+      {/* Partners & Sponsors Section */}
+      <section id="partners" className="py-24 border-t border-border/50">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel className="mb-4">Partners & Sponsors</SectionLabel>
+            
+            <h2 className="text-3xl md:text-5xl font-display mb-6">
+              Invest in the creative workforce.<br />
+              <span className="text-primary">Build the economy of tomorrow.</span>
+            </h2>
+            
+            <p className="text-lg text-muted-foreground mb-12 max-w-3xl">
+              The Creative Economy Lab bridges the gap between creators and opportunity. Partner with us to fund programs, sponsor events, or help build creative facilities that empower the next generation of artists and creative professionals.
+            </p>
+            
+            {/* Partnership Categories */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {[
+                {
+                  icon: Briefcase,
+                  title: 'Program Funding',
+                  desc: 'Support workforce development, creative business training, and artist education initiatives.',
+                  highlights: [
+                    'Workshop and curriculum development',
+                    'Scholarship funding for creators',
+                    'Mentorship program support',
+                    'Training equipment sponsorship'
+                  ]
+                },
+                {
+                  icon: Calendar,
+                  title: 'Event Sponsorship',
+                  desc: 'Power immersive creative experiences that produce real content and connect artists with opportunity.',
+                  highlights: [
+                    'Songwriter camps and sessions',
+                    'Matchmaking events for businesses',
+                    'Community workshops and showcases',
+                    'Brand integration in content'
+                  ]
+                },
+                {
+                  icon: Building2,
+                  title: 'Facility Development',
+                  desc: 'Help transform community spaces into creative hubs with professional equipment and resources.',
+                  highlights: [
+                    'Studio and lab build-outs',
+                    'Equipment and technology',
+                    'Creative coworking spaces',
+                    'Long-term infrastructure support'
+                  ]
+                }
+              ].map((category, i) => (
+                <motion.div
+                  key={category.title}
+                  className="bg-card border border-border rounded-lg p-6 hover:border-maroon/30 transition-colors"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <category.icon className="w-10 h-10 text-maroon mb-4" />
+                  <h3 className="font-display text-xl mb-3">{category.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{category.desc}</p>
+                  <ul className="space-y-2">
+                    {category.highlights.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="w-4 h-4 text-maroon shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Sponsor Tiers */}
+            <div className="bg-card/50 border border-border rounded-lg p-8 mb-12">
+              <div className="flex items-center gap-3 mb-6">
+                <Handshake className="w-6 h-6 text-maroon" />
+                <h3 className="font-display text-2xl">Sponsorship Levels</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {[
+                  { tier: 'Starter', range: '$500 – $2,000', desc: 'Individual supporters and small contributors' },
+                  { tier: 'Community', range: '$2,500 – $10,000', desc: 'Local businesses and organizations' },
+                  { tier: 'Impact', range: '$10,000 – $50,000', desc: 'Foundations and mid-size sponsors' },
+                  { tier: 'Strategic', range: '$50,000+', desc: 'Corporate and government partners' }
+                ].map((level, i) => (
+                  <motion.div
+                    key={level.tier}
+                    className="text-center p-4 rounded-lg bg-background/50 border border-border/50"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <span className="text-xs uppercase tracking-wider text-maroon font-medium">{level.tier}</span>
+                    <p className="font-display text-lg mt-1">{level.range}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{level.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+              
+              <p className="text-sm text-muted-foreground text-center max-w-2xl mx-auto">
+                We work with private individuals, corporate sponsors, foundations, and government agencies. Whether you're exploring partnership possibilities or ready to invest in creative workforce development, we'd love to hear from you.
+              </p>
+            </div>
+            
+            {/* CTA */}
+            <motion.div 
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Button 
+                variant="maroon" 
+                size="lg"
+                onClick={() => window.open('https://form.jotform.com/253444517833056', '_blank', 'noopener,noreferrer')}
+              >
+                Become a Partner
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+              <p className="text-sm text-muted-foreground mt-4">
+                Complete our partnership inquiry form to start the conversation.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
       
       {/* CTA Section */}
       <section className="py-24 bg-card/50 border-t border-border/50">
