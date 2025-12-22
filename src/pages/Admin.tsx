@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -52,7 +52,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
             <TabsTrigger value="courses" className="gap-2">
               <BookOpen className="h-4 w-4" />
               Courses
@@ -64,6 +64,10 @@ export default function Admin() {
             <TabsTrigger value="resources" className="gap-2">
               <Wrench className="h-4 w-4" />
               Resources
+            </TabsTrigger>
+            <TabsTrigger value="tracks" className="gap-2">
+              <Music className="h-4 w-4" />
+              Tracks
             </TabsTrigger>
             <TabsTrigger value="submissions" className="gap-2">
               <Users className="h-4 w-4" />
@@ -85,6 +89,10 @@ export default function Admin() {
 
           <TabsContent value="resources">
             <ResourcesManager />
+          </TabsContent>
+
+          <TabsContent value="tracks">
+            <TracksManager />
           </TabsContent>
 
           <TabsContent value="submissions">
@@ -1406,6 +1414,293 @@ function ResourcesManager() {
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(resource.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+type ExampleTrack = Database['public']['Tables']['example_tracks']['Row'];
+
+function TracksManager() {
+  const [tracks, setTracks] = useState<ExampleTrack[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    artist: '',
+    type: 'Approved Example',
+    description: '',
+    link: '',
+    is_download: false,
+    is_internal: false,
+    sort_order: 0,
+    is_published: true
+  });
+
+  useEffect(() => {
+    fetchTracks();
+  }, []);
+
+  async function fetchTracks() {
+    const { data, error } = await supabase
+      .from('example_tracks')
+      .select('*')
+      .order('sort_order');
+
+    if (error) {
+      toast.error('Failed to load tracks');
+      return;
+    }
+    setTracks(data || []);
+    setLoading(false);
+  }
+
+  async function handleSave() {
+    if (!formData.title || !formData.link || !formData.artist) {
+      toast.error('Title, artist, and link are required');
+      return;
+    }
+
+    if (editing) {
+      const { error } = await supabase
+        .from('example_tracks')
+        .update(formData)
+        .eq('id', editing);
+
+      if (error) {
+        toast.error('Failed to update track');
+        return;
+      }
+      toast.success('Track updated');
+    } else {
+      const { error } = await supabase
+        .from('example_tracks')
+        .insert(formData);
+
+      if (error) {
+        toast.error('Failed to create track');
+        return;
+      }
+      toast.success('Track created');
+    }
+
+    resetForm();
+    fetchTracks();
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm('Are you sure you want to delete this track?')) return;
+
+    const { error } = await supabase
+      .from('example_tracks')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to delete track');
+      return;
+    }
+    toast.success('Track deleted');
+    fetchTracks();
+  }
+
+  function startEdit(track: ExampleTrack) {
+    setFormData({
+      title: track.title,
+      artist: track.artist,
+      type: track.type,
+      description: track.description || '',
+      link: track.link,
+      is_download: track.is_download ?? false,
+      is_internal: track.is_internal ?? false,
+      sort_order: track.sort_order || 0,
+      is_published: track.is_published ?? true
+    });
+    setEditing(track.id);
+    setShowForm(true);
+  }
+
+  function resetForm() {
+    setFormData({
+      title: '',
+      artist: '',
+      type: 'Approved Example',
+      description: '',
+      link: '',
+      is_download: false,
+      is_internal: false,
+      sort_order: 0,
+      is_published: true
+    });
+    setEditing(null);
+    setShowForm(false);
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full" />)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {!showForm && (
+        <Button onClick={() => setShowForm(true)} className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add Track
+        </Button>
+      )}
+
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{editing ? 'Edit Track' : 'New Track'}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="trackTitle">Title</Label>
+                <Input
+                  id="trackTitle"
+                  value={formData.title}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Track title"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="trackArtist">Artist</Label>
+                <Input
+                  id="trackArtist"
+                  value={formData.artist}
+                  onChange={e => setFormData({ ...formData, artist: e.target.value })}
+                  placeholder="Artist name"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="trackType">Type</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={v => setFormData({ ...formData, type: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Approved Example">Approved Example</SelectItem>
+                    <SelectItem value="Free Download">Free Download</SelectItem>
+                    <SelectItem value="Interactive Tool">Interactive Tool</SelectItem>
+                    <SelectItem value="CEL Members Only">CEL Members Only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="trackLink">Link</Label>
+                <Input
+                  id="trackLink"
+                  value={formData.link}
+                  onChange={e => setFormData({ ...formData, link: e.target.value })}
+                  placeholder="https://... or /path"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="trackDesc">Description</Label>
+              <Textarea
+                id="trackDesc"
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Brief description of the track"
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-4">
+              <div className="space-y-2">
+                <Label htmlFor="trackOrder">Sort Order</Label>
+                <Input
+                  id="trackOrder"
+                  type="number"
+                  value={formData.sort_order}
+                  onChange={e => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
+                />
+              </div>
+              <div className="flex items-center gap-2 pt-8">
+                <Switch
+                  id="trackDownload"
+                  checked={formData.is_download}
+                  onCheckedChange={v => setFormData({ ...formData, is_download: v })}
+                />
+                <Label htmlFor="trackDownload">Download</Label>
+              </div>
+              <div className="flex items-center gap-2 pt-8">
+                <Switch
+                  id="trackInternal"
+                  checked={formData.is_internal}
+                  onCheckedChange={v => setFormData({ ...formData, is_internal: v })}
+                />
+                <Label htmlFor="trackInternal">Internal Link</Label>
+              </div>
+              <div className="flex items-center gap-2 pt-8">
+                <Switch
+                  id="trackPublished"
+                  checked={formData.is_published}
+                  onCheckedChange={v => setFormData({ ...formData, is_published: v })}
+                />
+                <Label htmlFor="trackPublished">Published</Label>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button onClick={handleSave}>{editing ? 'Update' : 'Create'}</Button>
+              <Button variant="outline" onClick={resetForm}>Cancel</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid gap-4">
+        {tracks.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              No tracks yet. Add one to get started.
+            </CardContent>
+          </Card>
+        ) : (
+          tracks.map(track => (
+            <Card key={track.id}>
+              <CardContent className="flex items-center justify-between py-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Music className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{track.title}</h3>
+                    <p className="text-sm text-muted-foreground">{track.artist} • {track.type}</p>
+                  </div>
+                  <Badge variant={track.is_published ? 'default' : 'secondary'}>
+                    {track.is_published ? 'Published' : 'Draft'}
+                  </Badge>
+                  {track.is_download && <Badge variant="outline">Download</Badge>}
+                  {track.is_internal && <Badge variant="outline">Internal</Badge>}
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" onClick={() => startEdit(track)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(track.id)}>
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
