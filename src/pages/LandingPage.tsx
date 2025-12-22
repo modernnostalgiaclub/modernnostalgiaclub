@@ -124,18 +124,25 @@ export default function LandingPage() {
                     </>
                   )}
                 </Button>
-                <Button variant="heroOutline" size="xl" asChild>
-                  <a href="#what-this-is">
-                    Explore the Lab
-                  </a>
+                <Button 
+                  variant="heroOutline" 
+                  size="xl" 
+                  onClick={handleMemberLogin}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    'Log In with Patreon'
+                  )}
                 </Button>
               </div>
-              <button
-                onClick={handleMemberLogin}
+              <a 
+                href="#what-this-is"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
               >
-                Already a member? Log in
-              </button>
+                Explore the Lab
+              </a>
             </motion.div>
           </motion.div>
         </div>
