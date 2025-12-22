@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
@@ -6,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArtistMoneyCoach } from '@/components/ArtistMoneyCoach';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Music, 
   ExternalLink,
@@ -69,7 +72,8 @@ const exampleTracks = [
   },
 ];
 
-const resources = [
+// Fallback resources used if database is empty
+const fallbackResources = [
   {
     id: '1',
     title: 'NAV Business Credit',
@@ -121,9 +125,38 @@ const resources = [
   },
 ];
 
+type Resource = {
+  id: string;
+  title: string;
+  description: string | null;
+  url: string;
+  category: string;
+};
+
 // Case studies removed - replaced with AI Money Coach
 
 export default function ReferenceShelf() {
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loadingResources, setLoadingResources] = useState(true);
+
+  useEffect(() => {
+    async function fetchResources() {
+      const { data, error } = await supabase
+        .from('reference_resources')
+        .select('id, title, description, url, category')
+        .eq('is_published', true)
+        .order('sort_order');
+
+      if (error || !data || data.length === 0) {
+        // Use fallback resources if fetch fails or empty
+        setResources(fallbackResources);
+      } else {
+        setResources(data);
+      }
+      setLoadingResources(false);
+    }
+    fetchResources();
+  }, []);
   return (
     <div className="min-h-screen bg-background studio-grain">
       <Header />
@@ -221,28 +254,36 @@ export default function ReferenceShelf() {
               <p className="text-muted-foreground mb-6">
                 Essential tools and services mentioned in The Free Artist Survival Guide. Start building your sustainable music career.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {resources.map((resource) => (
-                  <Card key={resource.id} variant="feature" className="hover:scale-[1.01] transition-transform">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <span className="text-xs text-maroon uppercase tracking-wider">{resource.category}</span>
-                          <CardTitle className="text-lg mt-1">{resource.title}</CardTitle>
+              {loadingResources ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4].map(i => (
+                    <Skeleton key={i} className="h-32 w-full" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {resources.map((resource) => (
+                    <Card key={resource.id} variant="feature" className="hover:scale-[1.01] transition-transform">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <span className="text-xs text-maroon uppercase tracking-wider">{resource.category}</span>
+                            <CardTitle className="text-lg mt-1">{resource.title}</CardTitle>
+                          </div>
+                          <Button variant="maroon" size="icon" asChild>
+                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                          </Button>
                         </div>
-                        <Button variant="maroon" size="icon" asChild>
-                          <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">{resource.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground">{resource.description}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </motion.div>
             
             {/* DISCO Setup Guide */}
