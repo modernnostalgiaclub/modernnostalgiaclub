@@ -116,6 +116,18 @@ export default function LandingPage() {
                 <Button 
                   variant="hero" 
                   size="xl" 
+                  onClick={handleMemberLogin}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    'Log In with Patreon'
+                  )}
+                </Button>
+                <Button 
+                  variant="heroOutline" 
+                  size="xl" 
                   onClick={handleJoinPatreon}
                   disabled={loading}
                 >
@@ -126,18 +138,6 @@ export default function LandingPage() {
                       Join on Patreon
                       <ExternalLink className="ml-2 w-5 h-5" />
                     </>
-                  )}
-                </Button>
-                <Button 
-                  variant="heroOutline" 
-                  size="xl" 
-                  onClick={handleMemberLogin}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    'Log In with Patreon'
                   )}
                 </Button>
               </div>
