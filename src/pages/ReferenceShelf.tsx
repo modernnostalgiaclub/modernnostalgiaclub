@@ -34,14 +34,17 @@ const stagger = {
   }
 };
 
-const exampleTracks = [
+// Fallback tracks used if database is empty
+const fallbackTracks = [
   {
     id: '1',
     title: 'Example Sync Song',
     artist: 'Lab Example',
     type: 'Approved Example',
     description: 'A properly structured sync-ready track with complete metadata and alternate versions.',
-    discoLink: 'https://s.disco.ac/yqpvfrvazuwo',
+    link: 'https://s.disco.ac/yqpvfrvazuwo',
+    is_download: false,
+    is_internal: false,
   },
   {
     id: '2',
@@ -49,8 +52,9 @@ const exampleTracks = [
     artist: 'Modernnostalgia.club',
     type: 'Free Download',
     description: 'A comprehensive manifesto on Direct-to-Fan strategies, sync licensing, and building a sustainable music career.',
-    discoLink: '/downloads/The_Free_Artist_Survival_Guide.pdf',
-    isDownload: true,
+    link: '/downloads/The_Free_Artist_Survival_Guide.pdf',
+    is_download: true,
+    is_internal: false,
   },
   {
     id: '3',
@@ -58,8 +62,9 @@ const exampleTracks = [
     artist: 'Modernnostalgia.club',
     type: 'Interactive Tool',
     description: 'A printable 30-day action plan to organize, create, publish, and monetize your music career.',
-    discoLink: '/reference/30-day-tracker',
-    isInternal: true,
+    link: '/reference/30-day-tracker',
+    is_download: false,
+    is_internal: true,
   },
   {
     id: '4',
@@ -67,8 +72,9 @@ const exampleTracks = [
     artist: 'Ge Oh x ModernNostalgia',
     type: 'CEL Members Only',
     description: 'Exclusive beat licensing at member rates. $60 per beat + 50/50 splits. Free mix & master included.',
-    discoLink: '/reference/beat-license',
-    isInternal: true,
+    link: '/reference/beat-license',
+    is_download: false,
+    is_internal: true,
   },
 ];
 
@@ -133,11 +139,24 @@ type Resource = {
   category: string;
 };
 
+type Track = {
+  id: string;
+  title: string;
+  artist: string;
+  type: string;
+  description: string | null;
+  link: string;
+  is_download: boolean | null;
+  is_internal: boolean | null;
+};
+
 // Case studies removed - replaced with AI Money Coach
 
 export default function ReferenceShelf() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loadingResources, setLoadingResources] = useState(true);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [loadingTracks, setLoadingTracks] = useState(true);
 
   useEffect(() => {
     async function fetchResources() {
@@ -148,14 +167,30 @@ export default function ReferenceShelf() {
         .order('sort_order');
 
       if (error || !data || data.length === 0) {
-        // Use fallback resources if fetch fails or empty
         setResources(fallbackResources);
       } else {
         setResources(data);
       }
       setLoadingResources(false);
     }
+
+    async function fetchTracks() {
+      const { data, error } = await supabase
+        .from('example_tracks')
+        .select('id, title, artist, type, description, link, is_download, is_internal')
+        .eq('is_published', true)
+        .order('sort_order');
+
+      if (error || !data || data.length === 0) {
+        setTracks(fallbackTracks);
+      } else {
+        setTracks(data);
+      }
+      setLoadingTracks(false);
+    }
+
     fetchResources();
+    fetchTracks();
   }, []);
   return (
     <div className="min-h-screen bg-background studio-grain">
@@ -185,64 +220,72 @@ export default function ReferenceShelf() {
                 <Music className="w-6 h-6 text-maroon" />
                 Example Tracks & Downloads
               </h2>
-              <div className="space-y-4">
-                {exampleTracks.map((track) => (
-                  <Card key={track.id} variant="feature">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <span className="text-xs text-maroon uppercase tracking-wider">{track.type}</span>
-                          <CardTitle className="mt-1">{track.title}</CardTitle>
-                          <CardDescription className="mt-2">{track.description}</CardDescription>
+              {loadingTracks ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map(i => (
+                    <Skeleton key={i} className="h-40 w-full" />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {tracks.map((track) => (
+                    <Card key={track.id} variant="feature">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <span className="text-xs text-maroon uppercase tracking-wider">{track.type}</span>
+                            <CardTitle className="mt-1">{track.title}</CardTitle>
+                            <CardDescription className="mt-2">{track.description}</CardDescription>
+                          </div>
+                          {track.is_internal ? (
+                            <Button variant="maroon" size="icon" asChild>
+                              <Link to={track.link}>
+                                <Calendar className="w-4 h-4" />
+                              </Link>
+                            </Button>
+                          ) : (
+                            <Button variant="maroon" size="icon" asChild>
+                              <a 
+                                href={track.link} 
+                                target={track.is_download ? "_self" : "_blank"} 
+                                rel={track.is_download ? undefined : "noopener noreferrer"}
+                                download={track.is_download ? true : undefined}
+                              >
+                                {track.is_download ? <Download className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                              </a>
+                            </Button>
+                          )}
                         </div>
-                        {track.isInternal ? (
-                          <Button variant="maroon" size="icon" asChild>
-                            <Link to={track.discoLink}>
-                              <Calendar className="w-4 h-4" />
-                            </Link>
-                          </Button>
-                        ) : (
-                          <Button variant="maroon" size="icon" asChild>
-                            <a 
-                              href={track.discoLink} 
-                              target={track.isDownload ? "_self" : "_blank"} 
-                              rel={track.isDownload ? undefined : "noopener noreferrer"}
-                              download={track.isDownload ? true : undefined}
-                            >
-                              {track.isDownload ? <Download className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">by {track.artist}</span>
-                        {track.isInternal ? (
-                          <Button variant="outline" size="sm" asChild>
-                            <Link to={track.discoLink}>
-                              Open Tracker
-                              <ExternalLink className="ml-2 w-4 h-4" />
-                            </Link>
-                          </Button>
-                        ) : (
-                          <Button variant="outline" size="sm" asChild>
-                            <a 
-                              href={track.discoLink} 
-                              target={track.isDownload ? "_self" : "_blank"} 
-                              rel={track.isDownload ? undefined : "noopener noreferrer"}
-                              download={track.isDownload ? true : undefined}
-                            >
-                              {track.isDownload ? 'Download PDF' : 'View on DISCO'}
-                              {track.isDownload ? <Download className="ml-2 w-4 h-4" /> : <ExternalLink className="ml-2 w-4 h-4" />}
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">by {track.artist}</span>
+                          {track.is_internal ? (
+                            <Button variant="outline" size="sm" asChild>
+                              <Link to={track.link}>
+                                Open Tracker
+                                <ExternalLink className="ml-2 w-4 h-4" />
+                              </Link>
+                            </Button>
+                          ) : (
+                            <Button variant="outline" size="sm" asChild>
+                              <a 
+                                href={track.link} 
+                                target={track.is_download ? "_self" : "_blank"} 
+                                rel={track.is_download ? undefined : "noopener noreferrer"}
+                                download={track.is_download ? true : undefined}
+                              >
+                                {track.is_download ? 'Download PDF' : 'View on DISCO'}
+                                {track.is_download ? <Download className="ml-2 w-4 h-4" /> : <ExternalLink className="ml-2 w-4 h-4" />}
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </motion.div>
 
             {/* Resources */}

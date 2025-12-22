@@ -221,6 +221,51 @@ export type Database = {
         }
         Relationships: []
       }
+      example_tracks: {
+        Row: {
+          artist: string
+          created_at: string
+          description: string | null
+          id: string
+          is_download: boolean | null
+          is_internal: boolean | null
+          is_published: boolean | null
+          link: string
+          sort_order: number | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          artist: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_download?: boolean | null
+          is_internal?: boolean | null
+          is_published?: boolean | null
+          link: string
+          sort_order?: number | null
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          artist?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_download?: boolean | null
+          is_internal?: boolean | null
+          is_published?: boolean | null
+          link?: string
+          sort_order?: number | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lessons: {
         Row: {
           content: string | null
