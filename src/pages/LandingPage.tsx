@@ -368,27 +368,41 @@ export default function LandingPage() {
             <p className="text-muted-foreground mb-8">
               Join the lab. Start with what you have. Build what you need.
             </p>
-            <Button 
-              variant="hero" 
-              size="xl" 
-              onClick={handleJoinPatreon}
-              disabled={loading}
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  Join on Patreon
-                  <ExternalLink className="ml-2 w-5 h-5" />
-                </>
-              )}
-            </Button>
-            <button
-              onClick={handleMemberLogin}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button 
+                variant="hero" 
+                size="xl" 
+                onClick={handleJoinPatreon}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    Join on Patreon
+                    <ExternalLink className="ml-2 w-5 h-5" />
+                  </>
+                )}
+              </Button>
+              <Button 
+                variant="heroOutline" 
+                size="xl" 
+                onClick={handleMemberLogin}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  'Log In with Patreon'
+                )}
+              </Button>
+            </div>
+            <a 
+              href="#what-this-is"
               className="mt-4 text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
             >
-              Already a member? Log in
-            </button>
+              Explore the Lab
+            </a>
           </motion.div>
         </div>
       </section>
