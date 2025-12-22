@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -52,7 +52,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
             <TabsTrigger value="courses" className="gap-2">
               <BookOpen className="h-4 w-4" />
               Courses
@@ -60,6 +60,10 @@ export default function Admin() {
             <TabsTrigger value="lessons" className="gap-2">
               <FileText className="h-4 w-4" />
               Lessons
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="gap-2">
+              <Wrench className="h-4 w-4" />
+              Resources
             </TabsTrigger>
             <TabsTrigger value="submissions" className="gap-2">
               <Users className="h-4 w-4" />
@@ -77,6 +81,10 @@ export default function Admin() {
 
           <TabsContent value="lessons">
             <LessonsManager />
+          </TabsContent>
+
+          <TabsContent value="resources">
+            <ResourcesManager />
           </TabsContent>
 
           <TabsContent value="submissions">
@@ -1144,6 +1152,267 @@ function UsersManager() {
             </Card>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+type ReferenceResource = {
+  id: string;
+  title: string;
+  description: string | null;
+  url: string;
+  category: string;
+  sort_order: number | null;
+  is_published: boolean | null;
+  created_at: string;
+  updated_at: string;
+};
+
+function ResourcesManager() {
+  const [resources, setResources] = useState<ReferenceResource[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    url: '',
+    category: 'General',
+    sort_order: 0,
+    is_published: true
+  });
+
+  useEffect(() => {
+    fetchResources();
+  }, []);
+
+  async function fetchResources() {
+    const { data, error } = await supabase
+      .from('reference_resources')
+      .select('*')
+      .order('sort_order');
+
+    if (error) {
+      toast.error('Failed to load resources');
+      return;
+    }
+    setResources(data || []);
+    setLoading(false);
+  }
+
+  async function handleSave() {
+    if (!formData.title || !formData.url) {
+      toast.error('Title and URL are required');
+      return;
+    }
+
+    if (editing) {
+      const { error } = await supabase
+        .from('reference_resources')
+        .update(formData)
+        .eq('id', editing);
+
+      if (error) {
+        toast.error('Failed to update resource');
+        return;
+      }
+      toast.success('Resource updated');
+    } else {
+      const { error } = await supabase
+        .from('reference_resources')
+        .insert(formData);
+
+      if (error) {
+        toast.error('Failed to create resource');
+        return;
+      }
+      toast.success('Resource created');
+    }
+
+    resetForm();
+    fetchResources();
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm('Are you sure you want to delete this resource?')) return;
+
+    const { error } = await supabase
+      .from('reference_resources')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to delete resource');
+      return;
+    }
+    toast.success('Resource deleted');
+    fetchResources();
+  }
+
+  function startEdit(resource: ReferenceResource) {
+    setFormData({
+      title: resource.title,
+      description: resource.description || '',
+      url: resource.url,
+      category: resource.category,
+      sort_order: resource.sort_order || 0,
+      is_published: resource.is_published ?? true
+    });
+    setEditing(resource.id);
+    setShowForm(true);
+  }
+
+  function resetForm() {
+    setFormData({
+      title: '',
+      description: '',
+      url: '',
+      category: 'General',
+      sort_order: 0,
+      is_published: true
+    });
+    setEditing(null);
+    setShowForm(false);
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full" />)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {!showForm && (
+        <Button onClick={() => setShowForm(true)} className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add Resource
+        </Button>
+      )}
+
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{editing ? 'Edit Resource' : 'New Resource'}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="resourceTitle">Title</Label>
+                <Input
+                  id="resourceTitle"
+                  value={formData.title}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Resource title"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="resourceUrl">URL</Label>
+                <Input
+                  id="resourceUrl"
+                  value={formData.url}
+                  onChange={e => setFormData({ ...formData, url: e.target.value })}
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="resourceDesc">Description</Label>
+              <Textarea
+                id="resourceDesc"
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Brief description of the resource"
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="resourceCategory">Category</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={v => setFormData({ ...formData, category: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="General">General</SelectItem>
+                    <SelectItem value="Business">Business</SelectItem>
+                    <SelectItem value="Music Tools">Music Tools</SelectItem>
+                    <SelectItem value="Tech Tools">Tech Tools</SelectItem>
+                    <SelectItem value="Recording">Recording</SelectItem>
+                    <SelectItem value="Legal">Legal</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="resourceOrder">Sort Order</Label>
+                <Input
+                  id="resourceOrder"
+                  type="number"
+                  value={formData.sort_order}
+                  onChange={e => setFormData({ ...formData, sort_order: parseInt(e.target.value) || 0 })}
+                />
+              </div>
+              <div className="flex items-center gap-2 pt-8">
+                <Switch
+                  id="resourcePublished"
+                  checked={formData.is_published}
+                  onCheckedChange={v => setFormData({ ...formData, is_published: v })}
+                />
+                <Label htmlFor="resourcePublished">Published</Label>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button onClick={handleSave}>{editing ? 'Update' : 'Create'}</Button>
+              <Button variant="outline" onClick={resetForm}>Cancel</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid gap-4">
+        {resources.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              No resources yet. Add one to get started.
+            </CardContent>
+          </Card>
+        ) : (
+          resources.map(resource => (
+            <Card key={resource.id}>
+              <CardContent className="flex items-center justify-between py-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Wrench className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{resource.title}</h3>
+                    <p className="text-sm text-muted-foreground">{resource.category} • {resource.url.slice(0, 40)}...</p>
+                  </div>
+                  <Badge variant={resource.is_published ? 'default' : 'secondary'}>
+                    {resource.is_published ? 'Published' : 'Draft'}
+                  </Badge>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" onClick={() => startEdit(resource)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(resource.id)}>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );
