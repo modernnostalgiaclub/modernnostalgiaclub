@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-
+import DOMPurify from "dompurify";
 interface PatreonPost {
   id: string;
   title: string;
@@ -177,7 +177,7 @@ export const PatreonBlog = () => {
                 <CardContent>
                   <div 
                     className="text-muted-foreground text-sm line-clamp-3 mb-4 [&_p]:m-0 [&_br]:hidden [&_h3]:text-sm [&_h3]:font-normal [&_strong]:font-normal"
-                    dangerouslySetInnerHTML={{ __html: post.teaser }}
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.teaser) }}
                   />
                   {post.isFullAccess ? (
                     <a
