@@ -175,9 +175,10 @@ export const PatreonBlog = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
-                    {post.teaser}
-                  </p>
+                  <div 
+                    className="text-muted-foreground text-sm line-clamp-3 mb-4 [&_p]:m-0 [&_br]:hidden [&_h3]:text-sm [&_h3]:font-normal [&_strong]:font-normal"
+                    dangerouslySetInnerHTML={{ __html: post.teaser }}
+                  />
                   {post.isFullAccess ? (
                     <a
                       href={post.url}
