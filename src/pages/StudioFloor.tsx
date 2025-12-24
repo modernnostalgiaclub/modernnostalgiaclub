@@ -83,15 +83,19 @@ export default function StudioFloor() {
   }, [user]);
 
   async function fetchSubmissions() {
+    // Use the secure RPC function that excludes internal_notes for regular users
     const { data, error } = await supabase
-      .from('submissions')
-      .select('id, user_id, title, submission_type, disco_url, notes, status, reviewer_notes, reviewed_at, reviewed_by, created_at, updated_at')
-      .order('created_at', { ascending: false });
+      .rpc('get_user_submissions', { _user_id: user!.id });
 
     if (error) {
       console.error('Error fetching submissions:', error);
+      setSubmissions([]);
     } else {
-      setSubmissions(data || []);
+      // Sort by created_at descending since the function doesn't order
+      const sortedData = (data || []).sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setSubmissions(sortedData);
     }
     setLoading(false);
   }
