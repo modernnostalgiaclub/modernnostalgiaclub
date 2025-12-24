@@ -15,7 +15,8 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3 } from 'lucide-react';
+import { SiteAnalytics } from '@/components/SiteAnalytics';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -52,7 +53,11 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="analytics" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
             <TabsTrigger value="courses" className="gap-2">
               <BookOpen className="h-4 w-4" />
               Courses
@@ -78,6 +83,10 @@ export default function Admin() {
               Users
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics">
+            <AnalyticsManager />
+          </TabsContent>
 
           <TabsContent value="courses">
             <CoursesManager />
@@ -107,6 +116,58 @@ export default function Admin() {
       <Footer />
     </div>
   );
+}
+
+// Static analytics data (from last 7 days)
+function AnalyticsManager() {
+  const analyticsData = {
+    visitors: 137,
+    pageviews: 577,
+    pageviewsPerVisit: 4.21,
+    sessionDuration: 168,
+    bounceRate: 57,
+    dailyData: [
+      { date: '2025-12-17', visitors: 0, pageviews: 0 },
+      { date: '2025-12-18', visitors: 0, pageviews: 0 },
+      { date: '2025-12-19', visitors: 0, pageviews: 0 },
+      { date: '2025-12-20', visitors: 0, pageviews: 0 },
+      { date: '2025-12-21', visitors: 65, pageviews: 344 },
+      { date: '2025-12-22', visitors: 30, pageviews: 120 },
+      { date: '2025-12-23', visitors: 22, pageviews: 73 },
+      { date: '2025-12-24', visitors: 20, pageviews: 40 },
+    ],
+    topPages: [
+      { page: '/', views: 120 },
+      { page: '/dashboard', views: 21 },
+      { page: '/admin', views: 18 },
+      { page: '/reference', views: 16 },
+      { page: '/classroom', views: 15 },
+      { page: '/studio', views: 13 },
+      { page: '/community', views: 11 },
+      { page: '/account', views: 9 },
+    ],
+    sources: [
+      { source: 'Direct', visits: 73 },
+      { source: 't.co', visits: 29 },
+      { source: 'patreon.com', visits: 27 },
+      { source: 'l.instagram.com', visits: 20 },
+      { source: 'facebook.com', visits: 2 },
+    ],
+    devices: [
+      { device: 'mobile', count: 97 },
+      { device: 'desktop', count: 40 },
+    ],
+    countries: [
+      { country: 'US', count: 123 },
+      { country: 'Unknown', count: 4 },
+      { country: 'DE', count: 3 },
+      { country: 'CA', count: 3 },
+      { country: 'ID', count: 2 },
+      { country: 'KE', count: 1 },
+    ],
+  };
+
+  return <SiteAnalytics data={analyticsData} />;
 }
 
 function CoursesManager() {
