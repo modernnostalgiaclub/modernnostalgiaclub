@@ -274,10 +274,10 @@ export default function BeatLicense() {
                     <iframe 
                       id="disco-playlist-26502910"
                       name="disco-playlist-26502910"
-                      src="https://geohworks.disco.ac/e/p/26502910?download=false&s=lc7jQiCWvb7h6ujqq9peGPKSAiI%3AbPIauN2n&artwork=true&color=%234E98FF&theme=white"
+                      src="https://geohworks.disco.ac/e/p/26502910?download=false&s=b4gWG3zPWBBB4-e-uTZPhftvU0M%3Aen67SJ41&artwork=true&color=%234E98FF&theme=dark"
                       className="disco-embed border-0"
-                      width="480"
-                      height="395"
+                      width="800"
+                      height="400"
                       allowFullScreen
                       title="DISCO Beat Catalog"
                     />
@@ -289,7 +289,7 @@ export default function BeatLicense() {
                         target="_blank" 
                         rel="noopener noreferrer"
                       >
-                        Open in DISCO
+                        See Library
                         <ExternalLink className="ml-2 w-4 h-4" />
                       </a>
                     </Button>
