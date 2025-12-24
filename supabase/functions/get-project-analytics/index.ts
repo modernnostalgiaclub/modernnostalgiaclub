@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +12,56 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("No authorization header provided");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Create Supabase client with user's token
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    // Verify the user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error("Auth error:", authError?.message);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("User authenticated:", user.id);
+
+    // Check if user has admin or moderator role
+    const { data: hasAdminRole } = await supabase.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin"
+    });
+
+    const { data: hasModeratorRole } = await supabase.rpc("has_role", {
+      _user_id: user.id,
+      _role: "moderator"
+    });
+
+    if (!hasAdminRole && !hasModeratorRole) {
+      console.error("User does not have admin or moderator role:", user.id);
+      return new Response(
+        JSON.stringify({ error: "Forbidden - Admin or moderator access required" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("User authorized with role - admin:", hasAdminRole, "moderator:", hasModeratorRole);
+
     const { startDate, endDate, granularity } = await req.json();
 
     // Return the analytics data structure
@@ -69,6 +120,8 @@ serve(async (req) => {
         end: endDate || '2025-12-24',
       }
     };
+
+    console.log("Returning analytics data for date range:", startDate, "to", endDate);
 
     return new Response(JSON.stringify(analyticsData), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
