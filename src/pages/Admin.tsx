@@ -118,56 +118,113 @@ export default function Admin() {
   );
 }
 
-// Static analytics data (from last 7 days)
 function AnalyticsManager() {
-  const analyticsData = {
-    visitors: 137,
-    pageviews: 577,
-    pageviewsPerVisit: 4.21,
-    sessionDuration: 168,
-    bounceRate: 57,
-    dailyData: [
-      { date: '2025-12-17', visitors: 0, pageviews: 0 },
-      { date: '2025-12-18', visitors: 0, pageviews: 0 },
-      { date: '2025-12-19', visitors: 0, pageviews: 0 },
-      { date: '2025-12-20', visitors: 0, pageviews: 0 },
-      { date: '2025-12-21', visitors: 65, pageviews: 344 },
-      { date: '2025-12-22', visitors: 30, pageviews: 120 },
-      { date: '2025-12-23', visitors: 22, pageviews: 73 },
-      { date: '2025-12-24', visitors: 20, pageviews: 40 },
-    ],
-    topPages: [
-      { page: '/', views: 120 },
-      { page: '/dashboard', views: 21 },
-      { page: '/admin', views: 18 },
-      { page: '/reference', views: 16 },
-      { page: '/classroom', views: 15 },
-      { page: '/studio', views: 13 },
-      { page: '/community', views: 11 },
-      { page: '/account', views: 9 },
-    ],
-    sources: [
-      { source: 'Direct', visits: 73 },
-      { source: 't.co', visits: 29 },
-      { source: 'patreon.com', visits: 27 },
-      { source: 'l.instagram.com', visits: 20 },
-      { source: 'facebook.com', visits: 2 },
-    ],
-    devices: [
-      { device: 'mobile', count: 97 },
-      { device: 'desktop', count: 40 },
-    ],
-    countries: [
-      { country: 'US', count: 123 },
-      { country: 'Unknown', count: 4 },
-      { country: 'DE', count: 3 },
-      { country: 'CA', count: 3 },
-      { country: 'ID', count: 2 },
-      { country: 'KE', count: 1 },
-    ],
-  };
+  const [analyticsData, setAnalyticsData] = useState<{
+    visitors: number;
+    pageviews: number;
+    pageviewsPerVisit: number;
+    sessionDuration: number;
+    bounceRate: number;
+    dailyData: { date: string; visitors: number; pageviews: number }[];
+    topPages: { page: string; views: number }[];
+    sources: { source: string; visits: number }[];
+    devices: { device: string; count: number }[];
+    countries: { country: string; count: number }[];
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState({
+    start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    end: new Date().toISOString().split('T')[0],
+  });
 
-  return <SiteAnalytics data={analyticsData} />;
+  useEffect(() => {
+    fetchAnalytics();
+  }, [dateRange]);
+
+  async function fetchAnalytics() {
+    setLoading(true);
+    try {
+      const response = await supabase.functions.invoke('get-project-analytics', {
+        body: {
+          startDate: dateRange.start,
+          endDate: dateRange.end,
+          granularity: 'daily',
+        },
+      });
+
+      if (response.error) {
+        toast.error('Failed to load analytics');
+        return;
+      }
+
+      setAnalyticsData(response.data);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      toast.error('Failed to load analytics');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Skeleton className="h-80 w-full" />
+          <Skeleton className="h-80 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!analyticsData) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center">
+          <p className="text-muted-foreground">No analytics data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="space-y-1">
+            <Label htmlFor="start-date">From</Label>
+            <Input
+              id="start-date"
+              type="date"
+              value={dateRange.start}
+              onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+              className="w-40"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="end-date">To</Label>
+            <Input
+              id="end-date"
+              type="date"
+              value={dateRange.end}
+              onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+              className="w-40"
+            />
+          </div>
+        </div>
+        <Button variant="outline" onClick={fetchAnalytics} className="gap-2">
+          <BarChart3 className="h-4 w-4" />
+          Refresh
+        </Button>
+      </div>
+      <SiteAnalytics data={analyticsData} />
+    </div>
+  );
 }
 
 function CoursesManager() {
