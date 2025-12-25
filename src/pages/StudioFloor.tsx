@@ -257,6 +257,21 @@ export default function StudioFloor() {
                 Submit loops for Sync Records production. If I produce a beat with your loop, it goes in the Beat Library. 
                 You get <strong>50% of the $60 license ($30)</strong>, plus equal splits on any final song placements.
               </p>
+              
+              {/* Loop Requirements */}
+              <div className="bg-background/50 rounded-lg p-3 mb-3 border border-maroon/20">
+                <p className="text-xs font-medium text-maroon mb-2">Loop Requirements:</p>
+                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                  <span>• BPM: 70-140 (sync-friendly)</span>
+                  <span>• Format: WAV or AIFF preferred</span>
+                  <span>• 100% original (no samples)</span>
+                  <span>• Must be sync-clearable</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  <strong>Preferred genres:</strong> Lo-fi, Ambient, Cinematic, Neo-Soul, Boom Bap, R&B
+                </p>
+              </div>
+              
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <FolderOpen className="w-3 h-3" /> File link (DISCO preferred)
