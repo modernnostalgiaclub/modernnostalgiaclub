@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { isValidDiscoUrl } from '@/lib/urlValidation';
+import { submissionFormSchema, getValidationErrors, type SubmissionFormData } from '@/lib/formValidation';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -143,33 +144,39 @@ export default function StudioFloor() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
-      toast.error('Please enter a title');
-      return;
-    }
-    if (!submissionType) {
-      toast.error('Please select a submission type');
+    // Validate with zod schema
+    const formData = {
+      title,
+      submission_type: submissionType,
+      disco_url: discoUrl,
+      notes: notes || undefined,
+    };
+    
+    const result = submissionFormSchema.safeParse(formData);
+    if (!result.success) {
+      const firstError = result.error.issues[0]?.message;
+      toast.error(firstError || 'Please check your form input');
       return;
     }
     
+    // Additional URL validation for DISCO requirement (except producer-mission)
     const isProducerMission = submissionType === 'producer-mission';
-    const urlValid = isProducerMission ? isValidUrl(discoUrl.trim()) : isValidDiscoUrl(discoUrl);
-    
-    if (!discoUrl.trim() || !urlValid) {
-      toast.error(isProducerMission ? 'Please enter a valid file link' : 'Please enter a valid DISCO URL');
+    if (!isProducerMission && !isValidDiscoUrl(discoUrl)) {
+      toast.error('Please enter a valid DISCO URL (https://disco.ac/...)');
       return;
     }
 
     setSubmitting(true);
 
+    const validData = result.data;
     const { error } = await supabase
       .from('submissions')
       .insert({
         user_id: user!.id,
-        title: title.trim(),
-        submission_type: submissionType,
-        disco_url: discoUrl.trim(),
-        notes: notes.trim() || null,
+        title: validData.title,
+        submission_type: validData.submission_type as SubmissionType,
+        disco_url: validData.disco_url,
+        notes: validData.notes || null,
       });
 
     if (error) {

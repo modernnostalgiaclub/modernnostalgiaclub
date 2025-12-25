@@ -12,6 +12,7 @@ import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { communityPostSchema, communityCommentSchema } from '@/lib/formValidation';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -298,8 +299,16 @@ export default function Community() {
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPostTitle.trim() || !newPostContent.trim()) {
-      toast.error('Please fill in all fields');
+    
+    // Validate with zod schema
+    const result = communityPostSchema.safeParse({
+      title: newPostTitle,
+      content: newPostContent,
+    });
+    
+    if (!result.success) {
+      const firstError = result.error.issues[0]?.message;
+      toast.error(firstError || 'Please fill in all fields');
       return;
     }
 
@@ -308,13 +317,14 @@ export default function Community() {
 
     setSubmittingPost(true);
 
+    const validData = result.data;
     const { error } = await supabase
       .from('community_posts')
       .insert({
         section_id: section.id,
         user_id: user!.id,
-        title: newPostTitle.trim(),
-        content: newPostContent.trim(),
+        title: validData.title,
+        content: validData.content,
       });
 
     if (error) {
@@ -332,16 +342,24 @@ export default function Community() {
 
   const handleCreateComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    
+    // Validate with zod schema
+    const result = communityCommentSchema.safeParse({ content: newComment });
+    if (!result.success) {
+      const firstError = result.error.issues[0]?.message;
+      toast.error(firstError || 'Please enter a comment');
+      return;
+    }
 
     setSubmittingComment(true);
 
+    const validData = result.data;
     const { error } = await supabase
       .from('community_comments')
       .insert({
         post_id: currentPostId!,
         user_id: user!.id,
-        content: newComment.trim(),
+        content: validData.content,
       });
 
     if (error) {
@@ -362,18 +380,28 @@ export default function Community() {
   };
 
   const handleSaveEdit = async () => {
-    if (!editingPost || !editTitle.trim() || !editContent.trim()) {
-      toast.error('Please fill in all fields');
+    if (!editingPost) return;
+    
+    // Validate with zod schema
+    const result = communityPostSchema.safeParse({
+      title: editTitle,
+      content: editContent,
+    });
+    
+    if (!result.success) {
+      const firstError = result.error.issues[0]?.message;
+      toast.error(firstError || 'Please fill in all fields');
       return;
     }
 
     setSavingEdit(true);
 
+    const validData = result.data;
     const { error } = await supabase
       .from('community_posts')
       .update({
-        title: editTitle.trim(),
-        content: editContent.trim(),
+        title: validData.title,
+        content: validData.content,
       })
       .eq('id', editingPost.id);
 
@@ -385,7 +413,7 @@ export default function Community() {
       // Update local state
       setPosts(prev => prev.map(p => 
         p.id === editingPost.id 
-          ? { ...p, title: editTitle.trim(), content: editContent.trim() }
+          ? { ...p, title: validData.title, content: validData.content }
           : p
       ));
       setEditingPost(null);
