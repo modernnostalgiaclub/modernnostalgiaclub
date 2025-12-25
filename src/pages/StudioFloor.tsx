@@ -34,7 +34,7 @@ const stagger = {
 };
 
 type SubmissionStatus = 'pending' | 'in-review' | 'reviewed' | 'needs-revision';
-type SubmissionType = 'sync-review' | 'catalog-audit' | 'branding' | 'project-proposal' | 'audio-mission';
+type SubmissionType = 'sync-review' | 'catalog-audit' | 'branding' | 'project-proposal' | 'audio-mission' | 'producer-mission';
 
 interface Submission {
   id: string;
@@ -60,6 +60,7 @@ const submissionTypes: { value: SubmissionType; label: string; description?: str
   { value: 'branding', label: 'Branding Materials' },
   { value: 'project-proposal', label: 'Project Proposal' },
   { value: 'audio-mission', label: 'Audio Mission (Hrmny.Pro)', description: 'Submit 1-3 sync-clearable songs for Hrmny.Pro onboarding' },
+  { value: 'producer-mission', label: 'Producer Mission (Loops)', description: 'Submit loops for sync production - 50% split on Beat Library licenses' },
 ];
 
 export default function StudioFloor() {
@@ -181,8 +182,8 @@ export default function StudioFloor() {
   // User submissions content (reusable)
   const renderUserSubmissions = () => (
     <>
-      {/* Audio Mission Callout */}
-      <Card className="mb-8 border-2 border-amber/50 bg-gradient-to-br from-amber/10 to-amber/5">
+      {/* Audio Mission Callout - Artists */}
+      <Card className="mb-4 border-2 border-amber/50 bg-gradient-to-br from-amber/10 to-amber/5">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             <div className="p-2 rounded-lg bg-amber/20">
@@ -191,7 +192,7 @@ export default function StudioFloor() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="font-display text-lg font-semibold text-amber">Audio Mission: Hrmny.Pro Onboarding</h3>
-                <Badge className="bg-amber/20 text-amber border-amber/30">Limited</Badge>
+                <Badge className="bg-amber/20 text-amber border-amber/30">Artists</Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-3">
                 For artists who have worked with Ge Oh or licensed an Exclusive Beat from the Beat Library. 
@@ -204,6 +205,34 @@ export default function StudioFloor() {
                 </span>
                 <span className="px-2">•</span>
                 <span>Must be sync-clearable (no uncleared samples)</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Audio Mission Callout - Producers */}
+      <Card className="mb-8 border-2 border-maroon/50 bg-gradient-to-br from-maroon/10 to-maroon/5">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="p-2 rounded-lg bg-maroon/20">
+              <Music className="w-6 h-6 text-maroon" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="font-display text-lg font-semibold text-maroon">Producer Mission: Loop Submissions</h3>
+                <Badge className="bg-maroon/20 text-maroon border-maroon/30">Producers</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Submit loops for Sync Records production. If I produce a beat with your loop, it goes in the Beat Library. 
+                You get <strong>50% of the $60 license ($30)</strong>, plus equal splits on any final song placements.
+              </p>
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <FolderOpen className="w-3 h-3" /> File link (DISCO preferred)
+                </span>
+                <span className="px-2">•</span>
+                <span>50% license split + equal song splits</span>
               </div>
             </div>
           </div>
