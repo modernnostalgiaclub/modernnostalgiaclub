@@ -17,7 +17,7 @@ import { isValidDiscoUrl } from '@/lib/urlValidation';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Plus, ExternalLink, Info, Clock, CheckCircle, AlertCircle, Loader2, Shield, FolderOpen } from 'lucide-react';
+import { Plus, ExternalLink, Info, Clock, CheckCircle, AlertCircle, Loader2, Shield, FolderOpen, Music, Sparkles } from 'lucide-react';
 import { AdminSubmissionsView } from '@/components/AdminSubmissionsView';
 
 const fadeIn = {
@@ -34,7 +34,7 @@ const stagger = {
 };
 
 type SubmissionStatus = 'pending' | 'in-review' | 'reviewed' | 'needs-revision';
-type SubmissionType = 'sync-review' | 'catalog-audit' | 'branding' | 'project-proposal';
+type SubmissionType = 'sync-review' | 'catalog-audit' | 'branding' | 'project-proposal' | 'audio-mission';
 
 interface Submission {
   id: string;
@@ -54,11 +54,12 @@ const statusConfig: Record<SubmissionStatus, { label: string; color: string; ico
   'needs-revision': { label: 'Needs Revision', color: 'bg-orange-500/20 text-orange-400', icon: AlertCircle },
 };
 
-const submissionTypes: { value: SubmissionType; label: string }[] = [
+const submissionTypes: { value: SubmissionType; label: string; description?: string }[] = [
   { value: 'sync-review', label: 'Sync Review' },
   { value: 'catalog-audit', label: 'Catalog Audit' },
   { value: 'branding', label: 'Branding Materials' },
   { value: 'project-proposal', label: 'Project Proposal' },
+  { value: 'audio-mission', label: 'Audio Mission (Hrmny.Pro)', description: 'Submit 1-3 sync-clearable songs for Hrmny.Pro onboarding' },
 ];
 
 export default function StudioFloor() {
@@ -180,6 +181,35 @@ export default function StudioFloor() {
   // User submissions content (reusable)
   const renderUserSubmissions = () => (
     <>
+      {/* Audio Mission Callout */}
+      <Card className="mb-8 border-2 border-amber/50 bg-gradient-to-br from-amber/10 to-amber/5">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="p-2 rounded-lg bg-amber/20">
+              <Sparkles className="w-6 h-6 text-amber" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="font-display text-lg font-semibold text-amber">Audio Mission: Hrmny.Pro Onboarding</h3>
+                <Badge className="bg-amber/20 text-amber border-amber/30">Limited</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                For artists who have worked with Ge Oh or licensed an Exclusive Beat from the Beat Library. 
+                Submit 1-3 <strong>sync-clearable</strong> songs in a DISCO playlist. I'll go live, listen to your submissions, 
+                and onboard artists that are ready to be pitched on Hrmny.Pro.
+              </p>
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Music className="w-3 h-3" /> 1-3 songs per submission
+                </span>
+                <span className="px-2">•</span>
+                <span>Must be sync-clearable (no uncleared samples)</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* DISCO Notice */}
       <Card variant="console" className="mb-8">
         <CardContent className="p-6">
