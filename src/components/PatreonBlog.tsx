@@ -31,6 +31,10 @@ const stagger = {
   },
 };
 
+// Avoid dangerouslySetInnerHTML entirely by rendering teaser as plain text.
+const getTeaserText = (html: string) =>
+  DOMPurify.sanitize(html, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
+
 export const PatreonBlog = () => {
   const [posts, setPosts] = useState<PatreonPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -175,10 +179,9 @@ export const PatreonBlog = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div 
-                    className="text-muted-foreground text-sm line-clamp-3 mb-4 [&_p]:m-0 [&_br]:hidden [&_h3]:text-sm [&_h3]:font-normal [&_strong]:font-normal"
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.teaser) }}
-                  />
+                  <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
+                    {getTeaserText(post.teaser)}
+                  </p>
                   {post.isFullAccess ? (
                     <a
                       href={post.url}
