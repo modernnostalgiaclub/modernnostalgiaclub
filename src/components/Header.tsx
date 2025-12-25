@@ -64,6 +64,9 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/reference" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Reference
           </Link>
+          <Link to="/beats" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Beat Library
+          </Link>
           <Link to="/community" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Community
           </Link>
