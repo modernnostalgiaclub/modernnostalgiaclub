@@ -219,7 +219,7 @@ export default function Dashboard() {
             {/* Primary Actions */}
             <motion.div variants={fadeIn} className="mb-12">
               <h2 className="font-display text-2xl mb-6">Enter the Lab</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
                   { 
                     icon: GraduationCap, 
