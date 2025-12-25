@@ -133,14 +133,20 @@ export function Header({ showNav = true }: HeaderProps) {
               </Button>
             </div>
           ) : (
-            <Button 
-              variant="ghost"
-              onClick={handleJoinPatreon}
-              className="hidden md:inline-flex text-sm font-medium text-primary hover:text-maroon-glow transition-colors"
-            >
-              Join on Patreon
-              <ExternalLink className="w-3 h-3 ml-1.5" />
-            </Button>
+            <div className="hidden md:flex items-center gap-4">
+              <button
+                onClick={handleJoinPatreon}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Join on Patreon
+              </button>
+              <Button 
+                variant="maroon"
+                onClick={handleMemberLogin}
+              >
+                Explore the Lab
+              </Button>
+            </div>
           )}
 
           {/* Mobile Menu */}
@@ -179,21 +185,20 @@ export function Header({ showNav = true }: HeaderProps) {
                           variant="maroon"
                           className="w-full"
                           onClick={() => {
-                            handleJoinPatreon();
+                            handleMemberLogin();
                             closeMobileMenu();
                           }}
                         >
-                          Join on Patreon
-                          <ExternalLink className="w-3 h-3 ml-1.5" />
+                          Explore the Lab
                         </Button>
                         <button
                           onClick={() => {
-                            handleMemberLogin();
+                            handleJoinPatreon();
                             closeMobileMenu();
                           }}
                           className="w-full text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
                         >
-                          Already a member? Log in
+                          Join on Patreon
                         </button>
                       </div>
                     )}
