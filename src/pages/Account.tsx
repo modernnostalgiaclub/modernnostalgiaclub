@@ -39,6 +39,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { profileFormSchema, getValidationErrors, type ProfileFormData as ValidatedProfileData } from '@/lib/formValidation';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -112,21 +113,36 @@ export default function Account() {
     }
   }, [profile]);
 
+  const [formErrors, setFormErrors] = useState<Partial<Record<keyof ProfileFormData, string>>>({});
+
   const handleSaveProfile = async () => {
     if (!user) return;
     
+    // Validate form data
+    const result = profileFormSchema.safeParse(formData);
+    if (!result.success) {
+      const errors = getValidationErrors<ValidatedProfileData>(result);
+      setFormErrors(errors);
+      const firstError = result.error.issues[0]?.message;
+      if (firstError) toast.error(firstError);
+      return;
+    }
+    
+    setFormErrors({});
     setIsSaving(true);
+    
     try {
+      const validData = result.data;
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: formData.full_name || null,
-          stage_name: formData.stage_name || null,
-          pro: formData.pro || null,
-          has_publishing_account: formData.has_publishing_account,
-          publishing_company: formData.has_publishing_account ? formData.publishing_company || null : null,
-          writer_ipi: formData.has_publishing_account ? formData.writer_ipi || null : null,
-          publisher_ipi: formData.has_publishing_account ? formData.publisher_ipi || null : null
+          full_name: validData.full_name || null,
+          stage_name: validData.stage_name || null,
+          pro: validData.pro || null,
+          has_publishing_account: validData.has_publishing_account,
+          publishing_company: validData.has_publishing_account ? validData.publishing_company || null : null,
+          writer_ipi: validData.has_publishing_account ? validData.writer_ipi || null : null,
+          publisher_ipi: validData.has_publishing_account ? validData.publisher_ipi || null : null
         })
         .eq('user_id', user.id);
 
