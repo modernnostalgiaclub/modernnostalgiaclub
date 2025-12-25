@@ -18,7 +18,11 @@ import {
   BookOpen,
   ArrowRight,
   Zap,
-  TrendingUp
+  TrendingUp,
+  UserCircle,
+  MessageSquare,
+  CheckCircle2,
+  Circle
 } from 'lucide-react';
 
 const fadeIn = {
@@ -39,6 +43,9 @@ export default function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [progress, setProgress] = useState<{ completed: number; total: number } | null>(null);
   const [progressLoading, setProgressLoading] = useState(true);
+  const [hasCommented, setHasCommented] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [checklistLoading, setChecklistLoading] = useState(true);
 
   // Show welcome toast for returning members
   useEffect(() => {
@@ -87,6 +94,40 @@ export default function Dashboard() {
     };
     
     fetchProgress();
+  }, [user]);
+
+  // Fetch checklist status
+  useEffect(() => {
+    const fetchChecklistStatus = async () => {
+      if (!user) {
+        setChecklistLoading(false);
+        return;
+      }
+      
+      try {
+        // Check if user has commented
+        const { count: commentCount } = await supabase
+          .from('community_comments')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        
+        setHasCommented((commentCount || 0) > 0);
+
+        // Check if user has submitted to Studio Floor
+        const { count: submissionCount } = await supabase
+          .from('submissions')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        
+        setHasSubmitted((submissionCount || 0) > 0);
+      } catch (error) {
+        console.error('Error fetching checklist status:', error);
+      } finally {
+        setChecklistLoading(false);
+      }
+    };
+    
+    fetchChecklistStatus();
   }, [user]);
   
   // Redirect to home if not logged in
@@ -213,6 +254,85 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </div>
+              </Card>
+            </motion.div>
+
+            {/* Getting Started Checklist */}
+            <motion.div variants={fadeIn} className="mb-12">
+              <Card variant="elevated" className="p-6 border-maroon/20">
+                <h2 className="font-display text-xl mb-4">Getting Started Checklist</h2>
+                {checklistLoading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <Skeleton key={i} className="h-10 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {/* 1. Set up your profile */}
+                    <Link to="/account" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
+                      {profile?.stage_name ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      )}
+                      <UserCircle className="w-5 h-5 text-maroon flex-shrink-0" />
+                      <span className={profile?.stage_name ? 'text-muted-foreground line-through' : ''}>
+                        Set up your profile
+                      </span>
+                    </Link>
+
+                    {/* 2. Complete your first course */}
+                    <Link to="/classroom" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
+                      {(progress?.completed || 0) > 0 ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      )}
+                      <GraduationCap className="w-5 h-5 text-maroon flex-shrink-0" />
+                      <span className={(progress?.completed || 0) > 0 ? 'text-muted-foreground line-through' : ''}>
+                        Start your first course in the Classroom
+                      </span>
+                    </Link>
+
+                    {/* 3. Comment in the community */}
+                    <Link to="/community" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
+                      {hasCommented ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      )}
+                      <MessageSquare className="w-5 h-5 text-maroon flex-shrink-0" />
+                      <span className={hasCommented ? 'text-muted-foreground line-through' : ''}>
+                        Comment in the Community
+                      </span>
+                    </Link>
+
+                    {/* 4. Submit to Studio Floor */}
+                    <Link 
+                      to={tier !== 'lab-pass' ? '/studio' : '#'} 
+                      className={`flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50 ${tier === 'lab-pass' ? 'opacity-60 pointer-events-none' : ''}`}
+                    >
+                      {hasSubmitted ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      )}
+                      <Music2 className="w-5 h-5 text-maroon flex-shrink-0" />
+                      <span className={hasSubmitted ? 'text-muted-foreground line-through' : ''}>
+                        Submit to the Studio Floor
+                        {tier === 'lab-pass' && <span className="text-xs text-muted-foreground ml-2">(Higher tier)</span>}
+                      </span>
+                    </Link>
+
+                    {/* 5. Check out Reference Shelf */}
+                    <Link to="/reference" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
+                      <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      <BookOpen className="w-5 h-5 text-maroon flex-shrink-0" />
+                      <span>Check out the Reference Shelf</span>
+                    </Link>
+                  </div>
+                )}
               </Card>
             </motion.div>
             
