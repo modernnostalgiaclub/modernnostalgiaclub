@@ -122,7 +122,7 @@ export default function LandingPage() {
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    'Log In with Patreon'
+                    'Explore the Lab'
                   )}
                 </Button>
                 <Button 
@@ -141,12 +141,6 @@ export default function LandingPage() {
                   )}
                 </Button>
               </div>
-              <a 
-                href="#what-this-is"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
-              >
-                Explore the Lab
-              </a>
             </motion.div>
           </motion.div>
         </div>
