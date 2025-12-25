@@ -433,9 +433,8 @@ export default function StudioFloor() {
           </motion.div>
         )}
         
-        {/* Submissions List */}
-        <div>
-          <h2 className="font-display text-2xl mb-6">Your Submissions</h2>
+        {/* Submissions List - Categorized */}
+        <div className="space-y-8">
           {loading ? (
             <div className="space-y-4">
               {[1, 2].map(i => (
@@ -447,61 +446,154 @@ export default function StudioFloor() {
                 </Card>
               ))}
             </div>
-          ) : submissions.length > 0 ? (
-            <div className="space-y-4">
-              {submissions.map((submission) => {
-                const config = statusConfig[submission.status];
-                const StatusIcon = config.icon;
+          ) : (
+            <>
+              {/* Audio Mission Submissions Section */}
+              {(() => {
+                const missionSubmissions = submissions.filter(
+                  s => s.submission_type === 'audio-mission' || s.submission_type === 'producer-mission'
+                );
+                
+                if (missionSubmissions.length === 0) return null;
                 
                 return (
-                  <Card key={submission.id} variant="feature">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center gap-3 mb-1 flex-wrap">
-                            <CardTitle>{submission.title}</CardTitle>
-                            <Badge className={config.color}>
-                              <StatusIcon className={`w-3 h-3 mr-1 ${submission.status === 'in-review' ? 'animate-spin' : ''}`} />
-                              {config.label}
-                            </Badge>
-                          </div>
-                          <CardDescription>
-                            {submissionTypes.find(t => t.value === submission.submission_type)?.label} • 
-                            {new Date(submission.created_at).toLocaleDateString()}
-                          </CardDescription>
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={submission.disco_url} target="_blank" rel="noopener noreferrer">
-                            View on DISCO
-                            <ExternalLink className="ml-2 w-4 h-4" />
-                          </a>
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    {(submission.notes || submission.reviewer_notes) && (
-                      <CardContent className="pt-0">
-                        {submission.notes && (
-                          <div className="mb-3">
-                            <p className="text-xs text-muted-foreground uppercase mb-1">Your Notes</p>
-                            <p className="text-sm">{submission.notes}</p>
-                          </div>
-                        )}
-                        {submission.reviewer_notes && (
-                          <div className="p-3 bg-maroon/10 rounded-lg">
-                            <p className="text-xs text-maroon uppercase mb-1">Reviewer Feedback</p>
-                            <p className="text-sm">{submission.reviewer_notes}</p>
-                          </div>
-                        )}
-                      </CardContent>
-                    )}
-                  </Card>
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Sparkles className="w-5 h-5 text-amber" />
+                      <h2 className="font-display text-xl">Audio Mission Submissions</h2>
+                    </div>
+                    <div className="space-y-4">
+                      {missionSubmissions.map((submission) => {
+                        const config = statusConfig[submission.status];
+                        const StatusIcon = config.icon;
+                        const isProducerMission = submission.submission_type === 'producer-mission';
+                        
+                        return (
+                          <Card 
+                            key={submission.id} 
+                            className={`border-2 ${isProducerMission ? 'border-maroon/30' : 'border-amber/30'}`}
+                          >
+                            <CardHeader>
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <div className="flex items-center gap-3 mb-1 flex-wrap">
+                                    <CardTitle>{submission.title}</CardTitle>
+                                    <Badge className={isProducerMission ? 'bg-maroon/20 text-maroon' : 'bg-amber/20 text-amber'}>
+                                      {isProducerMission ? 'Producer' : 'Artist'}
+                                    </Badge>
+                                    <Badge className={config.color}>
+                                      <StatusIcon className={`w-3 h-3 mr-1 ${submission.status === 'in-review' ? 'animate-spin' : ''}`} />
+                                      {config.label}
+                                    </Badge>
+                                  </div>
+                                  <CardDescription>
+                                    {new Date(submission.created_at).toLocaleDateString()}
+                                  </CardDescription>
+                                </div>
+                                <Button variant="outline" size="sm" asChild>
+                                  <a href={submission.disco_url} target="_blank" rel="noopener noreferrer">
+                                    View Files
+                                    <ExternalLink className="ml-2 w-4 h-4" />
+                                  </a>
+                                </Button>
+                              </div>
+                            </CardHeader>
+                            {(submission.notes || submission.reviewer_notes) && (
+                              <CardContent className="pt-0">
+                                {submission.notes && (
+                                  <div className="mb-3">
+                                    <p className="text-xs text-muted-foreground uppercase mb-1">Your Notes</p>
+                                    <p className="text-sm">{submission.notes}</p>
+                                  </div>
+                                )}
+                                {submission.reviewer_notes && (
+                                  <div className={`p-3 rounded-lg ${isProducerMission ? 'bg-maroon/10' : 'bg-amber/10'}`}>
+                                    <p className={`text-xs uppercase mb-1 ${isProducerMission ? 'text-maroon' : 'text-amber'}`}>Reviewer Feedback</p>
+                                    <p className="text-sm">{submission.reviewer_notes}</p>
+                                  </div>
+                                )}
+                              </CardContent>
+                            )}
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
                 );
-              })}
-            </div>
-          ) : (
-            <Card variant="console" className="p-8 text-center">
-              <p className="text-muted-foreground">No submissions yet. Create your first one above.</p>
-            </Card>
+              })()}
+              
+              {/* Other Submissions Section */}
+              {(() => {
+                const otherSubmissions = submissions.filter(
+                  s => s.submission_type !== 'audio-mission' && s.submission_type !== 'producer-mission'
+                );
+                
+                return (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <FolderOpen className="w-5 h-5 text-muted-foreground" />
+                      <h2 className="font-display text-xl">Other Submissions</h2>
+                    </div>
+                    {otherSubmissions.length > 0 ? (
+                      <div className="space-y-4">
+                        {otherSubmissions.map((submission) => {
+                          const config = statusConfig[submission.status];
+                          const StatusIcon = config.icon;
+                          
+                          return (
+                            <Card key={submission.id} variant="feature">
+                              <CardHeader>
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                                      <CardTitle>{submission.title}</CardTitle>
+                                      <Badge className={config.color}>
+                                        <StatusIcon className={`w-3 h-3 mr-1 ${submission.status === 'in-review' ? 'animate-spin' : ''}`} />
+                                        {config.label}
+                                      </Badge>
+                                    </div>
+                                    <CardDescription>
+                                      {submissionTypes.find(t => t.value === submission.submission_type)?.label} • 
+                                      {new Date(submission.created_at).toLocaleDateString()}
+                                    </CardDescription>
+                                  </div>
+                                  <Button variant="outline" size="sm" asChild>
+                                    <a href={submission.disco_url} target="_blank" rel="noopener noreferrer">
+                                      View on DISCO
+                                      <ExternalLink className="ml-2 w-4 h-4" />
+                                    </a>
+                                  </Button>
+                                </div>
+                              </CardHeader>
+                              {(submission.notes || submission.reviewer_notes) && (
+                                <CardContent className="pt-0">
+                                  {submission.notes && (
+                                    <div className="mb-3">
+                                      <p className="text-xs text-muted-foreground uppercase mb-1">Your Notes</p>
+                                      <p className="text-sm">{submission.notes}</p>
+                                    </div>
+                                  )}
+                                  {submission.reviewer_notes && (
+                                    <div className="p-3 bg-maroon/10 rounded-lg">
+                                      <p className="text-xs text-maroon uppercase mb-1">Reviewer Feedback</p>
+                                      <p className="text-sm">{submission.reviewer_notes}</p>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              )}
+                            </Card>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <Card variant="console" className="p-8 text-center">
+                        <p className="text-muted-foreground">No submissions yet. Create your first one above.</p>
+                      </Card>
+                    )}
+                  </div>
+                );
+              })()}
+            </>
           )}
         </div>
       </TierGate>
