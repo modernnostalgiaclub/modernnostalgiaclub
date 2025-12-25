@@ -618,6 +618,7 @@ export type Database = {
           avatar_url: string
           id: string
           patreon_tier: Database["public"]["Enums"]["patreon_tier"]
+          pro: string
           stage_name: string
           user_id: string
         }[]
@@ -628,6 +629,7 @@ export type Database = {
           avatar_url: string
           id: string
           patreon_tier: Database["public"]["Enums"]["patreon_tier"]
+          pro: string
           stage_name: string
           user_id: string
         }[]
