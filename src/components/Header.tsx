@@ -70,6 +70,9 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/community" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Community
           </Link>
+          <Link to="/members" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+            Members
+          </Link>
           <Link to="/account" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
             Account
           </Link>

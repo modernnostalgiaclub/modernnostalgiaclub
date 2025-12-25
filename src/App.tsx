@@ -22,6 +22,7 @@ import AuthDiagnostics from "./pages/AuthDiagnostics";
 import LabApplication from "./pages/LabApplication";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import MemberDirectory from "./pages/MemberDirectory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/classroom/:slug" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
             <Route path="/studio" element={<ProtectedRoute><StudioFloor /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+            <Route path="/members" element={<ProtectedRoute><MemberDirectory /></ProtectedRoute>} />
             <Route path="/reference" element={<ProtectedRoute><ReferenceShelf /></ProtectedRoute>} />
             <Route path="/reference/30-day-tracker" element={<ProtectedRoute><ImplementationTracker /></ProtectedRoute>} />
             <Route path="/reference/beat-license" element={<ProtectedRoute><BeatLicense /></ProtectedRoute>} />
