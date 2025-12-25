@@ -17,6 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3 } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
+import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -991,6 +992,7 @@ type UserRole = {
 type AppRole = 'admin' | 'moderator' | 'user';
 
 function UsersManager() {
+  const { logAccess } = useAuditLog();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [userRoles, setUserRoles] = useState<Record<string, AppRole[]>>({});
   const [loading, setLoading] = useState(true);
@@ -1002,6 +1004,17 @@ function UsersManager() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Log when admin views user profiles list
+  useEffect(() => {
+    if (profiles.length > 0) {
+      logAccess({
+        tableName: 'profiles',
+        action: 'view_list',
+        details: { count: profiles.length },
+      });
+    }
+  }, [profiles.length]);
 
   async function fetchData() {
     setLoading(true);
@@ -1049,6 +1062,17 @@ function UsersManager() {
       return;
     }
 
+    // Log the tier update
+    logAccess({
+      tableName: 'profiles',
+      action: 'update_tier',
+      recordId: editingUser.id,
+      details: { 
+        new_tier: selectedTier,
+        user_name: editingUser.name,
+      },
+    });
+
     toast.success(`Updated ${editingUser.name || 'user'} tier to ${tierLabel(selectedTier)}`);
     setEditingUser(null);
     fetchData();
@@ -1091,6 +1115,19 @@ function UsersManager() {
         return;
       }
     }
+
+    // Log the role update
+    logAccess({
+      tableName: 'user_roles',
+      action: 'update_roles',
+      details: { 
+        target_user_id: userId,
+        user_name: editingUser.name,
+        roles_added: rolesToAdd,
+        roles_removed: rolesToRemove,
+        final_roles: selectedRoles,
+      },
+    });
 
     toast.success(`Updated roles for ${editingUser.name || 'user'}`);
     setEditingUser(null);
