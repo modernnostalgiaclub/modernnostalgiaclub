@@ -18,7 +18,9 @@ import {
   BookOpen,
   ArrowRight,
   Zap,
-  TrendingUp
+  TrendingUp,
+  Headphones,
+  Lock
 } from 'lucide-react';
 
 const fadeIn = {
@@ -270,6 +272,87 @@ export default function Dashboard() {
                   </Link>
                 ))}
               </div>
+            </motion.div>
+
+            {/* Featured Beats Section */}
+            <motion.div variants={fadeIn} className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-display text-2xl flex items-center gap-2">
+                  <Headphones className="w-6 h-6 text-maroon" />
+                  Beat Library
+                </h2>
+                {tier !== 'lab-pass' && (
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/beats">
+                      Browse All
+                      <ArrowRight className="ml-2 w-4 h-4" />
+                    </Link>
+                  </Button>
+                )}
+              </div>
+              
+              {tier === 'lab-pass' ? (
+                <Card className="relative overflow-hidden border-2 border-muted">
+                  <div className="absolute inset-0 bg-gradient-to-br from-background/80 to-background/95 backdrop-blur-sm z-10 flex items-center justify-center">
+                    <div className="text-center p-8">
+                      <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="font-display text-xl mb-2">Upgrade to Access</h3>
+                      <p className="text-muted-foreground mb-4 max-w-sm">
+                        Exclusive beat licensing is available for Creator Accelerator and CEL members.
+                      </p>
+                      <Button variant="maroon" asChild>
+                        <Link to="/account">View Upgrade Options</Link>
+                      </Button>
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 opacity-30">
+                      <div className="p-4 bg-muted/50 rounded-lg">
+                        <div className="w-full aspect-square bg-muted rounded-lg mb-3" />
+                        <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                        <div className="h-3 bg-muted rounded w-1/2" />
+                      </div>
+                      <div className="p-4 bg-muted/50 rounded-lg">
+                        <div className="w-full aspect-square bg-muted rounded-lg mb-3" />
+                        <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                        <div className="h-3 bg-muted rounded w-1/2" />
+                      </div>
+                      <div className="p-4 bg-muted/50 rounded-lg hidden md:block">
+                        <div className="w-full aspect-square bg-muted rounded-lg mb-3" />
+                        <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                        <div className="h-3 bg-muted rounded w-1/2" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card variant="elevated" className="border-maroon/20">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                      <div className="p-4 bg-maroon/20 rounded-xl">
+                        <Headphones className="w-12 h-12 text-maroon" />
+                      </div>
+                      <div className="flex-1 text-center md:text-left">
+                        <h3 className="font-display text-xl mb-2">Exclusive Beats from Ge Oh</h3>
+                        <p className="text-muted-foreground mb-1">
+                          Browse the catalog and license exclusive beats at member rates.
+                        </p>
+                        <p className="text-sm text-maroon">
+                          $60 per beat • Free Mix & Master • 50/50 Splits
+                        </p>
+                      </div>
+                      <Button variant="maroon" size="lg" asChild>
+                        <Link to="/beats">
+                          Browse Beats
+                          <ArrowRight className="ml-2 w-4 h-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </motion.div>
             
             {/* Learning Progress */}
