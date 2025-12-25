@@ -105,10 +105,36 @@ export default function StudioFloor() {
     setLoading(false);
   }
 
+  // Check if a URL is valid (generic check for any URL)
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const handleDiscoUrlChange = (value: string) => {
     setDiscoUrl(value);
-    if (value && !isValidDiscoUrl(value)) {
-      setDiscoError('Please enter a valid DISCO URL (https://disco.ac/...)');
+    const isProducerMission = submissionType === 'producer-mission';
+    
+    if (value) {
+      if (isProducerMission) {
+        // For producer mission, accept any valid URL
+        if (!isValidUrl(value)) {
+          setDiscoError('Please enter a valid file link URL');
+        } else {
+          setDiscoError('');
+        }
+      } else {
+        // For other types, require DISCO URL
+        if (!isValidDiscoUrl(value)) {
+          setDiscoError('Please enter a valid DISCO URL (https://disco.ac/...)');
+        } else {
+          setDiscoError('');
+        }
+      }
     } else {
       setDiscoError('');
     }
@@ -125,8 +151,12 @@ export default function StudioFloor() {
       toast.error('Please select a submission type');
       return;
     }
-    if (!discoUrl.trim() || !isValidDiscoUrl(discoUrl)) {
-      toast.error('Please enter a valid DISCO URL');
+    
+    const isProducerMission = submissionType === 'producer-mission';
+    const urlValid = isProducerMission ? isValidUrl(discoUrl.trim()) : isValidDiscoUrl(discoUrl);
+    
+    if (!discoUrl.trim() || !urlValid) {
+      toast.error(isProducerMission ? 'Please enter a valid file link' : 'Please enter a valid DISCO URL');
       return;
     }
 
@@ -331,10 +361,15 @@ export default function StudioFloor() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="disco">DISCO Playlist Link</Label>
+                    <Label htmlFor="disco">
+                      {submissionType === 'producer-mission' ? 'File Link (DISCO Preferred)' : 'DISCO Playlist Link'}
+                    </Label>
                     <Input 
                       id="disco" 
-                      placeholder="https://disco.ac/playlist/..." 
+                      placeholder={submissionType === 'producer-mission' 
+                        ? "https://disco.ac/... or any file sharing link" 
+                        : "https://disco.ac/playlist/..."
+                      }
                       value={discoUrl}
                       onChange={(e) => handleDiscoUrlChange(e.target.value)}
                       className={discoError ? 'border-destructive' : ''}
@@ -343,7 +378,10 @@ export default function StudioFloor() {
                       <p className="text-xs text-destructive">{discoError}</p>
                     ) : (
                       <p className="text-xs text-muted-foreground">
-                        Paste the share link from your DISCO playlist
+                        {submissionType === 'producer-mission' 
+                          ? 'Any file sharing link works (DISCO, Google Drive, Dropbox, etc.)' 
+                          : 'Paste the share link from your DISCO playlist'
+                        }
                       </p>
                     )}
                   </div>
