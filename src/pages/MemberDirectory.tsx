@@ -23,15 +23,18 @@ export default function MemberDirectory() {
   const { data: members, isLoading } = useQuery({
     queryKey: ['member-directory'],
     queryFn: async () => {
+      // Use secure RPC function that only returns public profile fields
       const { data, error } = await supabase
-        .from('profiles')
-        .select('id, stage_name, pro, avatar_url')
-        .not('stage_name', 'is', null)
-        .neq('stage_name', '')
-        .order('stage_name', { ascending: true });
+        .rpc('get_public_profiles');
 
       if (error) throw error;
-      return data as PublicProfile[];
+      
+      // Sort by stage_name client-side since RPC doesn't support ordering
+      const sorted = (data || []).sort((a, b) => 
+        (a.stage_name || '').localeCompare(b.stage_name || '')
+      );
+      
+      return sorted as PublicProfile[];
     },
   });
 
