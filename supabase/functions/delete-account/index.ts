@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     // Get the authorization header
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      console.error('No authorization header provided')
+      console.error('Missing authorization header')
       return new Response(
         JSON.stringify({ error: 'Authentication required' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -69,14 +69,14 @@ Deno.serve(async (req) => {
     const { data: { user }, error: userError } = await userClient.auth.getUser()
     
     if (userError || !user) {
-      console.error('User verification failed:', userError?.message)
+      console.error('User verification failed')
       return new Response(
         JSON.stringify({ error: 'Invalid authentication' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    console.log('Deleting account for user:', user.id)
+    console.log('Processing account deletion request')
 
     // Create an admin client to delete the user
     const adminClient = createClient(supabaseUrl, supabaseServiceKey)
@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
       .eq('user_id', user.id)
 
     if (profileError) {
-      console.error('Error deleting profile:', profileError.message)
+      console.error('Profile deletion encountered an issue')
       // Continue with user deletion even if profile deletion fails
     }
 
@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
       .eq('user_id', user.id)
 
     if (rolesError) {
-      console.error('Error deleting user roles:', rolesError.message)
+      console.error('User roles deletion encountered an issue')
       // Continue with user deletion
     }
 
@@ -107,14 +107,14 @@ Deno.serve(async (req) => {
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id)
 
     if (deleteError) {
-      console.error('Error deleting user:', deleteError.message)
+      console.error('Account deletion failed')
       return new Response(
         JSON.stringify({ error: 'Failed to delete account. Please try again.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    console.log('Account successfully deleted for user:', user.id)
+    console.log('Account deletion completed successfully')
 
     return new Response(
       JSON.stringify({ success: true, message: 'Account deleted successfully' }),
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Unexpected error during account deletion:', error)
+    console.error('Unexpected error during account deletion')
     return new Response(
       JSON.stringify({ error: 'An unexpected error occurred' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
