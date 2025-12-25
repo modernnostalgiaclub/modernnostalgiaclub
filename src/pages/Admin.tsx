@@ -15,8 +15,9 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3 } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
+import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -54,7 +55,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 md:grid-cols-7 lg:w-auto lg:inline-grid h-auto gap-1">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto lg:inline-grid h-auto gap-1">
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart3 className="h-4 w-4 hidden sm:block" />
               Analytics
@@ -78,6 +79,10 @@ export default function Admin() {
             <TabsTrigger value="submissions" className="gap-2">
               <Users className="h-4 w-4 hidden sm:block" />
               Submissions
+            </TabsTrigger>
+            <TabsTrigger value="licenses" className="gap-2">
+              <DollarSign className="h-4 w-4 hidden sm:block" />
+              Licenses
             </TabsTrigger>
             <TabsTrigger value="users" className="gap-2">
               <Shield className="h-4 w-4 hidden sm:block" />
@@ -107,6 +112,10 @@ export default function Admin() {
 
           <TabsContent value="submissions">
             <SubmissionsReviewer />
+          </TabsContent>
+
+          <TabsContent value="licenses">
+            <BeatLicenseManager />
           </TabsContent>
 
           <TabsContent value="users">
