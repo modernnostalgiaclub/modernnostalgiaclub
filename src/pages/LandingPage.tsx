@@ -116,21 +116,6 @@ export default function LandingPage() {
                 <Button 
                   variant="hero" 
                   size="xl" 
-                  onClick={handleJoinPatreon}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      Join on Patreon
-                      <ExternalLink className="ml-2 w-5 h-5" />
-                    </>
-                  )}
-                </Button>
-                <Button 
-                  variant="heroOutline" 
-                  size="xl" 
                   onClick={handleMemberLogin}
                   disabled={loading}
                 >
@@ -141,6 +126,12 @@ export default function LandingPage() {
                   )}
                 </Button>
               </div>
+              <button
+                onClick={handleJoinPatreon}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+              >
+                Join on Patreon
+              </button>
             </motion.div>
           </motion.div>
         </div>
