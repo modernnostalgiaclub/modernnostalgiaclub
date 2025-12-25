@@ -317,32 +317,53 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          full_name: string | null
+          has_publishing_account: boolean | null
           id: string
           name: string | null
           patreon_id: string | null
           patreon_tier: Database["public"]["Enums"]["patreon_tier"] | null
+          pro: string | null
+          publisher_ipi: string | null
+          publishing_company: string | null
+          stage_name: string | null
           updated_at: string
           user_id: string
+          writer_ipi: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          full_name?: string | null
+          has_publishing_account?: boolean | null
           id?: string
           name?: string | null
           patreon_id?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
+          pro?: string | null
+          publisher_ipi?: string | null
+          publishing_company?: string | null
+          stage_name?: string | null
           updated_at?: string
           user_id: string
+          writer_ipi?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          full_name?: string | null
+          has_publishing_account?: boolean | null
           id?: string
           name?: string | null
           patreon_id?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
+          pro?: string | null
+          publisher_ipi?: string | null
+          publishing_company?: string | null
+          stage_name?: string | null
           updated_at?: string
           user_id?: string
+          writer_ipi?: string | null
         }
         Relationships: []
       }

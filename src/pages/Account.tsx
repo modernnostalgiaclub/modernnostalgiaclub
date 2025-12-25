@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { TierBadge } from '@/components/TierBadge';
 import { TwoFactorSettings } from '@/components/TwoFactorSettings';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -17,7 +21,10 @@ import {
   Shield,
   Loader2,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Save,
+  Music,
+  MessageCircle
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -48,12 +55,90 @@ const stagger = {
 
 const tierOrder: PatreonTier[] = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
 
+const PRO_OPTIONS = [
+  'ASCAP',
+  'BMI',
+  'SESAC',
+  'GMR',
+  'SOCAN',
+  'PRS',
+  'APRA AMCOS',
+  'GEMA',
+  'SACEM',
+  'JASRAC',
+  'Other'
+];
+
+interface ProfileFormData {
+  full_name: string;
+  stage_name: string;
+  pro: string;
+  has_publishing_account: boolean;
+  publishing_company: string;
+  writer_ipi: string;
+  publisher_ipi: string;
+}
+
 export default function Account() {
   const { user, profile, loading, signOut, hasRole } = useAuth();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const isAdmin = hasRole('admin');
+  
+  const [formData, setFormData] = useState<ProfileFormData>({
+    full_name: '',
+    stage_name: '',
+    pro: '',
+    has_publishing_account: false,
+    publishing_company: '',
+    writer_ipi: '',
+    publisher_ipi: ''
+  });
+
+  // Load profile data when available
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: (profile as any).full_name || '',
+        stage_name: (profile as any).stage_name || '',
+        pro: (profile as any).pro || '',
+        has_publishing_account: (profile as any).has_publishing_account || false,
+        publishing_company: (profile as any).publishing_company || '',
+        writer_ipi: (profile as any).writer_ipi || '',
+        publisher_ipi: (profile as any).publisher_ipi || ''
+      });
+    }
+  }, [profile]);
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: formData.full_name || null,
+          stage_name: formData.stage_name || null,
+          pro: formData.pro || null,
+          has_publishing_account: formData.has_publishing_account,
+          publishing_company: formData.has_publishing_account ? formData.publishing_company || null : null,
+          writer_ipi: formData.has_publishing_account ? formData.writer_ipi || null : null,
+          publisher_ipi: formData.has_publishing_account ? formData.publisher_ipi || null : null
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast.error('Failed to save profile');
+    } finally {
+      setIsSaving(false);
+    }
+  };
   
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
@@ -168,6 +253,193 @@ export default function Account() {
                       <span className="w-2 h-2 bg-green-400 rounded-full" />
                       Active
                     </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Artist/Songwriter Information */}
+            <motion.div variants={fadeIn} className="mb-8">
+              <Card variant="elevated">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Music className="w-5 h-5" />
+                    Artist & Songwriter Information
+                  </CardTitle>
+                  <CardDescription>
+                    Your professional music industry details
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Full Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="full_name">Full Name (Private)</Label>
+                    <Input
+                      id="full_name"
+                      value={formData.full_name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
+                      placeholder="Your legal full name"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Enter the same name that is registered with your PRO. This is kept private and not shown publicly.
+                    </p>
+                  </div>
+
+                  {/* Stage Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="stage_name">Stage Name</Label>
+                    <Input
+                      id="stage_name"
+                      value={formData.stage_name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, stage_name: e.target.value }))}
+                      placeholder="Your artist/stage name"
+                    />
+                  </div>
+
+                  {/* PRO */}
+                  <div className="space-y-2">
+                    <Label htmlFor="pro">Performing Rights Organization (PRO)</Label>
+                    <Select 
+                      value={formData.pro} 
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, pro: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your PRO" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PRO_OPTIONS.map((pro) => (
+                          <SelectItem key={pro} value={pro}>{pro}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Your PRO information is publicly visible to other members.
+                    </p>
+                  </div>
+
+                  {/* Publishing Account Checkbox */}
+                  <div className="flex items-start space-x-3 pt-2">
+                    <Checkbox
+                      id="has_publishing"
+                      checked={formData.has_publishing_account}
+                      onCheckedChange={(checked) => setFormData(prev => ({ 
+                        ...prev, 
+                        has_publishing_account: checked === true 
+                      }))}
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="has_publishing" className="cursor-pointer">
+                        I have a Publishing Account
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        Check this if you have registered a publishing company
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Publishing Fields (shown when checkbox is checked) */}
+                  {formData.has_publishing_account && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-4 pl-6 border-l-2 border-maroon/30"
+                    >
+                      <div className="space-y-2">
+                        <Label htmlFor="publishing_company">Publishing Company Name</Label>
+                        <Input
+                          id="publishing_company"
+                          value={formData.publishing_company}
+                          onChange={(e) => setFormData(prev => ({ ...prev, publishing_company: e.target.value }))}
+                          placeholder="Your publishing company name"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="writer_ipi">Writer IPI Number</Label>
+                        <Input
+                          id="writer_ipi"
+                          value={formData.writer_ipi}
+                          onChange={(e) => setFormData(prev => ({ ...prev, writer_ipi: e.target.value }))}
+                          placeholder="e.g., 00123456789"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Your 9-11 digit IPI number as a songwriter/composer
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="publisher_ipi">Publisher IPI Number</Label>
+                        <Input
+                          id="publisher_ipi"
+                          value={formData.publisher_ipi}
+                          onChange={(e) => setFormData(prev => ({ ...prev, publisher_ipi: e.target.value }))}
+                          placeholder="e.g., 00987654321"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Your publishing company's IPI number
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Save Button */}
+                  <div className="pt-4">
+                    <Button 
+                      onClick={handleSaveProfile} 
+                      disabled={isSaving}
+                      variant="maroon"
+                    >
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save Profile
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Messaging Section - Coming Soon */}
+            <motion.div variants={fadeIn} className="mb-8">
+              <Card variant="elevated" className="relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-maroon/5 to-transparent" />
+                <CardHeader className="relative">
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageCircle className="w-5 h-5" />
+                    Messages
+                  </CardTitle>
+                  <CardDescription>
+                    Direct messaging with community members
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="relative">
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <div className="w-16 h-16 rounded-full bg-maroon/10 flex items-center justify-center mb-4">
+                      <MessageCircle className="w-8 h-8 text-maroon" />
+                    </div>
+                    <h3 className="text-lg font-display mb-2">Coming Soon</h3>
+                    <p className="text-muted-foreground text-sm max-w-md">
+                      We're building a secure messaging system for community members. 
+                      In the meantime, connect with others through Patreon's messaging feature.
+                    </p>
+                    <Button variant="outline" size="sm" className="mt-4" asChild>
+                      <a 
+                        href="https://www.patreon.com/messages" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        Open Patreon Messages
+                        <ExternalLink className="w-4 h-4 ml-2" />
+                      </a>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
