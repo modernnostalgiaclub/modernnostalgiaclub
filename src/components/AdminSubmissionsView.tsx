@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAuditLog } from '@/hooks/useAuditLog';
 import { ExternalLink, Clock, Eye, CheckCircle, AlertCircle, Loader2, X, Shield, Music, Sparkles, FolderOpen } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -52,6 +53,7 @@ const isAudioMission = (type: SubmissionType) => type === 'audio-mission' || typ
 
 export function AdminSubmissionsView() {
   const { user } = useAuth();
+  const { logAccess } = useAuditLog();
   const [submissions, setSubmissions] = useState<AdminSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSubmission, setSelectedSubmission] = useState<AdminSubmission | null>(null);
@@ -63,6 +65,17 @@ export function AdminSubmissionsView() {
   useEffect(() => {
     fetchAllSubmissions();
   }, []);
+
+  // Log when admin views submissions list
+  useEffect(() => {
+    if (submissions.length > 0) {
+      logAccess({
+        tableName: 'submissions',
+        action: 'view_list',
+        details: { count: submissions.length },
+      });
+    }
+  }, [submissions.length]);
 
   async function fetchAllSubmissions() {
     // Direct table query for admins/moderators - includes internal_notes
@@ -100,6 +113,17 @@ export function AdminSubmissionsView() {
       return;
     }
 
+    // Log the update action
+    logAccess({
+      tableName: 'submissions',
+      action: 'update',
+      recordId: selectedSubmission.id,
+      details: { 
+        new_status: newStatus,
+        submission_type: selectedSubmission.submission_type,
+      },
+    });
+
     toast.success('Submission updated');
     setSelectedSubmission(null);
     fetchAllSubmissions();
@@ -110,6 +134,17 @@ export function AdminSubmissionsView() {
     setReviewerNotes(submission.reviewer_notes || '');
     setInternalNotes(submission.internal_notes || '');
     setNewStatus(submission.status);
+    
+    // Log when admin opens a specific submission for review
+    logAccess({
+      tableName: 'submissions',
+      action: 'view_detail',
+      recordId: submission.id,
+      details: { 
+        submission_type: submission.submission_type,
+        title: submission.title,
+      },
+    });
   }
 
   const filteredSubmissions = filter === 'all'
