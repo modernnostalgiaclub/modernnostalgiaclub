@@ -4,6 +4,9 @@ import { Navigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { AdminMFAGate } from '@/components/AdminMFAGate';
+import { ReauthDialog } from '@/components/ReauthDialog';
+import { useReauth } from '@/hooks/useReauth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,85 +49,87 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold text-foreground mb-2">Admin Panel</h1>
-          <p className="text-muted-foreground">Manage courses, lessons, and review submissions.</p>
-        </div>
+    <AdminMFAGate>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="font-display text-3xl font-bold text-foreground mb-2">Admin Panel</h1>
+            <p className="text-muted-foreground">Manage courses, lessons, and review submissions.</p>
+          </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto lg:inline-grid h-auto gap-1">
-            <TabsTrigger value="analytics" className="gap-2">
-              <BarChart3 className="h-4 w-4 hidden sm:block" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="courses" className="gap-2">
-              <BookOpen className="h-4 w-4 hidden sm:block" />
-              Courses
-            </TabsTrigger>
-            <TabsTrigger value="lessons" className="gap-2">
-              <FileText className="h-4 w-4 hidden sm:block" />
-              Lessons
-            </TabsTrigger>
-            <TabsTrigger value="resources" className="gap-2">
-              <Wrench className="h-4 w-4 hidden sm:block" />
-              Resources
-            </TabsTrigger>
-            <TabsTrigger value="tracks" className="gap-2">
-              <Music className="h-4 w-4 hidden sm:block" />
-              Tracks
-            </TabsTrigger>
-            <TabsTrigger value="submissions" className="gap-2">
-              <Users className="h-4 w-4 hidden sm:block" />
-              Submissions
-            </TabsTrigger>
-            <TabsTrigger value="licenses" className="gap-2">
-              <DollarSign className="h-4 w-4 hidden sm:block" />
-              Licenses
-            </TabsTrigger>
-            <TabsTrigger value="users" className="gap-2">
-              <Shield className="h-4 w-4 hidden sm:block" />
-              Users
-            </TabsTrigger>
-          </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto lg:inline-grid h-auto gap-1">
+              <TabsTrigger value="analytics" className="gap-2">
+                <BarChart3 className="h-4 w-4 hidden sm:block" />
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="courses" className="gap-2">
+                <BookOpen className="h-4 w-4 hidden sm:block" />
+                Courses
+              </TabsTrigger>
+              <TabsTrigger value="lessons" className="gap-2">
+                <FileText className="h-4 w-4 hidden sm:block" />
+                Lessons
+              </TabsTrigger>
+              <TabsTrigger value="resources" className="gap-2">
+                <Wrench className="h-4 w-4 hidden sm:block" />
+                Resources
+              </TabsTrigger>
+              <TabsTrigger value="tracks" className="gap-2">
+                <Music className="h-4 w-4 hidden sm:block" />
+                Tracks
+              </TabsTrigger>
+              <TabsTrigger value="submissions" className="gap-2">
+                <Users className="h-4 w-4 hidden sm:block" />
+                Submissions
+              </TabsTrigger>
+              <TabsTrigger value="licenses" className="gap-2">
+                <DollarSign className="h-4 w-4 hidden sm:block" />
+                Licenses
+              </TabsTrigger>
+              <TabsTrigger value="users" className="gap-2">
+                <Shield className="h-4 w-4 hidden sm:block" />
+                Users
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="analytics">
-            <AnalyticsManager />
-          </TabsContent>
+            <TabsContent value="analytics">
+              <AnalyticsManager />
+            </TabsContent>
 
-          <TabsContent value="courses">
-            <CoursesManager />
-          </TabsContent>
+            <TabsContent value="courses">
+              <CoursesManager />
+            </TabsContent>
 
-          <TabsContent value="lessons">
-            <LessonsManager />
-          </TabsContent>
+            <TabsContent value="lessons">
+              <LessonsManager />
+            </TabsContent>
 
-          <TabsContent value="resources">
-            <ResourcesManager />
-          </TabsContent>
+            <TabsContent value="resources">
+              <ResourcesManager />
+            </TabsContent>
 
-          <TabsContent value="tracks">
-            <TracksManager />
-          </TabsContent>
+            <TabsContent value="tracks">
+              <TracksManager />
+            </TabsContent>
 
-          <TabsContent value="submissions">
-            <SubmissionsReviewer />
-          </TabsContent>
+            <TabsContent value="submissions">
+              <SubmissionsReviewer />
+            </TabsContent>
 
-          <TabsContent value="licenses">
-            <BeatLicenseManager />
-          </TabsContent>
+            <TabsContent value="licenses">
+              <BeatLicenseManager />
+            </TabsContent>
 
-          <TabsContent value="users">
-            <UsersManager />
-          </TabsContent>
-        </Tabs>
-      </main>
-      <Footer />
-    </div>
+            <TabsContent value="users">
+              <UsersManager />
+            </TabsContent>
+          </Tabs>
+        </main>
+        <Footer />
+      </div>
+    </AdminMFAGate>
   );
 }
 
@@ -1009,6 +1014,21 @@ function UsersManager() {
   const [editingUser, setEditingUser] = useState<Profile | null>(null);
   const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
+  
+  // Re-auth for tier updates
+  const tierReauth = useReauth({
+    title: 'Confirm Tier Update',
+    description: 'Changing a user\'s membership tier is a sensitive action. Please verify with your 2FA code.',
+    actionLabel: 'Update Tier',
+  });
+  
+  // Re-auth for role updates
+  const roleReauth = useReauth({
+    title: 'Confirm Role Change',
+    description: 'Modifying user roles is a highly sensitive action. Please verify with your 2FA code.',
+    actionLabel: 'Update Roles',
+    destructive: true,
+  });
 
   useEffect(() => {
     fetchData();
@@ -1192,7 +1212,12 @@ function UsersManager() {
   }
 
   return (
-    <div className="space-y-6">
+    <>
+      {/* Re-auth dialogs for sensitive actions */}
+      <ReauthDialog {...tierReauth.dialogProps} />
+      <ReauthDialog {...roleReauth.dialogProps} />
+      
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>User Management</CardTitle>
@@ -1233,7 +1258,7 @@ function UsersManager() {
                   <SelectItem value="creative-economy-lab">Creative Economy Lab ($150)</SelectItem>
                 </SelectContent>
               </Select>
-              <Button onClick={handleUpdateTier} size="sm" className="mt-2">
+              <Button onClick={() => tierReauth.requireReauth(handleUpdateTier)} size="sm" className="mt-2">
                 Update Tier
               </Button>
             </div>
@@ -1258,7 +1283,7 @@ function UsersManager() {
                   </Button>
                 ))}
               </div>
-              <Button onClick={handleUpdateRoles} size="sm" className="mt-2">
+              <Button onClick={() => roleReauth.requireReauth(handleUpdateRoles)} size="sm" className="mt-2">
                 Update Roles
               </Button>
             </div>
@@ -1326,6 +1351,7 @@ function UsersManager() {
         })}
       </div>
     </div>
+    </>
   );
 }
 
