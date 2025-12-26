@@ -268,7 +268,7 @@ export default function LandingPage() {
           >
             <SectionLabel className="mb-4">How It Works</SectionLabel>
             
-            <h2 className="text-3xl md:text-5xl font-display mb-12">
+            <h2 className="text-3xl md:text-5xl font-display mb-12 tracking-wide">
               Three steps to sustainable income.
             </h2>
             
@@ -310,7 +310,7 @@ export default function LandingPage() {
           >
             <SectionLabel className="mb-4">Why This Exists</SectionLabel>
             
-            <h2 className="text-3xl md:text-5xl font-display mb-8">
+            <h2 className="text-3xl md:text-5xl font-display mb-8 tracking-wide">
               The industry didn't disappear.<br />
               <span className="text-primary">The pathways changed.</span>
             </h2>
@@ -360,7 +360,7 @@ export default function LandingPage() {
           >
             <SectionLabel className="mb-4">Partners & Sponsors</SectionLabel>
             
-            <h2 className="text-3xl md:text-5xl font-display mb-6">
+            <h2 className="text-3xl md:text-5xl font-display mb-6 tracking-wide">
               Invest in the creative workforce.<br />
               <span className="text-primary">Build the economy of tomorrow.</span>
             </h2>
@@ -496,7 +496,7 @@ export default function LandingPage() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-display mb-6">
+            <h2 className="text-3xl md:text-4xl font-display mb-6 tracking-wide">
               Ready to build something sustainable?
             </h2>
             <p className="text-muted-foreground mb-8">
