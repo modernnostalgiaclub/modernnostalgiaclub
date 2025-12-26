@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import logoCream from '@/assets/logo-cream.png';
+import logoBlack from '@/assets/logo-black.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, ExternalLink } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LogOut, Loader2, Menu, X } from 'lucide-react';
+import { LogOut, Loader2, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useTheme } from 'next-themes';
 
 const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
 
@@ -16,8 +19,11 @@ interface HeaderProps {
 export function Header({ showNav = true }: HeaderProps) {
   const { user, profile, loading, hasRole, signInWithPatreon, signOut } = useAuth();
   const navigate = useNavigate();
+  const { resolvedTheme } = useTheme();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const logo = resolvedTheme === 'dark' ? logoCream : logoBlack;
 
   const handleJoinPatreon = () => {
     window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
@@ -108,7 +114,7 @@ export function Header({ showNav = true }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logoCream} alt="ModernNostalgia.club" className="h-14 w-auto" />
+          <img src={logo} alt="ModernNostalgia.club" className="h-14 w-auto" />
         </Link>
         
         {/* Desktop Navigation */}
@@ -118,7 +124,9 @@ export function Header({ showNav = true }: HeaderProps) {
           </nav>
         )}
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
