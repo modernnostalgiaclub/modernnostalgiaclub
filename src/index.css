@@ -59,8 +59,60 @@
     --sidebar-ring: 0 50% 35%;
   }
 
+  /* Light mode - Studio Analog inverted */
+  .light {
+    --background: 45 30% 96%;
+    --foreground: 0 0% 10%;
+
+    --card: 45 25% 92%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 45 25% 94%;
+    --popover-foreground: 0 0% 10%;
+
+    /* Maroon - the accent (slightly adjusted for light mode) */
+    --primary: 0 50% 38%;
+    --primary-foreground: 45 30% 96%;
+
+    --secondary: 45 20% 88%;
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 45 15% 85%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 0 35% 45%;
+    --accent-foreground: 45 30% 96%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 45 30% 96%;
+
+    --border: 45 15% 80%;
+    --input: 45 20% 90%;
+    --ring: 0 50% 38%;
+
+    /* Custom tokens - light mode */
+    --cream: 0 0% 10%;
+    --cream-muted: 0 0% 35%;
+    --studio-black: 45 30% 96%;
+    --studio-charcoal: 45 25% 90%;
+    --tape-label: 45 20% 85%;
+    --maroon: 0 50% 38%;
+    --maroon-muted: 0 40% 32%;
+    --maroon-glow: 0 55% 50%;
+
+    /* Sidebar - light mode */
+    --sidebar-background: 45 25% 92%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 0 50% 38%;
+    --sidebar-primary-foreground: 45 30% 96%;
+    --sidebar-accent: 45 20% 88%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 45 15% 80%;
+    --sidebar-ring: 0 50% 38%;
+  }
+
   .dark {
-    /* Same as root - this is a dark-first design */
+    /* Dark mode - original Studio Analog */
     --background: 0 0% 5%;
     --foreground: 45 30% 90%;
     --card: 0 0% 8%;
