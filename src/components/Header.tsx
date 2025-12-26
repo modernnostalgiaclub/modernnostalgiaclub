@@ -3,12 +3,18 @@ import logoCream from '@/assets/logo-cream.png';
 import logoBlack from '@/assets/logo-black.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield } from 'lucide-react';
+import { Shield, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LogOut, Loader2, Menu } from 'lucide-react';
+import { LogOut, Loader2, Menu, User, Moon, Sun } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { useTheme } from 'next-themes';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
 
@@ -19,11 +25,13 @@ interface HeaderProps {
 export function Header({ showNav = true }: HeaderProps) {
   const { user, profile, loading, hasRole, signInWithPatreon, signOut } = useAuth();
   const navigate = useNavigate();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const logo = resolvedTheme === 'dark' ? logoCream : logoBlack;
+  const isAdmin = hasRole('admin');
+  const isAdminOrMod = isAdmin || hasRole('moderator');
 
   const handleJoinPatreon = () => {
     window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
@@ -49,42 +57,105 @@ export function Header({ showNav = true }: HeaderProps) {
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  const NavLinks = ({ mobile = false }: { mobile?: boolean }) => {
-    const linkClasses = mobile 
-      ? "block py-3 text-lg text-foreground hover:text-primary transition-colors"
-      : "text-sm text-muted-foreground hover:text-foreground transition-colors";
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
 
+  const linkClasses = "text-sm text-muted-foreground hover:text-foreground transition-colors";
+  const mobileLinkClasses = "block py-3 text-lg text-foreground hover:text-primary transition-colors";
+
+  const DesktopNavLinks = () => {
     if (isLoggedIn) {
-      const isAdminOrMod = hasRole('admin') || hasRole('moderator');
       return (
         <>
-          <Link to="/dashboard" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/dashboard" className={linkClasses}>
             Dashboard
           </Link>
-          <Link to="/classroom" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/classroom" className={linkClasses}>
             Classroom
           </Link>
-          <Link to="/studio" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/studio" className={linkClasses}>
             Studio Floor
           </Link>
-          <Link to="/reference" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/reference" className={linkClasses}>
             Reference
           </Link>
-          <Link to="/beats" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/beats" className={linkClasses}>
             Beat Library
           </Link>
-          <Link to="/community" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          
+          {/* Community Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className={`${linkClasses} flex items-center gap-1`}>
+              Community
+              <ChevronDown className="h-3 w-3" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="bg-background border-border">
+              <DropdownMenuItem asChild>
+                <Link to="/community" className="cursor-pointer">
+                  Community Forum
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/members" className="cursor-pointer">
+                  Member Directory
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      );
+    }
+    
+    return (
+      <>
+        <a href="#what-this-is" className={linkClasses}>
+          What This Is
+        </a>
+        <a href="#how-it-works" className={linkClasses}>
+          How It Works
+        </a>
+        <a href="#why-this-exists" className={linkClasses}>
+          Why This Exists
+        </a>
+        <a href="#partners" className={linkClasses}>
+          Partners
+        </a>
+      </>
+    );
+  };
+
+  const MobileNavLinks = () => {
+    if (isLoggedIn) {
+      return (
+        <>
+          <Link to="/dashboard" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Dashboard
+          </Link>
+          <Link to="/classroom" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Classroom
+          </Link>
+          <Link to="/studio" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Studio Floor
+          </Link>
+          <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Reference
+          </Link>
+          <Link to="/beats" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Beat Library
+          </Link>
+          <Link to="/community" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Community
           </Link>
-          <Link to="/members" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/members" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Members
           </Link>
-          <Link to="/account" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+          <Link to="/account" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Account
           </Link>
           {isAdminOrMod && (
-            <Link to="/admin" className={`${linkClasses} flex items-center gap-1`} onClick={mobile ? closeMobileMenu : undefined}>
-              <Shield className="h-3 w-3" />
+            <Link to="/admin" className={`${mobileLinkClasses} flex items-center gap-1`} onClick={closeMobileMenu}>
+              <Shield className="h-4 w-4" />
               Admin
             </Link>
           )}
@@ -94,16 +165,16 @@ export function Header({ showNav = true }: HeaderProps) {
     
     return (
       <>
-        <a href="#what-this-is" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+        <a href="#what-this-is" className={mobileLinkClasses} onClick={closeMobileMenu}>
           What This Is
         </a>
-        <a href="#how-it-works" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+        <a href="#how-it-works" className={mobileLinkClasses} onClick={closeMobileMenu}>
           How It Works
         </a>
-        <a href="#why-this-exists" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+        <a href="#why-this-exists" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Why This Exists
         </a>
-        <a href="#partners" className={linkClasses} onClick={mobile ? closeMobileMenu : undefined}>
+        <a href="#partners" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Partners
         </a>
       </>
@@ -119,23 +190,55 @@ export function Header({ showNav = true }: HeaderProps) {
         </Link>
         
         <div className="flex items-center gap-2">
-          <ThemeToggle />
-          
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
             <div className="hidden md:flex items-center gap-3">
-              <Link to="/account" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                {profile?.name || user?.email?.split('@')[0] || 'Account'}
-              </Link>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={handleSignOut}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <LogOut className="w-4 h-4" />
-              </Button>
+              {/* User Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <User className="h-4 w-4" />
+                  {profile?.name || user?.email?.split('@')[0] || 'Account'}
+                  <ChevronDown className="h-3 w-3" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-background border-border w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="cursor-pointer flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer flex items-center gap-2">
+                    {resolvedTheme === 'dark' ? (
+                      <>
+                        <Sun className="h-4 w-4" />
+                        Light Mode
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="h-4 w-4" />
+                        Dark Mode
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  {isAdminOrMod && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="cursor-pointer flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Admin
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer flex items-center gap-2 text-destructive">
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
@@ -165,7 +268,7 @@ export function Header({ showNav = true }: HeaderProps) {
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] bg-background border-border">
                 <nav className="flex flex-col mt-8 space-y-2">
-                  <NavLinks mobile />
+                  <MobileNavLinks />
                   
                   <div className="pt-6 mt-6 border-t border-border">
                     {loading ? (
@@ -175,6 +278,23 @@ export function Header({ showNav = true }: HeaderProps) {
                         <p className="text-sm text-muted-foreground">
                           Signed in as {profile?.name || user?.email?.split('@')[0]}
                         </p>
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start"
+                          onClick={toggleTheme}
+                        >
+                          {resolvedTheme === 'dark' ? (
+                            <>
+                              <Sun className="w-4 h-4 mr-2" />
+                              Light Mode
+                            </>
+                          ) : (
+                            <>
+                              <Moon className="w-4 h-4 mr-2" />
+                              Dark Mode
+                            </>
+                          )}
+                        </Button>
                         <Button 
                           variant="outline" 
                           className="w-full justify-start"
@@ -219,7 +339,7 @@ export function Header({ showNav = true }: HeaderProps) {
       {showNav && (
         <div className="hidden md:block container mx-auto px-6">
           <nav className="h-10 flex items-center justify-center gap-6">
-            <NavLinks />
+            <DesktopNavLinks />
           </nav>
         </div>
       )}
