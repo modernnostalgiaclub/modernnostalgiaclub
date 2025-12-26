@@ -166,7 +166,7 @@ export default function LandingPage() {
           >
             <SectionLabel className="mb-4">What This Is</SectionLabel>
             
-            <h2 className="text-3xl md:text-5xl font-display mb-8">
+            <h2 className="text-3xl md:text-5xl font-display mb-8 tracking-wide">
               This is not a course.<br />
               <span className="text-primary">This is a working lab.</span>
             </h2>
