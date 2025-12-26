@@ -112,17 +112,11 @@ export function Header({ showNav = true }: HeaderProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+      {/* Row 1: Logo and Auth */}
+      <div className="container mx-auto px-6 h-14 flex items-center justify-between border-b border-border/30">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="ModernNostalgia.club" className="h-14 w-auto" />
+          <img src={logo} alt="ModernNostalgia.club" className="h-12 w-auto" />
         </Link>
-        
-        {/* Desktop Navigation */}
-        {showNav && (
-          <nav className="hidden md:flex items-center gap-8">
-            <NavLinks />
-          </nav>
-        )}
         
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -220,6 +214,15 @@ export function Header({ showNav = true }: HeaderProps) {
           )}
         </div>
       </div>
+      
+      {/* Row 2: Navigation (Desktop only) */}
+      {showNav && (
+        <div className="hidden md:block container mx-auto px-6">
+          <nav className="h-10 flex items-center justify-center gap-6">
+            <NavLinks />
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
