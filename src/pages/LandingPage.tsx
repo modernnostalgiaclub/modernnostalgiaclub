@@ -19,7 +19,6 @@ import {
   CheckCircle,
   Loader2,
   ExternalLink,
-  ChevronDown,
   Building2,
   Calendar,
   Briefcase,
@@ -208,11 +207,10 @@ export default function LandingPage() {
                   value={item.title}
                   className="bg-card border border-border rounded-lg hover:border-maroon/30 transition-colors data-[state=open]:border-maroon/50"
                 >
-                  <AccordionTrigger className="p-6 hover:no-underline [&[data-state=open]>div>.chevron]:rotate-180">
+                  <AccordionTrigger className="p-6 hover:no-underline [&>svg]:hidden">
                     <div className="flex flex-col items-start text-left w-full">
-                      <div className="flex items-center justify-between w-full mb-4">
+                      <div className="flex items-center w-full mb-4">
                         <item.icon className="w-8 h-8 text-maroon" />
-                        <ChevronDown className="chevron w-5 h-5 text-muted-foreground transition-transform duration-200" />
                       </div>
                       <h3 className="font-display text-xl mb-2">{item.title}</h3>
                       <p className="text-sm text-muted-foreground">{item.desc}</p>
