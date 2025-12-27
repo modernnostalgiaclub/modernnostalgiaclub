@@ -18,9 +18,10 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
+import { AdminLessonProgress } from '@/components/AdminLessonProgress';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -59,43 +60,51 @@ export default function Admin() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 lg:w-auto lg:inline-grid h-auto gap-1">
-              <TabsTrigger value="analytics" className="gap-2">
-                <BarChart3 className="h-4 w-4 hidden sm:block" />
+            <TabsList className="grid w-full grid-cols-4 md:grid-cols-9 lg:w-auto lg:inline-grid h-auto gap-1" role="tablist" aria-label="Admin panel sections">
+              <TabsTrigger value="analytics" className="gap-2" aria-label="View site analytics">
+                <BarChart3 className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="courses" className="gap-2">
-                <BookOpen className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="progress" className="gap-2" aria-label="View user lesson progress">
+                <GraduationCap className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Progress
+              </TabsTrigger>
+              <TabsTrigger value="courses" className="gap-2" aria-label="Manage courses">
+                <BookOpen className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Courses
               </TabsTrigger>
-              <TabsTrigger value="lessons" className="gap-2">
-                <FileText className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="lessons" className="gap-2" aria-label="Manage lessons">
+                <FileText className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Lessons
               </TabsTrigger>
-              <TabsTrigger value="resources" className="gap-2">
-                <Wrench className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="resources" className="gap-2" aria-label="Manage resources">
+                <Wrench className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Resources
               </TabsTrigger>
-              <TabsTrigger value="tracks" className="gap-2">
-                <Music className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="tracks" className="gap-2" aria-label="Manage tracks">
+                <Music className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Tracks
               </TabsTrigger>
-              <TabsTrigger value="submissions" className="gap-2">
-                <Users className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="submissions" className="gap-2" aria-label="Review submissions">
+                <Users className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Submissions
               </TabsTrigger>
-              <TabsTrigger value="licenses" className="gap-2">
-                <DollarSign className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="licenses" className="gap-2" aria-label="Manage licenses">
+                <DollarSign className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Licenses
               </TabsTrigger>
-              <TabsTrigger value="users" className="gap-2">
-                <Shield className="h-4 w-4 hidden sm:block" />
+              <TabsTrigger value="users" className="gap-2" aria-label="Manage users">
+                <Shield className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Users
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
               <AnalyticsManager />
+            </TabsContent>
+
+            <TabsContent value="progress">
+              <AdminLessonProgress />
             </TabsContent>
 
             <TabsContent value="courses">

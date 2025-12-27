@@ -182,15 +182,19 @@ export function Header({ showNav = true }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+    <header 
+      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50"
+      role="banner"
+    >
       <div className="container mx-auto px-6 h-14 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="ModernNostalgia.club" className="h-12 w-auto" />
+        <Link to="/" className="flex items-center gap-3" aria-label="ModernNostalgia.club home">
+          <img src={logo} alt="" className="h-12 w-auto" aria-hidden="true" />
+          <span className="sr-only">ModernNostalgia.club</span>
         </Link>
         
         {/* Desktop Navigation */}
         {showNav && (
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
             <DesktopNavLinks />
           </nav>
         )}
