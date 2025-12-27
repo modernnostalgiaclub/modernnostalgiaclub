@@ -167,6 +167,40 @@
   h2, h3, h4, h5, h6 {
     @apply font-display tracking-wider;
   }
+
+  /* ADA Compliance: Enhanced focus indicators */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Ensure minimum touch target size for interactive elements */
+  button, 
+  [role="button"], 
+  a, 
+  input, 
+  select, 
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline links and icon buttons that have visual context */
+  a:not([class*="button"]):not([role="button"]) {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer utilities {

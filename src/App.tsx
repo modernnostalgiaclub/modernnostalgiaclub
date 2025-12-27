@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SkipLink } from "@/components/SkipLink";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
@@ -32,6 +33,7 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
+          <SkipLink />
           <Toaster />
           <Sonner />
           <Routes>

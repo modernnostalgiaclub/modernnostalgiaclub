@@ -70,8 +70,10 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background studio-grain">
       <Header />
       
+      {/* Main Content */}
+      <main id="main-content" role="main">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 hero-gradient overflow-hidden">
+      <section className="relative pt-32 pb-24 hero-gradient overflow-hidden" aria-labelledby="hero-heading">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-25"
@@ -94,6 +96,7 @@ export default function LandingPage() {
             </motion.div>
             
             <motion.h1 
+              id="hero-heading"
               className="text-4xl md:text-6xl font-display mb-6 text-foreground"
               variants={fadeIn}
             >
@@ -540,6 +543,7 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+      </main>
       
       <Footer />
     </div>
