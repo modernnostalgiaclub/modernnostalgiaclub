@@ -7,7 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Eye, Palette, CheckCircle, XCircle, AlertTriangle, Info } from 'lucide-react';
+import { Eye, Palette, CheckCircle, XCircle, AlertTriangle, Info, FileDown, Loader2 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 // Color blindness simulation matrices
 const colorBlindnessFilters = {
@@ -143,6 +145,7 @@ export function AccessibilityTester() {
   const [foregroundColor, setForegroundColor] = useState('#0d0d0d');
   const [backgroundColor, setBackgroundColor] = useState('#f5f0e6');
   const [isLargeText, setIsLargeText] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [themeResults, setThemeResults] = useState<Array<{
     name: string;
     ratio: number;
@@ -190,6 +193,233 @@ export function AccessibilityTester() {
       root.style.filter = 'none';
     };
   }, [activeSimulation]);
+
+  // Generate PDF Report
+  const generatePdfReport = async () => {
+    setIsGeneratingPdf(true);
+    
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 20;
+      let yPos = 20;
+
+      // Title
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Accessibility Audit Report', margin, yPos);
+      yPos += 10;
+
+      // Subtitle with date
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100);
+      doc.text(`Generated: ${new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}`, margin, yPos);
+      yPos += 5;
+      doc.text('ModernNostalgia.club - WCAG 2.1 Compliance Report', margin, yPos);
+      yPos += 15;
+
+      // Horizontal line
+      doc.setDrawColor(200);
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 10;
+
+      // Executive Summary
+      doc.setTextColor(0);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Executive Summary', margin, yPos);
+      yPos += 8;
+
+      const aaaCount = themeResults.filter(r => r.compliance.level === 'AAA').length;
+      const aaCount = themeResults.filter(r => r.compliance.level === 'AA').length;
+      const failCount = themeResults.filter(r => r.compliance.level === 'Fail').length;
+      const totalChecks = themeResults.length;
+      const passRate = totalChecks > 0 ? Math.round(((aaaCount + aaCount) / totalChecks) * 100) : 0;
+
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      
+      const summaryText = [
+        `This report evaluates the color contrast compliance of the application against WCAG 2.1 guidelines.`,
+        ``,
+        `Total Color Combinations Tested: ${totalChecks}`,
+        `AAA Compliant (7:1+ ratio): ${aaaCount} (${totalChecks > 0 ? Math.round((aaaCount / totalChecks) * 100) : 0}%)`,
+        `AA Compliant (4.5:1+ ratio): ${aaCount} (${totalChecks > 0 ? Math.round((aaCount / totalChecks) * 100) : 0}%)`,
+        `Non-Compliant: ${failCount} (${totalChecks > 0 ? Math.round((failCount / totalChecks) * 100) : 0}%)`,
+        ``,
+        `Overall Compliance Rate: ${passRate}%`
+      ];
+
+      summaryText.forEach(line => {
+        doc.text(line, margin, yPos);
+        yPos += 6;
+      });
+
+      yPos += 5;
+
+      // Compliance Status Badge
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      if (failCount === 0) {
+        doc.setTextColor(34, 139, 34); // Green
+        doc.text('STATUS: FULLY COMPLIANT', margin, yPos);
+      } else if (passRate >= 80) {
+        doc.setTextColor(218, 165, 32); // Gold
+        doc.text('STATUS: MOSTLY COMPLIANT - Action Recommended', margin, yPos);
+      } else {
+        doc.setTextColor(178, 34, 34); // Red
+        doc.text('STATUS: NON-COMPLIANT - Action Required', margin, yPos);
+      }
+      yPos += 15;
+
+      // Horizontal line
+      doc.setDrawColor(200);
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 10;
+
+      // Detailed Results Section
+      doc.setTextColor(0);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Detailed Contrast Analysis', margin, yPos);
+      yPos += 10;
+
+      // Table data
+      const tableData = themeResults.map(result => [
+        result.name,
+        `${result.ratio.toFixed(2)}:1`,
+        result.compliance.level,
+        result.compliance.level === 'AAA' ? 'Excellent' : 
+          result.compliance.level === 'AA' ? 'Acceptable' : 'Needs Improvement'
+      ]);
+
+      autoTable(doc, {
+        startY: yPos,
+        head: [['Color Combination', 'Contrast Ratio', 'WCAG Level', 'Status']],
+        body: tableData,
+        headStyles: { 
+          fillColor: [89, 42, 42], // Maroon
+          textColor: 255,
+          fontStyle: 'bold'
+        },
+        bodyStyles: {
+          fontSize: 10
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        columnStyles: {
+          0: { cellWidth: 70 },
+          1: { cellWidth: 35, halign: 'center' },
+          2: { cellWidth: 30, halign: 'center' },
+          3: { cellWidth: 40, halign: 'center' }
+        },
+        didParseCell: (data) => {
+          // Color code the WCAG level column
+          if (data.section === 'body' && data.column.index === 2) {
+            const level = data.cell.raw as string;
+            if (level === 'AAA') {
+              data.cell.styles.textColor = [34, 139, 34];
+              data.cell.styles.fontStyle = 'bold';
+            } else if (level === 'AA') {
+              data.cell.styles.textColor = [218, 165, 32];
+              data.cell.styles.fontStyle = 'bold';
+            } else {
+              data.cell.styles.textColor = [178, 34, 34];
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        }
+      });
+
+      // Get final Y position after table
+      const finalY = (doc as any).lastAutoTable.finalY || yPos + 50;
+      yPos = finalY + 15;
+
+      // Add new page if needed
+      if (yPos > 250) {
+        doc.addPage();
+        yPos = 20;
+      }
+
+      // WCAG Guidelines Reference
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0);
+      doc.text('WCAG 2.1 Guidelines Reference', margin, yPos);
+      yPos += 10;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      
+      const guidelines = [
+        'Level AA Requirements:',
+        '  • Normal text (< 18pt): Minimum contrast ratio of 4.5:1',
+        '  • Large text (≥ 18pt or 14pt bold): Minimum contrast ratio of 3:1',
+        '',
+        'Level AAA Requirements (Enhanced):',
+        '  • Normal text (< 18pt): Minimum contrast ratio of 7:1',
+        '  • Large text (≥ 18pt or 14pt bold): Minimum contrast ratio of 4.5:1',
+        '',
+        'Non-text elements require a minimum contrast ratio of 3:1.'
+      ];
+
+      guidelines.forEach(line => {
+        doc.text(line, margin, yPos);
+        yPos += 5;
+      });
+
+      yPos += 10;
+
+      // Recommendations section
+      if (failCount > 0) {
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Recommendations', margin, yPos);
+        yPos += 10;
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        
+        const failingItems = themeResults.filter(r => r.compliance.level === 'Fail');
+        failingItems.forEach((item, idx) => {
+          doc.text(`${idx + 1}. ${item.name}: Current ratio ${item.ratio.toFixed(2)}:1 - needs improvement`, margin, yPos);
+          yPos += 5;
+        });
+        
+        yPos += 5;
+        doc.text('Consider adjusting foreground or background colors to achieve at least 4.5:1 contrast.', margin, yPos);
+      }
+
+      // Footer
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(
+          `Page ${i} of ${pageCount} | ModernNostalgia.club Accessibility Audit`,
+          pageWidth / 2,
+          doc.internal.pageSize.getHeight() - 10,
+          { align: 'center' }
+        );
+      }
+
+      // Save the PDF
+      doc.save(`accessibility-audit-${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -446,11 +676,30 @@ export function AccessibilityTester() {
 
         <TabsContent value="theme">
           <Card>
-            <CardHeader>
-              <CardTitle>Theme Contrast Analysis</CardTitle>
-              <CardDescription>
-                Automated contrast ratio checks for your theme's color combinations.
-              </CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between">
+              <div>
+                <CardTitle>Theme Contrast Analysis</CardTitle>
+                <CardDescription>
+                  Automated contrast ratio checks for your theme's color combinations.
+                </CardDescription>
+              </div>
+              <Button 
+                onClick={generatePdfReport} 
+                disabled={isGeneratingPdf}
+                className="gap-2"
+              >
+                {isGeneratingPdf ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <FileDown className="h-4 w-4" aria-hidden="true" />
+                    Export PDF Report
+                  </>
+                )}
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="space-y-4" role="list" aria-label="Theme contrast results">
@@ -502,6 +751,17 @@ export function AccessibilityTester() {
                     </p>
                     <p className="text-xs text-muted-foreground">Fail</p>
                   </div>
+                </div>
+              </div>
+
+              {/* Export info */}
+              <div className="mt-4 p-3 rounded-lg bg-muted/30 border border-border/50">
+                <div className="flex items-start gap-2">
+                  <Info className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                  <p className="text-sm text-muted-foreground">
+                    Export a comprehensive PDF report for compliance documentation, audits, or stakeholder review.
+                    The report includes executive summary, detailed analysis, and recommendations.
+                  </p>
                 </div>
               </div>
             </CardContent>
