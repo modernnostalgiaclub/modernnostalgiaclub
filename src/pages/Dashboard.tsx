@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
+import { HelloSkipAgent } from '@/components/HelloSkipAgent';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -466,6 +467,11 @@ export default function Dashboard() {
                   </Link>
                 </Button>
               </div>
+            </motion.div>
+
+            {/* HelloSkip AI Agent */}
+            <motion.div variants={fadeIn} className="mt-12">
+              <HelloSkipAgent />
             </motion.div>
           </motion.div>
         </div>
