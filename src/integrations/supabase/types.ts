@@ -670,23 +670,41 @@ export type Database = {
           user_id: string
         }[]
       }
-      get_user_submissions: {
-        Args: { _user_id: string }
-        Returns: {
-          created_at: string
-          disco_url: string
-          id: string
-          notes: string
-          reviewed_at: string
-          reviewed_by: string
-          reviewer_notes: string
-          status: Database["public"]["Enums"]["submission_status"]
-          submission_type: Database["public"]["Enums"]["submission_type"]
-          title: string
-          updated_at: string
-          user_id: string
-        }[]
-      }
+      get_user_submissions:
+        | {
+            Args: never
+            Returns: {
+              created_at: string
+              disco_url: string
+              id: string
+              notes: string
+              reviewed_at: string
+              reviewed_by: string
+              reviewer_notes: string
+              status: Database["public"]["Enums"]["submission_status"]
+              submission_type: Database["public"]["Enums"]["submission_type"]
+              title: string
+              updated_at: string
+              user_id: string
+            }[]
+          }
+        | {
+            Args: { _user_id: string }
+            Returns: {
+              created_at: string
+              disco_url: string
+              id: string
+              notes: string
+              reviewed_at: string
+              reviewed_by: string
+              reviewer_notes: string
+              status: Database["public"]["Enums"]["submission_status"]
+              submission_type: Database["public"]["Enums"]["submission_type"]
+              title: string
+              updated_at: string
+              user_id: string
+            }[]
+          }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
