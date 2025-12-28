@@ -798,16 +798,35 @@ function SubmissionsReviewer() {
   }, []);
 
   async function fetchSubmissions() {
-    const { data, error } = await supabase
-      .from('submissions')
-      .select('*, profiles!submissions_user_id_fkey(name)')
-      .order('created_at', { ascending: false });
+    // Use the secure RPC function for fetching submissions
+    const { data, error } = await supabase.rpc('get_user_submissions');
 
     if (error) {
       toast.error('Failed to load submissions');
       return;
     }
-    setSubmissions(data || []);
+    
+    // Fetch profile names and internal_notes separately for admin view
+    const userIds = [...new Set((data || []).map(s => s.user_id))];
+    const submissionIds = (data || []).map(s => s.id);
+    
+    const [profilesResult, internalDataResult] = await Promise.all([
+      supabase.from('profiles').select('user_id, name').in('user_id', userIds),
+      supabase.from('submissions').select('id, internal_notes').in('id', submissionIds)
+    ]);
+    
+    const profileMap = new Map(profilesResult.data?.map(p => [p.user_id, p.name]) || []);
+    const internalNotesMap = new Map(internalDataResult.data?.map(s => [s.id, s.internal_notes]) || []);
+    
+    const submissionsWithProfiles = (data || [])
+      .map(s => ({
+        ...s,
+        internal_notes: internalNotesMap.get(s.id) || null,
+        profiles: { name: profileMap.get(s.user_id) || null }
+      }))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    
+    setSubmissions(submissionsWithProfiles);
     setLoading(false);
   }
 

@@ -78,19 +78,44 @@ export function AdminSubmissionsView() {
   }, [submissions.length]);
 
   async function fetchAllSubmissions() {
-    // Direct table query for admins/moderators - includes internal_notes
-    const { data, error } = await supabase
-      .from('submissions')
-      .select('*, profiles!submissions_user_id_fkey(name)')
-      .order('created_at', { ascending: false });
+    // Use the secure RPC function for fetching submissions
+    // For admins/moderators, this returns all submissions with full access
+    const { data, error } = await supabase.rpc('get_user_submissions');
 
     if (error) {
       console.error('Error fetching submissions:', error);
       toast.error('Failed to load submissions');
       setSubmissions([]);
-    } else {
-      setSubmissions(data || []);
+      setLoading(false);
+      return;
     }
+    
+    // Fetch profile names and internal_notes separately for admin view
+    const userIds = [...new Set((data || []).map(s => s.user_id))];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('user_id, name')
+      .in('user_id', userIds);
+    
+    // Fetch internal_notes directly from submissions table (admins have access)
+    const submissionIds = (data || []).map(s => s.id);
+    const { data: internalData } = await supabase
+      .from('submissions')
+      .select('id, internal_notes')
+      .in('id', submissionIds);
+    
+    const profileMap = new Map(profiles?.map(p => [p.user_id, p.name]) || []);
+    const internalNotesMap = new Map(internalData?.map(s => [s.id, s.internal_notes]) || []);
+    
+    const submissionsWithProfiles = (data || [])
+      .map(s => ({
+        ...s,
+        internal_notes: internalNotesMap.get(s.id) || null,
+        profiles: { name: profileMap.get(s.user_id) || null }
+      }))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    
+    setSubmissions(submissionsWithProfiles);
     setLoading(false);
   }
 
