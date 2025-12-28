@@ -251,7 +251,7 @@ export default function Dashboard() {
                       Welcome back, {userName}
                     </h1>
                     <p className="text-muted-foreground">
-                      You're here to turn creative work into sustainable income.
+                      You're here to turn creative work into sustainable income. Need help? Our AI assistant is available in the bottom-right corner.
                     </p>
                   </div>
                 </div>
@@ -469,10 +469,8 @@ export default function Dashboard() {
               </div>
             </motion.div>
 
-            {/* HelloSkip AI Agent */}
-            <motion.div variants={fadeIn} className="mt-12">
-              <HelloSkipAgent />
-            </motion.div>
+            {/* HelloSkip AI Agent - loads script only */}
+            <HelloSkipAgent />
           </motion.div>
         </div>
       </main>
