@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Eye, Palette, CheckCircle, XCircle, AlertTriangle, Info, FileDown, Loader2 } from 'lucide-react';
+import { Eye, Palette, CheckCircle, XCircle, AlertTriangle, Info, FileDown, Loader2, Volume2, RefreshCw } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -151,6 +151,20 @@ export function AccessibilityTester() {
     ratio: number;
     compliance: { level: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' };
   }>>([]);
+  const [ariaResults, setAriaResults] = useState<Array<{
+    element: string;
+    type: string;
+    label: string;
+    status: 'pass' | 'warning' | 'fail';
+    issue?: string;
+  }>>([]);
+  const [liveRegionTest, setLiveRegionTest] = useState<string>('');
+  const [isScanning, setIsScanning] = useState(false);
+  const [announcementLog, setAnnouncementLog] = useState<Array<{
+    message: string;
+    timestamp: Date;
+    type: 'polite' | 'assertive';
+  }>>([]);
 
   // Calculate contrast for custom colors
   const customFg = parseColor(foregroundColor);
@@ -193,6 +207,131 @@ export function AccessibilityTester() {
       root.style.filter = 'none';
     };
   }, [activeSimulation]);
+
+  // Scan for ARIA labels and accessibility issues
+  const scanAriaLabels = () => {
+    setIsScanning(true);
+    const results: typeof ariaResults = [];
+
+    // Check all interactive elements
+    const interactiveSelectors = 'button, a, input, select, textarea, [role="button"], [role="link"], [role="tab"], [role="menuitem"]';
+    const interactiveElements = document.querySelectorAll(interactiveSelectors);
+
+    interactiveElements.forEach((el, idx) => {
+      const tagName = el.tagName.toLowerCase();
+      const role = el.getAttribute('role') || tagName;
+      const ariaLabel = el.getAttribute('aria-label');
+      const ariaLabelledBy = el.getAttribute('aria-labelledby');
+      const title = el.getAttribute('title');
+      const textContent = el.textContent?.trim().slice(0, 50);
+      const placeholder = el.getAttribute('placeholder');
+
+      let label = ariaLabel || title || textContent || placeholder || '';
+      let status: 'pass' | 'warning' | 'fail' = 'pass';
+      let issue: string | undefined;
+
+      // Check for missing accessible name
+      if (!ariaLabel && !ariaLabelledBy && !textContent && !title && !placeholder) {
+        status = 'fail';
+        issue = 'Missing accessible name (no aria-label, text content, or title)';
+      } else if (ariaLabel && textContent && ariaLabel !== textContent) {
+        status = 'warning';
+        issue = 'aria-label differs from visible text (may confuse voice control users)';
+      } else if (!ariaLabel && textContent && textContent.length < 2) {
+        status = 'warning';
+        issue = 'Very short text content may not be descriptive enough';
+      }
+
+      // Skip hidden elements
+      if (el.getAttribute('aria-hidden') === 'true') return;
+
+      results.push({
+        element: `${role}${idx + 1}`,
+        type: role,
+        label: label.slice(0, 60) + (label.length > 60 ? '...' : ''),
+        status,
+        issue,
+      });
+    });
+
+    // Check for live regions
+    const liveRegions = document.querySelectorAll('[aria-live], [role="alert"], [role="status"], [role="log"]');
+    liveRegions.forEach((el, idx) => {
+      const ariaLive = el.getAttribute('aria-live') || 
+        (el.getAttribute('role') === 'alert' ? 'assertive' : 'polite');
+      results.push({
+        element: `liveRegion${idx + 1}`,
+        type: 'live-region',
+        label: `aria-live="${ariaLive}"`,
+        status: 'pass',
+      });
+    });
+
+    // Check images for alt text
+    const images = document.querySelectorAll('img');
+    images.forEach((img, idx) => {
+      const alt = img.getAttribute('alt');
+      const isDecorative = alt === '';
+      const ariaHidden = img.getAttribute('aria-hidden') === 'true';
+
+      if (ariaHidden || isDecorative) {
+        results.push({
+          element: `img${idx + 1}`,
+          type: 'image',
+          label: isDecorative ? '(decorative)' : '(hidden)',
+          status: 'pass',
+        });
+      } else if (alt) {
+        results.push({
+          element: `img${idx + 1}`,
+          type: 'image',
+          label: alt.slice(0, 60) + (alt.length > 60 ? '...' : ''),
+          status: 'pass',
+        });
+      } else {
+        results.push({
+          element: `img${idx + 1}`,
+          type: 'image',
+          label: '(missing)',
+          status: 'fail',
+          issue: 'Image missing alt attribute',
+        });
+      }
+    });
+
+    // Check headings structure
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    let lastLevel = 0;
+    headings.forEach((h, idx) => {
+      const level = parseInt(h.tagName[1]);
+      const text = h.textContent?.trim().slice(0, 40) || '';
+      let status: 'pass' | 'warning' | 'fail' = 'pass';
+      let issue: string | undefined;
+
+      if (level - lastLevel > 1 && lastLevel !== 0) {
+        status = 'warning';
+        issue = `Skipped heading level (h${lastLevel} to h${level})`;
+      }
+      lastLevel = level;
+
+      results.push({
+        element: `h${level}`,
+        type: 'heading',
+        label: text,
+        status,
+        issue,
+      });
+    });
+
+    setAriaResults(results);
+    setIsScanning(false);
+  };
+
+  // Test live region announcement
+  const testLiveRegion = (type: 'polite' | 'assertive') => {
+    const message = liveRegionTest || `Test ${type} announcement at ${new Date().toLocaleTimeString()}`;
+    setAnnouncementLog(prev => [...prev, { message, timestamp: new Date(), type }]);
+  };
 
   // Generate PDF Report
   const generatePdfReport = async () => {
@@ -474,6 +613,10 @@ export function AccessibilityTester() {
           <TabsTrigger value="theme" aria-label="Theme analysis">
             <CheckCircle className="h-4 w-4 mr-2" aria-hidden="true" />
             Theme Analysis
+          </TabsTrigger>
+          <TabsTrigger value="screenreader" aria-label="Screen reader testing">
+            <Volume2 className="h-4 w-4 mr-2" aria-hidden="true" />
+            Screen Reader
           </TabsTrigger>
         </TabsList>
 
@@ -766,6 +909,204 @@ export function AccessibilityTester() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="screenreader">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* ARIA Label Scanner */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  ARIA Label Scanner
+                  <Button 
+                    onClick={scanAriaLabels} 
+                    disabled={isScanning}
+                    size="sm"
+                    className="gap-2"
+                  >
+                    {isScanning ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        Scanning...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                        Scan Page
+                      </>
+                    )}
+                  </Button>
+                </CardTitle>
+                <CardDescription>
+                  Analyze ARIA labels, roles, and accessible names across the page.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {ariaResults.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Volume2 className="h-12 w-12 mx-auto mb-3 opacity-50" aria-hidden="true" />
+                    <p>Click "Scan Page" to analyze ARIA labels</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {/* Summary */}
+                    <div className="grid grid-cols-3 gap-2 p-3 rounded-lg bg-muted mb-4">
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-green-500">
+                          {ariaResults.filter(r => r.status === 'pass').length}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Pass</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-yellow-500">
+                          {ariaResults.filter(r => r.status === 'warning').length}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Warnings</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-red-500">
+                          {ariaResults.filter(r => r.status === 'fail').length}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Issues</p>
+                      </div>
+                    </div>
+
+                    {/* Results list */}
+                    {ariaResults.map((result, idx) => (
+                      <div 
+                        key={idx}
+                        className={`p-2 rounded border text-sm ${
+                          result.status === 'fail' 
+                            ? 'bg-red-500/10 border-red-500/30' 
+                            : result.status === 'warning'
+                            ? 'bg-yellow-500/10 border-yellow-500/30'
+                            : 'bg-muted/50 border-border/50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              {result.type}
+                            </Badge>
+                            <span className="font-mono text-xs">{result.element}</span>
+                          </div>
+                          {result.status === 'pass' ? (
+                            <CheckCircle className="h-4 w-4 text-green-500" aria-hidden="true" />
+                          ) : result.status === 'warning' ? (
+                            <AlertTriangle className="h-4 w-4 text-yellow-500" aria-hidden="true" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-red-500" aria-hidden="true" />
+                          )}
+                        </div>
+                        <p className="text-muted-foreground mt-1 truncate">
+                          Label: {result.label || '(none)'}
+                        </p>
+                        {result.issue && (
+                          <p className="text-xs mt-1 text-destructive">{result.issue}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Live Region Tester */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Live Region Tester</CardTitle>
+                <CardDescription>
+                  Test screen reader announcements using ARIA live regions.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="announcement-text">Announcement Text</Label>
+                  <Input
+                    id="announcement-text"
+                    value={liveRegionTest}
+                    onChange={(e) => setLiveRegionTest(e.target.value)}
+                    placeholder="Enter text to announce..."
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => testLiveRegion('polite')} 
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Polite Announcement
+                  </Button>
+                  <Button 
+                    onClick={() => testLiveRegion('assertive')}
+                    variant="secondary"
+                    className="flex-1"
+                  >
+                    Assertive Announcement
+                  </Button>
+                </div>
+
+                <div className="p-3 rounded-lg bg-muted/50 text-sm space-y-1">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Info className="h-4 w-4" aria-hidden="true" />
+                    <span className="font-medium">How it works:</span>
+                  </div>
+                  <ul className="text-muted-foreground text-xs space-y-1 ml-6">
+                    <li><strong>Polite:</strong> Waits for current speech to finish</li>
+                    <li><strong>Assertive:</strong> Interrupts current speech immediately</li>
+                  </ul>
+                </div>
+
+                {/* Announcement Log */}
+                <div className="space-y-2">
+                  <Label>Announcement Log</Label>
+                  <div className="h-[200px] overflow-y-auto rounded-lg border bg-background p-2 space-y-2">
+                    {announcementLog.length === 0 ? (
+                      <p className="text-center text-muted-foreground text-sm py-8">
+                        No announcements yet
+                      </p>
+                    ) : (
+                      announcementLog.map((log, idx) => (
+                        <div 
+                          key={idx} 
+                          className="p-2 rounded bg-muted/50 text-sm flex items-start justify-between"
+                        >
+                          <div>
+                            <Badge variant={log.type === 'assertive' ? 'secondary' : 'outline'} className="text-xs mb-1">
+                              {log.type}
+                            </Badge>
+                            <p className="text-foreground">{log.message}</p>
+                          </div>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                            {log.timestamp.toLocaleTimeString()}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                {announcementLog.length > 0 && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setAnnouncementLog([])}
+                  >
+                    Clear Log
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Actual Live Regions for Testing */}
+          <div aria-live="polite" aria-atomic="true" className="sr-only">
+            {announcementLog.filter(l => l.type === 'polite').slice(-1)[0]?.message}
+          </div>
+          <div aria-live="assertive" aria-atomic="true" className="sr-only">
+            {announcementLog.filter(l => l.type === 'assertive').slice(-1)[0]?.message}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
