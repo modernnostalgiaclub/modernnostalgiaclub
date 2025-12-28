@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Eye, Palette, CheckCircle, XCircle, AlertTriangle, Info, FileDown, Loader2, Volume2, RefreshCw } from 'lucide-react';
+import { Eye, Palette, CheckCircle, XCircle, AlertTriangle, Info, FileDown, Loader2, Volume2, RefreshCw, Heading } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -165,6 +165,14 @@ export function AccessibilityTester() {
     timestamp: Date;
     type: 'polite' | 'assertive';
   }>>([]);
+  const [headingResults, setHeadingResults] = useState<Array<{
+    level: number;
+    text: string;
+    status: 'pass' | 'warning' | 'fail';
+    issue?: string;
+    depth: number;
+  }>>([]);
+  const [isScanningHeadings, setIsScanningHeadings] = useState(false);
 
   // Calculate contrast for custom colors
   const customFg = parseColor(foregroundColor);
@@ -331,6 +339,76 @@ export function AccessibilityTester() {
   const testLiveRegion = (type: 'polite' | 'assertive') => {
     const message = liveRegionTest || `Test ${type} announcement at ${new Date().toLocaleTimeString()}`;
     setAnnouncementLog(prev => [...prev, { message, timestamp: new Date(), type }]);
+  };
+
+  // Scan heading structure
+  const scanHeadingStructure = () => {
+    setIsScanningHeadings(true);
+    const results: typeof headingResults = [];
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    let lastLevel = 0;
+    let h1Count = 0;
+    const levelStack: number[] = [];
+
+    headings.forEach((h) => {
+      const level = parseInt(h.tagName[1]);
+      const text = h.textContent?.trim().slice(0, 60) || '(empty heading)';
+      let status: 'pass' | 'warning' | 'fail' = 'pass';
+      let issue: string | undefined;
+
+      // Track H1 count
+      if (level === 1) {
+        h1Count++;
+        if (h1Count > 1) {
+          status = 'warning';
+          issue = 'Multiple H1 tags found - best practice is one H1 per page';
+        }
+      }
+
+      // Check for skipped levels
+      if (lastLevel !== 0 && level - lastLevel > 1) {
+        status = 'fail';
+        issue = `Skipped heading level: jumped from H${lastLevel} to H${level}`;
+      }
+
+      // Check for empty headings
+      if (!h.textContent?.trim()) {
+        status = 'fail';
+        issue = 'Empty heading - headings must have text content';
+      }
+
+      // Calculate depth for visual tree
+      while (levelStack.length > 0 && levelStack[levelStack.length - 1] >= level) {
+        levelStack.pop();
+      }
+      const depth = levelStack.length;
+      levelStack.push(level);
+
+      results.push({
+        level,
+        text,
+        status,
+        issue,
+        depth,
+      });
+
+      lastLevel = level;
+    });
+
+    // Check if page has no H1
+    if (h1Count === 0 && results.length > 0) {
+      results.unshift({
+        level: 0,
+        text: 'Page is missing an H1 heading',
+        status: 'fail',
+        issue: 'Every page should have exactly one H1 as the main title',
+        depth: 0,
+      });
+    }
+
+    setHeadingResults(results);
+    setIsScanningHeadings(false);
   };
 
   // Generate PDF Report
@@ -794,6 +872,10 @@ export function AccessibilityTester() {
           <TabsTrigger value="screenreader" aria-label="Screen reader testing">
             <Volume2 className="h-4 w-4 mr-2" aria-hidden="true" />
             Screen Reader
+          </TabsTrigger>
+          <TabsTrigger value="headings" aria-label="Heading structure validation">
+            <Heading className="h-4 w-4 mr-2" aria-hidden="true" />
+            Headings
           </TabsTrigger>
         </TabsList>
 
@@ -1284,6 +1366,121 @@ export function AccessibilityTester() {
           <div aria-live="assertive" aria-atomic="true" className="sr-only">
             {announcementLog.filter(l => l.type === 'assertive').slice(-1)[0]?.message}
           </div>
+        </TabsContent>
+
+        <TabsContent value="headings">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Document Heading Structure
+                <Button 
+                  onClick={scanHeadingStructure} 
+                  disabled={isScanningHeadings}
+                  size="sm"
+                  className="gap-2"
+                >
+                  {isScanningHeadings ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      Scanning...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                      Scan Headings
+                    </>
+                  )}
+                </Button>
+              </CardTitle>
+              <CardDescription>
+                Validate heading hierarchy for proper document outline and screen reader navigation.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {headingResults.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Heading className="h-12 w-12 mx-auto mb-3 opacity-50" aria-hidden="true" />
+                  <p>Click "Scan Headings" to analyze the document structure</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Summary */}
+                  <div className="grid grid-cols-3 gap-2 p-3 rounded-lg bg-muted">
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-green-500">
+                        {headingResults.filter(r => r.status === 'pass').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Valid</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-yellow-500">
+                        {headingResults.filter(r => r.status === 'warning').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Warnings</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-bold text-red-500">
+                        {headingResults.filter(r => r.status === 'fail').length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Errors</p>
+                    </div>
+                  </div>
+
+                  {/* Visual Tree */}
+                  <div className="space-y-1 font-mono text-sm">
+                    {headingResults.map((result, idx) => (
+                      <div 
+                        key={idx}
+                        className={`p-2 rounded flex items-start gap-2 ${
+                          result.status === 'fail' 
+                            ? 'bg-red-500/10 border border-red-500/30' 
+                            : result.status === 'warning'
+                            ? 'bg-yellow-500/10 border border-yellow-500/30'
+                            : 'bg-muted/50'
+                        }`}
+                        style={{ marginLeft: `${result.depth * 20}px` }}
+                      >
+                        <Badge 
+                          variant={result.level === 0 ? 'destructive' : 'outline'} 
+                          className="text-xs shrink-0"
+                        >
+                          {result.level === 0 ? '!' : `H${result.level}`}
+                        </Badge>
+                        <div className="flex-1 min-w-0">
+                          <p className="truncate">{result.text}</p>
+                          {result.issue && (
+                            <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                              {result.status === 'fail' ? (
+                                <XCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+                              ) : (
+                                <AlertTriangle className="h-3 w-3 shrink-0" aria-hidden="true" />
+                              )}
+                              {result.issue}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Best Practices */}
+                  <div className="mt-6 p-4 rounded-lg bg-muted/50 border border-border/50">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Info className="h-4 w-4" aria-hidden="true" />
+                      Heading Best Practices
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Use exactly one H1 per page as the main title</li>
+                      <li>• Don't skip heading levels (e.g., H2 to H4)</li>
+                      <li>• Headings should describe the content that follows</li>
+                      <li>• Screen readers use headings for navigation</li>
+                      <li>• Proper hierarchy helps SEO and accessibility</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
