@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArtistMoneyCoach } from '@/components/ArtistMoneyCoach';
+
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -18,7 +18,7 @@ import {
   Download,
   Wrench,
   Calendar,
-  DollarSign
+  
 } from 'lucide-react';
 
 const fadeIn = {
@@ -483,17 +483,6 @@ export default function ReferenceShelf() {
               </Card>
             </motion.div>
             
-            {/* Artist Money & Credit Coach */}
-            <motion.div variants={fadeIn}>
-              <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <DollarSign className="w-6 h-6 text-maroon" />
-                Artist Money & Credit Coach
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Get personalized financial guidance for building credit, managing irregular income, and growing your music business.
-              </p>
-              <ArtistMoneyCoach />
-            </motion.div>
           </motion.div>
         </div>
       </main>
