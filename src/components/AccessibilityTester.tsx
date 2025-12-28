@@ -382,18 +382,29 @@ export function AccessibilityTester() {
       const totalChecks = themeResults.length;
       const passRate = totalChecks > 0 ? Math.round(((aaaCount + aaCount) / totalChecks) * 100) : 0;
 
+      // ARIA scan stats
+      const ariaPassCount = ariaResults.filter(r => r.status === 'pass').length;
+      const ariaWarnCount = ariaResults.filter(r => r.status === 'warning').length;
+      const ariaFailCount = ariaResults.filter(r => r.status === 'fail').length;
+      const ariaTotalCount = ariaResults.length;
+
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
       
       const summaryText = [
-        `This report evaluates the color contrast compliance of the application against WCAG 2.1 guidelines.`,
+        `This report evaluates the accessibility compliance of the application against WCAG 2.1 guidelines.`,
         ``,
+        `COLOR CONTRAST ANALYSIS:`,
         `Total Color Combinations Tested: ${totalChecks}`,
         `AAA Compliant (7:1+ ratio): ${aaaCount} (${totalChecks > 0 ? Math.round((aaaCount / totalChecks) * 100) : 0}%)`,
         `AA Compliant (4.5:1+ ratio): ${aaCount} (${totalChecks > 0 ? Math.round((aaCount / totalChecks) * 100) : 0}%)`,
         `Non-Compliant: ${failCount} (${totalChecks > 0 ? Math.round((failCount / totalChecks) * 100) : 0}%)`,
         ``,
-        `Overall Compliance Rate: ${passRate}%`
+        `ARIA & SCREEN READER ANALYSIS:`,
+        `Total Elements Scanned: ${ariaTotalCount}`,
+        `Passed: ${ariaPassCount} | Warnings: ${ariaWarnCount} | Issues: ${ariaFailCount}`,
+        ``,
+        `Overall Contrast Compliance Rate: ${passRate}%`
       ];
 
       summaryText.forEach(line => {
@@ -521,7 +532,7 @@ export function AccessibilityTester() {
       if (failCount > 0) {
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
-        doc.text('Recommendations', margin, yPos);
+        doc.text('Contrast Recommendations', margin, yPos);
         yPos += 10;
 
         doc.setFontSize(10);
@@ -535,6 +546,172 @@ export function AccessibilityTester() {
         
         yPos += 5;
         doc.text('Consider adjusting foreground or background colors to achieve at least 4.5:1 contrast.', margin, yPos);
+        yPos += 15;
+      }
+
+      // ARIA Scan Results Section
+      if (ariaResults.length > 0) {
+        // Add new page for ARIA results
+        doc.addPage();
+        yPos = 20;
+
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0);
+        doc.text('ARIA & Screen Reader Analysis', margin, yPos);
+        yPos += 10;
+
+        // ARIA Summary
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`This section analyzes ARIA labels, roles, and accessible names for screen reader compatibility.`, margin, yPos);
+        yPos += 10;
+
+        // ARIA issues table (only show warnings and failures)
+        const ariaIssues = ariaResults.filter(r => r.status !== 'pass');
+        
+        if (ariaIssues.length > 0) {
+          doc.setFontSize(14);
+          doc.setFont('helvetica', 'bold');
+          doc.text('Issues Requiring Attention', margin, yPos);
+          yPos += 8;
+
+          const ariaTableData = ariaIssues.map(result => [
+            result.element,
+            result.type,
+            result.label || '(none)',
+            result.status === 'warning' ? 'Warning' : 'Issue',
+            result.issue || ''
+          ]);
+
+          autoTable(doc, {
+            startY: yPos,
+            head: [['Element', 'Type', 'Label', 'Status', 'Issue Description']],
+            body: ariaTableData,
+            headStyles: { 
+              fillColor: [89, 42, 42],
+              textColor: 255,
+              fontStyle: 'bold',
+              fontSize: 9
+            },
+            bodyStyles: {
+              fontSize: 8
+            },
+            alternateRowStyles: {
+              fillColor: [245, 245, 245]
+            },
+            columnStyles: {
+              0: { cellWidth: 25 },
+              1: { cellWidth: 25 },
+              2: { cellWidth: 40 },
+              3: { cellWidth: 20, halign: 'center' },
+              4: { cellWidth: 60 }
+            },
+            didParseCell: (data) => {
+              if (data.section === 'body' && data.column.index === 3) {
+                const status = data.cell.raw as string;
+                if (status === 'Warning') {
+                  data.cell.styles.textColor = [218, 165, 32];
+                  data.cell.styles.fontStyle = 'bold';
+                } else {
+                  data.cell.styles.textColor = [178, 34, 34];
+                  data.cell.styles.fontStyle = 'bold';
+                }
+              }
+            }
+          });
+
+          yPos = (doc as any).lastAutoTable.finalY + 15;
+        } else {
+          doc.setTextColor(34, 139, 34);
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'bold');
+          doc.text('All scanned elements passed ARIA validation!', margin, yPos);
+          yPos += 15;
+        }
+
+        // Element type breakdown
+        if (yPos > 240) {
+          doc.addPage();
+          yPos = 20;
+        }
+
+        doc.setTextColor(0);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Element Type Breakdown', margin, yPos);
+        yPos += 10;
+
+        const typeBreakdown: Record<string, { pass: number; warning: number; fail: number }> = {};
+        ariaResults.forEach(r => {
+          if (!typeBreakdown[r.type]) {
+            typeBreakdown[r.type] = { pass: 0, warning: 0, fail: 0 };
+          }
+          typeBreakdown[r.type][r.status]++;
+        });
+
+        const breakdownData = Object.entries(typeBreakdown).map(([type, counts]) => [
+          type,
+          counts.pass.toString(),
+          counts.warning.toString(),
+          counts.fail.toString(),
+          (counts.pass + counts.warning + counts.fail).toString()
+        ]);
+
+        autoTable(doc, {
+          startY: yPos,
+          head: [['Element Type', 'Passed', 'Warnings', 'Issues', 'Total']],
+          body: breakdownData,
+          headStyles: { 
+            fillColor: [89, 42, 42],
+            textColor: 255,
+            fontStyle: 'bold'
+          },
+          bodyStyles: {
+            fontSize: 10
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245]
+          },
+          columnStyles: {
+            0: { cellWidth: 50 },
+            1: { cellWidth: 30, halign: 'center' },
+            2: { cellWidth: 30, halign: 'center' },
+            3: { cellWidth: 30, halign: 'center' },
+            4: { cellWidth: 30, halign: 'center' }
+          }
+        });
+
+        yPos = (doc as any).lastAutoTable.finalY + 15;
+
+        // ARIA Best Practices
+        if (yPos > 220) {
+          doc.addPage();
+          yPos = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('ARIA Best Practices Reference', margin, yPos);
+        yPos += 10;
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        
+        const ariaBestPractices = [
+          '• All interactive elements must have accessible names (aria-label, text content, or title)',
+          '• Images require alt attributes (use empty alt="" for decorative images)',
+          '• Heading levels should not skip (e.g., h1 to h3 without h2)',
+          '• aria-label should match or describe visible text for voice control users',
+          '• Use aria-live regions for dynamic content updates',
+          '• Buttons should have descriptive labels that indicate their action',
+          '• Form inputs must have associated labels',
+        ];
+
+        ariaBestPractices.forEach(line => {
+          doc.text(line, margin, yPos);
+          yPos += 6;
+        });
       }
 
       // Footer
