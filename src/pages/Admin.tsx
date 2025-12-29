@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -55,9 +55,19 @@ export default function Admin() {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="font-display text-3xl font-bold text-foreground mb-2">Admin Panel</h1>
-            <p className="text-muted-foreground">Manage courses, lessons, and review submissions.</p>
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="font-display text-3xl font-bold text-foreground mb-2">Admin Panel</h1>
+              <p className="text-muted-foreground">Manage courses, lessons, and review submissions.</p>
+            </div>
+            {hasRole('admin') && (
+              <Link to="/admin/security">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Shield className="h-4 w-4" />
+                  Security Docs
+                </Button>
+              </Link>
+            )}
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

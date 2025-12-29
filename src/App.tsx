@@ -18,6 +18,7 @@ import BeatLicense from "./pages/BeatLicense";
 import BeatLibrary from "./pages/BeatLibrary";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
+import SecurityDocs from "./pages/SecurityDocs";
 import AuthCallback from "./pages/AuthCallback";
 import AuthDiagnostics from "./pages/AuthDiagnostics";
 import LabApplication from "./pages/LabApplication";
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/beats" element={<ProtectedRoute><BeatLibrary /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+            <Route path="/admin/security" element={<ProtectedRoute><SecurityDocs /></ProtectedRoute>} />
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             <Route path="/auth/diagnostics" element={<AuthDiagnostics />} />
             <Route path="/apply" element={<LabApplication />} />
