@@ -349,6 +349,39 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message: string
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -356,6 +389,8 @@ export type Database = {
           full_name: string | null
           has_publishing_account: boolean | null
           id: string
+          instagram: string | null
+          linktree: string | null
           name: string | null
           patreon_id: string | null
           patreon_tier: Database["public"]["Enums"]["patreon_tier"] | null
@@ -363,6 +398,8 @@ export type Database = {
           publisher_ipi: string | null
           publishing_company: string | null
           stage_name: string | null
+          tiktok: string | null
+          twitter: string | null
           updated_at: string
           user_id: string
           writer_ipi: string | null
@@ -373,6 +410,8 @@ export type Database = {
           full_name?: string | null
           has_publishing_account?: boolean | null
           id?: string
+          instagram?: string | null
+          linktree?: string | null
           name?: string | null
           patreon_id?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
@@ -380,6 +419,8 @@ export type Database = {
           publisher_ipi?: string | null
           publishing_company?: string | null
           stage_name?: string | null
+          tiktok?: string | null
+          twitter?: string | null
           updated_at?: string
           user_id: string
           writer_ipi?: string | null
@@ -390,6 +431,8 @@ export type Database = {
           full_name?: string | null
           has_publishing_account?: boolean | null
           id?: string
+          instagram?: string | null
+          linktree?: string | null
           name?: string | null
           patreon_id?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
@@ -397,6 +440,8 @@ export type Database = {
           publisher_ipi?: string | null
           publishing_company?: string | null
           stage_name?: string | null
+          tiktok?: string | null
+          twitter?: string | null
           updated_at?: string
           user_id?: string
           writer_ipi?: string | null

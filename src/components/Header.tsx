@@ -3,11 +3,11 @@ import logoCream from '@/assets/logo-cream.png';
 import logoBlack from '@/assets/logo-black.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, ChevronDown } from 'lucide-react';
+import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { LogOut, Loader2, Menu, User, Moon, Sun } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
+import { NotificationBell } from '@/components/NotificationBell';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -204,6 +204,9 @@ export function Header({ showNav = true }: HeaderProps) {
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
             <div className="hidden md:flex items-center gap-3">
+              {/* Notifications */}
+              <NotificationBell />
+              
               {/* User Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
