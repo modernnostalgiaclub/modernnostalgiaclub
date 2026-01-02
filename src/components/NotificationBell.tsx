@@ -130,7 +130,13 @@ export function NotificationBell() {
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="font-semibold">Notifications</h3>
+          <Link 
+            to="/notifications" 
+            onClick={() => setOpen(false)}
+            className="font-semibold hover:text-primary transition-colors"
+          >
+            Notifications
+          </Link>
           {unreadCount > 0 && (
             <Button
               variant="ghost"

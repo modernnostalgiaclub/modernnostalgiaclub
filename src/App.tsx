@@ -26,6 +26,7 @@ import LabApplication from "./pages/LabApplication";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import MemberDirectory from "./pages/MemberDirectory";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/reference/beat-license" element={<ProtectedRoute><BeatLicense /></ProtectedRoute>} />
             <Route path="/beats" element={<ProtectedRoute><BeatLibrary /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/admin/security" element={<ProtectedRoute><SecurityDocs /></ProtectedRoute>} />
             <Route path="/admin/monitoring" element={<ProtectedRoute><SecurityMonitoring /></ProtectedRoute>} />
