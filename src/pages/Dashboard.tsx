@@ -23,7 +23,8 @@ import {
   UserCircle,
   MessageSquare,
   CheckCircle2,
-  Circle
+  Circle,
+  Calendar
 } from 'lucide-react';
 
 const fadeIn = {
@@ -46,6 +47,7 @@ export default function Dashboard() {
   const [progressLoading, setProgressLoading] = useState(true);
   const [hasCommented, setHasCommented] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [hasStartedTracker, setHasStartedTracker] = useState(false);
   const [checklistLoading, setChecklistLoading] = useState(true);
 
   // Show welcome toast for returning members
@@ -121,6 +123,14 @@ export default function Dashboard() {
           .eq('user_id', user.id);
         
         setHasSubmitted((submissionCount || 0) > 0);
+
+        // Check if user has started the 30-day tracker
+        const { count: trackerCount } = await supabase
+          .from('tracker_sessions')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        
+        setHasStartedTracker((trackerCount || 0) > 0);
       } catch (error) {
         console.error('Error fetching checklist status:', error);
       } finally {
@@ -326,7 +336,20 @@ export default function Dashboard() {
                       </span>
                     </Link>
 
-                    {/* 5. Check out Reference Shelf */}
+                    {/* 5. Start 30-Day Tracker */}
+                    <Link to="/reference/30-day-tracker" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
+                      {hasStartedTracker ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      )}
+                      <Calendar className="w-5 h-5 text-maroon flex-shrink-0" />
+                      <span className={hasStartedTracker ? 'text-muted-foreground line-through' : ''}>
+                        Start the 30-Day Implementation Tracker
+                      </span>
+                    </Link>
+
+                    {/* 6. Check out Reference Shelf */}
                     <Link to="/reference" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
                       <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                       <BookOpen className="w-5 h-5 text-maroon flex-shrink-0" />

@@ -47,7 +47,7 @@ const App = () => (
             <Route path="/studio" element={<ProtectedRoute><StudioFloor /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/members" element={<ProtectedRoute><MemberDirectory /></ProtectedRoute>} />
-            <Route path="/reference" element={<ProtectedRoute><ReferenceShelf /></ProtectedRoute>} />
+            <Route path="/reference" element={<ReferenceShelf />} />
             <Route path="/reference/30-day-tracker" element={<ProtectedRoute><ImplementationTracker /></ProtectedRoute>} />
             <Route path="/reference/beat-license" element={<ProtectedRoute><BeatLicense /></ProtectedRoute>} />
             <Route path="/beats" element={<ProtectedRoute><BeatLibrary /></ProtectedRoute>} />
