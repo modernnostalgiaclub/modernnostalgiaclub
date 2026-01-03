@@ -18,12 +18,13 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { AdminLessonProgress } from '@/components/AdminLessonProgress';
 import { AccessibilityTester } from '@/components/AccessibilityTester';
 import { AdminNotificationSender } from '@/components/AdminNotificationSender';
+import { AdminSiteSettings } from '@/components/AdminSiteSettings';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -117,6 +118,10 @@ export default function Admin() {
                 <Bell className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Notify
               </TabsTrigger>
+              <TabsTrigger value="settings" className="gap-2" aria-label="Site settings">
+                <Settings className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Settings
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
@@ -161,6 +166,10 @@ export default function Admin() {
 
             <TabsContent value="notifications">
               <AdminNotificationSender />
+            </TabsContent>
+
+            <TabsContent value="settings">
+              <AdminSiteSettings />
             </TabsContent>
           </Tabs>
         </main>
