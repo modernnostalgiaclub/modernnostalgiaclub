@@ -350,6 +350,54 @@ export default function LandingPage() {
       
       {/* Blog Section - Patreon Posts */}
       <PatreonBlog />
+
+      {/* Events Section - Eventbrite Embed */}
+      <section id="events" className="py-24 border-t border-border/50">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel className="mb-4">Upcoming Events</SectionLabel>
+            
+            <h2 className="text-3xl md:text-5xl font-display mb-6 tracking-wide">
+              Join Us In Person.<br />
+              <span className="text-primary">Build Your Network.</span>
+            </h2>
+            
+            <p className="text-lg text-muted-foreground mb-12 max-w-3xl">
+              From songwriter camps to community workshops, our events connect creators with opportunities. 
+              Check out what's coming up and reserve your spot.
+            </p>
+            
+            {/* Eventbrite Widget Embed */}
+            <div className="bg-card border border-border rounded-lg p-6 md:p-8">
+              <div className="text-center">
+                <Calendar className="w-12 h-12 text-maroon mx-auto mb-4" />
+                <h3 className="font-display text-xl mb-2">Event Calendar</h3>
+                <p className="text-muted-foreground mb-6">
+                  Connect your Eventbrite account to display upcoming events here.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <Button variant="maroon" asChild>
+                    <a 
+                      href="https://www.eventbrite.com/o/modernnostalgiaclub" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      View Events on Eventbrite
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
       
       {/* Partners & Sponsors Section */}
       <section id="partners" className="py-24 border-t border-border/50">
