@@ -223,7 +223,7 @@ export default function BeatLicense() {
                   Submit Another Request
                 </Button>
                 <Button variant="maroon" onClick={() => navigate('/reference')}>
-                  Back to Reference Shelf
+                  Back to Artist Resources
                 </Button>
               </div>
             </div>

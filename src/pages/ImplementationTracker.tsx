@@ -298,7 +298,7 @@ export default function ImplementationTracker() {
             <Link to="/reference">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Reference Shelf
+                Back to Artist Resources
               </Button>
             </Link>
             <div className="flex flex-wrap gap-2">

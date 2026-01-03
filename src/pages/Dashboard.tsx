@@ -349,11 +349,11 @@ export default function Dashboard() {
                       </span>
                     </Link>
 
-                    {/* 6. Check out Reference Shelf */}
+                    {/* 6. Check out Artist Resources */}
                     <Link to="/reference" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
                       <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                       <BookOpen className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span>Check out the Reference Shelf</span>
+                      <span>Check out Artist Resources</span>
                     </Link>
                   </div>
                 )}
@@ -388,7 +388,7 @@ export default function Dashboard() {
                   },
                   { 
                     icon: BookOpen, 
-                    title: 'Reference Shelf', 
+                    title: 'Artist Resources', 
                     desc: 'Examples & case studies',
                     link: '/reference',
                     available: true
