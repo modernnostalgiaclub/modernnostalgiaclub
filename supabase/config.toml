@@ -9,6 +9,9 @@ verify_jwt = true
 [functions.delete-account]
 verify_jwt = false
 
+[functions.eventbrite-webhook]
+verify_jwt = false
+
 [functions.patreon-auth]
 verify_jwt = false
 
