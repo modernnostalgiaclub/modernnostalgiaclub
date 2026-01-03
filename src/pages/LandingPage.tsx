@@ -374,25 +374,27 @@ export default function LandingPage() {
             </p>
             
             {/* Eventbrite Widget Embed */}
-            <div className="bg-card border border-border rounded-lg p-6 md:p-8">
-              <div className="text-center">
-                <Calendar className="w-12 h-12 text-maroon mx-auto mb-4" />
-                <h3 className="font-display text-xl mb-2">Event Calendar</h3>
-                <p className="text-muted-foreground mb-6">
-                  Connect your Eventbrite account to display upcoming events here.
-                </p>
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Button variant="maroon" asChild>
-                    <a 
-                      href="https://www.eventbrite.com/o/modernnostalgiaclub" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                    >
-                      View Events on Eventbrite
-                      <ExternalLink className="w-4 h-4 ml-2" />
-                    </a>
-                  </Button>
-                </div>
+            <div className="bg-card border border-border rounded-lg overflow-hidden">
+              <iframe 
+                src="https://www.eventbrite.com/o/modernnostalgiaclub-llc-125694284729"
+                width="100%"
+                height="500"
+                frameBorder="0"
+                title="Eventbrite Events - ModernNostalgia.club"
+                className="w-full min-h-[500px]"
+                loading="lazy"
+              />
+              <div className="p-6 border-t border-border text-center">
+                <Button variant="maroon" asChild>
+                  <a 
+                    href="https://modernnostalgiaclub.eventbrite.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    View All Events on Eventbrite
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                </Button>
               </div>
             </div>
           </motion.div>
