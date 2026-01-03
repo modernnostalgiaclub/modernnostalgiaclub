@@ -78,7 +78,10 @@ export function Header({ showNav = true }: HeaderProps) {
             Studio Floor
           </Link>
           <Link to="/reference" className={linkClasses}>
-            Reference
+            Artist Resources
+          </Link>
+          <Link to="/events" className={linkClasses}>
+            Events
           </Link>
           <Link to="/beats" className={linkClasses}>
             Beat Library
@@ -139,7 +142,10 @@ export function Header({ showNav = true }: HeaderProps) {
             Studio Floor
           </Link>
           <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Reference
+            Artist Resources
+          </Link>
+          <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Events
           </Link>
           <Link to="/beats" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Beat Library

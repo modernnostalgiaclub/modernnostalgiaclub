@@ -199,7 +199,7 @@ export default function ReferenceShelf() {
             className="max-w-4xl mx-auto"
           >
             <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">Reference Shelf</SectionLabel>
+              <SectionLabel className="mb-4">Artist Resources</SectionLabel>
               <h1 className="text-4xl md:text-5xl font-display mb-4">
                 Professional Archive
               </h1>

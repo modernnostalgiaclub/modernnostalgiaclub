@@ -200,7 +200,7 @@ export default function LandingPage() {
                 },
                 { 
                   icon: TrendingUp, 
-                  title: 'Reference Shelf', 
+                  title: 'Artist Resources', 
                   desc: 'Industry examples',
                   details: 'Real-world case studies of successful sync placements, licensing deals, and artist business models. See exactly how other artists structure their income streams and learn from their strategies.'
                 },

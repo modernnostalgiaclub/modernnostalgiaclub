@@ -12,7 +12,8 @@ import Classroom from "./pages/Classroom";
 import CourseDetail from "./pages/CourseDetail";
 import StudioFloor from "./pages/StudioFloor";
 import Community from "./pages/Community";
-import ReferenceShelf from "./pages/ReferenceShelf";
+import ArtistResources from "./pages/ReferenceShelf";
+import Events from "./pages/Events";
 import ImplementationTracker from "./pages/ImplementationTracker";
 import BeatLicense from "./pages/BeatLicense";
 import BeatLibrary from "./pages/BeatLibrary";
@@ -47,7 +48,8 @@ const App = () => (
             <Route path="/studio" element={<ProtectedRoute><StudioFloor /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/members" element={<ProtectedRoute><MemberDirectory /></ProtectedRoute>} />
-            <Route path="/reference" element={<ReferenceShelf />} />
+            <Route path="/reference" element={<ArtistResources />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/reference/30-day-tracker" element={<ProtectedRoute><ImplementationTracker /></ProtectedRoute>} />
             <Route path="/reference/beat-license" element={<ProtectedRoute><BeatLicense /></ProtectedRoute>} />
             <Route path="/beats" element={<ProtectedRoute><BeatLibrary /></ProtectedRoute>} />

@@ -33,7 +33,12 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/reference" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Reference Shelf
+                  Artist Resources
+                </Link>
+              </li>
+              <li>
+                <Link to="/events" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Events
                 </Link>
               </li>
             </ul>
