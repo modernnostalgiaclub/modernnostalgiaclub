@@ -1,10 +1,52 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encode as hexEncode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-patreon-signature, x-patreon-event',
 };
+
+// Verify Patreon webhook signature using HMAC-MD5
+async function verifyWebhookSignature(body: string, signature: string | null): Promise<boolean> {
+  if (!signature) {
+    console.error('No signature provided in webhook request');
+    return false;
+  }
+
+  const webhookSecret = Deno.env.get('PATREON_WEBHOOK_SECRET');
+  if (!webhookSecret) {
+    console.error('PATREON_WEBHOOK_SECRET not configured');
+    return false;
+  }
+
+  try {
+    // Patreon uses HMAC-MD5 for webhook signatures
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(webhookSecret),
+      { name: 'HMAC', hash: 'MD5' },
+      false,
+      ['sign']
+    );
+    
+    const signatureBytes = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
+    const expectedSignature = new TextDecoder().decode(hexEncode(new Uint8Array(signatureBytes)));
+    
+    // Compare signatures (constant-time comparison to prevent timing attacks)
+    const isValid = expectedSignature.toLowerCase() === signature.toLowerCase();
+    
+    if (!isValid) {
+      console.error('Webhook signature mismatch');
+    }
+    
+    return isValid;
+  } catch (error) {
+    console.error('Error verifying webhook signature:', error);
+    return false;
+  }
+}
 
 // Tier hierarchy for access control
 const tierHierarchy = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
@@ -54,7 +96,20 @@ serve(async (req) => {
       });
     }
 
-    const payload = await req.json();
+    // Verify webhook signature for security
+    const signature = req.headers.get('x-patreon-signature');
+    const rawBody = await req.text();
+    
+    const isValid = await verifyWebhookSignature(rawBody, signature);
+    if (!isValid) {
+      console.error('Invalid webhook signature - rejecting request');
+      return new Response(JSON.stringify({ error: 'Invalid signature' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const payload = JSON.parse(rawBody);
     console.log('Webhook payload:', JSON.stringify(payload, null, 2));
 
     // Handle posts:publish event
