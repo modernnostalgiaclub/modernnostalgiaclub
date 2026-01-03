@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useAuth } from '@/contexts/AuthContext';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +20,7 @@ import {
   Download,
   Wrench,
   Calendar,
+  Lock,
   
 } from 'lucide-react';
 
@@ -143,6 +146,7 @@ type Track = {
 // Case studies removed - replaced with AI Money Coach
 
 export default function ReferenceShelf() {
+  const { user, signInWithPatreon } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loadingResources, setLoadingResources] = useState(true);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -228,11 +232,17 @@ export default function ReferenceShelf() {
                             <CardDescription className="mt-2">{track.description}</CardDescription>
                           </div>
                           {track.is_internal ? (
-                            <Button variant="maroon" size="icon" asChild>
-                              <Link to={track.link}>
-                                <Calendar className="w-4 h-4" />
-                              </Link>
-                            </Button>
+                            user ? (
+                              <Button variant="maroon" size="icon" asChild>
+                                <Link to={track.link}>
+                                  <Calendar className="w-4 h-4" />
+                                </Link>
+                              </Button>
+                            ) : (
+                              <Button variant="outline" size="icon" disabled>
+                                <Lock className="w-4 h-4" />
+                              </Button>
+                            )
                           ) : (
                             <Button variant="maroon" size="icon" asChild>
                               <a 
@@ -251,12 +261,23 @@ export default function ReferenceShelf() {
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-muted-foreground">by {track.artist}</span>
                           {track.is_internal ? (
-                            <Button variant="outline" size="sm" asChild>
-                              <Link to={track.link}>
-                                Open Tracker
-                                <ExternalLink className="ml-2 w-4 h-4" />
-                              </Link>
-                            </Button>
+                            user ? (
+                              <Button variant="outline" size="sm" asChild>
+                                <Link to={track.link}>
+                                  Open Tracker
+                                  <ExternalLink className="ml-2 w-4 h-4" />
+                                </Link>
+                              </Button>
+                            ) : (
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => signInWithPatreon()}
+                              >
+                                <Lock className="w-4 h-4 mr-2" />
+                                Log in to access
+                              </Button>
+                            )
                           ) : (
                             <Button variant="outline" size="sm" asChild>
                               <a 
@@ -476,6 +497,8 @@ export default function ReferenceShelf() {
           </motion.div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }
