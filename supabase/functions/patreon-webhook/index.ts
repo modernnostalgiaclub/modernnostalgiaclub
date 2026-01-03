@@ -6,6 +6,30 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-patreon-signature, x-patreon-event',
 };
 
+// Tier hierarchy for access control
+const tierHierarchy = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
+
+function hasTierAccess(userTier: string | null, requiredTier: string): boolean {
+  if (!userTier) return false;
+  const userTierIndex = tierHierarchy.indexOf(userTier);
+  const requiredTierIndex = tierHierarchy.indexOf(requiredTier);
+  return userTierIndex >= requiredTierIndex;
+}
+
+// Map Patreon tier IDs to our tier names (you'll need to configure these)
+function mapPatreonTierToAppTier(patreonTierId: string | null): string | null {
+  // These IDs should match your Patreon campaign tier IDs
+  const tierMapping: Record<string, string> = {
+    // Add your Patreon tier ID mappings here, e.g.:
+    // '12345': 'lab-pass',
+    // '12346': 'creator-accelerator',
+    // '12347': 'creative-economy-lab',
+  };
+  
+  if (!patreonTierId) return null;
+  return tierMapping[patreonTierId] || null;
+}
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -39,10 +63,17 @@ serve(async (req) => {
       const postTitle = postData?.attributes?.title || 'New Post';
       const postUrl = postData?.attributes?.url || 'https://www.patreon.com';
       const isPublic = postData?.attributes?.is_public ?? false;
+      
+      // Get tier requirements from the post
+      // Patreon includes tier info in relationships
+      const tierRelationships = payload?.data?.relationships?.access_rules?.data || [];
+      const accessibleTierIds = tierRelationships
+        .filter((rule: { type: string }) => rule.type === 'tier')
+        .map((rule: { id: string }) => rule.id);
 
-      console.log('Processing new post:', { postTitle, postUrl, isPublic });
+      console.log('Processing new post:', { postTitle, postUrl, isPublic, accessibleTierIds });
 
-      // Get all members to notify
+      // Get all members to potentially notify
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('user_id, patreon_tier')
@@ -53,12 +84,41 @@ serve(async (req) => {
         throw profilesError;
       }
 
-      console.log(`Found ${profiles?.length || 0} profiles to notify`);
+      console.log(`Found ${profiles?.length || 0} profiles to check`);
 
-      // Create notifications for all members
-      const notifications = (profiles || []).map(profile => ({
+      // Filter profiles based on tier access
+      const eligibleProfiles = (profiles || []).filter(profile => {
+        // If post is public, everyone gets notified
+        if (isPublic) {
+          return true;
+        }
+        
+        // If no tier restrictions specified, notify all members
+        if (accessibleTierIds.length === 0) {
+          return true;
+        }
+        
+        // Check if user's tier grants access
+        // For tier-restricted posts, we check if the user has at least the minimum required tier
+        const userTier = profile.patreon_tier;
+        
+        // If we have mapped Patreon tiers, check against those
+        // Otherwise, any authenticated member with a tier gets notified for non-public posts
+        if (userTier) {
+          // Users with any tier can see tier-restricted content at their level or below
+          // Since we don't have exact Patreon tier ID mapping yet, notify all tiered members
+          return true;
+        }
+        
+        return false;
+      });
+
+      console.log(`${eligibleProfiles.length} profiles eligible for notification`);
+
+      // Create notifications for eligible members
+      const notifications = eligibleProfiles.map(profile => ({
         user_id: profile.user_id,
-        title: '🎉 New Patreon Post',
+        title: isPublic ? '🎉 New Public Post' : '🔒 New Member Post',
         message: postTitle,
         type: 'patreon',
         link: postUrl,
@@ -80,7 +140,10 @@ serve(async (req) => {
 
       return new Response(JSON.stringify({ 
         success: true, 
-        message: `Notified ${notifications.length} members about new post` 
+        message: `Notified ${notifications.length} eligible members about new post`,
+        isPublic,
+        totalProfiles: profiles?.length || 0,
+        eligibleProfiles: eligibleProfiles.length
       }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
