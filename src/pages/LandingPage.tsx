@@ -373,29 +373,26 @@ export default function LandingPage() {
               Check out what's coming up and reserve your spot.
             </p>
             
-            {/* Eventbrite Widget Embed */}
-            <div className="bg-card border border-border rounded-lg overflow-hidden">
-              <iframe 
-                src="https://www.eventbrite.com/o/modernnostalgiaclub-llc-125694284729"
-                width="100%"
-                height="500"
-                frameBorder="0"
-                title="Eventbrite Events - ModernNostalgia.club"
-                className="w-full min-h-[500px]"
-                loading="lazy"
-              />
-              <div className="p-6 border-t border-border text-center">
-                <Button variant="maroon" asChild>
-                  <a 
-                    href="https://modernnostalgiaclub.eventbrite.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    View All Events on Eventbrite
-                    <ExternalLink className="w-4 h-4 ml-2" />
-                  </a>
-                </Button>
-              </div>
+            {/* Events CTA Card */}
+            <div className="bg-card border border-border rounded-lg p-8 text-center">
+              <Calendar className="w-12 h-12 text-maroon mx-auto mb-4" />
+              <h3 className="font-display text-xl mb-3">Browse Upcoming Events</h3>
+              <p className="text-muted-foreground mb-4 max-w-xl mx-auto">
+                Workshops, networking sessions, and exclusive member events.
+                <span className="block mt-1 text-sm font-medium text-maroon">
+                  Members receive discounted pricing!
+                </span>
+              </p>
+              <Button variant="maroon" asChild>
+                <a 
+                  href="https://modernnostalgiaclub.eventbrite.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  View All Events on Eventbrite
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                </a>
+              </Button>
             </div>
           </motion.div>
         </div>
