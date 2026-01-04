@@ -84,18 +84,27 @@ export default function Events() {
               </Button>
             </motion.div>
 
-            {/* Eventbrite Widget - Main Events Display */}
+            {/* Events Display - Link to Eventbrite */}
             <motion.div variants={fadeIn} className="mb-12">
-              <div className="bg-card border border-border rounded-lg overflow-hidden">
-                <iframe 
-                  src="https://www.eventbrite.com/o/modernnostalgiaclub-llc-125694284729"
-                  width="100%"
-                  height="600"
-                  frameBorder="0"
-                  title="Eventbrite Events - ModernNostalgia.club"
-                  className="w-full min-h-[600px]"
-                  loading="lazy"
-                />
+              <div className="bg-card border border-border rounded-lg p-8 text-center">
+                <Calendar className="w-16 h-16 text-maroon mx-auto mb-6" />
+                <h2 className="font-display text-2xl mb-4">Browse Our Events</h2>
+                <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+                  View all upcoming workshops, networking sessions, and member events on our Eventbrite page.
+                  <span className="block mt-2 text-sm font-medium text-maroon">
+                    Members receive exclusive discounts on all events!
+                  </span>
+                </p>
+                <Button variant="maroon" size="lg" asChild>
+                  <a 
+                    href="https://modernnostalgiaclub.eventbrite.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    View All Events
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </a>
+                </Button>
               </div>
             </motion.div>
 
