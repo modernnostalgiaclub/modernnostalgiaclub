@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { encode as hexEncode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-patreon-signature, x-patreon-event',
-};
+// Note: CORS headers removed - webhooks are server-to-server and don't need CORS
+// Security is handled via HMAC signature verification
 
 // Verify Patreon webhook signature using HMAC-MD5
 async function verifyWebhookSignature(body: string, signature: string | null): Promise<boolean> {
@@ -73,9 +71,10 @@ function mapPatreonTierToAppTier(patreonTierId: string | null): string | null {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
+  // Webhooks are server-to-server, no CORS preflight needed
+  // If a browser sends OPTIONS, just reject it
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { status: 405 });
   }
 
   try {
@@ -92,7 +91,7 @@ serve(async (req) => {
       console.log('Ignoring non-post event:', eventType);
       return new Response(JSON.stringify({ message: 'Event ignored' }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -105,7 +104,7 @@ serve(async (req) => {
       console.error('Invalid webhook signature - rejecting request');
       return new Response(JSON.stringify({ error: 'Invalid signature' }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -201,7 +200,7 @@ serve(async (req) => {
         eligibleProfiles: eligibleProfiles.length
       }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -210,13 +209,13 @@ serve(async (req) => {
       console.log('Post updated - no notification sent for updates');
       return new Response(JSON.stringify({ message: 'Post update acknowledged' }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
     return new Response(JSON.stringify({ message: 'Event processed' }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
 
   } catch (error: unknown) {
@@ -224,7 +223,7 @@ serve(async (req) => {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 });
