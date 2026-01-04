@@ -5,10 +5,8 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Note: CORS headers removed - webhooks are server-to-server and don't need CORS
+// Security is handled by Eventbrite's webhook delivery system
 
 interface EventbriteEvent {
   api_url: string;
@@ -23,9 +21,10 @@ interface EventbriteEvent {
 const handler = async (req: Request): Promise<Response> => {
   console.log("Eventbrite webhook received");
   
-  // Handle CORS preflight requests
+  // Webhooks are server-to-server, no CORS preflight needed
+  // If a browser sends OPTIONS, just reject it
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { status: 405 });
   }
 
   try {
@@ -38,7 +37,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`Ignoring action: ${action}`);
       return new Response(JSON.stringify({ message: "Action ignored" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -67,7 +66,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Both notification types are disabled");
       return new Response(JSON.stringify({ message: "Notifications disabled" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -87,7 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!profiles || profiles.length === 0) {
       return new Response(JSON.stringify({ message: "No members to notify" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -204,7 +203,7 @@ const handler = async (req: Request): Promise<Response> => {
       }),
       {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
       }
     );
   } catch (error: any) {
@@ -213,7 +212,7 @@ const handler = async (req: Request): Promise<Response> => {
       JSON.stringify({ error: error.message }),
       {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
