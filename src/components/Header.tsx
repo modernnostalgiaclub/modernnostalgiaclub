@@ -118,9 +118,12 @@ export function Header({ showNav = true }: HeaderProps) {
         <a href="#how-it-works" className={linkClasses}>
           How It Works
         </a>
-        <a href="#why-this-exists" className={linkClasses}>
-          Why This Exists
-        </a>
+        <Link to="/reference" className={linkClasses}>
+          Artist Resources
+        </Link>
+        <Link to="/events" className={linkClasses}>
+          Events
+        </Link>
         <a href="#partners" className={linkClasses}>
           Partners
         </a>
@@ -177,9 +180,12 @@ export function Header({ showNav = true }: HeaderProps) {
         <a href="#how-it-works" className={mobileLinkClasses} onClick={closeMobileMenu}>
           How It Works
         </a>
-        <a href="#why-this-exists" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Why This Exists
-        </a>
+        <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Artist Resources
+        </Link>
+        <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Events
+        </Link>
         <a href="#partners" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Partners
         </a>
