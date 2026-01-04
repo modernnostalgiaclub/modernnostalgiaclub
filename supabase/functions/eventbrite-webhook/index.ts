@@ -1,12 +1,56 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { encode as hexEncode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const EVENTBRITE_WEBHOOK_SECRET = Deno.env.get("EVENTBRITE_WEBHOOK_SECRET");
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-// Note: CORS headers removed - webhooks are server-to-server and don't need CORS
-// Security is handled by Eventbrite's webhook delivery system
+// Verify Eventbrite webhook signature using HMAC-SHA256
+async function verifyWebhookSignature(body: string, signature: string | null): Promise<boolean> {
+  if (!signature) {
+    console.error("No signature provided in request");
+    return false;
+  }
+
+  if (!EVENTBRITE_WEBHOOK_SECRET) {
+    console.error("EVENTBRITE_WEBHOOK_SECRET not configured");
+    return false;
+  }
+
+  try {
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(EVENTBRITE_WEBHOOK_SECRET);
+    const messageData = encoder.encode(body);
+
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      keyData,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
+    const signatureBuffer = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
+    const computedSignature = btoa(String.fromCharCode(...new Uint8Array(signatureBuffer)));
+
+    // Constant-time comparison to prevent timing attacks
+    if (computedSignature.length !== signature.length) {
+      return false;
+    }
+
+    let result = 0;
+    for (let i = 0; i < computedSignature.length; i++) {
+      result |= computedSignature.charCodeAt(i) ^ signature.charCodeAt(i);
+    }
+
+    return result === 0;
+  } catch (error) {
+    console.error("Error verifying webhook signature:", error);
+    return false;
+  }
+}
 
 interface EventbriteEvent {
   api_url: string;
@@ -28,7 +72,25 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const payload: EventbriteEvent = await req.json();
+    // Get raw body for signature verification
+    const rawBody = await req.text();
+    
+    // Verify webhook signature
+    const signature = req.headers.get("x-eventbrite-signature");
+    const isValidSignature = await verifyWebhookSignature(rawBody, signature);
+    
+    if (!isValidSignature) {
+      console.error("Invalid webhook signature - rejecting request");
+      return new Response(JSON.stringify({ error: "Invalid signature" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+    console.log("Webhook signature verified successfully");
+    
+    // Parse body after signature verification
+    const payload: EventbriteEvent = JSON.parse(rawBody);
     console.log("Webhook payload:", JSON.stringify(payload, null, 2));
 
     // Check if this is an event.created or event.published action
