@@ -85,60 +85,63 @@ serve(async (req) => {
 
     const { startDate, endDate, granularity } = await req.json();
 
-    // Return the analytics data structure
-    // In production, this would fetch from Lovable's analytics API
-    // For now, we return the current analytics snapshot
+    // Fetch real analytics from Lovable API
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    const projectId = Deno.env.get("SUPABASE_URL")?.match(/https:\/\/([^.]+)/)?.[1] || "gpcpovoikxgkgnabumlx";
+    
+    if (!lovableApiKey) {
+      console.error("LOVABLE_API_KEY not configured");
+      return new Response(
+        JSON.stringify({ error: "Analytics API not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Call Lovable Analytics API
+    const analyticsUrl = `https://api.lovable.dev/v1/projects/${projectId}/analytics`;
+    const analyticsParams = new URLSearchParams({
+      startdate: startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      enddate: endDate || new Date().toISOString().split('T')[0],
+      granularity: granularity || 'daily'
+    });
+
+    console.log("Fetching analytics from Lovable API:", `${analyticsUrl}?${analyticsParams}`);
+
+    const analyticsResponse = await fetch(`${analyticsUrl}?${analyticsParams}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!analyticsResponse.ok) {
+      const errorText = await analyticsResponse.text();
+      console.error("Lovable Analytics API error:", analyticsResponse.status, errorText);
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch analytics from Lovable API", details: errorText }),
+        { status: analyticsResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const rawAnalytics = await analyticsResponse.json();
+    console.log("Raw analytics received:", JSON.stringify(rawAnalytics).substring(0, 500));
+
+    // Transform Lovable API response to match expected format
     const analyticsData = {
-      visitors: 137,
-      pageviews: 577,
-      pageviewsPerVisit: 4.21,
-      sessionDuration: 168,
-      bounceRate: 57,
-      dailyData: [
-        { date: '2025-12-17', visitors: 0, pageviews: 0 },
-        { date: '2025-12-18', visitors: 0, pageviews: 0 },
-        { date: '2025-12-19', visitors: 0, pageviews: 0 },
-        { date: '2025-12-20', visitors: 0, pageviews: 0 },
-        { date: '2025-12-21', visitors: 65, pageviews: 344 },
-        { date: '2025-12-22', visitors: 30, pageviews: 120 },
-        { date: '2025-12-23', visitors: 22, pageviews: 73 },
-        { date: '2025-12-24', visitors: 20, pageviews: 40 },
-      ],
-      topPages: [
-        { page: '/', views: 120 },
-        { page: '/dashboard', views: 21 },
-        { page: '/admin', views: 18 },
-        { page: '/reference', views: 16 },
-        { page: '/classroom', views: 15 },
-        { page: '/studio', views: 13 },
-        { page: '/community', views: 11 },
-        { page: '/account', views: 9 },
-        { page: '/classroom/sync-licensing-handbook', views: 5 },
-        { page: '/reference/beat-license', views: 3 },
-      ],
-      sources: [
-        { source: 'Direct', visits: 73 },
-        { source: 't.co', visits: 29 },
-        { source: 'patreon.com', visits: 27 },
-        { source: 'l.instagram.com', visits: 20 },
-        { source: 'facebook.com', visits: 2 },
-        { source: 'l.threads.com', visits: 2 },
-      ],
-      devices: [
-        { device: 'mobile', count: 97 },
-        { device: 'desktop', count: 40 },
-      ],
-      countries: [
-        { country: 'US', count: 123 },
-        { country: 'Unknown', count: 4 },
-        { country: 'DE', count: 3 },
-        { country: 'CA', count: 3 },
-        { country: 'ID', count: 2 },
-        { country: 'KE', count: 1 },
-      ],
+      visitors: rawAnalytics.visitors || rawAnalytics.totalVisitors || 0,
+      pageviews: rawAnalytics.pageviews || rawAnalytics.totalPageviews || 0,
+      pageviewsPerVisit: rawAnalytics.pageviewsPerVisit || (rawAnalytics.pageviews && rawAnalytics.visitors ? (rawAnalytics.pageviews / rawAnalytics.visitors).toFixed(2) : 0),
+      sessionDuration: rawAnalytics.sessionDuration || rawAnalytics.avgSessionDuration || 0,
+      bounceRate: rawAnalytics.bounceRate || 0,
+      dailyData: rawAnalytics.dailyData || rawAnalytics.data || [],
+      topPages: rawAnalytics.topPages || rawAnalytics.pages || [],
+      sources: rawAnalytics.sources || rawAnalytics.referrers || [],
+      devices: rawAnalytics.devices || [],
+      countries: rawAnalytics.countries || rawAnalytics.locations || [],
       dateRange: {
-        start: startDate || '2025-12-17',
-        end: endDate || '2025-12-24',
+        start: startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        end: endDate || new Date().toISOString().split('T')[0],
       }
     };
 
