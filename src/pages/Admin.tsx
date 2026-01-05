@@ -1145,6 +1145,8 @@ function UsersManager() {
   async function handleUpdateTier() {
     if (!editingUser) return;
 
+    const previousTier = editingUser.patreon_tier;
+    
     const { error } = await supabase
       .from('profiles')
       .update({ patreon_tier: selectedTier })
@@ -1156,12 +1158,28 @@ function UsersManager() {
       return;
     }
 
+    // Send notification to user about tier upgrade/change
+    const isUpgrade = tierHierarchy.indexOf(selectedTier) > tierHierarchy.indexOf(previousTier || 'lab-pass');
+    const notificationTitle = isUpgrade ? '🎉 Membership Upgraded!' : 'Membership Updated';
+    const notificationMessage = isUpgrade 
+      ? `Congratulations! Your membership has been upgraded to ${tierLabel(selectedTier)}. Enjoy your new benefits!`
+      : `Your membership has been updated to ${tierLabel(selectedTier)}.`;
+
+    await supabase.from('notifications').insert({
+      user_id: editingUser.user_id,
+      title: notificationTitle,
+      message: notificationMessage,
+      type: 'info',
+      link: '/dashboard',
+    });
+
     // Log the tier update
     logAccess({
       tableName: 'profiles',
       action: 'update_tier',
       recordId: editingUser.id,
       details: { 
+        previous_tier: previousTier,
         new_tier: selectedTier,
         user_name: editingUser.name,
       },
@@ -1171,6 +1189,9 @@ function UsersManager() {
     setEditingUser(null);
     fetchData();
   }
+
+  // Tier hierarchy for upgrade detection
+  const tierHierarchy: PatreonTier[] = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
 
   async function handleUpdateRoles() {
     if (!editingUser) return;
