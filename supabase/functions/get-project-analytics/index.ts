@@ -11,6 +11,9 @@ const ALLOWED_ORIGINS = [
   'http://localhost:8080',
 ];
 
+// Cache duration in minutes
+const CACHE_DURATION_MINUTES = 15;
+
 function getCorsHeaders(origin: string | null): Record<string, string> {
   const isAllowedOrigin = origin && ALLOWED_ORIGINS.some(allowed =>
     origin === allowed || 
@@ -43,12 +46,17 @@ serve(async (req) => {
       );
     }
 
-    // Create Supabase client with user's token
+    // Create Supabase client with user's token for auth checks
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
+    
+    // Service role client for cache operations
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     // Verify the user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -84,10 +92,32 @@ serve(async (req) => {
     console.log("User authorized with role - admin:", hasAdminRole, "moderator:", hasModeratorRole);
 
     const { startDate, endDate, granularity } = await req.json();
+    
+    // Generate cache key based on request parameters
+    const effectiveStartDate = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const effectiveEndDate = endDate || new Date().toISOString().split('T')[0];
+    const effectiveGranularity = granularity || 'daily';
+    const cacheKey = `analytics_${effectiveStartDate}_${effectiveEndDate}_${effectiveGranularity}`;
+    
+    // Check cache first
+    const { data: cachedData, error: cacheError } = await supabaseAdmin
+      .from('analytics_cache')
+      .select('data, expires_at')
+      .eq('cache_key', cacheKey)
+      .maybeSingle();
+    
+    if (!cacheError && cachedData && new Date(cachedData.expires_at) > new Date()) {
+      console.log("Cache hit for key:", cacheKey);
+      return new Response(JSON.stringify(cachedData.data), {
+        headers: { ...corsHeaders, "Content-Type": "application/json", "X-Cache": "HIT" },
+      });
+    }
+    
+    console.log("Cache miss for key:", cacheKey, "- fetching fresh data");
 
     // Fetch real analytics from Lovable API
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
-    const projectId = Deno.env.get("SUPABASE_URL")?.match(/https:\/\/([^.]+)/)?.[1] || "gpcpovoikxgkgnabumlx";
+    const projectId = supabaseUrl?.match(/https:\/\/([^.]+)/)?.[1] || "gpcpovoikxgkgnabumlx";
     
     if (!lovableApiKey) {
       console.error("LOVABLE_API_KEY not configured");
@@ -100,9 +130,9 @@ serve(async (req) => {
     // Call Lovable Analytics API
     const analyticsUrl = `https://api.lovable.dev/v1/projects/${projectId}/analytics`;
     const analyticsParams = new URLSearchParams({
-      startdate: startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      enddate: endDate || new Date().toISOString().split('T')[0],
-      granularity: granularity || 'daily'
+      startdate: effectiveStartDate,
+      enddate: effectiveEndDate,
+      granularity: effectiveGranularity
     });
 
     console.log("Fetching analytics from Lovable API:", `${analyticsUrl}?${analyticsParams}`);
@@ -140,15 +170,42 @@ serve(async (req) => {
       devices: rawAnalytics.devices || [],
       countries: rawAnalytics.countries || rawAnalytics.locations || [],
       dateRange: {
-        start: startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        end: endDate || new Date().toISOString().split('T')[0],
+        start: effectiveStartDate,
+        end: effectiveEndDate,
       }
     };
 
-    console.log("Returning analytics data for date range:", startDate, "to", endDate);
+    // Store in cache (upsert to handle existing keys)
+    const expiresAt = new Date(Date.now() + CACHE_DURATION_MINUTES * 60 * 1000).toISOString();
+    const { error: upsertError } = await supabaseAdmin
+      .from('analytics_cache')
+      .upsert({
+        cache_key: cacheKey,
+        data: analyticsData,
+        expires_at: expiresAt,
+        created_at: new Date().toISOString()
+      }, { onConflict: 'cache_key' });
+    
+    if (upsertError) {
+      console.error("Failed to cache analytics:", upsertError.message);
+    } else {
+      console.log("Analytics cached with key:", cacheKey, "expires:", expiresAt);
+    }
+    
+    // Clean up expired cache entries (async, don't wait)
+    supabaseAdmin
+      .from('analytics_cache')
+      .delete()
+      .lt('expires_at', new Date().toISOString())
+      .then(({ error }) => {
+        if (error) console.error("Failed to clean expired cache:", error.message);
+        else console.log("Cleaned expired cache entries");
+      });
+
+    console.log("Returning analytics data for date range:", effectiveStartDate, "to", effectiveEndDate);
 
     return new Response(JSON.stringify(analyticsData), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json", "X-Cache": "MISS" },
     });
   } catch (error) {
     console.error("Error fetching analytics:", error);
