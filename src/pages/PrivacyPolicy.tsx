@@ -243,7 +243,7 @@ export default function PrivacyPolicy() {
             <p className="text-muted-foreground leading-relaxed mt-4">
               <strong>ModernNostalgia.club</strong><br />
               San Diego, California, United States<br />
-              Email: privacy@modernnostalgia.club
+              Email: ge@modernnostalgia.club
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
               For California residents exercising CCPA/CPRA rights, you may also contact us at the above email with the subject line "CCPA Request."
