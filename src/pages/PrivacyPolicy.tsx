@@ -201,6 +201,7 @@ export default function PrivacyPolicy() {
               <li><strong>Patreon:</strong> For authentication and membership management</li>
               <li><strong>DISCO:</strong> For beat and music catalog access</li>
               <li><strong>Eventbrite:</strong> For event registration and management</li>
+              <li><strong>JotForm:</strong> For application forms, sponsorship inquiries, and other form submissions</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
               These third parties have their own privacy policies governing the collection and use of your information. We are not responsible for the privacy practices of these third parties, and we encourage you to review their privacy policies before providing your information.
