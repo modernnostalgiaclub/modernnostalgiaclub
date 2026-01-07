@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SkipLink } from "@/components/SkipLink";
+import { CookieConsent } from "@/components/CookieConsent";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
@@ -40,6 +41,7 @@ const App = () => (
           <SkipLink />
           <Toaster />
           <Sonner />
+          <CookieConsent />
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
