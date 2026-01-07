@@ -203,7 +203,7 @@ export default function TermsOfService() {
             <p className="text-muted-foreground leading-relaxed mt-4">
               <strong>ModernNostalgia.club</strong><br />
               San Diego, California, United States<br />
-              Email: legal@modernnostalgia.club
+              Email: ge@modernnostalgia.club
             </p>
           </section>
         </div>
