@@ -1,21 +1,12 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
-import { Music, FileText, AlertTriangle, CheckCircle, ExternalLink, Loader2 } from 'lucide-react';
-import { z } from 'zod';
+import { Music, FileText, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -30,139 +21,12 @@ const stagger = {
   }
 };
 
-// Form validation schema
-const formSchema = z.object({
-  fullName: z.string().trim().min(1, "Name is required").max(100),
-  artistName: z.string().trim().max(100).optional(),
-  email: z.string().trim().email("Invalid email address").max(255),
-  beatsInterested: z.string().trim().min(1, "Please specify which beat(s) you're interested in").max(500),
-  specialRequests: z.string().trim().max(1000).optional(),
-  licenseOption: z.enum(['single', 'double']),
-  agreedToTerms: z.boolean().refine(val => val === true, {
-    message: "You must agree to the terms and conditions"
-  })
-});
-
-type FormData = z.infer<typeof formSchema>;
-
 export default function BeatLicense() {
-  const { user, hasAccessToTier } = useAuth();
+  const { hasAccessToTier } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  
-  const [formData, setFormData] = useState<Partial<FormData>>({
-    fullName: '',
-    artistName: '',
-    email: user?.email || '',
-    beatsInterested: '',
-    specialRequests: '',
-    licenseOption: 'single',
-    agreedToTerms: false
-  });
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Check if user has CEL tier access
   const hasCELAccess = hasAccessToTier('creative-economy-lab');
-
-  const totalAmount = formData.licenseOption === 'single' ? 60 : 100;
-
-  const handleChange = (field: keyof FormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when field is modified
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate form
-    const result = formSchema.safeParse(formData);
-    if (!result.success) {
-      const fieldErrors: Partial<Record<keyof FormData, string>> = {};
-      result.error.issues.forEach(err => {
-        if (err.path[0]) {
-          fieldErrors[err.path[0] as keyof FormData] = err.message;
-        }
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to submit a beat license request.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Save to database
-      const { error: dbError } = await supabase
-        .from('beat_license_submissions')
-        .insert({
-          user_id: user.id,
-          full_name: result.data.fullName,
-          artist_name: result.data.artistName || null,
-          email: result.data.email,
-          beats_interested: result.data.beatsInterested,
-          special_requests: result.data.specialRequests || null,
-          license_option: result.data.licenseOption,
-          total_amount: totalAmount,
-          payment_status: 'pending'
-        });
-
-      if (dbError) {
-        console.error('Database error:', dbError);
-        throw new Error('Failed to save submission');
-      }
-
-      // Send email notification
-      const { error: emailError } = await supabase.functions.invoke('beat-license-notification', {
-        body: {
-          fullName: result.data.fullName,
-          artistName: result.data.artistName,
-          email: result.data.email,
-          beatsInterested: result.data.beatsInterested,
-          specialRequests: result.data.specialRequests,
-          licenseOption: result.data.licenseOption,
-          totalAmount
-        }
-      });
-
-      if (emailError) {
-        console.error('Email notification error:', emailError);
-        // Don't throw - submission was saved, just notify
-        toast({
-          title: "Request submitted",
-          description: "Your request was saved but email notification may have failed. We'll still process it!",
-        });
-      } else {
-        toast({
-          title: "Request submitted successfully!",
-          description: "Check your email for confirmation. Ge Oh will reach out shortly.",
-        });
-      }
-
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error('Submission error:', error);
-      toast({
-        title: "Submission failed",
-        description: "Please try again or contact support.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // If not CEL tier, show upgrade prompt
   if (!hasCELAccess) {
@@ -190,42 +54,6 @@ export default function BeatLicense() {
                   Apply for Creative Economy Lab
                 </Button>
               </Card>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // Success state
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-background studio-grain">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <div className="max-w-2xl mx-auto text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="w-20 h-20 bg-maroon/20 rounded-full flex items-center justify-center mx-auto mb-6"
-              >
-                <CheckCircle className="w-10 h-10 text-maroon" />
-              </motion.div>
-              <h1 className="text-4xl font-display mb-4">Request Submitted!</h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Check your email for confirmation. Ge Oh will reach out to discuss your beat selection 
-                and next steps for payment and delivery.
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Button variant="outline" onClick={() => setIsSubmitted(false)}>
-                  Submit Another Request
-                </Button>
-                <Button variant="maroon" onClick={() => navigate('/reference')}>
-                  Back to Artist Resources
-                </Button>
-              </div>
             </div>
           </div>
         </main>
@@ -402,7 +230,7 @@ export default function BeatLicense() {
               </Card>
             </motion.div>
 
-            {/* Form */}
+            {/* JotForm Embed */}
             <motion.div variants={fadeIn}>
               <Card variant="elevated">
                 <CardHeader>
@@ -412,154 +240,24 @@ export default function BeatLicense() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Name Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="fullName">Your Name *</Label>
-                        <Input
-                          id="fullName"
-                          value={formData.fullName}
-                          onChange={(e) => handleChange('fullName', e.target.value)}
-                          placeholder="Full name"
-                          className={errors.fullName ? 'border-destructive' : ''}
-                        />
-                        {errors.fullName && (
-                          <p className="text-sm text-destructive">{errors.fullName}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="artistName">Artist Name</Label>
-                        <Input
-                          id="artistName"
-                          value={formData.artistName}
-                          onChange={(e) => handleChange('artistName', e.target.value)}
-                          placeholder="Stage name (optional)"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleChange('email', e.target.value)}
-                        placeholder="your@email.com"
-                        className={errors.email ? 'border-destructive' : ''}
-                      />
-                      {errors.email && (
-                        <p className="text-sm text-destructive">{errors.email}</p>
-                      )}
-                    </div>
-
-                    {/* Beats Interested */}
-                    <div className="space-y-2">
-                      <Label htmlFor="beatsInterested">Which Beat(s) Are You Interested In? *</Label>
-                      <Textarea
-                        id="beatsInterested"
-                        value={formData.beatsInterested}
-                        onChange={(e) => handleChange('beatsInterested', e.target.value)}
-                        placeholder="Enter beat name(s). If interested in multiple, separate with commas."
-                        rows={3}
-                        className={errors.beatsInterested ? 'border-destructive' : ''}
-                      />
-                      {errors.beatsInterested && (
-                        <p className="text-sm text-destructive">{errors.beatsInterested}</p>
-                      )}
-                    </div>
-
-                    {/* Special Requests */}
-                    <div className="space-y-2">
-                      <Label htmlFor="specialRequests">Any Special Requests/Questions?</Label>
-                      <Textarea
-                        id="specialRequests"
-                        value={formData.specialRequests}
-                        onChange={(e) => handleChange('specialRequests', e.target.value)}
-                        placeholder="Optional: Any questions or special requests..."
-                        rows={3}
-                      />
-                    </div>
-
-                    {/* License Option */}
-                    <div className="space-y-3">
-                      <Label>License Option *</Label>
-                      <RadioGroup
-                        value={formData.licenseOption}
-                        onValueChange={(value) => handleChange('licenseOption', value)}
-                        className="space-y-3"
-                      >
-                        <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                          <RadioGroupItem value="single" id="single" />
-                          <Label htmlFor="single" className="flex-1 cursor-pointer">
-                            <span className="font-medium">Single Exclusive Beat License</span>
-                            <span className="text-lg font-display text-maroon ml-2">$60.00</span>
-                          </Label>
-                        </div>
-                        <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                          <RadioGroupItem value="double" id="double" />
-                          <Label htmlFor="double" className="flex-1 cursor-pointer">
-                            <span className="font-medium">2 Exclusive Beat Licenses</span>
-                            <span className="text-lg font-display text-maroon ml-2">$100.00</span>
-                            <span className="text-sm text-muted-foreground ml-2">(Save $20)</span>
-                          </Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-
-                    {/* Total */}
-                    <div className="p-4 bg-muted rounded-lg">
-                      <div className="flex justify-between items-center">
-                        <span className="text-lg font-medium">Total</span>
-                        <span className="text-2xl font-display text-maroon">${totalAmount}.00</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        + 50% Master & Writer/Publisher Splits
-                      </p>
-                    </div>
-
-                    {/* Terms Agreement */}
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="terms"
-                        checked={formData.agreedToTerms as boolean}
-                        onCheckedChange={(checked) => handleChange('agreedToTerms', checked as boolean)}
-                        className={errors.agreedToTerms ? 'border-destructive' : ''}
-                      />
-                      <div className="space-y-1">
-                        <Label htmlFor="terms" className="cursor-pointer">
-                          I agree to the terms & conditions above *
-                        </Label>
-                        {errors.agreedToTerms && (
-                          <p className="text-sm text-destructive">{errors.agreedToTerms}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Submit */}
-                    <Button
-                      type="submit"
-                      variant="maroon"
-                      size="lg"
-                      className="w-full"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        'Submit License Request'
-                      )}
-                    </Button>
-
-                    <p className="text-sm text-center text-muted-foreground">
-                      Payment will be processed after Ge Oh confirms beat availability and reaches out.
-                    </p>
-                  </form>
+                  <div className="w-full min-h-[600px]">
+                    <iframe
+                      id="JotFormIFrame-253335641415150"
+                      title="Beat License Request Form"
+                      src="https://pci.jotform.com/form/253335641415150"
+                      style={{ 
+                        width: '100%', 
+                        minHeight: '600px', 
+                        border: 'none',
+                        backgroundColor: 'transparent'
+                      }}
+                      allowFullScreen
+                      allow="geolocation; microphone; camera; fullscreen"
+                    />
+                  </div>
+                  <p className="text-sm text-center text-muted-foreground mt-4">
+                    Payment will be processed after Ge Oh confirms beat availability and reaches out.
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>
