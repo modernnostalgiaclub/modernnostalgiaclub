@@ -118,6 +118,25 @@ serve(async (req) => {
       const postUrl = postData?.attributes?.url || 'https://www.patreon.com';
       const isPublic = postData?.attributes?.is_public ?? false;
       
+      // Extract post ID for idempotency check
+      const postId = postData?.id || `post_${Date.now()}`;
+      
+      // Check if we've already processed this post (idempotency)
+      const { data: existingEvent } = await supabase
+        .from('webhook_events')
+        .select('id')
+        .eq('event_id', postId)
+        .eq('source', 'patreon')
+        .maybeSingle();
+
+      if (existingEvent) {
+        console.log('Duplicate webhook already processed:', postId);
+        return new Response(JSON.stringify({ message: 'Already processed' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      
       // Get tier requirements from the post
       // Patreon includes tier info in relationships
       const tierRelationships = payload?.data?.relationships?.access_rules?.data || [];
@@ -191,6 +210,12 @@ serve(async (req) => {
 
         console.log(`Created ${notifications.length} notifications for new post`);
       }
+
+      // Record the processed post for idempotency
+      await supabase.from('webhook_events').insert({
+        event_id: postId,
+        source: 'patreon'
+      });
 
       return new Response(JSON.stringify({ 
         success: true, 

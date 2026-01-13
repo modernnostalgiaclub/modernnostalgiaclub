@@ -106,6 +106,25 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Supabase client
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Extract event ID for idempotency check
+    const eventId = payload.api_url?.split('/').pop() || `${action}_${payload.config?.webhook_id}_${Date.now()}`;
+    
+    // Check if we've already processed this event (idempotency)
+    const { data: existingEvent } = await supabase
+      .from("webhook_events")
+      .select("id")
+      .eq("event_id", eventId)
+      .eq("source", "eventbrite")
+      .maybeSingle();
+
+    if (existingEvent) {
+      console.log("Duplicate webhook ignored:", eventId);
+      return new Response(JSON.stringify({ message: "Already processed" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     // Check site settings for notification preferences
     const { data: emailSetting } = await supabase
       .from("site_settings")
@@ -126,6 +145,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!emailEnabled && !inappEnabled) {
       console.log("Both notification types are disabled");
+      // Still record the event to prevent reprocessing
+      await supabase.from("webhook_events").insert({
+        event_id: eventId,
+        source: "eventbrite"
+      });
       return new Response(JSON.stringify({ message: "Notifications disabled" }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -146,6 +170,11 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Found ${profiles?.length || 0} members to notify`);
 
     if (!profiles || profiles.length === 0) {
+      // Record the event even if no members to notify
+      await supabase.from("webhook_events").insert({
+        event_id: eventId,
+        source: "eventbrite"
+      });
       return new Response(JSON.stringify({ message: "No members to notify" }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -254,6 +283,12 @@ const handler = async (req: Request): Promise<Response> => {
         }
       }
     }
+
+    // Record the processed event for idempotency
+    await supabase.from("webhook_events").insert({
+      event_id: eventId,
+      source: "eventbrite"
+    });
 
     console.log(`Successfully sent ${emailsSent} emails, created ${notificationsCreated} in-app notifications`);
 
