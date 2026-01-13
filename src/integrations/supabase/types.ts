@@ -281,6 +281,30 @@ export type Database = {
         }
         Relationships: []
       }
+      download_email_captures: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          track_id: string
+          track_title: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          track_id: string
+          track_title?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          track_id?: string
+          track_title?: string | null
+        }
+        Relationships: []
+      }
       example_tracks: {
         Row: {
           artist: string

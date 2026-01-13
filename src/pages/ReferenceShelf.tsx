@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useAuth } from '@/contexts/AuthContext';
-
+import { EmailCaptureDialog } from '@/components/EmailCaptureDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -21,7 +21,6 @@ import {
   Wrench,
   Calendar,
   Lock,
-  
 } from 'lucide-react';
 
 const fadeIn = {
@@ -151,6 +150,15 @@ export default function ReferenceShelf() {
   const [loadingResources, setLoadingResources] = useState(true);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loadingTracks, setLoadingTracks] = useState(true);
+  
+  // Email capture dialog state
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+
+  const handleDownloadClick = (track: Track) => {
+    setSelectedTrack(track);
+    setEmailDialogOpen(true);
+  };
 
   useEffect(() => {
     async function fetchResources() {
@@ -243,15 +251,22 @@ export default function ReferenceShelf() {
                                 <Lock className="w-4 h-4" />
                               </Button>
                             )
+                          ) : track.is_download ? (
+                            <Button 
+                              variant="maroon" 
+                              size="icon" 
+                              onClick={() => handleDownloadClick(track)}
+                            >
+                              <Download className="w-4 h-4" />
+                            </Button>
                           ) : (
                             <Button variant="maroon" size="icon" asChild>
                               <a 
                                 href={track.link} 
-                                target={track.is_download ? "_self" : "_blank"} 
-                                rel={track.is_download ? undefined : "noopener noreferrer"}
-                                download={track.is_download ? true : undefined}
+                                target="_blank" 
+                                rel="noopener noreferrer"
                               >
-                                {track.is_download ? <Download className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                                <Play className="w-4 h-4" />
                               </a>
                             </Button>
                           )}
@@ -278,16 +293,24 @@ export default function ReferenceShelf() {
                                 Log in to access
                               </Button>
                             )
+                          ) : track.is_download ? (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleDownloadClick(track)}
+                            >
+                              Download PDF
+                              <Download className="ml-2 w-4 h-4" />
+                            </Button>
                           ) : (
                             <Button variant="outline" size="sm" asChild>
                               <a 
                                 href={track.link} 
-                                target={track.is_download ? "_self" : "_blank"} 
-                                rel={track.is_download ? undefined : "noopener noreferrer"}
-                                download={track.is_download ? true : undefined}
+                                target="_blank" 
+                                rel="noopener noreferrer"
                               >
-                                {track.is_download ? 'Download PDF' : 'View on DISCO'}
-                                {track.is_download ? <Download className="ml-2 w-4 h-4" /> : <ExternalLink className="ml-2 w-4 h-4" />}
+                                View on DISCO
+                                <ExternalLink className="ml-2 w-4 h-4" />
                               </a>
                             </Button>
                           )}
@@ -499,6 +522,17 @@ export default function ReferenceShelf() {
       </main>
       
       <Footer />
+      
+      {/* Email Capture Dialog for Downloads */}
+      {selectedTrack && (
+        <EmailCaptureDialog
+          open={emailDialogOpen}
+          onOpenChange={setEmailDialogOpen}
+          trackId={selectedTrack.id}
+          trackTitle={selectedTrack.title}
+          downloadLink={selectedTrack.link}
+        />
+      )}
     </div>
   );
 }
