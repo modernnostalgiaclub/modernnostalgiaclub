@@ -1,8 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "https://esm.sh/resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 // Restrict CORS to known origins
 const ALLOWED_ORIGINS = [
@@ -21,23 +18,10 @@ function getCorsHeaders(origin: string | null): Record<string, string> {
   };
 }
 
-interface ContactEmailRequest {
-  name: string;
+interface EmailCaptureRequest {
   email: string;
-  subject: string;
-  message: string;
-}
-
-// HTML escape function to prevent XSS in email templates
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+  trackId: string;
+  trackTitle: string;
 }
 
 // Validate email format
@@ -46,7 +30,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email) && email.length <= 255;
 }
 
-// Hash identifier for rate limiting (email-based)
+// Hash identifier for rate limiting
 async function hashIdentifier(identifier: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(identifier.toLowerCase());
@@ -64,20 +48,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, subject, message }: ContactEmailRequest = await req.json();
+    const { email, trackId, trackTitle }: EmailCaptureRequest = await req.json();
 
     // Validate inputs
-    if (!name || !email || !subject || !message) {
+    if (!email || !trackId) {
       return new Response(
-        JSON.stringify({ error: "All fields are required" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    // Validate input lengths
-    if (name.length > 100 || subject.length > 200 || message.length > 5000) {
-      return new Response(
-        JSON.stringify({ error: "Input exceeds maximum length" }),
+        JSON.stringify({ error: "Email and track ID are required" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
@@ -90,18 +66,27 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Rate limiting check
+    // Validate track ID length
+    if (trackId.length > 100) {
+      return new Response(
+        JSON.stringify({ error: "Invalid track ID" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Initialize Supabase client with service role
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Rate limiting check - 10 submissions per email per hour
     const identifier = await hashIdentifier(email);
     
     const { data: rateLimitAllowed, error: rateLimitError } = await supabase
       .rpc('check_rate_limit', {
         p_identifier: identifier,
-        p_endpoint: 'contact_form',
-        p_max_requests: 3,
+        p_endpoint: 'email_capture',
+        p_max_requests: 10,
         p_window_minutes: 60
       });
 
@@ -116,54 +101,34 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Escape all user inputs to prevent XSS in HTML emails
-    const safeName = escapeHtml(name);
-    const safeEmail = escapeHtml(email);
-    const safeSubject = escapeHtml(subject);
-    const safeMessage = escapeHtml(message);
+    // Insert email capture
+    const { error: insertError } = await supabase
+      .from('download_email_captures')
+      .insert({
+        email: email.toLowerCase().trim(),
+        track_id: trackId,
+        track_title: trackTitle || null,
+      });
 
-    // Send notification to site owner
-    const ownerEmailResponse = await resend.emails.send({
-      from: "ModernNostalgia.club <onboarding@resend.dev>",
-      to: ["ge@modernnostalgia.club"],
-      reply_to: email,
-      subject: `[Contact Form] ${safeSubject}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>From:</strong> ${safeName} (${safeEmail})</p>
-        <p><strong>Subject:</strong> ${safeSubject}</p>
-        <hr />
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap;">${safeMessage}</p>
-      `,
-    });
+    if (insertError) {
+      // Unique constraint violation - email already captured for this track
+      if (insertError.code === '23505') {
+        return new Response(
+          JSON.stringify({ success: true, message: "Email already registered" }),
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+      throw insertError;
+    }
 
-    console.log("Owner notification sent:", ownerEmailResponse);
-
-    // Send confirmation to the sender
-    const confirmationResponse = await resend.emails.send({
-      from: "ModernNostalgia.club <onboarding@resend.dev>",
-      to: [email],
-      subject: "We received your message!",
-      html: `
-        <h2>Thanks for reaching out, ${safeName}!</h2>
-        <p>We've received your message and will get back to you as soon as possible.</p>
-        <hr />
-        <p><strong>Your message:</strong></p>
-        <p style="white-space: pre-wrap;">${safeMessage}</p>
-        <hr />
-        <p>Best regards,<br />The ModernNostalgia.club Team</p>
-      `,
-    });
-
-    console.log("Confirmation email sent:", confirmationResponse);
+    console.log(`Email captured: ${email} for track: ${trackId}`);
 
     return new Response(
       JSON.stringify({ success: true }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: any) {
-    console.error("Error in send-contact-email function:", error);
+    console.error("Error in capture-download-email function:", error);
     return new Response(
       JSON.stringify({ error: "An error occurred while processing your request" }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
