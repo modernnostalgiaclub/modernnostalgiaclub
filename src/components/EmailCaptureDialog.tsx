@@ -56,22 +56,26 @@ export function EmailCaptureDialog({
   const onSubmit = async (data: EmailFormData) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('download_email_captures')
-        .insert({
+      const response = await supabase.functions.invoke('capture-download-email', {
+        body: {
           email: data.email.toLowerCase(),
-          track_id: trackId,
-          track_title: trackTitle,
-        });
+          trackId,
+          trackTitle,
+        },
+      });
 
-      if (error) {
-        // If duplicate, still allow download
-        if (error.code === '23505') {
-          // Unique constraint violation - email already captured for this track
-          triggerDownload();
+      if (response.error) {
+        throw response.error;
+      }
+
+      const result = response.data;
+      
+      if (result.error) {
+        if (result.error.includes('Too many requests')) {
+          toast.error('Too many attempts. Please try again later.');
           return;
         }
-        throw error;
+        throw new Error(result.error);
       }
 
       toast.success('Thanks! Your download is starting.');
