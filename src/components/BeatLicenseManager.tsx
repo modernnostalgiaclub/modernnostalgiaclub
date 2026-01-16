@@ -6,10 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { useAuditLog } from '@/hooks/useAuditLog';
-import { DollarSign, Mail, User, Music, Clock, CheckCircle, AlertCircle, X, Eye, ExternalLink } from 'lucide-react';
+import { DollarSign, Mail, User, Music, Clock, CheckCircle, AlertCircle, X, Eye, Plus, Banknote } from 'lucide-react';
 import type { Database } from '@/integrations/supabase/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 type BeatLicenseSubmission = Database['public']['Tables']['beat_license_submissions']['Row'];
 
@@ -24,11 +28,25 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.C
 
 export function BeatLicenseManager() {
   const { logAccess } = useAuditLog();
+  const { user } = useAuth();
   const [submissions, setSubmissions] = useState<BeatLicenseSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSubmission, setSelectedSubmission] = useState<BeatLicenseSubmission | null>(null);
   const [newStatus, setNewStatus] = useState<PaymentStatus>('pending');
   const [filter, setFilter] = useState<PaymentStatus | 'all'>('all');
+  
+  // Add cash sale dialog state
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addingCashSale, setAddingCashSale] = useState(false);
+  const [cashSaleForm, setCashSaleForm] = useState({
+    full_name: '',
+    artist_name: '',
+    email: '',
+    beats_interested: '',
+    license_option: '',
+    total_amount: '',
+    special_requests: '',
+  });
 
   useEffect(() => {
     fetchSubmissions();
@@ -106,6 +124,74 @@ export function BeatLicenseManager() {
     });
   }
 
+  async function handleAddCashSale() {
+    if (!user) {
+      toast.error('You must be logged in');
+      return;
+    }
+
+    if (!cashSaleForm.full_name || !cashSaleForm.email || !cashSaleForm.beats_interested || 
+        !cashSaleForm.license_option || !cashSaleForm.total_amount) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    const amount = parseFloat(cashSaleForm.total_amount);
+    if (isNaN(amount) || amount < 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    setAddingCashSale(true);
+
+    const { error } = await supabase
+      .from('beat_license_submissions')
+      .insert({
+        user_id: user.id,
+        full_name: cashSaleForm.full_name.trim(),
+        artist_name: cashSaleForm.artist_name.trim() || null,
+        email: cashSaleForm.email.trim(),
+        beats_interested: cashSaleForm.beats_interested.trim(),
+        license_option: cashSaleForm.license_option.trim(),
+        total_amount: amount,
+        special_requests: cashSaleForm.special_requests.trim() || null,
+        payment_status: 'paid', // Cash sales are already paid
+      });
+
+    setAddingCashSale(false);
+
+    if (error) {
+      console.error('Error adding cash sale:', error);
+      toast.error('Failed to add cash sale');
+      return;
+    }
+
+    // Log the action
+    logAccess({
+      tableName: 'beat_license_submissions',
+      action: 'add_cash_sale',
+      details: {
+        customer_name: cashSaleForm.full_name,
+        customer_email: cashSaleForm.email,
+        amount: amount,
+        license_option: cashSaleForm.license_option,
+      },
+    });
+
+    toast.success('Cash sale recorded successfully');
+    setAddDialogOpen(false);
+    setCashSaleForm({
+      full_name: '',
+      artist_name: '',
+      email: '',
+      beats_interested: '',
+      license_option: '',
+      total_amount: '',
+      special_requests: '',
+    });
+    fetchSubmissions();
+  }
+
   const filteredSubmissions = filter === 'all'
     ? submissions
     : submissions.filter(s => s.payment_status === filter);
@@ -176,24 +262,141 @@ export function BeatLicenseManager() {
         </Card>
       </div>
 
-      {/* Filter */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-2">
-          <Label>Filter:</Label>
-          <Select value={filter} onValueChange={(v) => setFilter(v as PaymentStatus | 'all')}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="paid">Paid</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
-              <SelectItem value="refunded">Refunded</SelectItem>
-            </SelectContent>
-          </Select>
+      {/* Filter and Add Button */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Label>Filter:</Label>
+            <Select value={filter} onValueChange={(v) => setFilter(v as PaymentStatus | 'all')}>
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="refunded">Refunded</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Badge variant="outline">{filteredSubmissions.length} submissions</Badge>
         </div>
-        <Badge variant="outline">{filteredSubmissions.length} submissions</Badge>
+
+        {/* Add Cash Sale Dialog */}
+        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="maroon">
+              <Plus className="w-4 h-4 mr-2" />
+              <Banknote className="w-4 h-4 mr-2" />
+              Add Cash Sale
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Banknote className="w-5 h-5" />
+                Record Cash Sale
+              </DialogTitle>
+              <DialogDescription>
+                Manually add a beat license sale that was paid in cash or outside the normal system.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cash-full-name">Full Name *</Label>
+                  <Input
+                    id="cash-full-name"
+                    value={cashSaleForm.full_name}
+                    onChange={(e) => setCashSaleForm(prev => ({ ...prev, full_name: e.target.value }))}
+                    placeholder="Customer name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cash-artist-name">Artist Name</Label>
+                  <Input
+                    id="cash-artist-name"
+                    value={cashSaleForm.artist_name}
+                    onChange={(e) => setCashSaleForm(prev => ({ ...prev, artist_name: e.target.value }))}
+                    placeholder="Optional"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cash-email">Email *</Label>
+                <Input
+                  id="cash-email"
+                  type="email"
+                  value={cashSaleForm.email}
+                  onChange={(e) => setCashSaleForm(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="customer@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cash-beats">Beats Licensed *</Label>
+                <Textarea
+                  id="cash-beats"
+                  value={cashSaleForm.beats_interested}
+                  onChange={(e) => setCashSaleForm(prev => ({ ...prev, beats_interested: e.target.value }))}
+                  placeholder="List the beats that were licensed"
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cash-license">License Type *</Label>
+                  <Input
+                    id="cash-license"
+                    value={cashSaleForm.license_option}
+                    onChange={(e) => setCashSaleForm(prev => ({ ...prev, license_option: e.target.value }))}
+                    placeholder="e.g., Exclusive, Lease"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cash-amount">Amount Paid ($) *</Label>
+                  <Input
+                    id="cash-amount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={cashSaleForm.total_amount}
+                    onChange={(e) => setCashSaleForm(prev => ({ ...prev, total_amount: e.target.value }))}
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cash-notes">Special Notes</Label>
+                <Textarea
+                  id="cash-notes"
+                  value={cashSaleForm.special_requests}
+                  onChange={(e) => setCashSaleForm(prev => ({ ...prev, special_requests: e.target.value }))}
+                  placeholder="Any additional notes about the sale"
+                  rows={2}
+                />
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="maroon" 
+                  onClick={handleAddCashSale}
+                  disabled={addingCashSale}
+                  className="flex-1"
+                >
+                  {addingCashSale ? 'Recording...' : 'Record Sale'}
+                </Button>
+                <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Detail Panel */}
