@@ -1,23 +1,41 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { STORE_PRODUCTS } from '@/lib/storeProducts';
 import { Download, Package, FileText, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-// Cover images
-import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
-import coverBeLoud from '@/assets/cover-be-loud.jpg';
-
-const coverImages: Record<string, string> = {
-  'just-make-noise': coverJustMakeNoise,
-  'be-loud': coverBeLoud,
-};
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
 };
+
+// Define individual downloadable items (not bundles)
+const MEMBER_DOWNLOADS = [
+  {
+    id: 'just-make-noise-ebook',
+    title: 'Just Make Noise eBook',
+    description: 'A clear, no-fluff guide for independent artists who want to stop guessing and start building a real music business.',
+    downloadFile: '/downloads/Just_Make_Noise_eBook.pdf',
+  },
+  {
+    id: 'be-loud-ebook',
+    title: 'Be Loud eBook',
+    description: 'A practical blueprint for producers who want daily income from beats without racing to the bottom.',
+    downloadFile: '/downloads/Be_Loud_eBook.pdf',
+  },
+  {
+    id: 'split-sheet',
+    title: 'Split Sheet w/ One Stop Agreement',
+    description: 'Professional split sheet template with a built-in one stop licensing agreement.',
+    downloadFile: '/downloads/Split_Sheet_Modernnostalgia.club.pdf',
+  },
+  {
+    id: 'pro-tools-template',
+    title: 'Pro Tools Intro Recording Template',
+    description: 'Ready-to-use recording template for Pro Tools Intro.',
+    downloadFile: '/downloads/Pro_Tools_Intro_Template_-_MNC.zip',
+    externalLink: { label: 'Download Pro Tools Intro (Free from Avid)', url: 'https://www.avid.com/pro-tools' },
+  },
+];
 
 export function MemberDownloads() {
   const handleDownload = (filePath: string) => {
@@ -42,58 +60,36 @@ export function MemberDownloads() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {STORE_PRODUCTS.map((product) => (
-            <Card key={product.id} variant="feature" className="overflow-hidden">
-              {/* Cover Image */}
-              {product.coverImage && coverImages[product.coverImage] && (
-                <div className="aspect-[3/2] overflow-hidden bg-muted">
-                  <img 
-                    src={coverImages[product.coverImage]} 
-                    alt={product.title}
-                    className="w-full h-full object-cover object-top"
-                  />
-                </div>
-              )}
-              
+          {MEMBER_DOWNLOADS.map((item) => (
+            <Card key={item.id} variant="feature" className="overflow-hidden">
               <div className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-display text-lg">{product.title}</h3>
-                  {product.isBundle && (
-                    <Badge variant="secondary" className="text-xs">Bundle</Badge>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{product.description}</p>
+                <h3 className="font-display text-lg mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                 
-                {/* External links (e.g., Avid.com) */}
-                {product.externalLinks?.map((link) => (
+                {/* External link (e.g., Avid.com) */}
+                {item.externalLink && (
                   <a
-                    key={link.url}
-                    href={link.url}
+                    href={item.externalLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-3"
                   >
                     <ExternalLink className="w-3 h-3" />
-                    {link.label}
+                    {item.externalLink.label}
                   </a>
-                ))}
+                )}
 
-                {/* Download files */}
-                <div className="space-y-2">
-                  {product.downloadFiles.map((file) => (
-                    <Button
-                      key={file}
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-start gap-2"
-                      onClick={() => handleDownload(file)}
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="truncate">{getFileName(file)}</span>
-                      <Download className="w-4 h-4 ml-auto" />
-                    </Button>
-                  ))}
-                </div>
+                {/* Download button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start gap-2"
+                  onClick={() => handleDownload(item.downloadFile)}
+                >
+                  <FileText className="w-4 h-4" />
+                  <span className="truncate">{getFileName(item.downloadFile)}</span>
+                  <Download className="w-4 h-4 ml-auto" />
+                </Button>
               </div>
             </Card>
           ))}
