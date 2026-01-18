@@ -9,6 +9,15 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
+// Cover images
+import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
+import coverBeLoud from '@/assets/cover-be-loud.jpg';
+
+const coverImages: Record<string, string> = {
+  'just-make-noise': coverJustMakeNoise,
+  'be-loud': coverBeLoud,
+};
+
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
@@ -98,6 +107,17 @@ export default function Store() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {STORE_PRODUCTS.map((product) => (
                   <Card key={product.id} variant="elevated" className="overflow-hidden">
+                    {/* Cover Image */}
+                    {product.coverImage && coverImages[product.coverImage] && (
+                      <div className="aspect-[3/4] max-h-64 overflow-hidden bg-muted">
+                        <img 
+                          src={coverImages[product.coverImage]} 
+                          alt={product.title}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                    )}
+                    
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-4 mb-4">
                         <div className="p-3 bg-maroon/20 rounded-lg">
@@ -116,7 +136,7 @@ export default function Store() {
                       </div>
 
                       <h3 className="font-display text-xl mb-2">{product.title}</h3>
-                      <p className="text-muted-foreground mb-4">{product.description}</p>
+                      <p className="text-muted-foreground mb-4 text-sm line-clamp-4">{product.description}</p>
 
                       {/* External links */}
                       {product.externalLinks?.map((link) => (

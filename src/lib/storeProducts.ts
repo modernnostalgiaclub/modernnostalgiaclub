@@ -1,3 +1,4 @@
+// Cover images imported via ES6 modules in components
 export interface StoreProduct {
   id: string;
   title: string;
@@ -6,6 +7,7 @@ export interface StoreProduct {
   paymentLink: string;
   downloadFiles: string[]; // Paths to downloadable files for members
   isBundle: boolean;
+  coverImage?: string; // Image ID to map to imported images
   externalLinks?: { label: string; url: string }[];
 }
 
@@ -43,6 +45,7 @@ export const STORE_PRODUCTS: StoreProduct[] = [
       '/downloads/Pro_Tools_Intro_Template_-_MNC.zip',
     ],
     isBundle: true,
+    coverImage: 'just-make-noise',
   },
   {
     id: 'be-loud-bundle',
@@ -56,5 +59,6 @@ export const STORE_PRODUCTS: StoreProduct[] = [
       '/downloads/Pro_Tools_Intro_Template_-_MNC.zip',
     ],
     isBundle: true,
+    coverImage: 'be-loud',
   },
 ];
