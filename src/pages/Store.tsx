@@ -107,16 +107,7 @@ export default function Store() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {STORE_PRODUCTS.map((product) => (
                   <Card key={product.id} variant="elevated" className="overflow-hidden">
-                    {/* Cover Image */}
-                    {product.coverImage && coverImages[product.coverImage] && (
-                      <div className="aspect-[3/4] max-h-64 overflow-hidden bg-muted">
-                        <img 
-                          src={coverImages[product.coverImage]} 
-                          alt={product.title}
-                          className="w-full h-full object-cover object-top"
-                        />
-                      </div>
-                    )}
+                    {/* Cover images removed per user request */}
                     
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-4 mb-4">
