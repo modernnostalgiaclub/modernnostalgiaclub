@@ -33,27 +33,27 @@ export const STORE_PRODUCTS: StoreProduct[] = [
   },
   {
     id: 'just-make-noise-bundle',
-    title: 'Just Make Noise Artist Bundle',
-    description: 'Everything you need to start creating: Just Make Noise PEF, Split Sheet with One Stop Agreement, and Pro Tools Intro Recording Template.',
+    title: 'Just Make Noise: 2026 Indie Artist Bundle',
+    description: 'A clear, no-fluff guide for independent artists who want to stop guessing and start building a real music business. This eBook breaks down why streams fail, how direct-to-fan actually works, and how to treat songs like assets instead of lottery tickets. Built for artists who want clarity, ownership, and long-term income without waiting for permission. Includes free Split Sheet + Pro Tools Intro Template.',
     price: 30,
     paymentLink: 'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-761be65a2d3c43dd83c5371d80ab2820e019c19fd9f149aa81ca413f463922a24c46be752bc74bb8bdb984540ca0228a?locale=EN_US',
     downloadFiles: [
+      '/downloads/Just_Make_Noise_eBook.pdf',
       '/downloads/Split_Sheet_Modernnostalgia.club.pdf',
       '/downloads/Pro_Tools_Intro_Template_-_MNC.zip',
-      // '/downloads/Just_Make_Noise_PEF.pdf' - Add when available
     ],
     isBundle: true,
   },
   {
     id: 'be-loud-bundle',
-    title: 'Be Loud Producer Bundle',
-    description: 'Complete producer starter kit: Be Loud PDF, Split Sheet with One Stop Agreement, and Pro Tools Intro Recording Template.',
+    title: 'Be Loud: How to Make a Living Making Beats',
+    description: 'A practical blueprint for producers who want daily income from beats without racing to the bottom. Learn how to sell exclusives, create urgency, build proof, and prepare your catalog for sync licensing. This is about systems, not followers. Includes free Split Sheet + Pro Tools Intro Template.',
     price: 30,
     paymentLink: 'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-0eee0d1dec0142b9b3bc3261339b538f5b15982372454174a5276a2f1f04772e5974a864f6564316a9db0c73ded26c5e?locale=EN_US',
     downloadFiles: [
+      '/downloads/Be_Loud_eBook.pdf',
       '/downloads/Split_Sheet_Modernnostalgia.club.pdf',
       '/downloads/Pro_Tools_Intro_Template_-_MNC.zip',
-      // '/downloads/Be_Loud.pdf' - Add when available
     ],
     isBundle: true,
   },
