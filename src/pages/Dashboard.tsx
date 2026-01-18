@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
 import { HelloSkipAgent } from '@/components/HelloSkipAgent';
+import { MemberDownloads } from '@/components/MemberDownloads';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -359,6 +360,9 @@ export default function Dashboard() {
                 )}
               </Card>
             </motion.div>
+
+            {/* Member Downloads */}
+            <MemberDownloads />
             
             {/* Primary Actions */}
             <motion.div variants={fadeIn} className="mb-12">

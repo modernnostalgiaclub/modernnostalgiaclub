@@ -124,6 +124,9 @@ export function Header({ showNav = true }: HeaderProps) {
         <Link to="/events" className={linkClasses}>
           Events
         </Link>
+        <Link to="/store" className={linkClasses}>
+          Store
+        </Link>
         <a href="#partners" className={linkClasses}>
           Partners
         </a>
@@ -185,6 +188,9 @@ export function Header({ showNav = true }: HeaderProps) {
         </Link>
         <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Events
+        </Link>
+        <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Store
         </Link>
         <a href="#partners" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Partners
