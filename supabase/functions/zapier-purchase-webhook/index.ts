@@ -96,7 +96,7 @@ const handler = async (req: Request): Promise<Response> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Modern Nostalgia Club <onboarding@resend.dev>",
+        from: "Modern Nostalgia Club <ge@modernnostalgia.club>",
         to: [payload.customer_email],
         subject: `Your Download: ${product.title}`,
         html: `
