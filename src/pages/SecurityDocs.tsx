@@ -69,6 +69,8 @@ export default function SecurityDocs() {
                 <StatusItem label="MFA Available" status="active" />
                 <StatusItem label="Audit Logging" status="active" />
                 <StatusItem label="Input Validation" status="active" />
+                <StatusItem label="Rate Limiting" status="active" />
+                <StatusItem label="Email Capture Hardened" status="active" />
               </div>
             </CardContent>
           </Card>
@@ -161,6 +163,30 @@ export default function SecurityDocs() {
                     <li><strong>audit_logs</strong> - Admin-only access with IP masking</li>
                   </ul>
                 </Section>
+
+                <Section title="Email Capture Hardening (Migration 20260118201700)">
+                  <p>
+                    The <code>download_email_captures</code> table stores marketing leads from gated downloads. 
+                    Security hardening applied:
+                  </p>
+                  <ul className="list-disc pl-6 space-y-1 mt-2">
+                    <li><strong>No public INSERT policy</strong> - The permissive "Anyone can submit email for downloads" policy was removed</li>
+                    <li><strong>Edge function only</strong> - Inserts are only possible via the <code>capture-download-email</code> edge function using service role</li>
+                    <li><strong>Rate limiting</strong> - 10 requests/hour per email address enforced at edge function level</li>
+                    <li><strong>SELECT restricted</strong> - Only admins can view captured emails</li>
+                  </ul>
+                </Section>
+
+                <Section title="Rate Limits Table Protection">
+                  <p>
+                    The <code>rate_limits</code> table tracks request limits for spam prevention:
+                  </p>
+                  <ul className="list-disc pl-6 space-y-1 mt-2">
+                    <li><strong>No client access</strong> - The "Service role can manage rate limits" policy was removed</li>
+                    <li><strong>Service role only</strong> - Only edge functions with service role can read/write rate limits</li>
+                    <li><strong>Prevents bypass</strong> - Users cannot manipulate their own rate limit records</li>
+                  </ul>
+                </Section>
               </AccordionContent>
             </AccordionItem>
 
@@ -242,6 +268,20 @@ await logAccess({
                     <li>HTML content is escaped before inclusion in emails/output</li>
                     <li>XSS prevention through proper sanitization</li>
                   </ul>
+                </Section>
+
+                <Section title="Rate-Limited Public Endpoints">
+                  <p>
+                    Public-facing edge functions implement database-backed rate limiting via <code>check_rate_limit()</code>:
+                  </p>
+                  <ul className="list-disc pl-6 space-y-1 mt-2">
+                    <li><strong>send-contact-email</strong> - 3 requests/hour per email (prevents spam)</li>
+                    <li><strong>capture-download-email</strong> - 10 requests/hour per email (prevents harvesting)</li>
+                  </ul>
+                  <p className="mt-2">
+                    Rate limits are enforced server-side using hashed identifiers for privacy. The <code>rate_limits</code> 
+                    table is inaccessible to clients, preventing bypass attempts.
+                  </p>
                 </Section>
               </AccordionContent>
             </AccordionItem>
