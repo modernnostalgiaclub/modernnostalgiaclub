@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { AdminLessonProgress } from '@/components/AdminLessonProgress';
@@ -26,6 +26,7 @@ import { AccessibilityTester } from '@/components/AccessibilityTester';
 import { AdminNotificationSender } from '@/components/AdminNotificationSender';
 import { AdminSiteSettings } from '@/components/AdminSiteSettings';
 import { AdminEmailCaptures } from '@/components/AdminEmailCaptures';
+import { AdminSyncQuizResults } from '@/components/AdminSyncQuizResults';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -111,6 +112,10 @@ export default function Admin() {
                 <Mail className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Emails
               </TabsTrigger>
+              <TabsTrigger value="quiz" className="gap-2" aria-label="View sync quiz results">
+                <Target className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Quiz
+              </TabsTrigger>
               <TabsTrigger value="users" className="gap-2" aria-label="Manage users">
                 <Shield className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Users
@@ -163,6 +168,10 @@ export default function Admin() {
 
             <TabsContent value="emails">
               <AdminEmailCaptures />
+            </TabsContent>
+
+            <TabsContent value="quiz">
+              <AdminSyncQuizResults />
             </TabsContent>
 
             <TabsContent value="users">
