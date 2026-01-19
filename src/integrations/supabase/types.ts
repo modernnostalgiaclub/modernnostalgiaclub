@@ -643,6 +643,33 @@ export type Database = {
           },
         ]
       }
+      sync_quiz_results: {
+        Row: {
+          answers: Json
+          created_at: string
+          email: string
+          id: string
+          result_type: string
+          score: number
+        }
+        Insert: {
+          answers: Json
+          created_at?: string
+          email: string
+          id?: string
+          result_type: string
+          score: number
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          email?: string
+          id?: string
+          result_type?: string
+          score?: number
+        }
+        Relationships: []
+      }
       tracker_progress: {
         Row: {
           completed: boolean

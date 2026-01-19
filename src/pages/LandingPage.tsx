@@ -3,6 +3,7 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { SectionLabel } from '@/components/SectionLabel';
 import { PatreonBlog } from '@/components/PatreonBlog';
+import { SyncReadinessQuiz } from '@/components/SyncReadinessQuiz';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -347,6 +348,9 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Sync Readiness Quiz Section */}
+      <SyncReadinessQuiz />
       
       {/* Blog Section - Patreon Posts */}
       <PatreonBlog />
