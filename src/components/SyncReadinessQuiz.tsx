@@ -364,7 +364,7 @@ export function SyncReadinessQuiz() {
               exit={{ opacity: 0 }}
               className="text-center"
             >
-              <div className={`border ${resultConfigs[resultType].color} rounded-xl p-8 md:p-12 bg-secondary/20`}>
+              <div className={`border ${resultConfigs[resultType].color} rounded-xl p-8 md:p-12 bg-secondary/20 mb-12`}>
                 <div className="flex justify-center mb-6">
                   {resultConfigs[resultType].icon}
                 </div>
@@ -373,16 +373,29 @@ export function SyncReadinessQuiz() {
                   {resultConfigs[resultType].headline}
                 </h3>
 
-                <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
+                <p className="text-muted-foreground mb-0 max-w-lg mx-auto">
                   {resultConfigs[resultType].copy}
                 </p>
+              </div>
 
-                <Button asChild variant="hero" size="lg">
-                  <a href={resultConfigs[resultType].ctaLink}>
-                    {resultConfigs[resultType].cta}
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </a>
-                </Button>
+              {/* Discovery Call CTA */}
+              <div className="mb-8">
+                <h4 className="text-xl md:text-2xl font-semibold mb-3">
+                  Ready to Talk Strategy?
+                </h4>
+                <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+                  Book a free 15-minute discovery call to discuss your catalog and sync goals.
+                </p>
+              </div>
+
+              {/* Embedded Jotform */}
+              <div className="w-full max-w-2xl mx-auto bg-background border border-border rounded-lg overflow-hidden">
+                <iframe
+                  src="https://form.jotform.com/253334227361048"
+                  title="Discovery Call Booking"
+                  className="w-full min-h-[500px] border-0"
+                  allow="geolocation; microphone; camera; fullscreen"
+                />
               </div>
 
               <p className="text-sm text-muted-foreground mt-10">
