@@ -2,6 +2,17 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
+// HTML escape function to prevent XSS in email templates
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}
 
 
 // Product download mappings
@@ -111,9 +122,9 @@ const handler = async (req: Request): Promise<Response> => {
               <h1 style="color: #f5f5dc; margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
             </div>
             
-            <p>Hi${payload.customer_name ? ` ${payload.customer_name}` : ''},</p>
+            <p>Hi${payload.customer_name ? ` ${escapeHtml(payload.customer_name)}` : ''},</p>
             
-            <p>Thank you for purchasing <strong>${product.title}</strong>. Your download links are ready:</p>
+            <p>Thank you for purchasing <strong>${escapeHtml(product.title)}</strong>. Your download links are ready:</p>
             
             <div style="background: #f9f9f9; border-left: 4px solid #8B1A1A; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
               <h3 style="margin-top: 0; color: #8B1A1A;">Your Downloads</h3>
@@ -126,7 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
               <strong>Tip:</strong> Save these links! If you have any issues downloading, just reply to this email.
             </p>
             
-            ${payload.order_id ? `<p style="font-size: 12px; color: #999;">Order ID: ${payload.order_id}</p>` : ''}
+            ${payload.order_id ? `<p style="font-size: 12px; color: #999;">Order ID: ${escapeHtml(payload.order_id)}</p>` : ''}
             
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
             
