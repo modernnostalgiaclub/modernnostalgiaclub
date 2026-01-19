@@ -115,8 +115,8 @@ export function Header({ showNav = true }: HeaderProps) {
         <a href="#what-this-is" className={linkClasses}>
           What This Is
         </a>
-        <a href="#how-it-works" className={linkClasses}>
-          How It Works
+        <a href="#sync-quiz" className={linkClasses}>
+          Sync Quiz
         </a>
         <Link to="/reference" className={linkClasses}>
           Artist Resources
@@ -180,8 +180,8 @@ export function Header({ showNav = true }: HeaderProps) {
         <a href="#what-this-is" className={mobileLinkClasses} onClick={closeMobileMenu}>
           What This Is
         </a>
-        <a href="#how-it-works" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          How It Works
+        <a href="#sync-quiz" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Sync Quiz
         </a>
         <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artist Resources
@@ -273,12 +273,6 @@ export function Header({ showNav = true }: HeaderProps) {
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-4">
-              <button
-                onClick={handleJoinPatreon}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Join on Patreon
-              </button>
               <Button 
                 variant="maroon"
                 onClick={handleMemberLogin}
@@ -347,15 +341,6 @@ export function Header({ showNav = true }: HeaderProps) {
                         >
                           Explore the Lab
                         </Button>
-                        <button
-                          onClick={() => {
-                            handleJoinPatreon();
-                            closeMobileMenu();
-                          }}
-                          className="w-full text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
-                        >
-                          Join on Patreon
-                        </button>
                       </div>
                     )}
                   </div>
