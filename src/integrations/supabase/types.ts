@@ -397,6 +397,75 @@ export type Database = {
           },
         ]
       }
+      networking_contacts: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          event_tag: string | null
+          id: string
+          name: string
+          notes: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          event_tag?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          event_tag?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      networking_links: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          is_visible: boolean | null
+          label: string
+          sort_order: number | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_visible?: boolean | null
+          label: string
+          sort_order?: number | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_visible?: boolean | null
+          label?: string
+          sort_order?: number | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string

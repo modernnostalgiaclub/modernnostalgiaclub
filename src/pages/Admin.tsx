@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { AdminLessonProgress } from '@/components/AdminLessonProgress';
@@ -27,6 +27,8 @@ import { AdminNotificationSender } from '@/components/AdminNotificationSender';
 import { AdminSiteSettings } from '@/components/AdminSiteSettings';
 import { AdminEmailCaptures } from '@/components/AdminEmailCaptures';
 import { AdminSyncQuizResults } from '@/components/AdminSyncQuizResults';
+import { AdminNetworkingContacts } from '@/components/AdminNetworkingContacts';
+import { AdminNetworkingLinks } from '@/components/AdminNetworkingLinks';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -132,6 +134,10 @@ export default function Admin() {
                 <Settings className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Settings
               </TabsTrigger>
+              <TabsTrigger value="networking" className="gap-2" aria-label="Networking contacts">
+                <LinkIcon className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Connect
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
@@ -188,6 +194,13 @@ export default function Admin() {
 
             <TabsContent value="settings">
               <AdminSiteSettings />
+            </TabsContent>
+
+            <TabsContent value="networking">
+              <div className="space-y-6">
+                <AdminNetworkingContacts />
+                <AdminNetworkingLinks />
+              </div>
             </TabsContent>
           </Tabs>
         </main>
