@@ -60,7 +60,7 @@ export default function Connect() {
       .select('*')
       .eq('is_visible', true)
       .order('sort_order')
-      .limit(5);
+      .limit(6);
 
     if (!error && data) {
       setLinks(data);
