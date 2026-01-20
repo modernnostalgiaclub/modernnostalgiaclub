@@ -133,9 +133,12 @@ export default function Connect() {
             <img 
               src={logoCream} 
               alt="Modern Nostalgia Club" 
-              className="h-16 mx-auto mb-6"
+              className="h-24 mx-auto mb-4"
             />
-            <p className="text-cream/70 text-sm tracking-wide">
+            <p className="text-cream font-medium text-lg tracking-wide mb-2">
+              Ge Oh | modernnostalgia.club
+            </p>
+            <p className="text-cream/60 text-sm tracking-wide italic">
               Infrastructure for independent artists and creative economies.
             </p>
           </motion.header>
