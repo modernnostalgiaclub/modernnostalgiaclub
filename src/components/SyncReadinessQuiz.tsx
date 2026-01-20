@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { ArrowRight, ArrowLeft, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, AlertTriangle, XCircle, ClipboardCheck } from 'lucide-react';
 
 // Quiz questions and scoring
 const quizQuestions = [
@@ -16,70 +16,90 @@ const quizQuestions = [
     id: 'q1',
     question: 'When a show wants to license your song, who needs to approve it?',
     options: [
-      { text: 'Just me', score: 3 },
-      { text: 'Me and one collaborator', score: 2 },
-      { text: 'Multiple people or companies', score: 1 },
-      { text: "I'm not sure", score: 0 },
+      { text: 'Just me', score: 3, rightsRisk: false },
+      { text: 'Me and one collaborator', score: 2, rightsRisk: false },
+      { text: 'Multiple people or companies', score: 1, rightsRisk: false },
+      { text: "I'm not sure", score: 0, rightsRisk: true },
     ],
   },
   {
     id: 'q2',
     question: 'Does your music include samples or covers?',
     options: [
-      { text: 'No samples or covers', score: 3 },
-      { text: 'Samples that are fully cleared', score: 2 },
-      { text: 'Samples or covers that are not cleared', score: 0 },
-      { text: "I don't know", score: 0 },
+      { text: 'No samples or covers', score: 3, rightsRisk: false },
+      { text: 'Samples that are fully cleared', score: 2, rightsRisk: false },
+      { text: 'Samples or covers that are not cleared', score: 0, rightsRisk: true },
+      { text: "I don't know", score: 0, rightsRisk: true },
     ],
   },
   {
     id: 'q3',
     question: 'If asked today, how fast could you deliver WAVs and instrumentals?',
     options: [
-      { text: 'Within 24 hours', score: 3 },
-      { text: 'A few days', score: 2 },
-      { text: 'Eventually', score: 1 },
-      { text: "I don't have those files", score: 0 },
+      { text: 'Within 24 hours', score: 3, rightsRisk: false },
+      { text: 'A few days', score: 2, rightsRisk: false },
+      { text: 'Eventually', score: 1, rightsRisk: false },
+      { text: "I don't have those files", score: 0, rightsRisk: false },
     ],
   },
   {
     id: 'q4',
     question: 'How brand-safe are your lyrics?',
     options: [
-      { text: 'Clean and usable everywhere', score: 3 },
-      { text: 'Some explicit content, but editable', score: 2 },
-      { text: 'Explicit and not negotiable', score: 1 },
-      { text: "I've never considered this", score: 0 },
+      { text: 'Clean and usable everywhere', score: 3, rightsRisk: false },
+      { text: 'Some explicit content, but editable', score: 2, rightsRisk: false },
+      { text: 'Explicit and not negotiable', score: 1, rightsRisk: false },
+      { text: "I've never considered this", score: 0, rightsRisk: false },
     ],
   },
   {
     id: 'q5',
     question: 'Could you sign a sync license today without checking with anyone else?',
     options: [
-      { text: 'Yes', score: 3 },
-      { text: 'For some songs', score: 2 },
-      { text: 'Probably not', score: 1 },
-      { text: "I don't know", score: 0 },
+      { text: 'Yes', score: 3, rightsRisk: false },
+      { text: 'For some songs', score: 2, rightsRisk: false },
+      { text: 'Probably not', score: 1, rightsRisk: true },
+      { text: "I don't know", score: 0, rightsRisk: true },
     ],
   },
   {
     id: 'q6',
-    question: 'How many finished, release-ready songs do you control?',
+    question: 'Are all collaborators on your songs registered with a Performing Rights Organization (PRO)?',
     options: [
-      { text: '50+', score: 3 },
-      { text: '20–49', score: 2 },
-      { text: '5–19', score: 1 },
-      { text: 'Less than 5', score: 0 },
+      { text: 'Yes, all collaborators are registered', score: 3, rightsRisk: false },
+      { text: 'Some are registered, some are not', score: 1, rightsRisk: true },
+      { text: 'No, collaborators are not registered', score: 0, rightsRisk: true },
+      { text: "I'm not sure", score: 0, rightsRisk: true },
     ],
   },
   {
     id: 'q7',
+    question: 'Are there any uncredited contributors who could later claim ownership of a song?',
+    options: [
+      { text: 'No, everyone is properly credited', score: 3, rightsRisk: false },
+      { text: 'Possibly, but we have informal agreements', score: 1, rightsRisk: true },
+      { text: "Yes, and it hasn't been addressed", score: 0, rightsRisk: true },
+      { text: "I'm not sure", score: 0, rightsRisk: true },
+    ],
+  },
+  {
+    id: 'q8',
+    question: 'How many finished, release-ready songs do you control?',
+    options: [
+      { text: '50+', score: 3, rightsRisk: false },
+      { text: '20–49', score: 2, rightsRisk: false },
+      { text: '5–19', score: 1, rightsRisk: false },
+      { text: 'Less than 5', score: 0, rightsRisk: false },
+    ],
+  },
+  {
+    id: 'q9',
     question: 'What are you hoping sync does for you?',
     options: [
-      { text: 'Long-term passive income', score: 3 },
-      { text: 'Occasional placements', score: 2 },
-      { text: 'Big brand moments', score: 1 },
-      { text: 'Still figuring it out', score: 0 },
+      { text: 'Long-term passive income', score: 3, rightsRisk: false },
+      { text: 'Occasional placements', score: 2, rightsRisk: false },
+      { text: 'Big brand moments', score: 1, rightsRisk: false },
+      { text: 'Still figuring it out', score: 0, rightsRisk: false },
     ],
   },
 ];
@@ -98,6 +118,9 @@ interface ResultConfig {
   ctaLink: string;
   icon: React.ReactNode;
   color: string;
+  auditHeadline: string;
+  auditCopy: string;
+  auditCta: string;
 }
 
 const resultConfigs: Record<ResultType, ResultConfig> = {
@@ -108,6 +131,9 @@ const resultConfigs: Record<ResultType, ResultConfig> = {
     ctaLink: '/store',
     icon: <CheckCircle2 className="w-12 h-12 text-primary" />,
     color: 'border-primary/30',
+    auditHeadline: 'Want a second set of eyes before pitching?',
+    auditCopy: 'This audit helps confirm nothing gets in the way of licensing.',
+    auditCta: 'Book a Catalog Audit',
   },
   'almost-ready': {
     headline: "You're Close, But There Are Leaks",
@@ -116,6 +142,9 @@ const resultConfigs: Record<ResultType, ResultConfig> = {
     ctaLink: '/store',
     icon: <AlertTriangle className="w-12 h-12 text-muted-foreground" />,
     color: 'border-muted-foreground/30',
+    auditHeadline: 'Most artists at this stage lose deals because of small rights issues.',
+    auditCopy: 'This audit helps clean those up before outreach.',
+    auditCta: 'Fix My Catalog',
   },
   'not-ready': {
     headline: "Your Music Isn't Sync-Ready Yet — And That's Fixable",
@@ -124,29 +153,52 @@ const resultConfigs: Record<ResultType, ResultConfig> = {
     ctaLink: '/store',
     icon: <XCircle className="w-12 h-12 text-maroon" />,
     color: 'border-maroon/30',
+    auditHeadline: 'If you want clarity instead of guessing',
+    auditCopy: 'This audit shows exactly what needs fixing.',
+    auditCta: 'Start With a Catalog Audit',
   },
 };
 
-function calculateResult(answers: Record<string, number>): { resultType: ResultType; score: number } {
-  const totalScore = Object.values(answers).reduce((sum, score) => sum + score, 0);
-  const maxPossible = quizQuestions.length * 3; // 21
+interface AnswerRecord {
+  score: number;
+  rightsRisk: boolean;
+}
+
+function calculateResult(answers: Record<string, AnswerRecord>): { 
+  resultType: ResultType; 
+  score: number; 
+  hasRightsClarity: boolean;
+} {
+  const totalScore = Object.values(answers).reduce((sum, a) => sum + a.score, 0);
+  const maxPossible = quizQuestions.length * 3; // 27
+  const hasRightsClarity = Object.values(answers).some(a => a.rightsRisk);
 
   const percentage = totalScore / maxPossible;
 
+  // Users with rights clarity issues cannot be fully sync-ready
+  if (hasRightsClarity) {
+    if (percentage >= 0.55) {
+      return { resultType: 'almost-ready', score: totalScore, hasRightsClarity };
+    } else {
+      return { resultType: 'not-ready', score: totalScore, hasRightsClarity };
+    }
+  }
+
   if (percentage >= 0.75) {
-    return { resultType: 'sync-ready', score: totalScore };
+    return { resultType: 'sync-ready', score: totalScore, hasRightsClarity };
   } else if (percentage >= 0.45) {
-    return { resultType: 'almost-ready', score: totalScore };
+    return { resultType: 'almost-ready', score: totalScore, hasRightsClarity };
   } else {
-    return { resultType: 'not-ready', score: totalScore };
+    return { resultType: 'not-ready', score: totalScore, hasRightsClarity };
   }
 }
 
 export function SyncReadinessQuiz() {
   const [step, setStep] = useState<'intro' | 'quiz' | 'email' | 'result'>('intro');
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, AnswerRecord>>({});
   const [resultType, setResultType] = useState<ResultType | null>(null);
+  const [hasRightsClarity, setHasRightsClarity] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<EmailFormData>({
@@ -160,8 +212,8 @@ export function SyncReadinessQuiz() {
     setAnswers({});
   };
 
-  const handleAnswer = (questionId: string, score: number) => {
-    const newAnswers = { ...answers, [questionId]: score };
+  const handleAnswer = (questionId: string, score: number, rightsRisk: boolean) => {
+    const newAnswers = { ...answers, [questionId]: { score, rightsRisk } };
     setAnswers(newAnswers);
 
     if (currentQuestion < quizQuestions.length - 1) {
@@ -183,14 +235,21 @@ export function SyncReadinessQuiz() {
     setIsSubmitting(true);
 
     try {
-      const { resultType: calculatedResult, score } = calculateResult(answers);
+      const { resultType: calculatedResult, score, hasRightsClarity: rightsFlag } = calculateResult(answers);
+
+      // Transform answers to simple score format for storage, preserving metadata
+      const answersForStorage = Object.entries(answers).reduce((acc, [key, value]) => {
+        acc[key] = value.score;
+        return acc;
+      }, {} as Record<string, number>);
 
       const { error } = await supabase.functions.invoke('sync-quiz-submit', {
         body: {
           email: data.email,
-          answers,
+          answers: answersForStorage,
           score,
           resultType: calculatedResult,
+          hasRightsClarity: rightsFlag,
         },
       });
 
@@ -199,6 +258,7 @@ export function SyncReadinessQuiz() {
       }
 
       setResultType(calculatedResult);
+      setHasRightsClarity(rightsFlag);
       setStep('result');
     } catch (error) {
       console.error('Quiz submission error:', error);
@@ -279,9 +339,9 @@ export function SyncReadinessQuiz() {
                 {currentQ.options.map((option, index) => (
                   <button
                     key={index}
-                    onClick={() => handleAnswer(currentQ.id, option.score)}
+                    onClick={() => handleAnswer(currentQ.id, option.score, option.rightsRisk)}
                     className={`w-full text-left p-4 rounded-lg border transition-all duration-200
-                      ${answers[currentQ.id] === option.score
+                      ${answers[currentQ.id]?.score === option.score
                         ? 'border-maroon bg-maroon/10'
                         : 'border-border hover:border-maroon/50 hover:bg-secondary/30'
                       }`}
@@ -364,7 +424,7 @@ export function SyncReadinessQuiz() {
               exit={{ opacity: 0 }}
               className="text-center"
             >
-              <div className={`border ${resultConfigs[resultType].color} rounded-xl p-8 md:p-12 bg-secondary/20 mb-12`}>
+              <div className={`border ${resultConfigs[resultType].color} rounded-xl p-8 md:p-12 bg-secondary/20 mb-8`}>
                 <div className="flex justify-center mb-6">
                   {resultConfigs[resultType].icon}
                 </div>
@@ -376,6 +436,43 @@ export function SyncReadinessQuiz() {
                 <p className="text-muted-foreground mb-0 max-w-lg mx-auto">
                   {resultConfigs[resultType].copy}
                 </p>
+
+                {/* Rights clarity messaging */}
+                {hasRightsClarity && (
+                  <div className="mt-6 pt-6 border-t border-border/50">
+                    <p className="text-sm text-muted-foreground">
+                      Your answers suggest some uncertainty around rights or contributor documentation. 
+                      Resolving these questions now can prevent complications during licensing.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Catalog Audit Upsell */}
+              <div className="border border-border/50 rounded-xl p-6 md:p-8 bg-secondary/10 mb-8">
+                <div className="flex justify-center mb-4">
+                  <ClipboardCheck className="w-10 h-10 text-maroon" />
+                </div>
+                
+                <h4 className="text-xl md:text-2xl font-semibold mb-2">
+                  Catalog Audit for Sync
+                </h4>
+                
+                <p className="text-muted-foreground text-sm mb-4 max-w-md mx-auto">
+                  A one-on-one review of your catalog focused on ownership clarity, collaborator registration, 
+                  and sync usability. Designed to catch issues before they kill deals.
+                </p>
+
+                <p className="text-foreground/80 mb-6 max-w-lg mx-auto">
+                  {resultConfigs[resultType].auditHeadline} {resultConfigs[resultType].auditCopy}
+                </p>
+
+                <Button asChild variant="maroon" size="lg">
+                  <a href="https://form.jotform.com/253334227361048">
+                    {resultConfigs[resultType].auditCta}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </a>
+                </Button>
               </div>
 
               {/* Discovery Call CTA */}
@@ -389,7 +486,7 @@ export function SyncReadinessQuiz() {
               </div>
 
               {/* Embedded Jotform */}
-              <div className="w-full max-w-2xl mx-auto bg-background border border-border rounded-lg overflow-hidden">
+              <div className="w-full max-w-2xl mx-auto bg-background border border-border rounded-lg overflow-hidden mb-10">
                 <iframe
                   src="https://form.jotform.com/253334227361048"
                   title="Discovery Call Booking"
@@ -398,8 +495,8 @@ export function SyncReadinessQuiz() {
                 />
               </div>
 
-              <p className="text-sm text-muted-foreground mt-10">
-                Built by working music professionals focused on long-term artist income.
+              <p className="text-sm text-muted-foreground">
+                Sync deals fail more often from unclear rights than bad music. This process is designed to prevent that.
               </p>
             </motion.div>
           )}
