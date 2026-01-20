@@ -263,7 +263,7 @@ export default function Connect() {
                       <SelectTrigger className="bg-dark border-cream/20 text-cream focus:border-maroon">
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
-                      <SelectContent className="bg-dark border-cream/20">
+                      <SelectContent className="bg-dark border-cream/20 z-50">
                         {roleOptions.map((option) => (
                           <SelectItem 
                             key={option.value} 
