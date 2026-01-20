@@ -140,13 +140,45 @@ export default function Connect() {
             </p>
           </motion.header>
 
+          {/* Links Section - 2 Column Grid */}
+          {!loading && links.length > 0 && (
+            <motion.section
+              className="mb-8"
+              initial="hidden"
+              animate="visible"
+              variants={fadeIn}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <div className="grid grid-cols-2 gap-2">
+                {links.map((link, index) => {
+                  const IconComponent = iconMap[link.icon] || ExternalLink;
+                  return (
+                    <motion.a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 bg-cream/5 hover:bg-cream/10 border border-cream/10 hover:border-cream/20 rounded-lg transition-all duration-200 group text-center"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 + index * 0.03 }}
+                    >
+                      <IconComponent className="w-4 h-4 text-cream/60 group-hover:text-maroon transition-colors flex-shrink-0" />
+                      <span className="text-cream text-sm font-medium truncate">{link.label}</span>
+                    </motion.a>
+                  );
+                })}
+              </div>
+            </motion.section>
+          )}
+
           {/* Contact Form or Success */}
           <motion.section 
             className="mb-12"
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
             {submitted ? (
               <div className="text-center py-12 px-6 bg-cream/5 rounded-2xl border border-cream/10">
@@ -262,39 +294,6 @@ export default function Connect() {
             )}
           </motion.section>
 
-          {/* Links Section */}
-          {!loading && links.length > 0 && (
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={fadeIn}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="space-y-3">
-                {links.map((link, index) => {
-                  const IconComponent = iconMap[link.icon] || ExternalLink;
-                  return (
-                    <motion.a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between w-full px-5 py-4 bg-cream/5 hover:bg-cream/10 border border-cream/10 hover:border-cream/20 rounded-xl transition-all duration-200 group"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.05 }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <IconComponent className="w-5 h-5 text-cream/60 group-hover:text-maroon transition-colors" />
-                        <span className="text-cream font-medium">{link.label}</span>
-                      </div>
-                      <ExternalLink className="w-4 h-4 text-cream/40 group-hover:text-cream/60 transition-colors" />
-                    </motion.a>
-                  );
-                })}
-              </div>
-            </motion.section>
-          )}
 
           {/* Value Hook */}
           <motion.footer 
