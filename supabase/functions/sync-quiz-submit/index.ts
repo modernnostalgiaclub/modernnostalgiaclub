@@ -23,6 +23,7 @@ interface QuizSubmission {
   answers: Record<string, number>;
   score: number;
   resultType: 'sync-ready' | 'almost-ready' | 'not-ready';
+  hasRightsClarity?: boolean;
 }
 
 function isValidEmail(email: string): boolean {
@@ -119,13 +120,22 @@ async function handler(req: Request): Promise<Response> {
       );
     }
 
+    // Store answers with rights-clarity flag in metadata
+    const answersWithMetadata = {
+      ...payload.answers,
+      _metadata: {
+        hasRightsClarity: payload.hasRightsClarity ?? false,
+        submittedAt: new Date().toISOString(),
+      }
+    };
+
     // Insert quiz result
     const { error: insertError } = await supabase
       .from('sync_quiz_results')
       .insert({
         email: payload.email.toLowerCase().trim(),
         result_type: payload.resultType,
-        answers: payload.answers,
+        answers: answersWithMetadata,
         score: payload.score
       });
 
@@ -138,7 +148,11 @@ async function handler(req: Request): Promise<Response> {
     }
 
     return new Response(
-      JSON.stringify({ success: true, resultType: payload.resultType }),
+      JSON.stringify({ 
+        success: true, 
+        resultType: payload.resultType,
+        hasRightsClarity: payload.hasRightsClarity ?? false
+      }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
