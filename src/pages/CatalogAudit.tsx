@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -149,6 +150,17 @@ export default function CatalogAudit() {
                 Book Your Audit
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
+            </motion.div>
+            
+            <motion.div variants={fadeIn} className="mt-8">
+              <Link 
+                to="/sync-quiz" 
+                className="inline-flex items-center gap-2 text-muted-foreground hover:text-maroon transition-colors group"
+              >
+                <span>Not sure if you're sync-ready?</span>
+                <span className="font-medium text-maroon group-hover:underline">Take the Free Quiz</span>
+                <ArrowRight className="w-4 h-4 text-maroon" />
+              </Link>
             </motion.div>
           </motion.div>
         </section>
