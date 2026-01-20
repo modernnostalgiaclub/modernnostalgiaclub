@@ -84,27 +84,38 @@ export default function Connect() {
 
     setSubmitting(true);
 
-    const { error } = await supabase
-      .from('networking_contacts')
-      .insert({
-        name: formData.name.trim(),
-        email: formData.email.trim().toLowerCase(),
-        company: formData.company.trim() || null,
-        role: formData.role || 'Other',
-        notes: formData.notes.trim() || null,
-        event_tag: 'NAMM',
+    try {
+      const { data, error } = await supabase.functions.invoke('networking-contact-submit', {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          company: formData.company.trim() || null,
+          role: formData.role || 'Other',
+          notes: formData.notes.trim() || null,
+          event_tag: 'NAMM',
+        },
       });
 
-    setSubmitting(false);
+      setSubmitting(false);
 
-    if (error) {
+      if (error) {
+        // Check for rate limit error
+        if (error.message?.includes('429') || data?.error?.includes('Too many')) {
+          toast.error('Too many submissions. Please try again later.');
+        } else {
+          toast.error('Something went wrong. Please try again.');
+        }
+        console.error('Submit error:', error);
+        return;
+      }
+
+      setSubmitted(true);
+      toast.success("You're connected!");
+    } catch (err) {
+      setSubmitting(false);
       toast.error('Something went wrong. Please try again.');
-      console.error('Submit error:', error);
-      return;
+      console.error('Submit error:', err);
     }
-
-    setSubmitted(true);
-    toast.success("You're connected!");
   }
 
   const fadeIn = {
