@@ -33,6 +33,7 @@ import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
 import SyncQuiz from "./pages/SyncQuiz";
 import CatalogAudit from "./pages/CatalogAudit";
+import Connect from "./pages/Connect";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +74,7 @@ const App = () => (
             <Route path="/store" element={<Store />} />
             <Route path="/catalog-audit" element={<CatalogAudit />} />
             <Route path="/sync-quiz" element={<SyncQuiz />} />
+            <Route path="/connect" element={<Connect />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
