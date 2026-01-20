@@ -1,14 +1,51 @@
+import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ShoppingCart, Package, ExternalLink, Star, ClipboardCheck, CheckCircle2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ShoppingCart, Package, ExternalLink, Star, ClipboardCheck, CheckCircle2, HelpCircle, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
+const catalogAuditFAQ = [
+  {
+    question: "I only have a few songs. Is this still for me?",
+    answer: "If you have fewer than 5 finished songs, a catalog audit usually isn't the best first step. At that stage, building more finished, controlled material will create more value than reviewing structure.",
+    recommendation: "Start with a catalog-building or sync fundamentals guide instead."
+  },
+  {
+    question: "My music already sounds professional. Why would I need this?",
+    answer: "Sound quality isn't the problem this audit addresses. This is about ownership clarity, collaborator risk, and licensing readiness—the things that can quietly stop a deal after someone likes your song.",
+    recommendation: "If you've never mapped those things out, this audit can still be valuable."
+  },
+  {
+    question: "Is this legal advice?",
+    answer: "No. This audit does not replace a lawyer. It's a structural review designed to surface risks, gaps, and questions before legal review is necessary. Many artists never realize there's a problem until a deal collapses. This prevents that."
+  },
+  {
+    question: "I've never pitched to sync before. Is this too advanced?",
+    answer: "If you haven't released music or don't yet control your catalog, this may be premature. If you do control your songs but haven't pitched yet, this audit can help ensure you don't start with preventable mistakes."
+  },
+  {
+    question: "What if everything in my catalog is already clean?",
+    answer: "Then the audit acts as confirmation and documentation. Many artists book this simply to validate their readiness, pitch with confidence, and show partners they've done due diligence.",
+    recommendation: "If that peace of mind isn't valuable to you, you likely don't need this service."
+  },
+  {
+    question: "I just want placements. Will this help me get one?",
+    answer: "This audit does not guarantee placements. What it does is remove the most common reasons deals fail before music is even seriously considered. If you're looking for a shortcut or a promise, this isn't the right fit."
+  },
+  {
+    question: "Who should NOT book a Catalog Audit?",
+    answer: "This is not a good fit if you have under 5 finished songs, don't control your masters or publishing, are unwilling to credit collaborators properly, are looking for exposure or fast wins, or are not open to making structural changes.",
+    recommendation: "In those cases, education or catalog development is a better next step."
+  }
+];
 
 // Cover images
 import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
@@ -34,6 +71,7 @@ const stagger = {
 
 export default function Store() {
   const { user } = useAuth();
+  const [auditConfirmed, setAuditConfirmed] = useState(false);
 
   const handlePurchase = (paymentLink: string) => {
     window.open(paymentLink, '_blank', 'noopener,noreferrer');
@@ -198,7 +236,7 @@ export default function Store() {
                       </div>
                     )}
 
-                    <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    <div className="grid md:grid-cols-2 gap-6 mb-8">
                       <div>
                         <h4 className="font-display text-lg mb-3">Who This Is For</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
@@ -219,15 +257,69 @@ export default function Store() {
                       </div>
                     </div>
 
-                    <Button 
-                      variant="maroon" 
-                      size="lg"
-                      className="w-full md:w-auto"
-                      onClick={() => handlePurchase(service.paymentLink)}
-                    >
-                      Purchase Catalog Audit - ${service.price}
-                      <ExternalLink className="w-4 h-4 ml-2" />
-                    </Button>
+                    {/* FAQ Section */}
+                    <div className="border-t border-border/50 pt-8 mb-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <HelpCircle className="w-6 h-6 text-maroon" />
+                        <h4 className="font-display text-xl">Is the Catalog Audit Right for You?</h4>
+                      </div>
+                      <p className="text-muted-foreground mb-6">
+                        Read this before booking. It'll save you time and money.
+                      </p>
+                      
+                      <Accordion type="single" collapsible className="w-full space-y-2">
+                        {catalogAuditFAQ.map((faq, index) => (
+                          <AccordionItem 
+                            key={index} 
+                            value={`faq-${index}`}
+                            className="border border-border/50 rounded-lg px-4 bg-secondary/10"
+                          >
+                            <AccordionTrigger className="text-left hover:no-underline py-4">
+                              <span className="font-medium text-sm md:text-base">
+                                Q{index + 1}. {faq.question}
+                              </span>
+                            </AccordionTrigger>
+                            <AccordionContent className="pb-4">
+                              <p className="text-muted-foreground text-sm mb-2">{faq.answer}</p>
+                              {faq.recommendation && (
+                                <p className="text-sm text-foreground/80 font-medium mt-3">
+                                  <span className="text-maroon">Better next step:</span> {faq.recommendation}
+                                </p>
+                              )}
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </div>
+
+                    {/* Confirmation Checkbox & Purchase Button */}
+                    <div className="border-t border-border/50 pt-8">
+                      <div className="flex items-start gap-3 mb-6 p-4 bg-secondary/20 rounded-lg">
+                        <Checkbox 
+                          id="audit-confirm"
+                          checked={auditConfirmed}
+                          onCheckedChange={(checked) => setAuditConfirmed(checked as boolean)}
+                          className="mt-0.5"
+                        />
+                        <label 
+                          htmlFor="audit-confirm" 
+                          className="text-sm cursor-pointer leading-relaxed"
+                        >
+                          I understand this audit focuses on rights clarity and sync readiness, not placements or guarantees.
+                        </label>
+                      </div>
+
+                      <Button 
+                        variant="maroon" 
+                        size="lg"
+                        className="w-full md:w-auto"
+                        onClick={() => handlePurchase(service.paymentLink)}
+                        disabled={!auditConfirmed}
+                      >
+                        Purchase Catalog Audit - ${service.price}
+                        <ExternalLink className="w-4 h-4 ml-2" />
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               </motion.div>
