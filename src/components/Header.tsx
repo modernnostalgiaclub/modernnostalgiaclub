@@ -113,11 +113,11 @@ export function Header({ showNav = true }: HeaderProps) {
     return (
       <>
         <a href="#what-this-is" className={linkClasses}>
-          What This Is
+          About
         </a>
-        <a href="#sync-quiz" className={linkClasses}>
-          Sync Quiz
-        </a>
+        <Link to="/sync-quiz" className={linkClasses}>
+          Is Your Music Sync Ready?
+        </Link>
         <Link to="/reference" className={linkClasses}>
           Artist Resources
         </Link>
@@ -178,11 +178,11 @@ export function Header({ showNav = true }: HeaderProps) {
     return (
       <>
         <a href="#what-this-is" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          What This Is
+          About
         </a>
-        <a href="#sync-quiz" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Sync Quiz
-        </a>
+        <Link to="/sync-quiz" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Is Your Music Sync Ready?
+        </Link>
         <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artist Resources
         </Link>
