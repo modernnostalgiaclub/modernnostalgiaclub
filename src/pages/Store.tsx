@@ -4,10 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ShoppingCart, Package, ExternalLink, Star } from 'lucide-react';
+import { ShoppingCart, Package, ExternalLink, Star, ClipboardCheck, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 // Cover images
 import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
@@ -105,10 +106,8 @@ export default function Store() {
             {/* Products Grid */}
             <motion.div variants={fadeIn}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {STORE_PRODUCTS.map((product) => (
+                {STORE_PRODUCTS.filter(p => !p.isService).map((product) => (
                   <Card key={product.id} variant="elevated" className="overflow-hidden">
-                    {/* Cover images removed per user request */}
-                    
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-4 mb-4">
                         <div className="p-3 bg-maroon/20 rounded-lg">
@@ -156,6 +155,83 @@ export default function Store() {
                 ))}
               </div>
             </motion.div>
+
+            {/* Catalog Audit Service - Featured Section */}
+            {STORE_PRODUCTS.filter(p => p.isService).map((service) => (
+              <motion.div key={service.id} variants={fadeIn} className="mt-12">
+                <Card variant="elevated" className="overflow-hidden border-maroon/30">
+                  <div className="p-8 md:p-10">
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="p-4 bg-maroon/20 rounded-lg">
+                          <ClipboardCheck className="w-8 h-8 text-maroon" />
+                        </div>
+                        <div>
+                          <Badge className="mb-2 bg-maroon/20 text-maroon border-maroon/30">Professional Service</Badge>
+                          <h3 className="font-display text-2xl md:text-3xl">{service.title}</h3>
+                        </div>
+                      </div>
+                      <p className="text-3xl md:text-4xl font-display text-maroon">${service.price}</p>
+                    </div>
+
+                    <p className="text-lg text-muted-foreground mb-6">{service.description}</p>
+
+                    {service.fullDescription && (
+                      <div className="prose prose-sm max-w-none mb-6">
+                        {service.fullDescription.split('\n\n').map((paragraph, i) => (
+                          <p key={i} className="text-foreground/80 mb-4">{paragraph}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {service.whatsIncluded && (
+                      <div className="bg-secondary/30 rounded-lg p-6 mb-6">
+                        <h4 className="font-display text-lg mb-4">What's Included</h4>
+                        <ul className="space-y-2">
+                          {service.whatsIncluded.map((item, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm">
+                              <CheckCircle2 className="w-5 h-5 text-maroon shrink-0 mt-0.5" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="grid md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <h4 className="font-display text-lg mb-3">Who This Is For</h4>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• Artists preparing to pitch for sync</li>
+                          <li>• Producers managing multiple collaborators</li>
+                          <li>• Managers or reps vetting catalogs</li>
+                          <li>• Artists tired of guessing why nothing lands</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-display text-lg mb-3">What This Is Not</h4>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• Legal representation</li>
+                          <li>• Guaranteed placements</li>
+                          <li>• Creative feedback or song critique</li>
+                        </ul>
+                        <p className="text-sm text-foreground/80 mt-3 italic">This is about structure, not taste.</p>
+                      </div>
+                    </div>
+
+                    <Button 
+                      variant="maroon" 
+                      size="lg"
+                      className="w-full md:w-auto"
+                      onClick={() => handlePurchase(service.paymentLink)}
+                    >
+                      Purchase Catalog Audit - ${service.price}
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
 
             {/* Footer note */}
             <motion.div variants={fadeIn} className="mt-12 text-center">

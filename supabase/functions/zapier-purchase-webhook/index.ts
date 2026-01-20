@@ -16,7 +16,7 @@ function escapeHtml(text: string): string {
 
 
 // Product download mappings
-const PRODUCT_DOWNLOADS: Record<string, { title: string; files: string[] }> = {
+const PRODUCT_DOWNLOADS: Record<string, { title: string; files: string[]; isService?: boolean; bookingFormUrl?: string }> = {
   'split-sheet': {
     title: 'Split Sheet w/ One Stop Agreement',
     files: ['/downloads/Split_Sheet_Modernnostalgia.club.pdf'],
@@ -40,6 +40,12 @@ const PRODUCT_DOWNLOADS: Record<string, { title: string; files: string[] }> = {
       '/downloads/Split_Sheet_Modernnostalgia.club.pdf',
       '/downloads/Pro_Tools_Intro_Template_-_MNC.zip',
     ],
+  },
+  'catalog-audit': {
+    title: 'Catalog Audit for Sync',
+    files: [],
+    isService: true,
+    bookingFormUrl: 'https://form.jotform.com/253334227361048',
   },
 };
 
@@ -90,16 +96,115 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Generate download links HTML
-    const downloadLinksHtml = product.files
-      .map((file) => {
-        const fileName = file.split('/').pop()?.replace(/_/g, ' ').replace(/\.(pdf|zip)$/i, '') || file;
-        const fullUrl = `${BASE_URL}${file}`;
-        return `<li style="margin-bottom: 10px;"><a href="${fullUrl}" style="color: #8B1A1A; text-decoration: underline;">${fileName}</a></li>`;
-      })
-      .join('');
+    let emailHtml: string;
+    let emailSubject: string;
 
-    // Send email with download links via Resend API
+    // Handle service products differently
+    if (product.isService) {
+      emailSubject = `Your ${product.title} - Next Steps`;
+      emailHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
+            <h1 style="color: #f5f5dc; margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
+          </div>
+          
+          <p>Hi${payload.customer_name ? ` ${escapeHtml(payload.customer_name)}` : ''},</p>
+          
+          <p>Thank you for purchasing the <strong>${escapeHtml(product.title)}</strong>. We're excited to help you get your catalog sync-ready.</p>
+          
+          <div style="background: #f9f9f9; border-left: 4px solid #8B1A1A; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+            <h3 style="margin-top: 0; color: #8B1A1A;">Book Your Audit Session</h3>
+            <p>Click the button below to schedule your catalog audit and provide details about your music:</p>
+            <p style="text-align: center; margin: 20px 0;">
+              <a href="${product.bookingFormUrl}" style="display: inline-block; background: #8B1A1A; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">Schedule Your Audit</a>
+            </p>
+          </div>
+          
+          <h3 style="color: #8B1A1A;">What Happens Next</h3>
+          <ol style="padding-left: 20px;">
+            <li>Fill out the booking form with your catalog details</li>
+            <li>We'll review up to 10 songs from your catalog</li>
+            <li>You'll receive a written summary with clear next steps</li>
+          </ol>
+          
+          <p style="font-size: 14px; color: #666;">
+            <strong>Questions?</strong> Just reply to this email.
+          </p>
+          
+          ${payload.order_id ? `<p style="font-size: 12px; color: #999;">Order ID: ${escapeHtml(payload.order_id)}</p>` : ''}
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <p style="font-size: 12px; color: #999; margin-top: 30px;">
+            © Modern Nostalgia Club<br>
+            Making music sustainable.
+          </p>
+        </body>
+        </html>
+      `;
+    } else {
+      // Generate download links HTML for digital products
+      const downloadLinksHtml = product.files
+        .map((file) => {
+          const fileName = file.split('/').pop()?.replace(/_/g, ' ').replace(/\.(pdf|zip)$/i, '') || file;
+          const fullUrl = `${BASE_URL}${file}`;
+          return `<li style="margin-bottom: 10px;"><a href="${fullUrl}" style="color: #8B1A1A; text-decoration: underline;">${fileName}</a></li>`;
+        })
+        .join('');
+
+      emailSubject = `Your Download: ${product.title}`;
+      emailHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
+            <h1 style="color: #f5f5dc; margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
+          </div>
+          
+          <p>Hi${payload.customer_name ? ` ${escapeHtml(payload.customer_name)}` : ''},</p>
+          
+          <p>Thank you for purchasing <strong>${escapeHtml(product.title)}</strong>. Your download links are ready:</p>
+          
+          <div style="background: #f9f9f9; border-left: 4px solid #8B1A1A; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+            <h3 style="margin-top: 0; color: #8B1A1A;">Your Downloads</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              ${downloadLinksHtml}
+            </ul>
+          </div>
+          
+          <p style="font-size: 14px; color: #666;">
+            <strong>Tip:</strong> Save these links! If you have any issues downloading, just reply to this email.
+          </p>
+          
+          ${payload.order_id ? `<p style="font-size: 12px; color: #999;">Order ID: ${escapeHtml(payload.order_id)}</p>` : ''}
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          
+          <p style="font-size: 14px; color: #666;">
+            Want unlimited access to all resources plus courses, community, and more?<br>
+            <a href="${BASE_URL}" style="color: #8B1A1A;">Join Modern Nostalgia Club</a>
+          </p>
+          
+          <p style="font-size: 12px; color: #999; margin-top: 30px;">
+            © Modern Nostalgia Club<br>
+            Making music sustainable.
+          </p>
+        </body>
+        </html>
+      `;
+    }
+
+    // Send email via Resend API
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -107,52 +212,10 @@ const handler = async (req: Request): Promise<Response> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Modern Nostalgia Club <onboarding@resend.dev>",
+        from: "Modern Nostalgia Club <ge@modernnostalgia.club>",
         to: [payload.customer_email],
-        subject: `Your Download: ${product.title}`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          </head>
-          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
-              <h1 style="color: #f5f5dc; margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
-            </div>
-            
-            <p>Hi${payload.customer_name ? ` ${escapeHtml(payload.customer_name)}` : ''},</p>
-            
-            <p>Thank you for purchasing <strong>${escapeHtml(product.title)}</strong>. Your download links are ready:</p>
-            
-            <div style="background: #f9f9f9; border-left: 4px solid #8B1A1A; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-              <h3 style="margin-top: 0; color: #8B1A1A;">Your Downloads</h3>
-              <ul style="list-style: none; padding: 0; margin: 0;">
-                ${downloadLinksHtml}
-              </ul>
-            </div>
-            
-            <p style="font-size: 14px; color: #666;">
-              <strong>Tip:</strong> Save these links! If you have any issues downloading, just reply to this email.
-            </p>
-            
-            ${payload.order_id ? `<p style="font-size: 12px; color: #999;">Order ID: ${escapeHtml(payload.order_id)}</p>` : ''}
-            
-            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-            
-            <p style="font-size: 14px; color: #666;">
-              Want unlimited access to all resources plus courses, community, and more?<br>
-              <a href="${BASE_URL}" style="color: #8B1A1A;">Join Modern Nostalgia Club</a>
-            </p>
-            
-            <p style="font-size: 12px; color: #999; margin-top: 30px;">
-              © Modern Nostalgia Club<br>
-              Making music sustainable.
-            </p>
-          </body>
-          </html>
-        `,
+        subject: emailSubject,
+        html: emailHtml,
       }),
     });
 

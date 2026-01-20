@@ -7,8 +7,11 @@ export interface StoreProduct {
   paymentLink: string;
   downloadFiles: string[]; // Paths to downloadable files for members
   isBundle: boolean;
+  isService?: boolean; // For service products like Catalog Audit
   coverImage?: string; // Image ID to map to imported images
   externalLinks?: { label: string; url: string }[];
+  fullDescription?: string; // Extended description for service products
+  whatsIncluded?: string[]; // List of what's included
 }
 
 export const STORE_PRODUCTS: StoreProduct[] = [
@@ -60,5 +63,29 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     ],
     isBundle: true,
     coverImage: 'be-loud',
+  },
+  {
+    id: 'catalog-audit',
+    title: 'Catalog Audit for Sync',
+    description: 'A professional review of your music catalog to identify ownership risks, sync blockers, and missed opportunities before pitching or licensing.',
+    price: 249,
+    paymentLink: 'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-catalog-audit-placeholder',
+    downloadFiles: [],
+    isBundle: false,
+    isService: true,
+    fullDescription: `Most music doesn't fail in sync because it sounds bad. It fails because something small and structural makes it unusable.
+
+The Catalog Audit for Sync is a one-on-one review designed to surface those issues early, so you don't lose deals after interest is shown.
+
+This audit focuses on rights clarity, collaborator registration, deliverables, and sync usability. It is not legal advice, and it does not replace an attorney. It is a practical, industry-facing assessment built around how licensing actually works.`,
+    whatsIncluded: [
+      'Review of up to 10 songs from your catalog',
+      'Ownership and split structure check',
+      'Collaborator and PRO registration review',
+      'Sample, cover, and clearance risk flags',
+      'Delivery readiness (instrumentals, stems, metadata)',
+      'Sync suitability notes (film, TV, ads, trailers, social)',
+      'Written summary with clear next steps',
+    ],
   },
 ];
