@@ -275,8 +275,9 @@ await logAccess({
                     Public-facing edge functions implement database-backed rate limiting via <code>check_rate_limit()</code>:
                   </p>
                   <ul className="list-disc pl-6 space-y-1 mt-2">
-                    <li><strong>send-contact-email</strong> - 3 requests/hour per email (prevents spam)</li>
+                    <li><strong>send-contact-email</strong> - 3 requests/hour per email (prevents contact form spam)</li>
                     <li><strong>capture-download-email</strong> - 10 requests/hour per email (prevents harvesting)</li>
+                    <li><strong>networking-contact-submit</strong> - 5 requests/hour per email (prevents /connect form spam)</li>
                   </ul>
                   <p className="mt-2">
                     Rate limits are enforced server-side using hashed identifiers for privacy. The <code>rate_limits</code> 
