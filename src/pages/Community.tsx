@@ -1,18 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from '@/components/Header';
-import { SectionLabel } from '@/components/SectionLabel';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { EditPostDialog } from '@/components/EditPostDialog';
-import { MarkdownRenderer } from '@/components/MarkdownRenderer';
-import { RichTextEditor } from '@/components/RichTextEditor';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { communityPostSchema, communityCommentSchema } from '@/lib/formValidation';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -22,27 +17,16 @@ import {
   Folder, 
   Briefcase,
   MessageSquare,
-  ArrowRight,
-  ArrowLeft,
-  Plus,
   Send,
   Loader2,
-  Clock,
-  Pencil,
-  Pin
+  Hash,
+  Users,
+  AtSign
 } from 'lucide-react';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
-};
-
-const stagger = {
-  visible: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
 };
 
 // Map icon names to components
@@ -54,203 +38,214 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   'message-square': MessageSquare,
 };
 
-interface Section {
+interface Channel {
   id: string;
   slug: string;
   title: string;
   description: string | null;
   icon: string | null;
   color: string | null;
-  post_count?: number;
 }
 
-interface Post {
+interface ChatMessage {
   id: string;
-  title: string;
   content: string;
-  is_pinned: boolean;
+  mentions: string[];
   created_at: string;
   user_id: string;
-  profiles: {
-    name: string | null;
-    avatar_url: string | null;
-  } | null;
-  comment_count?: number;
+  stage_name?: string | null;
+  name?: string | null;
+  avatar_url?: string | null;
 }
 
-interface Comment {
-  id: string;
-  content: string;
-  created_at: string;
+interface MemberProfile {
   user_id: string;
-  profiles: {
-    name: string | null;
-    avatar_url: string | null;
-  } | null;
+  stage_name: string | null;
+  avatar_url: string | null;
 }
 
 export default function Community() {
-  const { user, profile, loading: authLoading, hasRole } = useAuth();
+  const { user, loading: authLoading, hasRole } = useAuth();
   const isAdmin = hasRole('admin');
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const [sections, setSections] = useState<Section[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [members, setMembers] = useState<MemberProfile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [postsLoading, setPostsLoading] = useState(false);
-  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [messagesLoading, setMessagesLoading] = useState(false);
   
-  // Current view state
-  const currentSection = searchParams.get('section');
-  const currentPostId = searchParams.get('post');
-  const currentPost = posts.find(p => p.id === currentPostId);
+  // Current channel
+  const currentChannelSlug = searchParams.get('channel');
+  const currentChannel = channels.find(c => c.slug === currentChannelSlug);
   
-  // Form state
-  const [showNewPost, setShowNewPost] = useState(false);
-  const [newPostTitle, setNewPostTitle] = useState('');
-  const [newPostContent, setNewPostContent] = useState('');
-  const [submittingPost, setSubmittingPost] = useState(false);
-  const [newComment, setNewComment] = useState('');
-  const [submittingComment, setSubmittingComment] = useState(false);
+  // Message input state
+  const [messageInput, setMessageInput] = useState('');
+  const [sending, setSending] = useState(false);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionFilter, setMentionFilter] = useState('');
+  const [mentionIndex, setMentionIndex] = useState(0);
   
-  // Edit state for admins
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editContent, setEditContent] = useState('');
-  const [savingEdit, setSavingEdit] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch sections with post counts
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  // Fetch channels (from community_sections)
   useEffect(() => {
-    async function fetchSections() {
+    async function fetchChannels() {
       const { data, error } = await supabase
         .from('community_sections')
-        .select(`
-          *,
-          community_posts(count)
-        `)
+        .select('*')
         .order('sort_order');
 
       if (error) {
-        console.error('Error fetching sections:', error);
+        console.error('Error fetching channels:', error);
       } else if (data) {
-        const sectionsWithCount = data.map(section => ({
-          ...section,
-          post_count: section.community_posts?.[0]?.count || 0
-        }));
-        setSections(sectionsWithCount);
+        setChannels(data);
+        // Auto-select first channel if none selected
+        if (!currentChannelSlug && data.length > 0) {
+          setSearchParams({ channel: data[0].slug });
+        }
       }
       setLoading(false);
     }
 
-    fetchSections();
+    fetchChannels();
   }, []);
 
-  // Fetch posts when section changes
+  // Fetch members for @mentions
   useEffect(() => {
-    if (!currentSection) {
-      setPosts([]);
+    async function fetchMembers() {
+      const { data, error } = await supabase.rpc('get_public_profiles');
+
+      if (!error && data) {
+        // Map to expected shape
+        const mapped: MemberProfile[] = data.map((d: { user_id: string; stage_name: string | null; avatar_url: string | null }) => ({
+          user_id: d.user_id,
+          stage_name: d.stage_name,
+          avatar_url: d.avatar_url,
+        }));
+        setMembers(mapped);
+      }
+    }
+
+    fetchMembers();
+  }, []);
+
+  // Fetch messages when channel changes
+  useEffect(() => {
+    if (!currentChannel) {
+      setMessages([]);
       return;
     }
 
-    async function fetchPosts() {
-      setPostsLoading(true);
-      const section = sections.find(s => s.slug === currentSection);
-      if (!section) {
-        setPostsLoading(false);
+    async function fetchMessages() {
+      setMessagesLoading(true);
+      
+      // Use a raw query to join with profiles since types aren't generated yet
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('channel_id', currentChannel!.id)
+        .order('created_at', { ascending: true })
+        .limit(100);
+
+      if (error) {
+        console.error('Error fetching messages:', error);
+        setMessagesLoading(false);
         return;
       }
 
-      const { data, error } = await supabase
-        .from('community_posts')
-        .select(`
-          *,
-          profiles:user_id(name, avatar_url),
-          community_comments(count)
-        `)
-        .eq('section_id', section.id)
-        .order('is_pinned', { ascending: false })
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching posts:', error);
-      } else if (data) {
-        const postsWithCount = data.map(post => ({
-          ...post,
-          comment_count: post.community_comments?.[0]?.count || 0
-        }));
-        setPosts(postsWithCount);
+      // Fetch profiles for all unique user_ids
+      const userIds = [...new Set((data || []).map((m: { user_id: string }) => m.user_id))];
+      
+      let profilesMap: Record<string, { stage_name: string | null; name: string | null; avatar_url: string | null }> = {};
+      
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('user_id, stage_name, name, avatar_url')
+          .in('user_id', userIds);
+        
+        if (profiles) {
+          profiles.forEach((p: { user_id: string; stage_name: string | null; name: string | null; avatar_url: string | null }) => {
+            profilesMap[p.user_id] = p;
+          });
+        }
       }
-      setPostsLoading(false);
+
+      const messagesWithProfiles: ChatMessage[] = (data || []).map((m: { id: string; content: string; mentions: string[]; created_at: string; user_id: string }) => ({
+        id: m.id,
+        content: m.content,
+        mentions: m.mentions || [],
+        created_at: m.created_at,
+        user_id: m.user_id,
+        stage_name: profilesMap[m.user_id]?.stage_name,
+        name: profilesMap[m.user_id]?.name,
+        avatar_url: profilesMap[m.user_id]?.avatar_url,
+      }));
+
+      setMessages(messagesWithProfiles);
+      setTimeout(scrollToBottom, 100);
+      setMessagesLoading(false);
     }
 
-    fetchPosts();
-  }, [currentSection, sections]);
+    fetchMessages();
+  }, [currentChannel, scrollToBottom]);
 
-  // Fetch comments when post changes
+  // Real-time subscription for new messages
   useEffect(() => {
-    if (!currentPostId) {
-      setComments([]);
-      return;
-    }
-
-    async function fetchComments() {
-      setCommentsLoading(true);
-      const { data, error } = await supabase
-        .from('community_comments')
-        .select(`
-          *,
-          profiles:user_id(name, avatar_url)
-        `)
-        .eq('post_id', currentPostId)
-        .order('created_at', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching comments:', error);
-      } else {
-        setComments(data || []);
-      }
-      setCommentsLoading(false);
-    }
-
-    fetchComments();
-  }, [currentPostId]);
-
-  // Real-time subscription for new posts
-  useEffect(() => {
-    if (!currentSection) return;
-
-    const section = sections.find(s => s.slug === currentSection);
-    if (!section) return;
+    if (!currentChannel) return;
 
     const channel = supabase
-      .channel('community-posts')
+      .channel(`chat-${currentChannel.id}`)
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'community_posts',
-          filter: `section_id=eq.${section.id}`
+          table: 'chat_messages',
+          filter: `channel_id=eq.${currentChannel.id}`
         },
         async (payload) => {
-          // Fetch the full post with profile
-          const { data } = await supabase
-            .from('community_posts')
-            .select(`
-              *,
-              profiles:user_id(name, avatar_url),
-              community_comments(count)
-            `)
-            .eq('id', payload.new.id)
+          // Fetch profile for new message
+          const newMsg = payload.new as { id: string; content: string; mentions: string[]; created_at: string; user_id: string };
+          
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('stage_name, name, avatar_url')
+            .eq('user_id', newMsg.user_id)
             .single();
 
-          if (data) {
-            setPosts(prev => [{
-              ...data,
-              comment_count: data.community_comments?.[0]?.count || 0
-            }, ...prev]);
-          }
+          const messageWithProfile: ChatMessage = {
+            id: newMsg.id,
+            content: newMsg.content,
+            mentions: newMsg.mentions || [],
+            created_at: newMsg.created_at,
+            user_id: newMsg.user_id,
+            stage_name: profile?.stage_name,
+            name: profile?.name,
+            avatar_url: profile?.avatar_url,
+          };
+
+          setMessages(prev => [...prev, messageWithProfile]);
+          setTimeout(scrollToBottom, 100);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `channel_id=eq.${currentChannel.id}`
+        },
+        (payload) => {
+          const oldMsg = payload.old as { id: string };
+          setMessages(prev => prev.filter(m => m.id !== oldMsg.id));
         }
       )
       .subscribe();
@@ -258,185 +253,156 @@ export default function Community() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [currentSection, sections]);
+  }, [currentChannel, scrollToBottom]);
 
-  // Real-time subscription for new comments
-  useEffect(() => {
-    if (!currentPostId) return;
-
-    const channel = supabase
-      .channel('community-comments')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'community_comments',
-          filter: `post_id=eq.${currentPostId}`
-        },
-        async (payload) => {
-          // Fetch the full comment with profile
-          const { data } = await supabase
-            .from('community_comments')
-            .select(`
-              *,
-              profiles:user_id(name, avatar_url)
-            `)
-            .eq('id', payload.new.id)
-            .single();
-
-          if (data) {
-            setComments(prev => [...prev, data]);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [currentPostId]);
-
-  const handleCreatePost = async (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate with zod schema
-    const result = communityPostSchema.safeParse({
-      title: newPostTitle,
-      content: newPostContent,
-    });
-    
-    if (!result.success) {
-      const firstError = result.error.issues[0]?.message;
-      toast.error(firstError || 'Please fill in all fields');
-      return;
+    const content = messageInput.trim();
+    if (!content || !currentChannel || !user) return;
+
+    setSending(true);
+    setShowMentions(false);
+
+    // Extract @mentions from content
+    const mentionRegex = /@\[([^\]]+)\]\(([^)]+)\)/g;
+    const mentionedUserIds: string[] = [];
+    let match;
+    while ((match = mentionRegex.exec(content)) !== null) {
+      mentionedUserIds.push(match[2]);
     }
 
-    const section = sections.find(s => s.slug === currentSection);
-    if (!section) return;
+    // Clean the content for display (keep @name format)
+    const cleanContent = content.replace(/@\[([^\]]+)\]\(([^)]+)\)/g, '@$1');
 
-    setSubmittingPost(true);
-
-    const validData = result.data;
     const { error } = await supabase
-      .from('community_posts')
+      .from('chat_messages')
       .insert({
-        section_id: section.id,
-        user_id: user!.id,
-        title: validData.title,
-        content: validData.content,
+        channel_id: currentChannel.id,
+        user_id: user.id,
+        content: cleanContent,
+        mentions: mentionedUserIds,
       });
 
     if (error) {
-      console.error('Error creating post:', error);
-      toast.error('Failed to create post');
+      console.error('Error sending message:', error);
+      toast.error('Failed to send message');
     } else {
-      toast.success('Post created!');
-      setNewPostTitle('');
-      setNewPostContent('');
-      setShowNewPost(false);
+      setMessageInput('');
     }
 
-    setSubmittingPost(false);
+    setSending(false);
   };
 
-  const handleCreateComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate with zod schema
-    const result = communityCommentSchema.safeParse({ content: newComment });
-    if (!result.success) {
-      const firstError = result.error.issues[0]?.message;
-      toast.error(firstError || 'Please enter a comment');
-      return;
-    }
-
-    setSubmittingComment(true);
-
-    const validData = result.data;
+  const handleDeleteMessage = async (messageId: string) => {
     const { error } = await supabase
-      .from('community_comments')
-      .insert({
-        post_id: currentPostId!,
-        user_id: user!.id,
-        content: validData.content,
-      });
+      .from('chat_messages')
+      .delete()
+      .eq('id', messageId);
 
     if (error) {
-      console.error('Error creating comment:', error);
-      toast.error('Failed to post comment');
-    } else {
-      setNewComment('');
+      toast.error('Failed to delete message');
     }
-
-    setSubmittingComment(false);
   };
 
-  const openEditDialog = (post: Post, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditingPost(post);
-    setEditTitle(post.title);
-    setEditContent(post.content);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMessageInput(value);
+
+    // Check for @mention trigger
+    const lastAtIndex = value.lastIndexOf('@');
+    if (lastAtIndex !== -1) {
+      const textAfterAt = value.slice(lastAtIndex + 1);
+      // Only show mentions if there's no space after @ or we're still typing the name
+      if (!textAfterAt.includes(' ') || textAfterAt.length === 0) {
+        setShowMentions(true);
+        setMentionFilter(textAfterAt.toLowerCase());
+        setMentionIndex(0);
+        return;
+      }
+    }
+    setShowMentions(false);
   };
 
-  const handleSaveEdit = async () => {
-    if (!editingPost) return;
-    
-    // Validate with zod schema
-    const result = communityPostSchema.safeParse({
-      title: editTitle,
-      content: editContent,
+  const handleMentionSelect = (member: MemberProfile) => {
+    const displayName = member.stage_name || 'User';
+    const lastAtIndex = messageInput.lastIndexOf('@');
+    const beforeAt = messageInput.slice(0, lastAtIndex);
+    const newValue = `${beforeAt}@[${displayName}](${member.user_id}) `;
+    setMessageInput(newValue);
+    setShowMentions(false);
+    inputRef.current?.focus();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!showMentions) return;
+
+    const filteredMembers = members.filter(m => {
+      const name = (m.stage_name || '').toLowerCase();
+      return name.includes(mentionFilter);
     });
-    
-    if (!result.success) {
-      const firstError = result.error.issues[0]?.message;
-      toast.error(firstError || 'Please fill in all fields');
-      return;
-    }
 
-    setSavingEdit(true);
-
-    const validData = result.data;
-    const { error } = await supabase
-      .from('community_posts')
-      .update({
-        title: validData.title,
-        content: validData.content,
-      })
-      .eq('id', editingPost.id);
-
-    if (error) {
-      console.error('Error updating post:', error);
-      toast.error('Failed to update post');
-    } else {
-      toast.success('Post updated!');
-      // Update local state
-      setPosts(prev => prev.map(p => 
-        p.id === editingPost.id 
-          ? { ...p, title: validData.title, content: validData.content }
-          : p
-      ));
-      setEditingPost(null);
-    }
-
-    setSavingEdit(false);
-  };
-
-  const navigateToSection = (slug: string) => {
-    setSearchParams({ section: slug });
-  };
-
-  const navigateToPost = (postId: string) => {
-    setSearchParams({ section: currentSection!, post: postId });
-  };
-
-  const goBack = () => {
-    if (currentPostId) {
-      setSearchParams({ section: currentSection! });
-    } else {
-      setSearchParams({});
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setMentionIndex(prev => Math.min(prev + 1, filteredMembers.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setMentionIndex(prev => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter' && filteredMembers[mentionIndex]) {
+      e.preventDefault();
+      handleMentionSelect(filteredMembers[mentionIndex]);
+    } else if (e.key === 'Escape') {
+      setShowMentions(false);
     }
   };
+
+  const selectChannel = (slug: string) => {
+    setSearchParams({ channel: slug });
+  };
+
+  const formatMessageContent = (content: string) => {
+    // Highlight @mentions in the content
+    const parts = content.split(/(@\w+)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('@')) {
+        return (
+          <span key={i} className="text-maroon font-medium">
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    }
+    return date.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+  };
+
+  // Group messages by date
+  const groupedMessages = messages.reduce((acc, message) => {
+    const date = formatDate(message.created_at);
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(message);
+    return acc;
+  }, {} as Record<string, ChatMessage[]>);
 
   // Redirect to home if not logged in
   if (!authLoading && !user) {
@@ -449,12 +415,11 @@ export default function Community() {
         <Header />
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <Skeleton className="h-12 w-64 mb-8" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[1, 2, 3, 4].map(i => (
-                  <Skeleton key={i} className="h-40" />
-                ))}
+              <div className="flex gap-6">
+                <Skeleton className="h-[600px] w-64" />
+                <Skeleton className="h-[600px] flex-1" />
               </div>
             </div>
           </div>
@@ -463,440 +428,237 @@ export default function Community() {
     );
   }
 
-  // View: Post Detail
-  if (currentPostId && currentPost) {
-    const sectionData = sections.find(s => s.slug === currentSection);
-    
-    return (
-      <>
-      <div className="min-h-screen bg-background studio-grain">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-              className="max-w-3xl mx-auto"
-            >
-              <motion.div variants={fadeIn} className="mb-6">
-                <Button variant="ghost" onClick={goBack} className="mb-4">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to {sectionData?.title}
-                </Button>
-              </motion.div>
-
-              <motion.div variants={fadeIn}>
-                <Card variant="elevated" className="mb-8">
-                  <CardHeader>
-                    <div className="flex items-start gap-4">
-                      <Avatar>
-                        <AvatarImage src={currentPost.profiles?.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {currentPost.profiles?.name?.[0]?.toUpperCase() || '?'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <CardTitle className="text-xl">{currentPost.title}</CardTitle>
-                          {currentPost.is_pinned && (
-                            <Pin className="w-4 h-4 text-primary" />
-                          )}
-                        </div>
-                        <CardDescription className="flex items-center gap-2 mt-1">
-                          <span>{currentPost.profiles?.name || 'Anonymous'}</span>
-                          <span>•</span>
-                          <Clock className="w-3 h-3" />
-                          <span>{new Date(currentPost.created_at).toLocaleDateString()}</span>
-                        </CardDescription>
-                      </div>
-                      {isAdmin && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => openEditDialog(currentPost, e)}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <MarkdownRenderer content={currentPost.content} className="prose-sm" />
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Comments Section */}
-              <motion.div variants={fadeIn}>
-                <h3 className="font-display text-xl mb-4 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5" />
-                  Comments ({comments.length})
-                </h3>
-
-                {commentsLoading ? (
-                  <div className="space-y-4">
-                    {[1, 2].map(i => (
-                      <Skeleton key={i} className="h-20" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4 mb-6">
-                    <AnimatePresence>
-                      {comments.map((comment) => (
-                        <motion.div
-                          key={comment.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="flex gap-3 p-4 bg-card rounded-lg border border-border"
-                        >
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage src={comment.profiles?.avatar_url || undefined} />
-                            <AvatarFallback className="text-xs">
-                              {comment.profiles?.name?.[0]?.toUpperCase() || '?'}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-sm">
-                                {comment.profiles?.name || 'Anonymous'}
-                              </span>
-                              <span className="text-xs text-muted-foreground">
-                                {new Date(comment.created_at).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <MarkdownRenderer content={comment.content} className="text-sm prose-sm" />
-                          </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-
-                    {comments.length === 0 && (
-                      <p className="text-center text-muted-foreground py-8">
-                        No comments yet. Be the first to comment!
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* New Comment Form */}
-                <form onSubmit={handleCreateComment} className="space-y-3">
-                  <div className="flex gap-3">
-                    <Avatar className="w-8 h-8 shrink-0 mt-1">
-                      <AvatarImage src={profile?.avatar_url || undefined} />
-                      <AvatarFallback className="text-xs">
-                        {profile?.name?.[0]?.toUpperCase() || '?'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <RichTextEditor
-                        placeholder="Write a comment... (supports **bold**, *italic*, [links](url), ![images](url))"
-                        value={newComment}
-                        onChange={setNewComment}
-                        disabled={submittingComment}
-                        rows={3}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button 
-                      type="submit" 
-                      variant="maroon" 
-                      disabled={submittingComment || !newComment.trim()}
-                    >
-                      {submittingComment ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4 mr-2" />
-                      )}
-                      Post Comment
-                    </Button>
-                  </div>
-                </form>
-              </motion.div>
-            </motion.div>
-          </div>
-        </main>
-      </div>
-      <EditPostDialog
-        post={editingPost}
-        onClose={() => setEditingPost(null)}
-        editTitle={editTitle}
-        setEditTitle={setEditTitle}
-        editContent={editContent}
-        setEditContent={setEditContent}
-        onSave={handleSaveEdit}
-        saving={savingEdit}
-      />
-      </>
-    );
-  }
-
-  // View: Posts List
-  if (currentSection) {
-    const sectionData = sections.find(s => s.slug === currentSection);
-    const IconComponent = iconMap[sectionData?.icon || 'message-square'] || MessageSquare;
-
-    return (
-      <>
-      <div className="min-h-screen bg-background studio-grain">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-              className="max-w-3xl mx-auto"
-            >
-              <motion.div variants={fadeIn} className="mb-8">
-                <Button variant="ghost" onClick={goBack} className="mb-4">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  All Sections
-                </Button>
-                <div className="flex items-center gap-4">
-                  <IconComponent className={`w-8 h-8 ${sectionData?.color}`} />
-                  <div>
-                    <h1 className="text-3xl font-display">{sectionData?.title}</h1>
-                    <p className="text-muted-foreground">{sectionData?.description}</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div variants={fadeIn} className="mb-6">
-                {!showNewPost ? (
-                  <Button variant="hero" onClick={() => setShowNewPost(true)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Post
-                  </Button>
-                ) : (
-                  <Card variant="elevated">
-                    <CardHeader>
-                      <CardTitle>Create Post</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <form onSubmit={handleCreatePost} className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="title">Title</Label>
-                          <Input
-                            id="title"
-                            placeholder="Enter post title..."
-                            value={newPostTitle}
-                            onChange={(e) => setNewPostTitle(e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="content">Content</Label>
-                          <RichTextEditor
-                            id="content"
-                            placeholder="Share your thoughts... Use **bold**, *italic*, [links](url), and ![images](url)"
-                            rows={6}
-                            value={newPostContent}
-                            onChange={setNewPostContent}
-                            disabled={submittingPost}
-                          />
-                        </div>
-                        <div className="flex gap-3">
-                          <Button type="submit" variant="maroon" disabled={submittingPost}>
-                            {submittingPost ? (
-                              <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Posting...
-                              </>
-                            ) : (
-                              'Post'
-                            )}
-                          </Button>
-                          <Button type="button" variant="outline" onClick={() => setShowNewPost(false)}>
-                            Cancel
-                          </Button>
-                        </div>
-                      </form>
-                    </CardContent>
-                  </Card>
-                )}
-              </motion.div>
-
-              {postsLoading ? (
-                <div className="space-y-4">
-                  {[1, 2, 3].map(i => (
-                    <Skeleton key={i} className="h-24" />
-                  ))}
-                </div>
-              ) : (
-                <motion.div variants={stagger} className="space-y-4">
-                  <AnimatePresence>
-                    {posts.map((post) => (
-                      <motion.div
-                        key={post.id}
-                        variants={fadeIn}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        layout
-                      >
-                        <Card 
-                          variant="feature" 
-                          className="cursor-pointer hover:scale-[1.01] transition-transform"
-                          onClick={() => navigateToPost(post.id)}
-                        >
-                          <CardHeader>
-                            <div className="flex items-start gap-3">
-                              <Avatar className="w-10 h-10">
-                                <AvatarImage src={post.profiles?.avatar_url || undefined} />
-                                <AvatarFallback>
-                                  {post.profiles?.name?.[0]?.toUpperCase() || '?'}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <CardTitle className="text-lg">{post.title}</CardTitle>
-                                  {post.is_pinned && (
-                                    <Pin className="w-4 h-4 text-primary" />
-                                  )}
-                                </div>
-                                <CardDescription className="flex items-center gap-3 mt-1">
-                                  <span>{post.profiles?.name || 'Anonymous'}</span>
-                                  <span className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    {new Date(post.created_at).toLocaleDateString()}
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <MessageSquare className="w-3 h-3" />
-                                    {post.comment_count || 0}
-                                  </span>
-                                </CardDescription>
-                              </div>
-                              {isAdmin && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="shrink-0"
-                                  onClick={(e) => openEditDialog(post, e)}
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                </Button>
-                              )}
-                            </div>
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {post.content.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_#`]/g, '')}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
-                  {posts.length === 0 && (
-                    <Card variant="console" className="p-8 text-center">
-                      <p className="text-muted-foreground">
-                        No posts yet. Be the first to share something!
-                      </p>
-                    </Card>
-                  )}
-                </motion.div>
-              )}
-            </motion.div>
-          </div>
-        </main>
-      </div>
-      <EditPostDialog
-        post={editingPost}
-        onClose={() => setEditingPost(null)}
-        editTitle={editTitle}
-        setEditTitle={setEditTitle}
-        editContent={editContent}
-        setEditContent={setEditContent}
-        onSave={handleSaveEdit}
-        saving={savingEdit}
-      />
-      </>
-    );
-  }
+  const filteredMentionMembers = members.filter(m => {
+    const name = (m.stage_name || '').toLowerCase();
+    return name.includes(mentionFilter);
+  }).slice(0, 5);
 
   return (
-    <>
     <div className="min-h-screen bg-background studio-grain">
       <Header />
-      
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={stagger}
-            className="max-w-4xl mx-auto"
+            variants={fadeIn}
+            className="max-w-6xl mx-auto"
           >
-            <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">Community</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display mb-4">
-                Focused Discussions
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                This is not a social feed. It's structured conversation around wins, questions, resources, and opportunities. No audio uploads here—just learning and connection.
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              variants={stagger}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              {sections.map((section) => {
-                const IconComponent = iconMap[section.icon || 'message-square'] || MessageSquare;
-                
-                return (
-                  <motion.div key={section.id} variants={fadeIn}>
-                    <Card 
-                      variant="feature" 
-                      className="h-full cursor-pointer hover:scale-[1.02] transition-transform"
-                      onClick={() => navigateToSection(section.slug)}
-                    >
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <IconComponent className={`w-8 h-8 ${section.color}`} />
-                          <span className="text-sm text-muted-foreground flex items-center gap-1">
-                            <MessageSquare className="w-4 h-4" />
-                            {section.post_count || 0}
-                          </span>
+            {/* Page Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <MessageSquare className="w-6 h-6 text-maroon" />
+                <h1 className="text-3xl font-display text-cream">Group Chat</h1>
+              </div>
+              <p className="text-cream/60">Connect with the community in real-time</p>
+            </div>
+
+            <div className="flex gap-6 h-[calc(100vh-240px)] min-h-[500px]">
+              {/* Channel Sidebar */}
+              <Card className="w-64 shrink-0 bg-card/50 border-cream/10">
+                <div className="p-4 border-b border-cream/10">
+                  <h3 className="font-semibold text-cream flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Channels
+                  </h3>
+                </div>
+                <ScrollArea className="h-[calc(100%-60px)]">
+                  <div className="p-2 space-y-1">
+                    {channels.map((channel) => {
+                      const isActive = currentChannelSlug === channel.slug;
+                      
+                      return (
+                        <button
+                          key={channel.id}
+                          onClick={() => selectChannel(channel.slug)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                            isActive 
+                              ? 'bg-maroon/20 text-cream' 
+                              : 'text-cream/70 hover:bg-cream/5 hover:text-cream'
+                          }`}
+                        >
+                          <Hash className="w-4 h-4 shrink-0" />
+                          <span className="truncate">{channel.title}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </Card>
+
+              {/* Chat Area */}
+              <Card className="flex-1 flex flex-col bg-card/50 border-cream/10 overflow-hidden">
+                {currentChannel ? (
+                  <>
+                    {/* Channel Header */}
+                    <div className="p-4 border-b border-cream/10 shrink-0">
+                      <div className="flex items-center gap-2">
+                        <Hash className="w-5 h-5 text-maroon" />
+                        <h2 className="font-semibold text-cream">{currentChannel.title}</h2>
+                      </div>
+                      {currentChannel.description && (
+                        <p className="text-sm text-cream/60 mt-1">{currentChannel.description}</p>
+                      )}
+                    </div>
+
+                    {/* Messages Area */}
+                    <ScrollArea className="flex-1 p-4">
+                      {messagesLoading ? (
+                        <div className="flex items-center justify-center h-full">
+                          <Loader2 className="w-6 h-6 animate-spin text-cream/50" />
                         </div>
-                        <CardTitle className="mt-4">{section.title}</CardTitle>
-                        <CardDescription>{section.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button variant="maroonOutline" size="sm" className="w-full">
-                          Enter
-                          <ArrowRight className="ml-2 w-4 h-4" />
+                      ) : messages.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-cream/50">
+                          <MessageSquare className="w-12 h-12 mb-4 opacity-50" />
+                          <p>No messages yet</p>
+                          <p className="text-sm">Be the first to say something!</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-6">
+                          {Object.entries(groupedMessages).map(([date, dateMessages]) => (
+                            <div key={date}>
+                              {/* Date Divider */}
+                              <div className="flex items-center gap-4 my-4">
+                                <div className="flex-1 h-px bg-cream/10" />
+                                <span className="text-xs text-cream/40 font-medium">{date}</span>
+                                <div className="flex-1 h-px bg-cream/10" />
+                              </div>
+
+                              {/* Messages for this date */}
+                              <div className="space-y-3">
+                                {dateMessages.map((message, idx) => {
+                                  const isOwn = message.user_id === user?.id;
+                                  const displayName = message.stage_name || message.name || 'Member';
+                                  const showAvatar = idx === 0 || 
+                                    dateMessages[idx - 1]?.user_id !== message.user_id ||
+                                    new Date(message.created_at).getTime() - new Date(dateMessages[idx - 1]?.created_at).getTime() > 300000;
+
+                                  return (
+                                    <motion.div
+                                      key={message.id}
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      className={`group flex items-start gap-3 ${showAvatar ? 'mt-4' : 'mt-1'}`}
+                                    >
+                                      {showAvatar ? (
+                                        <Avatar className="w-8 h-8 shrink-0">
+                                          <AvatarImage src={message.avatar_url || undefined} />
+                                          <AvatarFallback className="bg-maroon/20 text-cream text-xs">
+                                            {displayName[0]?.toUpperCase()}
+                                          </AvatarFallback>
+                                        </Avatar>
+                                      ) : (
+                                        <div className="w-8 shrink-0" />
+                                      )}
+                                      
+                                      <div className="flex-1 min-w-0">
+                                        {showAvatar && (
+                                          <div className="flex items-baseline gap-2 mb-1">
+                                            <span className={`font-medium text-sm ${isOwn ? 'text-maroon' : 'text-cream'}`}>
+                                              {displayName}
+                                            </span>
+                                            <span className="text-xs text-cream/40">
+                                              {formatTime(message.created_at)}
+                                            </span>
+                                          </div>
+                                        )}
+                                        <p className="text-cream/90 text-sm break-words">
+                                          {formatMessageContent(message.content)}
+                                        </p>
+                                      </div>
+
+                                      {/* Delete button for own messages or admin */}
+                                      {(isOwn || isAdmin) && (
+                                        <button
+                                          onClick={() => handleDeleteMessage(message.id)}
+                                          className="opacity-0 group-hover:opacity-100 text-cream/30 hover:text-destructive transition-opacity text-xs"
+                                        >
+                                          ×
+                                        </button>
+                                      )}
+                                    </motion.div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                          <div ref={messagesEndRef} />
+                        </div>
+                      )}
+                    </ScrollArea>
+
+                    {/* Message Input */}
+                    <div className="p-4 border-t border-cream/10 shrink-0 relative">
+                      {/* Mentions Popup */}
+                      <AnimatePresence>
+                        {showMentions && filteredMentionMembers.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute bottom-full left-4 right-4 mb-2 bg-background border border-cream/20 rounded-lg shadow-xl overflow-hidden"
+                          >
+                            <div className="p-2 text-xs text-cream/50 border-b border-cream/10 flex items-center gap-2">
+                              <AtSign className="w-3 h-3" />
+                              Mention someone
+                            </div>
+                            {filteredMentionMembers.map((member, idx) => (
+                              <button
+                                key={member.user_id}
+                                onClick={() => handleMentionSelect(member)}
+                                className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
+                                  idx === mentionIndex ? 'bg-maroon/20' : 'hover:bg-cream/5'
+                                }`}
+                              >
+                                <Avatar className="w-6 h-6">
+                                  <AvatarImage src={member.avatar_url || undefined} />
+                                  <AvatarFallback className="text-xs">
+                                    {(member.stage_name || '?')[0]?.toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-cream text-sm">
+                                  {member.stage_name || 'Member'}
+                                </span>
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <form onSubmit={handleSendMessage} className="flex gap-3">
+                        <Input
+                          ref={inputRef}
+                          value={messageInput}
+                          onChange={handleInputChange}
+                          onKeyDown={handleKeyDown}
+                          placeholder={`Message #${currentChannel.title}... (use @ to mention)`}
+                          className="flex-1 bg-background/50 border-cream/20 text-cream placeholder:text-cream/40"
+                          disabled={sending}
+                        />
+                        <Button 
+                          type="submit" 
+                          disabled={sending || !messageInput.trim()}
+                          className="bg-maroon hover:bg-maroon/80"
+                        >
+                          {sending ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Send className="w-4 h-4" />
+                          )}
                         </Button>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-            
-            <motion.div 
-              variants={fadeIn}
-              className="mt-12 p-6 bg-card/50 border border-border rounded-lg text-center"
-            >
-              <p className="text-sm text-muted-foreground">
-                Audio submissions and reviews happen in the <a href="/studio" className="text-primary hover:text-maroon-glow">Studio Floor</a>, not here.
-              </p>
-            </motion.div>
+                      </form>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-cream/50">
+                    <p>Select a channel to start chatting</p>
+                  </div>
+                )}
+              </Card>
+            </div>
           </motion.div>
         </div>
       </main>
     </div>
-      <EditPostDialog
-        post={editingPost}
-        onClose={() => setEditingPost(null)}
-        editTitle={editTitle}
-        setEditTitle={setEditTitle}
-        editContent={editContent}
-        setEditContent={setEditContent}
-        onSave={handleSaveEdit}
-        saving={savingEdit}
-      />
-    </>
   );
 }
