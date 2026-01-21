@@ -119,6 +119,44 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          channel_id: string
+          content: string
+          created_at: string
+          id: string
+          mentions: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          content: string
+          created_at?: string
+          id?: string
+          mentions?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          mentions?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "community_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_comments: {
         Row: {
           content: string
