@@ -71,6 +71,7 @@ export default function SecurityDocs() {
                 <StatusItem label="Input Validation" status="active" />
                 <StatusItem label="Rate Limiting" status="active" />
                 <StatusItem label="Email Capture Hardened" status="active" />
+                <StatusItem label="Anti-Spam Layer" status="active" />
               </div>
             </CardContent>
           </Card>
@@ -282,6 +283,22 @@ await logAccess({
                   <p className="mt-2">
                     Rate limits are enforced server-side using hashed identifiers for privacy. The <code>rate_limits</code> 
                     table is inaccessible to clients, preventing bypass attempts.
+                  </p>
+                </Section>
+
+                <Section title="Anti-Spam Layer">
+                  <p>
+                    Public forms implement a multi-layered anti-spam strategy beyond rate limiting:
+                  </p>
+                  <ul className="list-disc pl-6 space-y-1 mt-2">
+                    <li><strong>Honeypot Fields</strong> - Hidden form fields that bots typically fill but humans don't see</li>
+                    <li><strong>Timestamp Validation</strong> - Rejects submissions made within 2 seconds of page load (bots submit instantly)</li>
+                    <li><strong>Client Fingerprinting</strong> - Browser characteristics hashed for identification</li>
+                    <li><strong>Cooldown UI</strong> - Visual countdown after submission prevents rapid re-submissions</li>
+                  </ul>
+                  <p className="mt-2">
+                    Bot submissions are silently accepted (returns success) to prevent bots from adapting their behavior.
+                    The <code>useAntiSpam</code> hook provides consistent implementation across all public forms.
                   </p>
                 </Section>
               </AccordionContent>

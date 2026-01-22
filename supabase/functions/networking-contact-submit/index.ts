@@ -25,6 +25,10 @@ interface ContactSubmission {
   role?: string;
   notes?: string;
   event_tag?: string;
+  // Anti-spam fields
+  _hp?: string;  // Honeypot
+  _fp?: string;  // Fingerprint
+  _ts?: number;  // Timestamp
 }
 
 // Validate email format
@@ -58,7 +62,26 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, company, role, notes, event_tag }: ContactSubmission = await req.json();
+    const { name, email, company, role, notes, event_tag, _hp, _fp, _ts }: ContactSubmission = await req.json();
+
+    // Anti-spam: Check honeypot field (should be empty for humans)
+    if (_hp && _hp.trim() !== '') {
+      console.warn("Honeypot triggered - likely bot submission");
+      // Return success to not reveal detection to bots
+      return new Response(
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Anti-spam: Check timestamp (reject if submitted too quickly - less than 2 seconds)
+    if (_ts && (Date.now() - _ts) < 2000) {
+      console.warn("Form submitted too quickly - likely bot");
+      return new Response(
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
     // Validate required fields
     if (!name || !email) {

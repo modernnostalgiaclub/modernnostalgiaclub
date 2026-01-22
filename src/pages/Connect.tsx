@@ -7,7 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { ExternalLink, Send, CheckCircle, Home, Music, Handshake, Calendar, Instagram } from 'lucide-react';
+import { useAntiSpam } from '@/hooks/useAntiSpam';
+import { ExternalLink, Send, CheckCircle, Home, Music, Handshake, Calendar, Instagram, Clock } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import logoCream from '@/assets/logo-cream.png';
 
@@ -49,6 +50,8 @@ export default function Connect() {
     role: '',
     notes: '',
   });
+  
+  const antiSpam = useAntiSpam({ storageKey: 'connect_cooldown', cooldownMs: 30000 });
 
   useEffect(() => {
     fetchLinks();
@@ -70,6 +73,13 @@ export default function Connect() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    
+    // Validate anti-spam measures
+    const spamError = antiSpam.validate();
+    if (spamError) {
+      toast.error(spamError);
+      return;
+    }
     
     if (!formData.name.trim() || !formData.email.trim()) {
       toast.error('Name and email are required');
@@ -93,6 +103,7 @@ export default function Connect() {
           role: formData.role || 'Other',
           notes: formData.notes.trim() || null,
           event_tag: 'NAMM',
+          ...antiSpam.getSubmissionData(),
         },
       });
 
@@ -109,6 +120,8 @@ export default function Connect() {
         return;
       }
 
+      // Trigger cooldown after successful submission
+      antiSpam.triggerCooldown();
       setSubmitted(true);
       toast.success("You're connected!");
     } catch (err) {
@@ -122,6 +135,8 @@ export default function Connect() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
+
+  const isDisabled = submitting || antiSpam.isInCooldown;
 
   return (
     <>
@@ -218,6 +233,9 @@ export default function Connect() {
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Honeypot field - hidden from users, bots will fill it */}
+                  <input {...antiSpam.honeypotProps} />
+
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-cream/80 text-sm">Name *</Label>
                     <Input
@@ -227,6 +245,7 @@ export default function Connect() {
                       placeholder="Your name"
                       className="bg-dark border-cream/20 text-cream placeholder:text-cream/40 focus:border-maroon"
                       required
+                      disabled={isDisabled}
                     />
                   </div>
 
@@ -240,6 +259,7 @@ export default function Connect() {
                       placeholder="you@email.com"
                       className="bg-dark border-cream/20 text-cream placeholder:text-cream/40 focus:border-maroon"
                       required
+                      disabled={isDisabled}
                     />
                   </div>
 
@@ -251,6 +271,7 @@ export default function Connect() {
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       placeholder="Optional"
                       className="bg-dark border-cream/20 text-cream placeholder:text-cream/40 focus:border-maroon"
+                      disabled={isDisabled}
                     />
                   </div>
 
@@ -259,6 +280,7 @@ export default function Connect() {
                     <Select
                       value={formData.role}
                       onValueChange={(value) => setFormData({ ...formData, role: value })}
+                      disabled={isDisabled}
                     >
                       <SelectTrigger className="bg-dark border-cream/20 text-cream focus:border-maroon">
                         <SelectValue placeholder="Select your role" />
@@ -286,15 +308,21 @@ export default function Connect() {
                       placeholder="What are you working on? How can I help?"
                       rows={3}
                       className="bg-dark border-cream/20 text-cream placeholder:text-cream/40 focus:border-maroon resize-none"
+                      disabled={isDisabled}
                     />
                   </div>
 
                   <Button 
                     type="submit" 
-                    disabled={submitting}
+                    disabled={isDisabled}
                     className="w-full bg-maroon hover:bg-maroon/90 text-cream font-medium py-6 text-base"
                   >
-                    {submitting ? (
+                    {antiSpam.isInCooldown ? (
+                      <>
+                        <Clock className="w-4 h-4 mr-2" />
+                        Wait {antiSpam.cooldownRemaining}s
+                      </>
+                    ) : submitting ? (
                       'Connecting...'
                     ) : (
                       <>
