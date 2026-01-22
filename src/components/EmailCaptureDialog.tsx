@@ -20,8 +20,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { supabase } from '@/integrations/supabase/client';
+import { useAntiSpam } from '@/hooks/useAntiSpam';
 import { toast } from 'sonner';
-import { Download, Mail } from 'lucide-react';
+import { Download, Mail, Clock } from 'lucide-react';
 
 const emailSchema = z.object({
   email: z.string().trim().email('Please enter a valid email address').max(255),
@@ -45,6 +46,7 @@ export function EmailCaptureDialog({
   downloadLink,
 }: EmailCaptureDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const antiSpam = useAntiSpam({ storageKey: 'download_cooldown', cooldownMs: 15000 });
 
   const form = useForm<EmailFormData>({
     resolver: zodResolver(emailSchema),
@@ -54,6 +56,13 @@ export function EmailCaptureDialog({
   });
 
   const onSubmit = async (data: EmailFormData) => {
+    // Validate anti-spam measures
+    const spamError = antiSpam.validate();
+    if (spamError) {
+      toast.error(spamError);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await supabase.functions.invoke('capture-download-email', {
@@ -61,6 +70,7 @@ export function EmailCaptureDialog({
           email: data.email.toLowerCase(),
           trackId,
           trackTitle,
+          ...antiSpam.getSubmissionData(),
         },
       });
 
@@ -78,6 +88,8 @@ export function EmailCaptureDialog({
         throw new Error(result.error);
       }
 
+      // Trigger cooldown after successful submission
+      antiSpam.triggerCooldown();
       toast.success('Thanks! Your download is starting.');
       triggerDownload();
     } catch (error) {
@@ -100,6 +112,8 @@ export function EmailCaptureDialog({
     form.reset();
   };
 
+  const isDisabled = isSubmitting || antiSpam.isInCooldown;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -115,6 +129,9 @@ export function EmailCaptureDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Honeypot field - hidden from users, bots will fill it */}
+            <input {...antiSpam.honeypotProps} />
+
             <FormField
               control={form.control}
               name="email"
@@ -129,6 +146,7 @@ export function EmailCaptureDialog({
                         className="pl-10"
                         type="email"
                         {...field}
+                        disabled={isDisabled}
                       />
                     </div>
                   </FormControl>
@@ -144,8 +162,17 @@ export function EmailCaptureDialog({
               >
                 Cancel
               </Button>
-              <Button type="submit" variant="maroon" disabled={isSubmitting}>
-                {isSubmitting ? 'Processing...' : 'Download Now'}
+              <Button type="submit" variant="maroon" disabled={isDisabled}>
+                {antiSpam.isInCooldown ? (
+                  <>
+                    <Clock className="w-4 h-4 mr-2" />
+                    Wait {antiSpam.cooldownRemaining}s
+                  </>
+                ) : isSubmitting ? (
+                  'Processing...'
+                ) : (
+                  'Download Now'
+                )}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground text-center">

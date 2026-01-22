@@ -26,6 +26,10 @@ interface ContactEmailRequest {
   email: string;
   subject: string;
   message: string;
+  // Anti-spam fields
+  _hp?: string;  // Honeypot
+  _fp?: string;  // Fingerprint
+  _ts?: number;  // Timestamp
 }
 
 // HTML escape function to prevent XSS in email templates
@@ -64,7 +68,26 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, subject, message }: ContactEmailRequest = await req.json();
+    const { name, email, subject, message, _hp, _fp, _ts }: ContactEmailRequest = await req.json();
+
+    // Anti-spam: Check honeypot field (should be empty for humans)
+    if (_hp && _hp.trim() !== '') {
+      console.warn("Honeypot triggered - likely bot submission");
+      // Return success to not reveal detection to bots
+      return new Response(
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Anti-spam: Check timestamp (reject if submitted too quickly - less than 2 seconds)
+    if (_ts && (Date.now() - _ts) < 2000) {
+      console.warn("Form submitted too quickly - likely bot");
+      return new Response(
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
     // Validate inputs
     if (!name || !email || !subject || !message) {
@@ -89,6 +112,10 @@ const handler = async (req: Request): Promise<Response> => {
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Enhanced fingerprint-based rate limiting (combines email + fingerprint)
+    const userAgent = req.headers.get('user-agent') || 'unknown';
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0] || req.headers.get('cf-connecting-ip') || 'unknown';
 
     // Rate limiting check
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;

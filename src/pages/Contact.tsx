@@ -10,7 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mail, Send, Loader2 } from 'lucide-react';
+import { useAntiSpam } from '@/hooks/useAntiSpam';
+import { Mail, Send, Loader2, Clock } from 'lucide-react';
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
@@ -24,6 +25,7 @@ type ContactFormData = z.infer<typeof contactSchema>;
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const antiSpam = useAntiSpam({ storageKey: 'contact_cooldown', cooldownMs: 60000 });
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -36,13 +38,30 @@ export default function Contact() {
   });
 
   const onSubmit = async (data: ContactFormData) => {
+    // Validate anti-spam measures
+    const spamError = antiSpam.validate();
+    if (spamError) {
+      toast({
+        title: 'Unable to submit',
+        description: spamError,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { error } = await supabase.functions.invoke('send-contact-email', {
-        body: data,
+        body: {
+          ...data,
+          ...antiSpam.getSubmissionData(),
+        },
       });
 
       if (error) throw error;
+
+      // Trigger cooldown after successful submission
+      antiSpam.triggerCooldown();
 
       toast({
         title: 'Message sent!',
@@ -60,6 +79,8 @@ export default function Contact() {
       setIsSubmitting(false);
     }
   };
+
+  const isDisabled = isSubmitting || antiSpam.isInCooldown;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -79,6 +100,9 @@ export default function Contact() {
           <div className="bg-card border border-border rounded-lg p-6 md:p-8">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Honeypot field - hidden from users, bots will fill it */}
+                <input {...antiSpam.honeypotProps} />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
@@ -87,7 +111,7 @@ export default function Contact() {
                       <FormItem>
                         <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your name" {...field} />
+                          <Input placeholder="Your name" {...field} disabled={isDisabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -100,7 +124,7 @@ export default function Contact() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} />
+                          <Input type="email" placeholder="you@example.com" {...field} disabled={isDisabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -115,7 +139,7 @@ export default function Contact() {
                     <FormItem>
                       <FormLabel>Subject</FormLabel>
                       <FormControl>
-                        <Input placeholder="What's this about?" {...field} />
+                        <Input placeholder="What's this about?" {...field} disabled={isDisabled} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -133,6 +157,7 @@ export default function Contact() {
                           placeholder="Tell us more..."
                           className="min-h-[150px] resize-y"
                           {...field}
+                          disabled={isDisabled}
                         />
                       </FormControl>
                       <FormMessage />
@@ -140,8 +165,13 @@ export default function Contact() {
                   )}
                 />
 
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? (
+                <Button type="submit" className="w-full" disabled={isDisabled}>
+                  {antiSpam.isInCooldown ? (
+                    <>
+                      <Clock className="w-4 h-4 mr-2" />
+                      Wait {antiSpam.cooldownRemaining}s
+                    </>
+                  ) : isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Sending...
