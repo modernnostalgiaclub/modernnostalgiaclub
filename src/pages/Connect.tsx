@@ -161,8 +161,11 @@ export default function Connect() {
               alt="Modern Nostalgia Club" 
               className="h-24 mx-auto mb-4"
             />
-            <p className="text-cream font-medium text-lg tracking-wide mb-2">
+            <p className="text-cream font-medium text-lg tracking-wide">
               Ge Oh | modernnostalgia.club
+            </p>
+            <p className="text-cream/80 text-sm tracking-wide mb-2">
+              Ge@modernnostalgia.club
             </p>
             <p className="text-cream/60 text-sm tracking-wide italic">
               Infrastructure for independent artists and creative economies.
