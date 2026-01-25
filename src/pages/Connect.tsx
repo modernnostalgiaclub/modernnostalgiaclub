@@ -164,12 +164,9 @@ export default function Connect() {
             <p className="text-cream font-medium text-lg tracking-wide">
               Ge Oh | modernnostalgia.club
             </p>
-            <a 
-              href="mailto:Ge@modernnostalgia.club" 
-              className="text-cream/80 text-sm tracking-wide mb-2 hover:text-maroon transition-colors"
-            >
+            <p className="text-cream/80 text-sm tracking-wide mb-2">
               Ge@modernnostalgia.club
-            </a>
+            </p>
             <p className="text-cream/60 text-sm tracking-wide italic">
               Infrastructure for independent artists and creative economies.
             </p>
