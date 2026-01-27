@@ -427,6 +427,97 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Free Resources Section */}
+      <section id="free-resources" className="py-24 bg-maroon/5 border-y border-border/50">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel className="mb-4">Start Free</SectionLabel>
+            
+            <h2 className="text-3xl md:text-5xl font-display mb-6 tracking-wide">
+              Try before you join.<br />
+              <span className="text-primary">No login required.</span>
+            </h2>
+            
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl">
+              Explore free tools and resources to see if the Lab is right for you.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Sync Quiz */}
+              <motion.div 
+                className="bg-card border border-border rounded-lg p-6 hover:border-maroon/50 transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+              >
+                <div className="w-12 h-12 bg-maroon/10 rounded-lg flex items-center justify-center mb-4">
+                  <CheckCircle className="w-6 h-6 text-maroon" />
+                </div>
+                <h3 className="font-display text-xl mb-2">Sync Readiness Quiz</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Find out if your music is ready for sync licensing in 2 minutes.
+                </p>
+                <Button variant="maroonOutline" size="sm" asChild className="w-full">
+                  <Link to="/sync-quiz">Take the Quiz</Link>
+                </Button>
+              </motion.div>
+              
+              {/* Artist Resources */}
+              <motion.div 
+                className="bg-card border border-border rounded-lg p-6 hover:border-maroon/50 transition-colors"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="w-12 h-12 bg-maroon/10 rounded-lg flex items-center justify-center mb-4">
+                  <TrendingUp className="w-6 h-6 text-maroon" />
+                </div>
+                <h3 className="font-display text-xl mb-2">Artist Resources</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Free guides, industry examples, and reference materials.
+                </p>
+                <Button variant="maroonOutline" size="sm" asChild className="w-full">
+                  <Link to="/reference">Browse Resources</Link>
+                </Button>
+              </motion.div>
+              
+              {/* Free Guide - Lead Magnet */}
+              <motion.div 
+                className="bg-card border-2 border-maroon rounded-lg p-6 relative"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="absolute -top-3 left-6">
+                  <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                    Free Download
+                  </span>
+                </div>
+                <div className="w-12 h-12 bg-maroon/10 rounded-lg flex items-center justify-center mb-4">
+                  <GraduationCap className="w-6 h-6 text-maroon" />
+                </div>
+                <h3 className="font-display text-xl mb-2">Artist Survival Guide</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  The free guide to building sustainable income as an independent artist.
+                </p>
+                <Button variant="maroon" size="sm" asChild className="w-full">
+                  <Link to="/store">Get the Free Guide</Link>
+                </Button>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
       
       {/* Why This Exists */}
       <section id="why-this-exists" className="py-24">

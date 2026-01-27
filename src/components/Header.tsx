@@ -272,12 +272,20 @@ export function Header({ showNav = true }: HeaderProps) {
               </DropdownMenu>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
               <Button 
-                variant="maroon"
+                variant="outline"
+                size="sm"
                 onClick={handleMemberLogin}
               >
-                Explore the Lab
+                Log In
+              </Button>
+              <Button 
+                variant="maroon"
+                size="sm"
+                onClick={handleJoinPatreon}
+              >
+                Join Now
               </Button>
             </div>
           )}
@@ -332,14 +340,24 @@ export function Header({ showNav = true }: HeaderProps) {
                     ) : (
                       <div className="space-y-3">
                         <Button 
-                          variant="maroon"
+                          variant="outline"
                           className="w-full"
                           onClick={() => {
                             handleMemberLogin();
                             closeMobileMenu();
                           }}
                         >
-                          Explore the Lab
+                          Log In
+                        </Button>
+                        <Button 
+                          variant="maroon"
+                          className="w-full"
+                          onClick={() => {
+                            handleJoinPatreon();
+                            closeMobileMenu();
+                          }}
+                        >
+                          Join Now
                         </Button>
                       </div>
                     )}
