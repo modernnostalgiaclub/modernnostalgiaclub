@@ -303,6 +303,130 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 border-t border-border/50">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel className="mb-4">Simple Pricing</SectionLabel>
+            
+            <h2 className="text-3xl md:text-5xl font-display mb-6 tracking-wide">
+              Choose your path.<br />
+              <span className="text-primary">Start building today.</span>
+            </h2>
+            
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl">
+              No contracts. No hidden fees. Cancel anytime.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {/* Lab Pass - $1 */}
+              <motion.div 
+                className="bg-card border border-border rounded-lg p-8 relative"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+              >
+                <div className="mb-6">
+                  <h3 className="font-display text-2xl mb-2">Lab Pass</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-display text-foreground">$1</span>
+                    <span className="text-muted-foreground">/month</span>
+                  </div>
+                </div>
+                
+                <p className="text-muted-foreground mb-6">
+                  Get your foot in the door. Access the fundamentals.
+                </p>
+                
+                <ul className="space-y-3 mb-8">
+                  {[
+                    'Dashboard access',
+                    'Classroom training tracks',
+                    'Community discussions',
+                    'Audio submissions',
+                  ].map((feature) => (
+                    <li key={feature} className="flex items-center gap-3 text-sm">
+                      <CheckCircle className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={handleJoinPatreon}
+                >
+                  Get Started
+                </Button>
+              </motion.div>
+              
+              {/* Creator Accelerator - $10 */}
+              <motion.div 
+                className="bg-card border-2 border-maroon rounded-lg p-8 relative"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="absolute -top-3 left-6">
+                  <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                    Most Popular
+                  </span>
+                </div>
+                
+                <div className="mb-6">
+                  <h3 className="font-display text-2xl mb-2">Creator Accelerator</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-display text-maroon">$10</span>
+                    <span className="text-muted-foreground">/month</span>
+                  </div>
+                </div>
+                
+                <p className="text-muted-foreground mb-6">
+                  Professional workflows. Priority access. Real feedback.
+                </p>
+                
+                <ul className="space-y-3 mb-8">
+                  {[
+                    'Everything in Lab Pass',
+                    'Studio Floor access',
+                    'Priority submissions',
+                    'Professional feedback',
+                    'Sync workflow training',
+                    'Direct-to-fan systems',
+                  ].map((feature, i) => (
+                    <li key={feature} className="flex items-center gap-3 text-sm">
+                      <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
+                      <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  variant="maroon" 
+                  className="w-full"
+                  onClick={handleJoinPatreon}
+                >
+                  Start Your Training
+                </Button>
+              </motion.div>
+            </div>
+            
+            <p className="text-center text-sm text-muted-foreground mt-8">
+              Looking for more? <Link to="/apply" className="text-maroon hover:underline">Apply for the Creative Economy Lab ($150/mo)</Link> — includes 1-on-1 strategy sessions and priority review.
+            </p>
+          </motion.div>
+        </div>
+      </section>
       
       {/* Why This Exists */}
       <section id="why-this-exists" className="py-24">
