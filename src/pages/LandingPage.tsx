@@ -511,7 +511,7 @@ export default function LandingPage() {
                   The free guide to building sustainable income as an independent artist.
                 </p>
                 <Button variant="maroon" size="sm" asChild className="w-full">
-                  <Link to="/store">Get the Free Guide</Link>
+                  <Link to="/free-guide">Get the Free Guide</Link>
                 </Button>
               </motion.div>
             </div>
