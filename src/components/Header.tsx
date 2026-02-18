@@ -16,14 +16,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
+const Header_PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub'; // kept for reference
 
 interface HeaderProps {
   showNav?: boolean;
 }
 
 export function Header({ showNav = true }: HeaderProps) {
-  const { user, profile, loading, hasRole, signInWithPatreon, signOut } = useAuth();
+  const { user, profile, loading, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
   const isLoggedIn = !!user;
@@ -33,17 +33,8 @@ export function Header({ showNav = true }: HeaderProps) {
   const isAdmin = hasRole('admin');
   const isAdminOrMod = isAdmin || hasRole('moderator');
 
-  const handleJoinPatreon = () => {
-    window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleMemberLogin = async () => {
-    try {
-      await signInWithPatreon();
-    } catch (error) {
-      console.error('Failed to initiate Patreon login:', error);
-    }
-  };
+  const handleLogin = () => navigate('/login');
+  const handleSignUp = () => navigate('/login?tab=signup');
 
   const handleSignOut = async () => {
     try {
@@ -276,14 +267,14 @@ export function Header({ showNav = true }: HeaderProps) {
               <Button 
                 variant="outline"
                 size="sm"
-                onClick={handleMemberLogin}
+                onClick={handleLogin}
               >
                 Log In
               </Button>
               <Button 
                 variant="maroon"
                 size="sm"
-                onClick={handleJoinPatreon}
+                onClick={handleSignUp}
               >
                 Join Now
               </Button>
@@ -343,7 +334,7 @@ export function Header({ showNav = true }: HeaderProps) {
                           variant="outline"
                           className="w-full"
                           onClick={() => {
-                            handleMemberLogin();
+                            handleLogin();
                             closeMobileMenu();
                           }}
                         >
@@ -353,7 +344,7 @@ export function Header({ showNav = true }: HeaderProps) {
                           variant="maroon"
                           className="w-full"
                           onClick={() => {
-                            handleJoinPatreon();
+                            handleSignUp();
                             closeMobileMenu();
                           }}
                         >

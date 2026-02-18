@@ -35,6 +35,8 @@ import SyncQuiz from "./pages/SyncQuiz";
 import CatalogAudit from "./pages/CatalogAudit";
 import Connect from "./pages/Connect";
 import FreeGuide from "./pages/FreeGuide";
+import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -77,6 +79,8 @@ const App = () => (
             <Route path="/sync-quiz" element={<SyncQuiz />} />
             <Route path="/connect" element={<Connect />} />
             <Route path="/free-guide" element={<FreeGuide />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
