@@ -3,12 +3,14 @@ import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { TierBadge } from '@/components/TierBadge';
 import { TwoFactorSettings } from '@/components/TwoFactorSettings';
+import { MyMusicTab } from '@/components/MyMusicTab';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -244,13 +246,24 @@ export default function Account() {
             variants={stagger}
             className="max-w-4xl mx-auto"
           >
-            <motion.div variants={fadeIn} className="mb-12">
+            <motion.div variants={fadeIn} className="mb-8">
               <SectionLabel className="mb-4">Account</SectionLabel>
               <h1 className="text-4xl md:text-5xl font-display mb-4">
                 Your Membership
               </h1>
             </motion.div>
-            
+
+            <Tabs defaultValue="account" className="w-full">
+              <TabsList className="mb-8 w-full justify-start overflow-x-auto">
+                <TabsTrigger value="account">Account</TabsTrigger>
+                <TabsTrigger value="music">My Music</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="music">
+                <MyMusicTab />
+              </TabsContent>
+
+              <TabsContent value="account">
             {/* Profile Info */}
             <motion.div variants={fadeIn} className="mb-8">
               <Card variant="elevated">
@@ -730,6 +743,8 @@ export default function Account() {
                 </CardContent>
               </Card>
             </motion.div>
+              </TabsContent>
+            </Tabs>
           </motion.div>
         </div>
       </main>
