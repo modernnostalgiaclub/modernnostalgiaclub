@@ -676,6 +676,36 @@ export type Database = {
         }
         Relationships: []
       }
+      patreon_migration: {
+        Row: {
+          created_at: string
+          google_user_id: string | null
+          id: string
+          migrated_at: string | null
+          migration_status: string
+          notified_at: string | null
+          patreon_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          google_user_id?: string | null
+          id?: string
+          migrated_at?: string | null
+          migration_status?: string
+          notified_at?: string | null
+          patreon_user_id: string
+        }
+        Update: {
+          created_at?: string
+          google_user_id?: string | null
+          id?: string
+          migrated_at?: string | null
+          migration_status?: string
+          notified_at?: string | null
+          patreon_user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -698,6 +728,8 @@ export type Database = {
           soundcloud: string | null
           spotify: string | null
           stage_name: string | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean
           tiktok: string | null
           tip_enabled: boolean | null
           tip_message: string | null
@@ -729,6 +761,8 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           stage_name?: string | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean
           tiktok?: string | null
           tip_enabled?: boolean | null
           tip_message?: string | null
@@ -760,6 +794,8 @@ export type Database = {
           soundcloud?: string | null
           spotify?: string | null
           stage_name?: string | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean
           tiktok?: string | null
           tip_enabled?: boolean | null
           tip_message?: string | null
