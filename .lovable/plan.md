@@ -1,89 +1,37 @@
 
-# Testing & Fixing the /migrate Page
+# Two Changes: Restore Patreon Login + Dashboard Migration Banner
 
-## What Was Found
+## What's Changing
 
-### Current Implementation Status
-The `/migrate` route, `MigrateToGoogle.tsx` page, and `claim-migration-upgrade` edge function are all wired up correctly. The route is registered in `App.tsx` at line 87, the Google OAuth button uses `lovable.auth.signInWithOAuth('google')`, and the edge function verifies JWT → checks `patreon_id` → upgrades tier.
+### 1. Login Page — Restore Patreon to a Visible Position
 
-### Issues Identified
+The Patreon button is currently buried in a collapsed "Legacy Access" section. Since Patreon is still the majority login method, it should be fully visible. The updated layout will be:
 
-**Issue 1: Race condition in the auth state listener**
-In `MigrateToGoogle.tsx`, the `useEffect` calls `claimUpgrade` inside `onAuthStateChange`. However, `claimUpgrade` is defined outside the `useEffect` but closes over stale state — the function reference is recreated on every render, but `onAuthStateChange` captures the initial closure. This can cause `claimUpgrade` to silently fail or be called with a stale reference.
-
-The fix is to use `useCallback` or restructure so `claimUpgrade` is called inline inside the effect with the session token directly.
-
-**Issue 2: `claimUpgrade` is called even when a user is already signed in on page load**
-The `useEffect` first calls `getSession()` and sets the session, but it also subscribes to `onAuthStateChange`. If the user is already signed in when they land on `/migrate` (e.g., they signed in with Google previously and came back), the auth state change fires with `SIGNED_IN` and triggers `claimUpgrade` immediately — but the user may not have a `patreon_id` yet since they might be a new Google-only user.
-
-The fix is to only trigger `claimUpgrade` on the `SIGNED_IN` event that comes *after* the user clicks the button, not on initial page load if a session already exists.
-
-**Issue 3: `claimUpgrade` is not guarded against double-calls**
-If `onAuthStateChange` fires multiple times (it can emit multiple events during OAuth), `claimUpgrade` can be called multiple times. A guard ref is needed.
-
-**Issue 4: `already_upgraded` response shows success toast even if no upgrade was needed**
-When a user who is already at `creative-economy-lab` tier visits the page, they get a misleading "🎉 Welcome to Creative Economy Lab!" toast. It should say "You're already at the highest tier!" instead.
-
-**Issue 5: `patreon_migration` upsert conflict key may fail**
-The `upsert` uses `onConflict: "patreon_user_id"` — this requires a unique constraint on `patreon_user_id` in the `patreon_migration` table. Looking at the schema, no unique constraint was defined in the migration. If the constraint is missing, the upsert will always INSERT, potentially creating duplicate rows.
-
-**Issue 6: Missing `DialogTitle` accessibility warning in console**
-The console shows a `DialogContent requires a DialogTitle` error — this is from a different component (likely `EmailCaptureDialog` or another dialog) but should be fixed for accessibility.
-
----
-
-## Fixes to Implement
-
-### Fix 1 & 2 & 3: Restructure `MigrateToGoogle.tsx` auth flow
-Refactor the `useEffect` to:
-- Check if there's already a session on mount → if yes, immediately call `claimUpgrade` (don't wait for auth change)
-- Use a `hasClaimed` ref to prevent double-calls
-- Only call `claimUpgrade` on `SIGNED_IN` auth events (not `TOKEN_REFRESHED` or other events)
-
-```typescript
-const hasClaimed = useRef(false);
-
-useEffect(() => {
-  // Check existing session first
-  supabase.auth.getSession().then(({ data }) => {
-    if (data.session && !hasClaimed.current) {
-      hasClaimed.current = true;
-      setSession(data.session);
-      claimUpgrade(data.session.access_token);
-    }
-  });
-
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
-    if (event === 'SIGNED_IN' && s && !hasClaimed.current) {
-      hasClaimed.current = true;
-      setSession(s);
-      claimUpgrade(s.access_token);
-    }
-  });
-
-  return () => subscription.unsubscribe();
-}, []);
+```
+[Continue with Google]
+──── or ────
+[Continue with Patreon]
+──── or sign in with email ────
+[Email / Password tabs]
 ```
 
-### Fix 4: Better toast messaging for already-upgraded users
-```typescript
-if (data?.already_upgraded) {
-  toast.info('You\'re already at the Creative Economy Lab tier!');
-} else {
-  toast.success('🎉 Welcome to Creative Economy Lab! Your account has been upgraded.');
-}
-```
+The collapsible wrapper and the "Legacy Access" label will be removed. The Patreon button will sit at the same visual weight as Google — both prominent, both always visible. The "Legacy Access" text and `ChevronDown` toggle will be gone.
 
-### Fix 5: Add unique constraint on `patreon_migration.patreon_user_id`
-Run a database migration to add the missing unique constraint:
-```sql
-ALTER TABLE public.patreon_migration 
-  ADD CONSTRAINT patreon_migration_patreon_user_id_key 
-  UNIQUE (patreon_user_id);
-```
+### 2. Dashboard — Migration Offer Banner for Patreon Members
 
-### Fix 6: Accessibility — add `DialogTitle` to dialogs missing it
-The console shows `DialogContent` missing a `DialogTitle`. This will be fixed in whichever dialog is triggering it (likely `EmailCaptureDialog.tsx`).
+When a user is logged in via Patreon (`profile.patreon_id` is set) but does NOT have a Google-linked account, show a dismissible upgrade banner in the dashboard. This banner will:
+
+- Appear at the top of the dashboard content (below the header, above the welcome card)
+- Be styled as a standout `Card` with a warm/maroon color treatment to draw attention
+- Show: "You're a founding Patreon member. Upgrade to Creative Economy Lab — free, permanently."
+- Have a prominent CTA button: "Claim Your Free Upgrade →" which links to `/migrate`
+- Have a small dismiss/close button (X) that hides the banner for the session (not persisted — if they reload, it shows again unless they've already migrated)
+
+**How to detect who should see it:**
+- `profile.patreon_id` is not null (they're a Patreon member)
+- `profile.patreon_tier` is NOT `creative-economy-lab` (they haven't been upgraded yet)
+
+This means once they complete the migration flow and their tier is upgraded, the banner auto-disappears permanently on next login.
 
 ---
 
@@ -91,35 +39,15 @@ The console shows `DialogContent` missing a `DialogTitle`. This will be fixed in
 
 | File | Change |
 |------|--------|
-| `src/pages/MigrateToGoogle.tsx` | Fix auth flow race condition, double-call guard, better toast messages |
-| `supabase/migrations/` | Add unique constraint on `patreon_migration.patreon_user_id` |
-| Whichever dialog has the missing `DialogTitle` | Add accessible `DialogTitle` with `VisuallyHidden` if needed |
+| `src/pages/Login.tsx` | Remove `Collapsible` wrapper from Patreon button; make it a visible peer to Google. Remove `legacyOpen` state. |
+| `src/pages/Dashboard.tsx` | Add migration banner component inline, shown conditionally when `profile.patreon_id` is set and tier is not `creative-economy-lab`. |
 
 ---
 
-## Flow After Fix
+## Technical Notes
 
-```
-User visits /migrate
-      ↓
-Already signed in? → YES → claimUpgrade() immediately
-      ↓                         ↓
-      NO                  Has patreon_id? → YES → Upgrade tier → Success toast → /dashboard
-      ↓                         ↓
-Click "Continue          NO → Error toast: "No Patreon account found" → /dashboard
-with Google"
-      ↓
-Google OAuth flow
-      ↓
-Returns to /migrate with session
-      ↓
-onAuthStateChange fires SIGNED_IN
-      ↓
-claimUpgrade() called (once, guarded)
-      ↓
-Edge function verifies JWT → checks patreon_id → upgrades tier
-      ↓
-Success toast → redirect to /dashboard
-```
-
-No database migration is required beyond the unique constraint fix. The `patreon_migration` table already exists with the correct columns.
+- No database changes needed
+- No edge function changes needed
+- The `profile` object already contains both `patreon_id` and `patreon_tier` — these are available from `useAuth()` in Dashboard
+- The dismiss is session-only (`useState`) — no persistence needed since the banner disappears permanently once the migration is complete and the tier changes
+- The `/migrate` page already handles the full upgrade flow
