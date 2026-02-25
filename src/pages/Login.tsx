@@ -260,11 +260,6 @@ export default function Login() {
           </TabsContent>
         </Tabs>
 
-        {/* Patreon Sign-In */}
-        <Button variant="patreon" className="w-full h-12 text-base font-medium" onClick={handlePatreon}>
-          Continue with Patreon
-        </Button>
-
         <p className="text-center text-xs text-muted-foreground">
           By signing up you agree to our{' '}
           <Link to="/terms" className="underline hover:text-foreground">Terms</Link> &{' '}
