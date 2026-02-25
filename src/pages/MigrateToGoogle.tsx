@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,12 +20,46 @@ export default function MigrateToGoogle() {
   const [signingIn, setSigningIn] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const hasClaimed = useRef(false);
+
+  const claimUpgrade = async (token: string) => {
+    setClaiming(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('claim-migration-upgrade', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (error || data?.error) {
+        toast.error(data?.error || 'Upgrade verification failed. Please contact support.');
+        navigate('/dashboard');
+        return;
+      }
+      if (data?.already_upgraded) {
+        toast.info("You're already at the Creative Economy Lab tier!");
+      } else {
+        toast.success('🎉 Welcome to Creative Economy Lab! Your account has been upgraded.');
+      }
+      navigate('/dashboard');
+    } catch {
+      toast.error('Upgrade verification failed. Please contact support.');
+      navigate('/dashboard');
+    } finally {
+      setClaiming(false);
+    }
+  };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      if (s) {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session && !hasClaimed.current) {
+        hasClaimed.current = true;
+        setSession(data.session);
+        claimUpgrade(data.session.access_token);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+      if (event === 'SIGNED_IN' && s && !hasClaimed.current) {
+        hasClaimed.current = true;
+        setSession(s);
         claimUpgrade(s.access_token);
       }
     });
@@ -45,27 +79,6 @@ export default function MigrateToGoogle() {
     } catch {
       toast.error('Sign in failed. Please try again.');
       setSigningIn(false);
-    }
-  };
-
-  const claimUpgrade = async (token: string) => {
-    setClaiming(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('claim-migration-upgrade', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (error || data?.error) {
-        toast.error(data?.error || 'Upgrade verification failed. Please contact support.');
-        navigate('/dashboard');
-        return;
-      }
-      toast.success('🎉 Welcome to Creative Economy Lab! Your account has been upgraded.');
-      navigate('/dashboard');
-    } catch {
-      toast.error('Upgrade verification failed. Please contact support.');
-      navigate('/dashboard');
-    } finally {
-      setClaiming(false);
     }
   };
 
