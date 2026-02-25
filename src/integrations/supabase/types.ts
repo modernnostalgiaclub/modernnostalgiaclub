@@ -38,6 +38,98 @@ export type Database = {
         }
         Relationships: []
       }
+      artist_track_access: {
+        Row: {
+          access_type: string | null
+          created_at: string | null
+          email: string
+          id: string
+          track_id: string | null
+        }
+        Insert: {
+          access_type?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          track_id?: string | null
+        }
+        Update: {
+          access_type?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          track_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_track_access_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "artist_tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artist_tracks: {
+        Row: {
+          artist_name: string | null
+          cover_art_url: string | null
+          created_at: string | null
+          disco_url: string
+          duration: string | null
+          id: string
+          is_email_gated: boolean | null
+          is_for_licensing: boolean | null
+          is_published: boolean | null
+          price: number | null
+          sections: Json | null
+          sort_order: number | null
+          title: string
+          track_type: string | null
+          updated_at: string | null
+          user_id: string
+          versions: Json | null
+        }
+        Insert: {
+          artist_name?: string | null
+          cover_art_url?: string | null
+          created_at?: string | null
+          disco_url: string
+          duration?: string | null
+          id?: string
+          is_email_gated?: boolean | null
+          is_for_licensing?: boolean | null
+          is_published?: boolean | null
+          price?: number | null
+          sections?: Json | null
+          sort_order?: number | null
+          title: string
+          track_type?: string | null
+          updated_at?: string | null
+          user_id: string
+          versions?: Json | null
+        }
+        Update: {
+          artist_name?: string | null
+          cover_art_url?: string | null
+          created_at?: string | null
+          disco_url?: string
+          duration?: string | null
+          id?: string
+          is_email_gated?: boolean | null
+          is_for_licensing?: boolean | null
+          is_published?: boolean | null
+          price?: number | null
+          sections?: Json | null
+          sort_order?: number | null
+          title?: string
+          track_type?: string | null
+          updated_at?: string | null
+          user_id?: string
+          versions?: Json | null
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -435,6 +527,53 @@ export type Database = {
           },
         ]
       }
+      licensing_requests: {
+        Row: {
+          artist_user_id: string
+          budget_range: string | null
+          company: string | null
+          created_at: string | null
+          id: string
+          project_description: string
+          status: string | null
+          supervisor_email: string
+          supervisor_name: string
+          track_id: string | null
+        }
+        Insert: {
+          artist_user_id: string
+          budget_range?: string | null
+          company?: string | null
+          created_at?: string | null
+          id?: string
+          project_description: string
+          status?: string | null
+          supervisor_email: string
+          supervisor_name: string
+          track_id?: string | null
+        }
+        Update: {
+          artist_user_id?: string
+          budget_range?: string | null
+          company?: string | null
+          created_at?: string | null
+          id?: string
+          project_description?: string
+          status?: string | null
+          supervisor_email?: string
+          supervisor_name?: string
+          track_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licensing_requests_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "artist_tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       networking_contacts: {
         Row: {
           company: string | null
@@ -540,9 +679,12 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
+          discord: string | null
           full_name: string | null
           has_publishing_account: boolean | null
+          hero_image_url: string | null
           id: string
           instagram: string | null
           linktree: string | null
@@ -550,20 +692,30 @@ export type Database = {
           patreon_id: string | null
           patreon_tier: Database["public"]["Enums"]["patreon_tier"] | null
           pro: string | null
+          profile_visibility: string | null
           publisher_ipi: string | null
           publishing_company: string | null
+          soundcloud: string | null
+          spotify: string | null
           stage_name: string | null
           tiktok: string | null
+          tip_enabled: boolean | null
+          tip_message: string | null
           twitter: string | null
           updated_at: string
           user_id: string
+          username: string | null
           writer_ipi: string | null
+          youtube: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          discord?: string | null
           full_name?: string | null
           has_publishing_account?: boolean | null
+          hero_image_url?: string | null
           id?: string
           instagram?: string | null
           linktree?: string | null
@@ -571,20 +723,30 @@ export type Database = {
           patreon_id?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
           pro?: string | null
+          profile_visibility?: string | null
           publisher_ipi?: string | null
           publishing_company?: string | null
+          soundcloud?: string | null
+          spotify?: string | null
           stage_name?: string | null
           tiktok?: string | null
+          tip_enabled?: boolean | null
+          tip_message?: string | null
           twitter?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
           writer_ipi?: string | null
+          youtube?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          discord?: string | null
           full_name?: string | null
           has_publishing_account?: boolean | null
+          hero_image_url?: string | null
           id?: string
           instagram?: string | null
           linktree?: string | null
@@ -592,14 +754,21 @@ export type Database = {
           patreon_id?: string | null
           patreon_tier?: Database["public"]["Enums"]["patreon_tier"] | null
           pro?: string | null
+          profile_visibility?: string | null
           publisher_ipi?: string | null
           publishing_company?: string | null
+          soundcloud?: string | null
+          spotify?: string | null
           stage_name?: string | null
           tiktok?: string | null
+          tip_enabled?: boolean | null
+          tip_message?: string | null
           twitter?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
           writer_ipi?: string | null
+          youtube?: string | null
         }
         Relationships: []
       }
@@ -954,6 +1123,46 @@ export type Database = {
         Returns: boolean
       }
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      get_artist_profile: {
+        Args: { p_username: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          discord: string
+          hero_image_url: string
+          instagram: string
+          linktree: string
+          profile_visibility: string
+          soundcloud: string
+          spotify: string
+          stage_name: string
+          tiktok: string
+          tip_enabled: boolean
+          tip_message: string
+          twitter: string
+          user_id: string
+          youtube: string
+        }[]
+      }
+      get_public_artist_tracks: {
+        Args: { p_username: string }
+        Returns: {
+          artist_name: string
+          cover_art_url: string
+          created_at: string
+          duration: string
+          id: string
+          is_email_gated: boolean
+          is_for_licensing: boolean
+          price: number
+          sections: Json
+          sort_order: number
+          title: string
+          track_type: string
+          user_id: string
+          versions: Json
+        }[]
+      }
       get_public_profile: {
         Args: { target_user_id: string }
         Returns: {

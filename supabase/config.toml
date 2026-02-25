@@ -23,3 +23,12 @@ verify_jwt = false
 
 [functions.zapier-purchase-webhook]
 verify_jwt = false
+
+[functions.parse-disco-link]
+verify_jwt = false
+
+[functions.artist-track-download]
+verify_jwt = false
+
+[functions.submit-licensing-request]
+verify_jwt = false
