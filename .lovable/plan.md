@@ -1,37 +1,75 @@
 
-# Two Changes: Restore Patreon Login + Dashboard Migration Banner
+# End-to-End Review: Login Page + Dashboard Migration Banner
 
-## What's Changing
+## What Was Found
 
-### 1. Login Page — Restore Patreon to a Visible Position
+### Login Page — One Bug: Duplicate Patreon Button
 
-The Patreon button is currently buried in a collapsed "Legacy Access" section. Since Patreon is still the majority login method, it should be fully visible. The updated layout will be:
+The Patreon button appears **twice** on the login page:
 
+- **First instance** (line 155): Correctly positioned between Google and the email section — this is the right placement.
+- **Second instance** (line 263): A leftover below the email/password tabs, just above the legal disclaimer text. This is a duplicate that was not cleaned up when the collapsible was removed.
+
+The result is that users see "Continue with Patreon" twice on the same page, which looks unfinished and may cause confusion.
+
+**Fix**: Remove the second Patreon button (lines 263–266).
+
+### Dashboard Migration Banner — Correct
+
+The banner implementation is working as designed:
+
+- Condition: `!migrationBannerDismissed && profile?.patreon_id && profile?.patreon_tier !== 'creative-economy-lab'`
+- Content: "You're a founding Patreon member 🎉 — Upgrade to Creative Economy Lab — free, permanently."
+- CTA: "Claim Your Free Upgrade →" links to `/migrate`
+- Dismiss: X button sets `migrationBannerDismissed` to `true` for the session
+
+No changes needed here.
+
+### /migrate Page — Correct
+
+The migration flow is properly structured:
+
+- On mount, checks for an existing session immediately via `getSession()`
+- Listens for `SIGNED_IN` event via `onAuthStateChange`
+- `hasClaimed` ref prevents double-calls in both paths
+- Shows a full-screen loading spinner while the upgrade is being processed
+- Distinct toast messages for new upgrades vs. already-upgraded users
+- Redirects to `/dashboard` after completion
+
+No changes needed here.
+
+---
+
+## Fix Required
+
+### Remove Duplicate Patreon Button in `src/pages/Login.tsx`
+
+Lines 263–266 contain a second "Continue with Patreon" button that is a leftover from before the collapsible was removed. It needs to be deleted.
+
+**Before** (end of file):
 ```
-[Continue with Google]
-──── or ────
-[Continue with Patreon]
-──── or sign in with email ────
-[Email / Password tabs]
+...email/password tabs...
+</Tabs>
+
+{/* Patreon Sign-In */}           ← DUPLICATE — REMOVE THIS
+<Button variant="patreon" ...>
+  Continue with Patreon
+</Button>
+
+<p className="text-center text-xs ...">
+  By signing up...
+</p>
 ```
 
-The collapsible wrapper and the "Legacy Access" label will be removed. The Patreon button will sit at the same visual weight as Google — both prominent, both always visible. The "Legacy Access" text and `ChevronDown` toggle will be gone.
+**After**:
+```
+...email/password tabs...
+</Tabs>
 
-### 2. Dashboard — Migration Offer Banner for Patreon Members
-
-When a user is logged in via Patreon (`profile.patreon_id` is set) but does NOT have a Google-linked account, show a dismissible upgrade banner in the dashboard. This banner will:
-
-- Appear at the top of the dashboard content (below the header, above the welcome card)
-- Be styled as a standout `Card` with a warm/maroon color treatment to draw attention
-- Show: "You're a founding Patreon member. Upgrade to Creative Economy Lab — free, permanently."
-- Have a prominent CTA button: "Claim Your Free Upgrade →" which links to `/migrate`
-- Have a small dismiss/close button (X) that hides the banner for the session (not persisted — if they reload, it shows again unless they've already migrated)
-
-**How to detect who should see it:**
-- `profile.patreon_id` is not null (they're a Patreon member)
-- `profile.patreon_tier` is NOT `creative-economy-lab` (they haven't been upgraded yet)
-
-This means once they complete the migration flow and their tier is upgraded, the banner auto-disappears permanently on next login.
+<p className="text-center text-xs ...">
+  By signing up...
+</p>
+```
 
 ---
 
@@ -39,15 +77,10 @@ This means once they complete the migration flow and their tier is upgraded, the
 
 | File | Change |
 |------|--------|
-| `src/pages/Login.tsx` | Remove `Collapsible` wrapper from Patreon button; make it a visible peer to Google. Remove `legacyOpen` state. |
-| `src/pages/Dashboard.tsx` | Add migration banner component inline, shown conditionally when `profile.patreon_id` is set and tier is not `creative-economy-lab`. |
+| `src/pages/Login.tsx` | Remove duplicate Patreon button at lines 263–266 |
 
 ---
 
-## Technical Notes
+## No Other Changes Needed
 
-- No database changes needed
-- No edge function changes needed
-- The `profile` object already contains both `patreon_id` and `patreon_tier` — these are available from `useAuth()` in Dashboard
-- The dismiss is session-only (`useState`) — no persistence needed since the banner disappears permanently once the migration is complete and the tier changes
-- The `/migrate` page already handles the full upgrade flow
+The dashboard banner logic, dismiss behavior, link to `/migrate`, and the full migration claim flow are all implemented correctly and require no modifications.
