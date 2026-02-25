@@ -11,6 +11,8 @@ import logoCream from '@/assets/logo-cream.png';
 import bgHero from '@/assets/bg-hero.jpg';
 import bgSection1 from '@/assets/bg-section-1.jpg';
 import bgSection2 from '@/assets/bg-section-2.jpg';
+import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
+import coverBeLoud from '@/assets/cover-be-loud.jpg';
 import { 
   GraduationCap, 
   Music2, 
@@ -18,12 +20,12 @@ import {
   TrendingUp,
   ArrowRight,
   CheckCircle,
-  Loader2,
   ExternalLink,
   Building2,
   Calendar,
   Briefcase,
-  Handshake
+  Handshake,
+  ShoppingBag,
 } from 'lucide-react';
 import {
   Accordion,
@@ -31,6 +33,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { STORE_PRODUCTS } from '@/lib/storeProducts';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -45,37 +48,30 @@ const stagger = {
   }
 };
 
-const PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub';
+// Featured products to show on landing page
+const FEATURED_PRODUCT_IDS = ['catalog-audit', 'just-make-noise-bundle', 'be-loud-bundle'];
+
+const coverImages: Record<string, string> = {
+  'just-make-noise': coverJustMakeNoise,
+  'be-loud': coverBeLoud,
+};
 
 export default function LandingPage() {
-  const { user, loading, signInWithPatreon } = useAuth();
+  const { user, loading } = useAuth();
 
-  // Redirect to dashboard if already logged in
   if (!loading && user) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleJoinPatreon = () => {
-    window.open(PATREON_PAGE_URL, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleMemberLogin = async () => {
-    try {
-      await signInWithPatreon();
-    } catch (error) {
-      console.error('Failed to initiate Patreon login:', error);
-    }
-  };
+  const featuredProducts = STORE_PRODUCTS.filter(p => FEATURED_PRODUCT_IDS.includes(p.id));
 
   return (
     <div className="min-h-screen bg-background studio-grain">
       <Header />
       
-      {/* Main Content */}
       <main id="main-content" role="main">
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 hero-gradient overflow-hidden" aria-labelledby="hero-heading">
-        {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-25"
           style={{ backgroundImage: `url(${bgHero})` }}
@@ -119,14 +115,11 @@ export default function LandingPage() {
                 <Button 
                   variant="hero" 
                   size="xl" 
-                  onClick={handleJoinPatreon}
-                  disabled={loading}
+                  asChild
                 >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    'Start Your Training'
-                  )}
+                  <Link to="/login?tab=signup">
+                    Join Free
+                  </Link>
                 </Button>
                 <Button 
                   variant="heroOutline" 
@@ -139,24 +132,21 @@ export default function LandingPage() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Powered by Patreon · <button
-                  onClick={handleMemberLogin}
+                <Link
+                  to="/login"
                   className="hover:text-primary transition-colors underline underline-offset-2"
                 >
                   Already a member? Log in
-                </button>
+                </Link>
               </p>
             </motion.div>
           </motion.div>
         </div>
-        
-        {/* Subtle gradient overlay at bottom */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
       
       {/* What This Is */}
       <section id="what-this-is" className="relative py-24 border-t border-border/50 overflow-hidden">
-        {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: `url(${bgSection1})` }}
@@ -207,7 +197,7 @@ export default function LandingPage() {
                   desc: 'Industry examples',
                   details: 'Real-world case studies of successful sync placements, licensing deals, and artist business models. See exactly how other artists structure their income streams and learn from their strategies.'
                 },
-              ].map((item, i) => (
+              ].map((item) => (
                 <AccordionItem 
                   key={item.title} 
                   value={item.title}
@@ -230,11 +220,13 @@ export default function LandingPage() {
                       <Button 
                         variant="maroon" 
                         size="sm"
-                        onClick={handleJoinPatreon}
+                        asChild
                         className="flex-1"
                       >
-                        Join on Patreon
-                        <ExternalLink className="w-3 h-3 ml-1.5" />
+                        <Link to="/login?tab=signup">
+                          Join Free
+                          <ArrowRight className="w-3 h-3 ml-1.5" />
+                        </Link>
                       </Button>
                       <Button 
                         variant="outline" 
@@ -258,7 +250,6 @@ export default function LandingPage() {
       
       {/* How It Works */}
       <section id="how-it-works" className="relative py-24 bg-card/50 border-y border-border/50 overflow-hidden">
-        {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: `url(${bgSection2})` }}
@@ -280,7 +271,7 @@ export default function LandingPage() {
             
             <div className="space-y-8">
               {[
-                { num: '01', title: 'Join via Patreon', desc: 'Choose the tier that fits your stage. Start with Lab Pass ($1) or unlock more with Creator Accelerator ($10).' },
+                { num: '01', title: 'Create your free account', desc: 'Sign up in seconds with Google, email, or Patreon. No credit card required — start with a free account and explore the Lab.' },
                 { num: '02', title: 'Access the Lab', desc: 'Enter the Classroom, Studio Floor, and Community. Learn professional workflows. Submit work for review.' },
                 { num: '03', title: 'Build systems, not guesses', desc: 'Replace uncertainty with proven processes. Build a catalog that works. Create income streams that last.' },
               ].map((step, i) => (
@@ -360,12 +351,8 @@ export default function LandingPage() {
                   ))}
                 </ul>
                 
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={handleJoinPatreon}
-                >
-                  Get Started
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/login?tab=signup">Get Started</Link>
                 </Button>
               </motion.div>
               
@@ -411,25 +398,98 @@ export default function LandingPage() {
                   ))}
                 </ul>
                 
-                <Button 
-                  variant="maroon" 
-                  className="w-full"
-                  onClick={handleJoinPatreon}
-                >
-                  Start Your Training
+                <Button variant="maroon" className="w-full" asChild>
+                  <Link to="/login?tab=signup">Start Your Training</Link>
                 </Button>
               </motion.div>
             </div>
             
             <p className="text-center text-sm text-muted-foreground mt-8">
-              Looking for more? <Link to="/apply" className="text-maroon hover:underline">Apply for the Creative Economy Lab ($150/mo)</Link> — includes 1-on-1 strategy sessions and priority review.
+              Looking for more? <Link to="/lab-application" className="text-maroon hover:underline">Apply for the Creative Economy Lab ($150/mo)</Link> — includes 1-on-1 strategy sessions and priority review.
             </p>
           </motion.div>
         </div>
       </section>
 
+      {/* Store Section — NEW */}
+      <section id="store" className="py-24 bg-maroon/5 border-y border-border/50">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <SectionLabel className="mb-4">The Store</SectionLabel>
+            
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+              <div>
+                <h2 className="text-3xl md:text-5xl font-display mb-3 tracking-wide">
+                  Tools you can buy today.
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  No membership required. Instant access.
+                </p>
+              </div>
+              <Button variant="maroonOutline" asChild className="shrink-0">
+                <Link to="/store">
+                  Browse the Full Store
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {featuredProducts.map((product, i) => (
+                <motion.div
+                  key={product.id}
+                  className={`bg-card border rounded-lg overflow-hidden hover:border-maroon/50 transition-colors flex flex-col ${product.isService ? 'border-2 border-maroon' : 'border-border'}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  {/* Cover image or icon */}
+                  {product.coverImage && coverImages[product.coverImage] ? (
+                    <div className="aspect-square overflow-hidden bg-muted">
+                      <img
+                        src={coverImages[product.coverImage]}
+                        alt={product.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-square bg-maroon/10 flex items-center justify-center">
+                      <ShoppingBag className="w-16 h-16 text-maroon/40" />
+                    </div>
+                  )}
+
+                  <div className="p-5 flex flex-col flex-1">
+                    {product.isService && (
+                      <span className="text-xs font-medium text-maroon uppercase tracking-wider mb-2">Service</span>
+                    )}
+                    {product.isBundle && (
+                      <span className="text-xs font-medium text-maroon uppercase tracking-wider mb-2">Bundle</span>
+                    )}
+                    <h3 className="font-display text-lg mb-2 leading-snug">{product.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 flex-1 line-clamp-3">{product.description}</p>
+                    <div className="flex items-center justify-between mt-auto">
+                      <span className="text-xl font-display text-foreground">${product.price}</span>
+                      <Button variant="maroon" size="sm" asChild>
+                        <Link to="/store">View Details</Link>
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Free Resources Section */}
-      <section id="free-resources" className="py-24 bg-maroon/5 border-y border-border/50">
+      <section id="free-resources" className="py-24 border-t border-border/50">
         <div className="container mx-auto px-6">
           <motion.div 
             className="max-w-5xl mx-auto"
@@ -450,7 +510,6 @@ export default function LandingPage() {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Sync Quiz */}
               <motion.div 
                 className="bg-card border border-border rounded-lg p-6 hover:border-maroon/50 transition-colors"
                 initial={{ opacity: 0, y: 20 }}
@@ -470,7 +529,6 @@ export default function LandingPage() {
                 </Button>
               </motion.div>
               
-              {/* Artist Resources */}
               <motion.div 
                 className="bg-card border border-border rounded-lg p-6 hover:border-maroon/50 transition-colors"
                 initial={{ opacity: 0, y: 20 }}
@@ -490,7 +548,6 @@ export default function LandingPage() {
                 </Button>
               </motion.div>
               
-              {/* Free Guide - Lead Magnet */}
               <motion.div 
                 className="bg-card border-2 border-maroon rounded-lg p-6 relative"
                 initial={{ opacity: 0, y: 20 }}
@@ -520,7 +577,7 @@ export default function LandingPage() {
       </section>
       
       {/* Why This Exists */}
-      <section id="why-this-exists" className="py-24">
+      <section id="why-this-exists" className="py-24 bg-card/50 border-y border-border/50">
         <div className="container mx-auto px-6">
           <motion.div 
             className="max-w-4xl mx-auto"
@@ -569,10 +626,10 @@ export default function LandingPage() {
       {/* Sync Readiness Quiz Section */}
       <SyncReadinessQuiz />
       
-      {/* Blog Section - Patreon Posts */}
+      {/* Latest Updates (Patreon Blog — de-branded) */}
       <PatreonBlog />
 
-      {/* Events Section - Eventbrite Embed */}
+      {/* Events Section */}
       <section id="events" className="py-24 border-t border-border/50">
         <div className="container mx-auto px-6">
           <motion.div 
@@ -594,7 +651,6 @@ export default function LandingPage() {
               Check out what's coming up and reserve your spot.
             </p>
             
-            {/* Events CTA Card */}
             <div className="bg-card border border-border rounded-lg p-8 text-center">
               <Calendar className="w-12 h-12 text-maroon mx-auto mb-4" />
               <h3 className="font-display text-xl mb-3">Browse Upcoming Events</h3>
@@ -640,7 +696,6 @@ export default function LandingPage() {
               The Creative Economy Lab bridges the gap between creators and opportunity. Partner with us to fund programs, sponsor events, or help build creative facilities that empower the next generation of artists and creative professionals.
             </p>
             
-            {/* Partnership Categories */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               {[
                 {
@@ -700,7 +755,6 @@ export default function LandingPage() {
               ))}
             </div>
             
-            {/* Sponsor Tiers */}
             <div className="bg-card/50 border border-border rounded-lg p-8 mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <Handshake className="w-6 h-6 text-maroon" />
@@ -734,7 +788,6 @@ export default function LandingPage() {
               </p>
             </div>
             
-            {/* CTA */}
             <motion.div 
               className="text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -757,7 +810,7 @@ export default function LandingPage() {
         </div>
       </section>
       
-      {/* CTA Section */}
+      {/* Bottom CTA Section */}
       <section className="py-24 bg-card/50 border-t border-border/50">
         <div className="container mx-auto px-6">
           <motion.div 
@@ -774,40 +827,17 @@ export default function LandingPage() {
               Join the lab. Start with what you have. Build what you need.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button 
-                variant="hero" 
-                size="xl" 
-                onClick={handleJoinPatreon}
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    Join on Patreon
-                    <ExternalLink className="ml-2 w-5 h-5" />
-                  </>
-                )}
+              <Button variant="hero" size="xl" asChild>
+                <Link to="/login?tab=signup">
+                  Create Free Account
+                </Link>
               </Button>
-              <Button 
-                variant="heroOutline" 
-                size="xl" 
-                onClick={handleMemberLogin}
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  'Log In with Patreon'
-                )}
+              <Button variant="heroOutline" size="xl" asChild>
+                <Link to="/login">
+                  Log In
+                </Link>
               </Button>
             </div>
-            <a 
-              href="#what-this-is"
-              className="mt-4 text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
-            >
-              Explore the Lab
-            </a>
           </motion.div>
         </div>
       </section>
