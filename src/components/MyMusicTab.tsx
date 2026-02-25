@@ -21,6 +21,83 @@ import {
   Youtube, Headphones, Info, Save
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CreditCard } from 'lucide-react';
+
+function StripeConnectSection() {
+  const { user } = useAuth();
+  const [connecting, setConnecting] = useState(false);
+  const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('profiles')
+      .select('stripe_account_id, stripe_onboarding_complete')
+      .eq('user_id', user.id)
+      .single()
+      .then(({ data }) => {
+        if ((data as any)?.stripe_onboarding_complete) setConnected(true);
+      });
+    // Handle return from Stripe onboarding
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('stripe') === 'complete') {
+      supabase.from('profiles').update({ stripe_onboarding_complete: true } as any).eq('user_id', user.id)
+        .then(() => {
+          setConnected(true);
+          toast.success('Stripe account connected! You can now receive tips directly.');
+        });
+    }
+  }, [user]);
+
+  const handleConnect = async () => {
+    if (!user) return;
+    setConnecting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke('create-stripe-connect-account', {
+        headers: { Authorization: `Bearer ${sessionData.session?.access_token}` },
+      });
+      if (error || data?.error) {
+        toast.error(data?.error || 'Failed to start Stripe onboarding');
+        return;
+      }
+      window.location.href = data.onboarding_url;
+    } catch {
+      toast.error('Failed to connect Stripe');
+    } finally {
+      setConnecting(false);
+    }
+  };
+
+  return (
+    <div className="pt-2 border-t border-border/50 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-primary" />
+            Connect Stripe
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {connected
+              ? 'Tips go directly to your bank account'
+              : 'Connect Stripe to receive tips directly to your bank'}
+          </p>
+        </div>
+        {connected ? (
+          <span className="flex items-center gap-1.5 text-xs text-secondary-foreground bg-secondary px-2 py-1 rounded-full">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Connected
+          </span>
+        ) : (
+          <Button size="sm" variant="outline" onClick={handleConnect} disabled={connecting} className="gap-2 shrink-0">
+            {connecting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CreditCard className="w-3.5 h-3.5" />}
+            {connecting ? 'Connecting...' : 'Connect Stripe'}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface ArtistTrack {
   id: string;
@@ -259,7 +336,7 @@ export function MyMusicTab() {
 
       {profileUrl && (
         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border/50">
-          <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+          <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
           <span className="text-sm flex-1 truncate font-mono text-muted-foreground">{profileUrl}</span>
           <Button size="sm" variant="outline" className="gap-1.5 shrink-0" asChild>
             <a href={profileUrl} target="_blank" rel="noopener noreferrer">
@@ -363,7 +440,7 @@ export function MyMusicTab() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium">Enable Tip Jar</p>
-                <p className="text-xs text-muted-foreground">Allow fans to support you with tips (Stripe coming soon)</p>
+                <p className="text-xs text-muted-foreground">Allow fans to support you with tips via Stripe</p>
               </div>
               <Switch
                 checked={extProfile.tip_enabled}
@@ -378,6 +455,9 @@ export function MyMusicTab() {
               />
             )}
           </div>
+
+          {/* Stripe Connect */}
+          <StripeConnectSection />
 
           <Button onClick={handleSaveProfile} disabled={savingProfile} variant="maroon" className="gap-2">
             {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}

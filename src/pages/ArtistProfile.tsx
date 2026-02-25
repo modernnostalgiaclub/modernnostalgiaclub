@@ -63,10 +63,16 @@ const BUDGET_RANGES = [
 
 export default function ArtistProfile() {
   const { username } = useParams<{ username: string }>();
+  const searchParams = new URLSearchParams(window.location.search);
   const [artist, setArtist] = useState<ArtistProfileData | null>(null);
   const [tracks, setTracks] = useState<PublicTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  // Tip jar state
+  const [tipAmount, setTipAmount] = useState<number | null>(null);
+  const [customTip, setCustomTip] = useState('');
+  const [tippingLoading, setTippingLoading] = useState(false);
 
   // Email gate modal
   const [emailGateOpen, setEmailGateOpen] = useState(false);
@@ -89,6 +95,11 @@ export default function ArtistProfile() {
   useEffect(() => {
     if (!username) return;
     loadArtistProfile();
+    // Show tip success toast if coming back from Stripe
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('tip') === 'success') {
+      toast.success('Thank you for your support! 🙏');
+    }
   }, [username]);
 
   const loadArtistProfile = async () => {
@@ -202,6 +213,30 @@ export default function ArtistProfile() {
       next.has(trackId) ? next.delete(trackId) : next.add(trackId);
       return next;
     });
+  };
+
+  const handleSendTip = async () => {
+    if (!artist) return;
+    const amount = tipAmount ?? parseFloat(customTip);
+    if (!amount || amount < 1) {
+      toast.error('Please select or enter a tip amount (minimum $1)');
+      return;
+    }
+    setTippingLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-tip-payment', {
+        body: { artist_user_id: artist.user_id, amount, username },
+      });
+      if (error || data?.error) {
+        toast.error(data?.error || 'Failed to create payment session');
+        return;
+      }
+      window.location.href = data.checkout_url;
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setTippingLoading(false);
+    }
   };
 
   const licensingTracks = tracks.filter(t => t.is_for_licensing);
@@ -464,26 +499,48 @@ export default function ArtistProfile() {
           >
             <Card className="border-border/50">
               <CardContent className="p-6 text-center">
-                <Heart className="w-8 h-8 text-destructive mx-auto mb-3" />
+                <Heart className="w-8 h-8 text-primary mx-auto mb-3" />
                 <h2 className="font-display text-xl mb-1">Support {artist.stage_name}</h2>
                 <p className="text-sm text-muted-foreground mb-4">
                   {artist.tip_message || 'Your support means everything. Thank you! 🙏'}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mb-3">
-                  {['$3', '$5', '$10', '$20'].map((amount) => (
-                    <Button key={amount} variant="outline" size="sm" className="min-w-[60px]">
-                      {amount}
+                  {[3, 5, 10, 20].map((amount) => (
+                    <Button
+                      key={amount}
+                      variant={tipAmount === amount ? 'default' : 'outline'}
+                      size="sm"
+                      className="min-w-[60px]"
+                      onClick={() => { setTipAmount(amount); setCustomTip(''); }}
+                    >
+                      ${amount}
                     </Button>
                   ))}
                 </div>
-                <div className="flex gap-2 max-w-xs mx-auto mt-2">
-                  <Input placeholder="Custom amount" type="number" min="1" className="text-center" />
-                  <Button variant="maroon" size="sm" className="gap-1.5 shrink-0">
-                    <Heart className="w-3.5 h-3.5" />
-                    Tip
-                  </Button>
+                <div className="flex gap-2 max-w-xs mx-auto mt-2 mb-4">
+                  <Input
+                    placeholder="Custom amount"
+                    type="number"
+                    min="1"
+                    className="text-center"
+                    value={customTip}
+                    onChange={(e) => { setCustomTip(e.target.value); setTipAmount(null); }}
+                  />
                 </div>
-                <p className="text-xs text-muted-foreground mt-3">Stripe payments coming soon</p>
+                <Button
+                  variant="maroon"
+                  className="gap-1.5 w-full max-w-xs mx-auto"
+                  onClick={handleSendTip}
+                  disabled={tippingLoading || (!tipAmount && !customTip)}
+                >
+                  {tippingLoading ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Heart className="w-3.5 h-3.5" />
+                  )}
+                  {tippingLoading ? 'Redirecting...' : `Support ${artist.stage_name}`}
+                </Button>
+                <p className="text-xs text-muted-foreground mt-3">Powered by Stripe · Secure checkout</p>
               </CardContent>
             </Card>
           </motion.section>

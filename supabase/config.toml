@@ -32,3 +32,12 @@ verify_jwt = false
 
 [functions.submit-licensing-request]
 verify_jwt = false
+
+[functions.claim-migration-upgrade]
+verify_jwt = false
+
+[functions.create-tip-payment]
+verify_jwt = false
+
+[functions.create-stripe-connect-account]
+verify_jwt = false

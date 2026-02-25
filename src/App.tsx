@@ -39,6 +39,7 @@ import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import ArtistProfile from "./pages/ArtistProfile";
+import MigrateToGoogle from "./pages/MigrateToGoogle";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/artist/:username" element={<ArtistProfile />} />
+            <Route path="/migrate" element={<MigrateToGoogle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
