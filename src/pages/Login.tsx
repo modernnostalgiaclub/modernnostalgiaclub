@@ -8,8 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Loader2, ChevronDown } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Login() {
@@ -27,7 +26,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
-  const [legacyOpen, setLegacyOpen] = useState(false);
 
   useEffect(() => {
     if (user) navigate('/dashboard', { replace: true });
@@ -150,6 +148,21 @@ export default function Login() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">or</span>
+          </div>
+        </div>
+
+        {/* Patreon Sign-In */}
+        <Button variant="patreon" className="w-full h-12 text-base font-medium" onClick={handlePatreon}>
+          Continue with Patreon
+        </Button>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">or sign in with email</span>
           </div>
         </div>
@@ -247,23 +260,10 @@ export default function Login() {
           </TabsContent>
         </Tabs>
 
-        {/* Legacy Access — Patreon (collapsed) */}
-        <Collapsible open={legacyOpen} onOpenChange={setLegacyOpen}>
-          <CollapsibleTrigger asChild>
-            <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors w-full justify-center mt-1">
-              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${legacyOpen ? 'rotate-180' : ''}`} />
-              Legacy Access (Patreon)
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="mt-3">
-            <Button variant="patreon" className="w-full" onClick={handlePatreon}>
-              Continue with Patreon
-            </Button>
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Already a Patreon member? Use this to link your account.
-            </p>
-          </CollapsibleContent>
-        </Collapsible>
+        {/* Patreon Sign-In */}
+        <Button variant="patreon" className="w-full h-12 text-base font-medium" onClick={handlePatreon}>
+          Continue with Patreon
+        </Button>
 
         <p className="text-center text-xs text-muted-foreground">
           By signing up you agree to our{' '}

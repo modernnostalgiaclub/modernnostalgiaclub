@@ -25,7 +25,8 @@ import {
   MessageSquare,
   CheckCircle2,
   Circle,
-  Calendar
+  Calendar,
+  X
 } from 'lucide-react';
 
 const fadeIn = {
@@ -43,6 +44,7 @@ const stagger = {
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
+  const [migrationBannerDismissed, setMigrationBannerDismissed] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [progress, setProgress] = useState<{ completed: number; total: number } | null>(null);
   const [progressLoading, setProgressLoading] = useState(true);
@@ -246,6 +248,39 @@ export default function Dashboard() {
             variants={stagger}
             className="max-w-5xl mx-auto"
           >
+            {/* Migration Banner for legacy Patreon members */}
+            {!migrationBannerDismissed && profile?.patreon_id && profile?.patreon_tier !== 'creative-economy-lab' && (
+              <motion.div variants={fadeIn} className="mb-8">
+                <Card className="border-maroon/50 bg-maroon/10 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-maroon/5 to-transparent pointer-events-none" />
+                  <CardContent className="p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="space-y-1 flex-1">
+                        <p className="font-display text-lg text-foreground">
+                          You're a founding Patreon member 🎉
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Upgrade to Creative Economy Lab — free, permanently. No credit card needed.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <Button asChild variant="maroon" size="sm" className="whitespace-nowrap">
+                          <Link to="/migrate">Claim Your Free Upgrade →</Link>
+                        </Button>
+                        <button
+                          onClick={() => setMigrationBannerDismissed(true)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label="Dismiss banner"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
             {/* Welcome Panel */}
             <motion.div variants={fadeIn} className="mb-12">
               <Card variant="elevated" className="p-8 border-maroon/20">
