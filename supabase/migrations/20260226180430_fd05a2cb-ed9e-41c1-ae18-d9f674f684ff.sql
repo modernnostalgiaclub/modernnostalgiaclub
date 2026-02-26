@@ -1,0 +1,1 @@
+ALTER TABLE public.patreon_migration ADD COLUMN IF NOT EXISTS auth_method text;

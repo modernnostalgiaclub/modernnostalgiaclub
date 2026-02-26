@@ -10,7 +10,7 @@ import { MemberDownloads } from '@/components/MemberDownloads';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { supabase } from '@/integrations/supabase/client';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { 
@@ -26,7 +26,10 @@ import {
   CheckCircle2,
   Circle,
   Calendar,
-  X
+  X,
+  Link2,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 
 const fadeIn = {
@@ -44,7 +47,9 @@ const stagger = {
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
   const [migrationBannerDismissed, setMigrationBannerDismissed] = useState(false);
+  const [profileLinkCopied, setProfileLinkCopied] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [progress, setProgress] = useState<{ completed: number; total: number } | null>(null);
   const [progressLoading, setProgressLoading] = useState(true);
@@ -261,9 +266,17 @@ export default function Dashboard() {
                           Upgrade to Creative Economy Lab — free, permanently. No credit card needed.
                         </p>
                       </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <Button asChild variant="maroon" size="sm" className="whitespace-nowrap">
-                          <Link to="/migrate">Claim Your Free Upgrade →</Link>
+              <div className="flex items-center gap-3 shrink-0">
+                        <Button
+                          variant="maroon"
+                          size="sm"
+                          className="whitespace-nowrap"
+                          onClick={() => {
+                            if (user?.id) sessionStorage.setItem('patreon_source_user_id', user.id);
+                            navigate('/migrate');
+                          }}
+                        >
+                          Claim Your Free Upgrade →
                         </Button>
                         <button
                           onClick={() => setMigrationBannerDismissed(true)}
@@ -302,6 +315,76 @@ export default function Dashboard() {
               </Card>
             </motion.div>
 
+            {/* Profile completion banner — shown when no stage_name set */}
+            {!profile?.stage_name && !checklistLoading && (
+              <motion.div variants={fadeIn} className="mb-8">
+                <Card className="border-primary/40 bg-primary/5 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
+                  <CardContent className="p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Link2 className="w-4 h-4 text-primary" />
+                          <p className="text-xs uppercase tracking-widest text-primary font-medium">Your Artist Profile</p>
+                        </div>
+                        <p className="font-display text-lg text-foreground">
+                          Your artist profile is your link in bio.
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Set your stage name, add your music, and get a shareable URL at{' '}
+                          <span className="text-foreground font-mono text-xs">modernnostalgia.club/artist/[username]</span>
+                        </p>
+                      </div>
+                      <Button asChild variant="maroon" size="sm" className="whitespace-nowrap shrink-0">
+                        <Link to="/account">Set Up Your Profile →</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Public profile link card — shown once profile is set up */}
+            {profile?.username && profile?.stage_name && (
+              <motion.div variants={fadeIn} className="mb-8">
+                <Card className="border-border/50 bg-card">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <Link2 className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground mb-0.5">Your artist link</p>
+                        <p className="text-sm font-mono truncate text-foreground">
+                          modernnostalgia.club/artist/{profile.username}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 gap-1.5"
+                          onClick={() => {
+                            navigator.clipboard.writeText(`https://modernnostalgia.club/artist/${profile.username}`);
+                            setProfileLinkCopied(true);
+                            setTimeout(() => setProfileLinkCopied(false), 2000);
+                          }}
+                        >
+                          {profileLinkCopied ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
+                          {profileLinkCopied ? 'Copied!' : 'Copy'}
+                        </Button>
+                        <Button asChild variant="ghost" size="sm" className="h-8">
+                          <Link to={`/artist/${profile.username}`} target="_blank">
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
             {/* Getting Started Checklist */}
             <motion.div variants={fadeIn} className="mb-12">
               <Card variant="elevated" className="p-6 border-maroon/20">
@@ -314,17 +397,22 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {/* 1. Set up your profile */}
+                    {/* 1. Set up your artist profile (link-in-bio) */}
                     <Link to="/account" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
-                      {profile?.stage_name ? (
+                      {profile?.stage_name && profile?.username ? (
                         <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                       ) : (
                         <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                       )}
                       <UserCircle className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span className={profile?.stage_name ? 'text-muted-foreground line-through' : ''}>
-                        Set up your profile
-                      </span>
+                      <div className="flex-1">
+                        <span className={profile?.stage_name && profile?.username ? 'text-muted-foreground line-through' : 'font-medium'}>
+                          Set up your artist profile
+                        </span>
+                        {!profile?.stage_name && (
+                          <span className="ml-2 text-xs text-primary">← your link-in-bio</span>
+                        )}
+                      </div>
                     </Link>
 
                     {/* 2. Complete your first course */}

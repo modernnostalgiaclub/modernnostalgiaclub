@@ -17,6 +17,7 @@ interface PatreonMember {
   migration_status: string | null;
   notified_at: string | null;
   migrated_at: string | null;
+  auth_method: string | null;
 }
 
 interface MigrationStats {
@@ -52,7 +53,7 @@ export function AdminPatreonMigration() {
       // Fetch migration records
       const { data: migrations } = await supabase
         .from('patreon_migration')
-        .select('patreon_user_id, migration_status, notified_at, migrated_at');
+        .select('patreon_user_id, migration_status, notified_at, migrated_at, auth_method');
 
       const migrationMap = new Map(
         (migrations || []).map((m: any) => [m.patreon_user_id, m])
@@ -65,6 +66,7 @@ export function AdminPatreonMigration() {
           migration_status: mig?.migration_status ?? 'pending',
           notified_at: mig?.notified_at ?? null,
           migrated_at: mig?.migrated_at ?? null,
+          auth_method: mig?.auth_method ?? null,
         };
       });
 
@@ -252,6 +254,7 @@ export function AdminPatreonMigration() {
                     <TableHead>Status</TableHead>
                     <TableHead>Notified</TableHead>
                     <TableHead>Migrated</TableHead>
+                    <TableHead>Auth Method</TableHead>
                     <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -277,6 +280,9 @@ export function AdminPatreonMigration() {
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
                         {member.migrated_at ? new Date(member.migrated_at).toLocaleDateString() : '—'}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground capitalize">
+                        {member.auth_method ?? '—'}
                       </TableCell>
                       <TableCell className="text-right">
                         {member.migration_status !== 'migrated' && (
