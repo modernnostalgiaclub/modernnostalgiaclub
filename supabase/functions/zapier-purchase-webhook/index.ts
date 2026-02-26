@@ -68,6 +68,17 @@ const handler = async (req: Request): Promise<Response> => {
     });
   }
 
+  // Authenticate the request
+  const ZAPIER_WEBHOOK_SECRET = Deno.env.get("ZAPIER_WEBHOOK_SECRET");
+  const incomingSecret = req.headers.get("x-webhook-secret");
+
+  if (!ZAPIER_WEBHOOK_SECRET || incomingSecret !== ZAPIER_WEBHOOK_SECRET) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const payload: PurchaseWebhookPayload = await req.json();
     
