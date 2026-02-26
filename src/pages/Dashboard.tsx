@@ -119,13 +119,11 @@ export default function Dashboard() {
         
         setHasCommented((commentCount || 0) > 0);
 
-        // Check if user has submitted to Studio Floor
-        const { count: submissionCount } = await supabase
-          .from('submissions')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
+        // Check if user has submitted to Studio Floor via secure RPC
+        const { data: submissionsData } = await supabase.rpc('get_user_submissions');
+        const submissionCount = (submissionsData || []).length;
         
-        setHasSubmitted((submissionCount || 0) > 0);
+        setHasSubmitted(submissionCount > 0);
 
         // Check if user has started the 30-day tracker
         const { count: trackerCount } = await supabase
