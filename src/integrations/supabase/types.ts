@@ -678,6 +678,7 @@ export type Database = {
       }
       patreon_migration: {
         Row: {
+          auth_method: string | null
           created_at: string
           google_user_id: string | null
           id: string
@@ -687,6 +688,7 @@ export type Database = {
           patreon_user_id: string
         }
         Insert: {
+          auth_method?: string | null
           created_at?: string
           google_user_id?: string | null
           id?: string
@@ -696,6 +698,7 @@ export type Database = {
           patreon_user_id: string
         }
         Update: {
+          auth_method?: string | null
           created_at?: string
           google_user_id?: string | null
           id?: string

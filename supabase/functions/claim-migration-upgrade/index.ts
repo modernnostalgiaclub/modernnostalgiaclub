@@ -26,7 +26,7 @@ serve(async (req) => {
       });
     }
 
-    // Verify the JWT to get the user
+    // Verify the JWT to get the calling (new) user
     const anonClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -40,39 +40,63 @@ serve(async (req) => {
       });
     }
 
-    const userId = userData.user.id;
+    const newUserId = userData.user.id;
 
-    // Check if user has a patreon_id (i.e., is a founding Patreon member)
-    const { data: profile, error: profileError } = await supabase
+    // Determine auth method from user metadata
+    const providers = userData.user.app_metadata?.providers ?? [];
+    const authMethod = providers.includes("google") ? "google" : "email";
+
+    // Parse optional patreon_source_user_id from request body
+    let patreonSourceUserId: string | null = null;
+    try {
+      const body = await req.json();
+      patreonSourceUserId = body?.patreon_source_user_id ?? null;
+    } catch {
+      // no body — ok
+    }
+
+    // --- Determine which profile to check for patreon_id ---
+    // If a source user ID was passed, look up THAT profile (the original Patreon account).
+    // Otherwise, fall back to checking the calling user's own profile (legacy path).
+    const profileUserId = patreonSourceUserId ?? newUserId;
+
+    const { data: sourceProfile, error: profileError } = await supabase
       .from("profiles")
-      .select("patreon_id, patreon_tier")
-      .eq("user_id", userId)
+      .select("patreon_id, patreon_tier, user_id")
+      .eq("user_id", profileUserId)
       .single();
 
-    if (profileError || !profile) {
-      return new Response(JSON.stringify({ error: "Profile not found" }), {
+    if (profileError || !sourceProfile) {
+      return new Response(JSON.stringify({ error: "Source profile not found" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    if (!profile.patreon_id) {
+    if (!sourceProfile.patreon_id) {
       return new Response(JSON.stringify({
-        error: "No Patreon account found on your profile. This upgrade is only available for founding Patreon members.",
+        error: "No Patreon account found on the source profile. This upgrade is only available for founding Patreon members.",
       }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Already at the top tier — idempotent
-    if (profile.patreon_tier === "creative-economy-lab") {
-      // Still mark as migrated if not already
+    // Check if the NEW user is already at the top tier (idempotent)
+    const { data: newProfile } = await supabase
+      .from("profiles")
+      .select("patreon_tier")
+      .eq("user_id", newUserId)
+      .single();
+
+    if (newProfile?.patreon_tier === "creative-economy-lab") {
+      // Still record migration if not already done
       await supabase.from("patreon_migration").upsert({
-        patreon_user_id: userId,
-        google_user_id: userId,
+        patreon_user_id: sourceProfile.user_id,
+        google_user_id: newUserId,
         migration_status: "migrated",
         migrated_at: new Date().toISOString(),
+        auth_method: authMethod,
       }, { onConflict: "patreon_user_id" });
 
       return new Response(JSON.stringify({ success: true, already_upgraded: true }), {
@@ -80,11 +104,11 @@ serve(async (req) => {
       });
     }
 
-    // Upgrade tier
+    // Upgrade the NEW account's tier
     const { error: upgradeError } = await supabase
       .from("profiles")
       .update({ patreon_tier: "creative-economy-lab" })
-      .eq("user_id", userId);
+      .eq("user_id", newUserId);
 
     if (upgradeError) {
       console.error("Upgrade error:", upgradeError);
@@ -94,17 +118,18 @@ serve(async (req) => {
       });
     }
 
-    // Mark migration as complete
+    // Record migration — link source Patreon account to new account
     await supabase.from("patreon_migration").upsert({
-      patreon_user_id: userId,
-      google_user_id: userId,
+      patreon_user_id: sourceProfile.user_id,
+      google_user_id: newUserId,
       migration_status: "migrated",
       migrated_at: new Date().toISOString(),
+      auth_method: authMethod,
     }, { onConflict: "patreon_user_id" });
 
-    // Send a success notification
+    // Send a success notification to the new account
     await supabase.from("notifications").insert({
-      user_id: userId,
+      user_id: newUserId,
       title: "🎉 Upgrade Complete!",
       message: "You've been upgraded to Creative Economy Lab — our highest tier. Welcome to the inner circle.",
       type: "upgrade",

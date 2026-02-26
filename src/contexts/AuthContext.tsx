@@ -10,6 +10,7 @@ interface Profile {
   user_id: string;
   name: string | null;
   stage_name: string | null;
+  username: string | null;
   patreon_id: string | null;
   patreon_tier: PatreonTier;
   avatar_url: string | null;
