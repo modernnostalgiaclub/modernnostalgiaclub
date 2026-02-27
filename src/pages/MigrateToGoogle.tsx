@@ -19,11 +19,12 @@ const PERKS = [
 
 export default function MigrateToGoogle() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<'google' | 'email'>('google');
+  const prefillEmail = sessionStorage.getItem('patreon_source_email') || '';
+  const [tab, setTab] = useState<'google' | 'email'>('email');
   const [signingIn, setSigningIn] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [session, setSession] = useState<any>(null);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(true);
   const hasClaimed = useRef(false);
@@ -57,14 +58,7 @@ export default function MigrateToGoogle() {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session && !hasClaimed.current) {
-        hasClaimed.current = true;
-        setSession(data.session);
-        claimUpgrade(data.session.access_token);
-      }
-    });
-
+    // Only fire claimUpgrade on a NEW sign-in event, never on an existing session
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       if (event === 'SIGNED_IN' && s && !hasClaimed.current) {
         hasClaimed.current = true;
@@ -161,8 +155,10 @@ export default function MigrateToGoogle() {
             transition={{ delay: 0.3 }}
             className="text-muted-foreground text-sm leading-relaxed"
           >
-            Sign in or create a new account — we'll link it to your Patreon membership and upgrade you to{' '}
-            <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.
+            {prefillEmail
+              ? <>Set a password for <strong className="text-foreground">{prefillEmail}</strong> — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.</>
+              : <>Sign in or create a new account — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.</>
+            }
           </motion.p>
         </div>
 
@@ -245,11 +241,15 @@ export default function MigrateToGoogle() {
                         type="email"
                         placeholder="you@example.com"
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        className="pl-9"
+                        onChange={e => !prefillEmail && setEmail(e.target.value)}
+                        className={`pl-9 ${prefillEmail ? 'bg-muted cursor-not-allowed' : ''}`}
+                        readOnly={!!prefillEmail}
                         required
                       />
                     </div>
+                    {prefillEmail && (
+                      <p className="text-xs text-muted-foreground">Your Patreon email — just set a password below.</p>
+                    )}
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="password" className="text-sm">Password</Label>
