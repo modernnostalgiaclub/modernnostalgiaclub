@@ -271,8 +271,10 @@ export default function Dashboard() {
                           variant="maroon"
                           size="sm"
                           className="whitespace-nowrap"
-                          onClick={() => {
+                          onClick={async () => {
                             if (user?.id) sessionStorage.setItem('patreon_source_user_id', user.id);
+                            if (user?.email) sessionStorage.setItem('patreon_source_email', user.email);
+                            await supabase.auth.signOut();
                             navigate('/migrate');
                           }}
                         >
