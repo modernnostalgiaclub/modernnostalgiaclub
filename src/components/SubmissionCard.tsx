@@ -2,6 +2,7 @@ import { Submission } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { SafeExternalLink } from '@/components/SafeExternalLink';
 import { ExternalLink, Clock, CheckCircle, AlertCircle, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -58,11 +59,17 @@ export function SubmissionCard({ submission, showInternalNotes = false }: Submis
               <code className="text-xs text-foreground/80 truncate flex-1">
                 {submission.discoLink}
               </code>
-              <Button variant="ghost" size="sm" asChild>
-                <a href={submission.discoLink} target="_blank" rel="noopener noreferrer">
+              <SafeExternalLink 
+                href={submission.discoLink} 
+                requireDisco={true}
+                fallback={
+                  <span className="text-xs text-muted-foreground">Invalid DISCO link</span>
+                }
+              >
+                <Button variant="ghost" size="sm">
                   <ExternalLink className="w-4 h-4" />
-                </a>
-              </Button>
+                </Button>
+              </SafeExternalLink>
             </div>
           </div>
         )}

@@ -1,4 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+@font-face {
+  font-family: 'Maximum Impact';
+  src: url('/fonts/Maximum_Impact.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -59,8 +67,60 @@
     --sidebar-ring: 0 50% 35%;
   }
 
+  /* Light mode - Studio Analog inverted */
+  .light {
+    --background: 45 30% 96%;
+    --foreground: 0 0% 10%;
+
+    --card: 45 25% 92%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 45 25% 94%;
+    --popover-foreground: 0 0% 10%;
+
+    /* Maroon - the accent (slightly adjusted for light mode) */
+    --primary: 0 50% 38%;
+    --primary-foreground: 45 30% 96%;
+
+    --secondary: 45 20% 88%;
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 45 15% 85%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 0 35% 45%;
+    --accent-foreground: 45 30% 96%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 45 30% 96%;
+
+    --border: 45 15% 80%;
+    --input: 45 20% 90%;
+    --ring: 0 50% 38%;
+
+    /* Custom tokens - light mode */
+    --cream: 0 0% 10%;
+    --cream-muted: 0 0% 35%;
+    --studio-black: 45 30% 96%;
+    --studio-charcoal: 45 25% 90%;
+    --tape-label: 45 20% 85%;
+    --maroon: 0 50% 38%;
+    --maroon-muted: 0 40% 32%;
+    --maroon-glow: 0 55% 50%;
+
+    /* Sidebar - light mode */
+    --sidebar-background: 45 25% 92%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 0 50% 38%;
+    --sidebar-primary-foreground: 45 30% 96%;
+    --sidebar-accent: 45 20% 88%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 45 15% 80%;
+    --sidebar-ring: 0 50% 38%;
+  }
+
   .dark {
-    /* Same as root - this is a dark-first design */
+    /* Dark mode - original Studio Analog */
     --background: 0 0% 5%;
     --foreground: 45 30% 90%;
     --card: 0 0% 8%;
@@ -100,8 +160,46 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+  h1 {
+    @apply font-display tracking-wide;
+  }
+
+  h2, h3, h4, h5, h6 {
+    @apply font-display tracking-wider;
+  }
+
+  /* ADA Compliance: Enhanced focus indicators */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Ensure minimum touch target size for interactive elements */
+  button, 
+  [role="button"], 
+  a, 
+  input, 
+  select, 
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline links and icon buttons that have visual context */
+  a:not([class*="button"]):not([role="button"]) {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 

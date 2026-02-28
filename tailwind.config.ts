@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["DM Sans", "system-ui", "sans-serif"],
-        display: ["Bebas Neue", "system-ui", "sans-serif"],
+        display: ["Maximum Impact", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
