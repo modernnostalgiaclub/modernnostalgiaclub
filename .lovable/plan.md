@@ -1,76 +1,56 @@
 
-## Fix: Patreon Migration Flow — Sign Out First, Then Set Password
+## Two-Bug Fix: Migration for Existing Accounts + Reset Password with MFA
 
-### Root Cause
+### Bug 1: `/migrate` — Account Already Exists, No Password
 
-The `/migrate` page has a fatal race condition: when a Patreon member clicks "Claim Your Free Upgrade" on the dashboard, their Patreon session is still active. The page's `useEffect` runs `getSession()` immediately, finds the active Patreon session, and tries to call `claimUpgrade()` on that same account — not a new one. The upgrade either silently no-ops (same account) or errors out. The user never gets to create a password.
+**What's happening:** `ge@modernnostalgia.club` was created via Patreon OAuth — the account exists but has never had a password set. When the migrate page tries `signUp()`, the backend returns `422 User already registered`. The code throws it and shows an error toast. Dead end.
 
-For `ge@modernnostalgia.club` specifically: no Google account exists, so the email tab is needed, but the flow never allows reaching it before auto-firing the claim on the existing Patreon session.
+**The fix — Magic Link fallback:**
 
-### The Fix — 3 Changes
+When `signUp` returns "User already registered", instead of showing an error, automatically send a **magic link (OTP email)** to that address. The user clicks the link in their email, gets signed in via `SIGNED_IN` event, and `claimUpgrade()` fires as normal.
 
-#### 1. Sign out BEFORE navigating to /migrate (Dashboard banner)
+New flow for the email tab when a pre-filled email exists:
+1. User sees their email pre-filled + a password field
+2. They click "Create Account & Claim Upgrade"
+3. If `signUp` returns `user_already_exists` → silently call `signInWithOtp({ email })` → show "Check your email — we've sent you a sign-in link. Click it to complete your upgrade."
+4. User clicks the email link → lands back on `/migrate` → `SIGNED_IN` fires → `claimUpgrade()` runs → redirect to dashboard
 
-When the user clicks "Claim Your Free Upgrade," we need to:
-1. Save the `patreon_source_user_id` to `sessionStorage`
-2. **Sign the user out of their Patreon session**
-3. Navigate to `/migrate`
+This is the cleanest path because: (a) it doesn't require a password if MFA is blocking password resets, (b) it works regardless of whether the account is new or existing.
 
-This ensures the `/migrate` page loads with no active session, so `getSession()` returns null and the upgrade form is shown properly.
+**Secondary improvement:** Change the button label and subtext to reflect the situation — when the email is pre-filled, lead with "Send me a sign-in link" as the primary action, with password as a secondary option for truly new accounts.
 
-#### 2. Make the Email tab the DEFAULT when there's no Google (Migrate page)
+---
 
-Currently the Google tab is shown first. For members like you who don't have/use Google, they have to notice and click the "Use Email" tab. We'll default to the email tab and make the UX clearer — the page should lead with:
+### Bug 2: `/reset-password` — MFA Blocks `updateUser`
 
-> **Create a password for your account** — your email is already `ge@modernnostalgia.club`, just set a password below.
+**What's happening:** The auth logs show `401: AAL2 session is required to update email or password when MFA is enabled`. A password recovery link gives an AAL1 session. Since the account has 2FA enrolled, updating the password requires completing the MFA challenge first (AAL2).
 
-Since the Patreon email is known before they leave the dashboard, we'll pass it as a URL param (`/migrate?email=ge@modernnostalgia.club`) so the email field is pre-filled and read-only. They only need to enter a password.
+**The fix — MFA gate before password update:**
 
-#### 3. Fix the `claimUpgrade` guard — only fire on NEW sign-in, not on page load
+After the recovery session is established (`ready = true`), check the assurance level. If it's AAL1 and MFA factors exist, show the TOTP input before showing the password form.
 
-The `useEffect` currently calls `claimUpgrade` on `getSession()` if a session exists. After the sign-out fix, `getSession()` will return null — so this guard becomes correct. But we'll add an additional check: only call `claimUpgrade` on the `SIGNED_IN` auth event, not on an existing session check. This prevents any future regression.
+Flow:
+1. User clicks recovery link → `PASSWORD_RECOVERY` event fires → `ready = true`
+2. Page calls `getAuthenticatorAssuranceLevel()` → if `nextLevel === 'aal2'`, show MFA prompt first
+3. User enters their authenticator code → `mfa.challengeAndVerify()` → session upgrades to AAL2
+4. Password form appears → `updateUser({ password })` succeeds
 
-### Revised Flow
+The existing `MFAVerification` component already does exactly this. We'll reuse it inline on the reset-password page.
 
-```text
-Dashboard → "Claim Upgrade" click:
-  1. sessionStorage.setItem('patreon_source_user_id', user.id)
-  2. sessionStorage.setItem('patreon_source_email', user.email)
-  3. await supabase.auth.signOut()
-  4. navigate('/migrate')
-
-/migrate page loads:
-  - No active session (signed out)
-  - Email tab shown by default
-  - Email field pre-filled from sessionStorage (read-only)
-  - User types a password and clicks "Create Account & Claim Upgrade"
-  - OR clicks "Continue with Google" if they prefer
-
-  On signUp success:
-  - Auth sends a confirmation email (or auto-confirms)
-  - onAuthStateChange fires SIGNED_IN
-  - claimUpgrade() runs with patreon_source_user_id from sessionStorage
-  - Upgrade applied to new account, migration recorded
-  - Redirect to /dashboard with success toast
-
-  On signInWithPassword success (returning user):
-  - Same SIGNED_IN flow
-```
+---
 
 ### Files to Change
 
-**`src/pages/Dashboard.tsx`** — The "Claim Upgrade" button handler:
-- Add `supabase.auth.signOut()` before `navigate('/migrate')`
-- Store the user's email in `sessionStorage` alongside the user ID
+**`src/pages/MigrateToGoogle.tsx`:**
+- When `signUp` throws `user_already_exists` (422), catch it and call `signInWithOtp({ email, options: { shouldCreateUser: false } })`
+- Switch UI to a "check your email" confirmation state
+- Update button label: when email is pre-filled, show "Send Sign-in Link" as primary, with a "Set a password instead" toggle
+- Remove the `isSignUp` / `Already have an account?` toggle confusion — it's irrelevant when the email is locked
 
-**`src/pages/MigrateToGoogle.tsx`** — The migration page:
-- Default tab to `'email'` instead of `'google'`
-- Read email from `sessionStorage` and pre-fill the email input (read-only)
-- Remove the `getSession()` auto-claim on page load — only fire on `SIGNED_IN` event
-- Add clearer copy: "Set a password for your account — we'll use your existing Patreon email"
-- Show a note explaining Google is also an option if they have a Gmail
+**`src/pages/ResetPassword.tsx`:**
+- After `ready = true`, call `supabase.auth.mfa.getAuthenticatorAssuranceLevel()`
+- If `nextLevel === 'aal2'` (MFA required), show TOTP input using inline MFA challenge logic (same pattern as `MFAVerification.tsx`)
+- Only show the password form once AAL2 is satisfied
+- Clear, friendly messaging: "Your account has two-factor authentication enabled. Enter your authenticator code to continue."
 
-### What Does NOT Change
-- The `claim-migration-upgrade` edge function logic is correct — it accepts `patreon_source_user_id` and upgrades the new account. No backend changes needed.
-- The email confirmation flow stays as-is (user signs up → confirms email → SIGNED_IN fires → upgrade claimed).
-- The admin `patreon_migration` table tracking remains intact.
+No database changes, no edge function changes needed — this is purely frontend logic.
