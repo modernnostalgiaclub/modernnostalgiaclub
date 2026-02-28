@@ -7,11 +7,13 @@ export type PatreonTier = 'lab-pass' | 'creator-accelerator' | 'creative-economy
 interface Profile {
   id: string;
   user_id: string;
-  email: string | null;
   name: string | null;
+  full_name: string | null;
+  stage_name: string | null;
   patreon_id: string | null;
-  patreon_tier: PatreonTier;
+  patreon_tier: PatreonTier | null;
   avatar_url: string | null;
+  bio: string | null;
 }
 
 interface AuthContextType {
@@ -91,13 +93,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const redirectUri = `${window.location.origin}/auth/patreon/callback`;
     
     try {
-      const { data, error } = await supabase.functions.invoke('patreon-auth', {
-        body: null,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
       // Get the auth URL
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/patreon-auth?action=login&redirect_uri=${encodeURIComponent(redirectUri)}`
