@@ -5,7 +5,7 @@ import logoCream from '@/assets/logo-cream.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ResetPassword() {
@@ -15,26 +15,80 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
+  // MFA state
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaVerified, setMfaVerified] = useState(false);
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaVerifying, setMfaVerifying] = useState(false);
+  const [mfaError, setMfaError] = useState('');
 
   useEffect(() => {
-    // Supabase puts the recovery token in the URL hash; the client auto-exchanges it
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await checkMfa();
+        setReady(true);
+      }
+    };
+
     const hash = window.location.hash;
     if (hash.includes('type=recovery')) {
-      setReady(true);
+      // Session will be set by the client; wait for auth state change
     } else {
-      // Listen for PASSWORD_RECOVERY event
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-        if (event === 'PASSWORD_RECOVERY') {
-          setReady(true);
-        }
-      });
-      // Also set ready immediately if already have a session (link clicked opens with session)
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) setReady(true);
-      });
-      return () => subscription.unsubscribe();
+      checkSession();
     }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        await checkMfa();
+        setReady(true);
+      }
+    });
+    return () => subscription.unsubscribe();
   }, []);
+
+  const checkMfa = async () => {
+    try {
+      const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (data?.nextLevel === 'aal2' && data?.currentLevel !== 'aal2') {
+        setMfaRequired(true);
+      }
+    } catch {
+      // ignore — MFA check failure shouldn't block password reset
+    }
+  };
+
+  const handleMfaVerify = async () => {
+    if (mfaCode.length !== 6) return;
+    setMfaVerifying(true);
+    setMfaError('');
+    try {
+      const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
+      if (factorsError) throw factorsError;
+
+      const totpFactor = factorsData.totp.find(f => f.status === 'verified');
+      if (!totpFactor) throw new Error('No verified MFA factor found');
+
+      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({ factorId: totpFactor.id });
+      if (challengeError) throw challengeError;
+
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: totpFactor.id,
+        challengeId: challengeData.id,
+        code: mfaCode.trim(),
+      });
+      if (verifyError) {
+        setMfaError('Invalid code. Please try again.');
+        return;
+      }
+      setMfaVerified(true);
+      setMfaRequired(false);
+    } catch (err: any) {
+      setMfaError(err.message || 'Verification failed. Please try again.');
+    } finally {
+      setMfaVerifying(false);
+    }
+  };
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +127,42 @@ export default function ResetPassword() {
             Loading recovery session… If this persists, request a new reset link from the{' '}
             <Link to="/login" className="underline hover:text-foreground">login page</Link>.
           </p>
+        ) : mfaRequired && !mfaVerified ? (
+          /* MFA gate */
+          <div className="space-y-4">
+            <div className="flex flex-col items-center gap-2 text-center">
+              <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-primary" />
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Your account has two-factor authentication enabled.<br />Enter your authenticator code to continue.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="mfa-code">Authenticator Code</Label>
+              <Input
+                id="mfa-code"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                placeholder="000000"
+                value={mfaCode}
+                onChange={e => { setMfaCode(e.target.value.replace(/\D/g, '')); setMfaError(''); }}
+                onKeyDown={e => { if (e.key === 'Enter' && mfaCode.length === 6) handleMfaVerify(); }}
+                className="font-mono text-center text-2xl tracking-[0.5em] h-14"
+                autoFocus
+              />
+              {mfaError && <p className="text-sm text-destructive">{mfaError}</p>}
+            </div>
+            <Button
+              onClick={handleMfaVerify}
+              disabled={mfaCode.length !== 6 || mfaVerifying}
+              className="w-full"
+            >
+              {mfaVerifying ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Verifying...</> : 'Verify'}
+            </Button>
+          </div>
         ) : (
           <form onSubmit={handleReset} className="space-y-4">
             <div className="space-y-2">
