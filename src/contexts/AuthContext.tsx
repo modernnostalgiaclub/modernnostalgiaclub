@@ -1,37 +1,26 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session, AuthenticatorAssuranceLevels } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 export type PatreonTier = 'lab-pass' | 'creator-accelerator' | 'creative-economy-lab';
-export type AppRole = 'admin' | 'moderator' | 'user';
 
 interface Profile {
   id: string;
   user_id: string;
+  email: string | null;
   name: string | null;
-  stage_name: string | null;
-  username: string | null;
   patreon_id: string | null;
   patreon_tier: PatreonTier;
   avatar_url: string | null;
 }
 
-// Tier hierarchy for access checks
-const TIER_HIERARCHY: PatreonTier[] = ['lab-pass', 'creator-accelerator', 'creative-economy-lab'];
-
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
-  roles: AppRole[];
   loading: boolean;
-  mfaRequired: boolean;
-  mfaVerified: boolean;
-  hasRole: (role: AppRole) => boolean;
-  hasAccessToTier: (requiredTier: PatreonTier) => boolean;
   signInWithPatreon: () => Promise<void>;
   signOut: () => Promise<void>;
-  refreshMFAStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,10 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mfaRequired, setMfaRequired] = useState(false);
-  const [mfaVerified, setMfaVerified] = useState(false);
 
   // Fetch profile data
   const fetchProfile = async (userId: string) => {
@@ -65,69 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Fetch user roles from database (server-side source of truth)
-  const fetchUserRoles = async (userId: string): Promise<AppRole[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId);
-
-      if (error) {
-        console.error('Error fetching user roles:', error);
-        return [];
-      }
-      return data?.map(r => r.role as AppRole) || [];
-    } catch (error) {
-      console.error('Error fetching user roles:', error);
-      return [];
-    }
-  };
-
-  // Check if user has a specific role (uses server-fetched roles)
-  const hasRole = (role: AppRole): boolean => {
-    return roles.includes(role);
-  };
-
-  // Check if user has access to a tier (admins always have access to all tiers)
-  const hasAccessToTier = (requiredTier: PatreonTier): boolean => {
-    // Admins have access to everything
-    if (roles.includes('admin')) {
-      return true;
-    }
-    
-    const userTier = profile?.patreon_tier || 'lab-pass';
-    const userTierIndex = TIER_HIERARCHY.indexOf(userTier);
-    const requiredTierIndex = TIER_HIERARCHY.indexOf(requiredTier);
-    
-    return userTierIndex >= requiredTierIndex;
-  };
-
-  // Check MFA status for the current session
-  const checkMFAStatus = async () => {
-    try {
-      const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      
-      if (error) {
-        console.error('Error checking MFA status:', error);
-        return;
-      }
-
-      // User has MFA enrolled and needs to verify
-      const needsMFA = data.nextLevel === 'aal2' && data.currentLevel === 'aal1';
-      const hasVerifiedMFA = data.currentLevel === 'aal2';
-      
-      setMfaRequired(needsMFA);
-      setMfaVerified(hasVerifiedMFA);
-    } catch (error) {
-      console.error('Error checking MFA status:', error);
-    }
-  };
-
-  const refreshMFAStatus = async () => {
-    await checkMFAStatus();
-  };
-
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -135,23 +58,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer profile and roles fetch to avoid deadlocks
+        // Defer profile fetch to avoid deadlocks
         if (session?.user) {
           setTimeout(() => {
-            Promise.all([
-              fetchProfile(session.user.id),
-              fetchUserRoles(session.user.id)
-            ]).then(([profileData, userRoles]) => {
-              setProfile(profileData);
-              setRoles(userRoles);
-            });
-            checkMFAStatus();
+            fetchProfile(session.user.id).then(setProfile);
           }, 0);
         } else {
           setProfile(null);
-          setRoles([]);
-          setMfaRequired(false);
-          setMfaVerified(false);
         }
       }
     );
@@ -162,15 +75,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        Promise.all([
-          fetchProfile(session.user.id),
-          fetchUserRoles(session.user.id)
-        ]).then(([profileData, userRoles]) => {
+        fetchProfile(session.user.id).then((profileData) => {
           setProfile(profileData);
-          setRoles(userRoles);
           setLoading(false);
         });
-        checkMFAStatus();
       } else {
         setLoading(false);
       }
@@ -180,45 +88,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithPatreon = async () => {
-    // Pass the app origin so the edge function knows where to redirect back
-    const appOrigin = window.location.origin;
-
-    const navigateToOAuth = (url: string) => {
-      // Patreon blocks rendering inside iframes (X-Frame-Options/CSP).
-      // Lovable preview runs inside an iframe, so open OAuth in a new tab there.
-      const inIframe = (() => {
-        try {
-          return window.self !== window.top;
-        } catch {
-          return true;
-        }
-      })();
-
-      if (inIframe) {
-        const opened = window.open(url, '_blank', 'noopener,noreferrer');
-        if (!opened) {
-          // Fallback if popups are blocked
-          window.location.href = url;
-        }
-        return;
-      }
-
-      window.location.href = url;
-    };
-
+    const redirectUri = `${window.location.origin}/auth/patreon/callback`;
+    
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/patreon-auth?action=login&app_origin=${encodeURIComponent(appOrigin)}`
-      );
+      const { data, error } = await supabase.functions.invoke('patreon-auth', {
+        body: null,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
+      // Get the auth URL
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/patreon-auth?action=login&redirect_uri=${encodeURIComponent(redirectUri)}`
+      );
+      
       if (!response.ok) {
         throw new Error('Failed to get Patreon auth URL');
       }
 
       const result = await response.json();
-
+      
       if (result.url) {
-        navigateToOAuth(result.url);
+        window.location.href = result.url;
       } else {
         throw new Error('No auth URL returned');
       }
@@ -234,9 +126,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setSession(null);
       setProfile(null);
-      setRoles([]);
-      setMfaRequired(false);
-      setMfaVerified(false);
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -244,20 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      profile, 
-      roles, 
-      loading, 
-      mfaRequired, 
-      mfaVerified, 
-      hasRole, 
-      hasAccessToTier, 
-      signInWithPatreon, 
-      signOut,
-      refreshMFAStatus 
-    }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, signInWithPatreon, signOut }}>
       {children}
     </AuthContext.Provider>
   );

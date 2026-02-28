@@ -3,6 +3,7 @@ export type PatreonTier = 'lab-pass' | 'creator-accelerator' | 'creative-economy
 export interface User {
   id: string;
   name: string;
+  email: string;
   tier: PatreonTier;
   status: 'active' | 'inactive';
   role: 'member' | 'moderator' | 'admin';

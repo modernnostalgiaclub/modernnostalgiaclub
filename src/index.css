@@ -1,12 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-
-@font-face {
-  font-family: 'Maximum Impact';
-  src: url('/fonts/Maximum_Impact.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Bebas+Neue&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,8 +16,8 @@
     --popover: 0 0% 8%;
     --popover-foreground: 45 30% 90%;
 
-    /* Electric Blue - the accent */
-    --primary: 220 70% 50%;
+    /* Maroon - the accent */
+    --primary: 0 50% 35%;
     --primary-foreground: 45 30% 90%;
 
     --secondary: 0 0% 12%;
@@ -34,7 +26,7 @@
     --muted: 0 0% 15%;
     --muted-foreground: 45 10% 55%;
 
-    --accent: 220 60% 40%;
+    --accent: 0 40% 30%;
     --accent-foreground: 45 30% 90%;
 
     --destructive: 0 62% 50%;
@@ -42,7 +34,7 @@
 
     --border: 0 0% 18%;
     --input: 0 0% 15%;
-    --ring: 220 70% 50%;
+    --ring: 0 50% 35%;
 
     --radius: 0.375rem;
 
@@ -52,9 +44,9 @@
     --studio-black: 0 0% 5%;
     --studio-charcoal: 0 0% 10%;
     --tape-label: 0 0% 20%;
-    --maroon: 220 70% 50%;
-    --maroon-muted: 220 60% 40%;
-    --maroon-glow: 220 80% 62%;
+    --maroon: 0 50% 35%;
+    --maroon-muted: 0 40% 28%;
+    --maroon-glow: 0 55% 45%;
 
     /* Sidebar */
     --sidebar-background: 0 0% 8%;
@@ -67,87 +59,35 @@
     --sidebar-ring: 0 50% 35%;
   }
 
-  /* Light mode - Studio Analog inverted */
-  .light {
-    --background: 45 30% 96%;
-    --foreground: 0 0% 10%;
-
-    --card: 45 25% 92%;
-    --card-foreground: 0 0% 10%;
-
-    --popover: 45 25% 94%;
-    --popover-foreground: 0 0% 10%;
-
-    /* Blue - the accent (light mode) */
-    --primary: 220 70% 45%;
-    --primary-foreground: 45 30% 96%;
-
-    --secondary: 45 20% 88%;
-    --secondary-foreground: 0 0% 15%;
-
-    --muted: 45 15% 85%;
-    --muted-foreground: 0 0% 40%;
-
-    --accent: 220 60% 40%;
-    --accent-foreground: 45 30% 96%;
-
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 45 30% 96%;
-
-    --border: 45 15% 80%;
-    --input: 45 20% 90%;
-    --ring: 220 70% 45%;
-
-    /* Custom tokens - light mode */
-    --cream: 0 0% 10%;
-    --cream-muted: 0 0% 35%;
-    --studio-black: 45 30% 96%;
-    --studio-charcoal: 45 25% 90%;
-    --tape-label: 45 20% 85%;
-    --maroon: 220 70% 45%;
-    --maroon-muted: 220 60% 38%;
-    --maroon-glow: 220 80% 58%;
-
-    /* Sidebar - light mode */
-    --sidebar-background: 45 25% 92%;
-    --sidebar-foreground: 0 0% 10%;
-    --sidebar-primary: 220 70% 45%;
-    --sidebar-primary-foreground: 45 30% 96%;
-    --sidebar-accent: 45 20% 88%;
-    --sidebar-accent-foreground: 0 0% 15%;
-    --sidebar-border: 45 15% 80%;
-    --sidebar-ring: 220 70% 45%;
-  }
-
   .dark {
-    /* Dark mode - Studio Analog Blue */
+    /* Same as root - this is a dark-first design */
     --background: 0 0% 5%;
     --foreground: 45 30% 90%;
     --card: 0 0% 8%;
     --card-foreground: 45 30% 90%;
     --popover: 0 0% 8%;
     --popover-foreground: 45 30% 90%;
-    --primary: 220 70% 50%;
+    --primary: 0 50% 35%;
     --primary-foreground: 45 30% 90%;
     --secondary: 0 0% 12%;
     --secondary-foreground: 45 30% 90%;
     --muted: 0 0% 15%;
     --muted-foreground: 45 10% 55%;
-    --accent: 220 60% 40%;
+    --accent: 0 40% 30%;
     --accent-foreground: 45 30% 90%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 45 30% 90%;
     --border: 0 0% 18%;
     --input: 0 0% 15%;
-    --ring: 220 70% 50%;
+    --ring: 0 50% 35%;
     --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 45 30% 90%;
-    --sidebar-primary: 220 70% 50%;
+    --sidebar-primary: 0 50% 35%;
     --sidebar-primary-foreground: 45 30% 90%;
     --sidebar-accent: 0 0% 15%;
     --sidebar-accent-foreground: 45 30% 90%;
     --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 220 70% 50%;
+    --sidebar-ring: 0 50% 35%;
   }
 }
 
@@ -160,46 +100,8 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1 {
-    @apply font-display tracking-wide;
-  }
-
-  h2, h3, h4, h5, h6 {
-    @apply font-display tracking-wider;
-  }
-
-  /* ADA Compliance: Enhanced focus indicators */
-  *:focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
-  }
-
-  /* Ensure minimum touch target size for interactive elements */
-  button, 
-  [role="button"], 
-  a, 
-  input, 
-  select, 
-  textarea {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Exception for inline links and icon buttons that have visual context */
-  a:not([class*="button"]):not([role="button"]) {
-    min-height: auto;
-    min-width: auto;
-  }
-
-  /* Reduce motion for users who prefer it */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
   }
 }
 
