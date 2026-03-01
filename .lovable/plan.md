@@ -1,56 +1,130 @@
 
-## Two-Bug Fix: Migration for Existing Accounts + Reset Password with MFA
+## Combined Plan: UI Restructure + Auth Bug Fixes (Already Done)
 
-### Bug 1: `/migrate` — Account Already Exists, No Password
+### Status Check: What's Already Done
 
-**What's happening:** `ge@modernnostalgia.club` was created via Patreon OAuth — the account exists but has never had a password set. When the migrate page tries `signUp()`, the backend returns `422 User already registered`. The code throws it and shows an error toast. Dead end.
+The two auth bug fixes from the previous plan are **already implemented** in the codebase:
+- `src/pages/MigrateToGoogle.tsx` — magic link fallback for existing accounts is live
+- `src/pages/ResetPassword.tsx` — MFA gate (AAL2 check + TOTP challenge) is live
 
-**The fix — Magic Link fallback:**
-
-When `signUp` returns "User already registered", instead of showing an error, automatically send a **magic link (OTP email)** to that address. The user clicks the link in their email, gets signed in via `SIGNED_IN` event, and `claimUpgrade()` fires as normal.
-
-New flow for the email tab when a pre-filled email exists:
-1. User sees their email pre-filled + a password field
-2. They click "Create Account & Claim Upgrade"
-3. If `signUp` returns `user_already_exists` → silently call `signInWithOtp({ email })` → show "Check your email — we've sent you a sign-in link. Click it to complete your upgrade."
-4. User clicks the email link → lands back on `/migrate` → `SIGNED_IN` fires → `claimUpgrade()` runs → redirect to dashboard
-
-This is the cleanest path because: (a) it doesn't require a password if MFA is blocking password resets, (b) it works regardless of whether the account is new or existing.
-
-**Secondary improvement:** Change the button label and subtext to reflect the situation — when the email is pre-filled, lead with "Send me a sign-in link" as the primary action, with password as a secondary option for truly new accounts.
+What follows is the **unapproved UI restructure** plan, which we now execute on top of the working codebase.
 
 ---
 
-### Bug 2: `/reset-password` — MFA Blocks `updateUser`
+### Task 1 — The Public Magazine (`/`)
 
-**What's happening:** The auth logs show `401: AAL2 session is required to update email or password when MFA is enabled`. A password recovery link gives an AAL1 session. Since the account has 2FA enrolled, updating the password requires completing the MFA challenge first (AAL2).
+**What changes in `src/pages/LandingPage.tsx`:**
 
-**The fix — MFA gate before password update:**
+Replace the hero `bgHero` local asset with a high-quality Unsplash studio photo:
+`https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1800&q=80`
 
-After the recovery session is established (`ready = true`), check the assurance level. If it's AAL1 and MFA factors exist, show the TOTP input before showing the password form.
+Add two new data-driven sections **below** the existing Pricing section, before the FAQ/footer:
 
-Flow:
-1. User clicks recovery link → `PASSWORD_RECOVERY` event fires → `ready = true`
-2. Page calls `getAuthenticatorAssuranceLevel()` → if `nextLevel === 'aal2'`, show MFA prompt first
-3. User enters their authenticator code → `mfa.challengeAndVerify()` → session upgrades to AAL2
-4. Password form appears → `updateUser({ password })` succeeds
+**"Sounds from the Club"** — queries `artist_tracks` where `is_published = true`, ordered by `created_at desc`, limit 6. Renders a horizontal scroll of glassmorphism cards. Each card shows: track title, artist name (joined from profiles), and a DISCO embed link or external link button.
 
-The existing `MFAVerification` component already does exactly this. We'll reuse it inline on the reset-password page.
+**"From the Lab"** — queries `blog_posts` where `is_published = true`, ordered by `published_at desc`, limit 3. Renders editorial cards with: title, excerpt (first 120 chars of content), author, and date.
+
+Glassmorphism classes to add to `src/index.css`:
+```css
+.glass-card {
+  @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-xl;
+}
+.light .glass-card {
+  @apply bg-white/60 border-black/10;
+}
+```
+
+The existing redirect (`if (!loading && user) return <Navigate to="/dashboard" />`) stays untouched.
 
 ---
 
-### Files to Change
+### Task 2 — The Artist Marketplace (`/artists`)
 
-**`src/pages/MigrateToGoogle.tsx`:**
-- When `signUp` throws `user_already_exists` (422), catch it and call `signInWithOtp({ email, options: { shouldCreateUser: false } })`
-- Switch UI to a "check your email" confirmation state
-- Update button label: when email is pre-filled, show "Send Sign-in Link" as primary, with a "Set a password instead" toggle
-- Remove the `isSignUp` / `Already have an account?` toggle confusion — it's irrelevant when the email is locked
+**New file: `src/pages/Artists.tsx`**
 
-**`src/pages/ResetPassword.tsx`:**
-- After `ready = true`, call `supabase.auth.mfa.getAuthenticatorAssuranceLevel()`
-- If `nextLevel === 'aal2'` (MFA required), show TOTP input using inline MFA challenge logic (same pattern as `MFAVerification.tsx`)
-- Only show the password form once AAL2 is satisfied
-- Clear, friendly messaging: "Your account has two-factor authentication enabled. Enter your authenticator code to continue."
+Queries `profiles` where `profile_visibility = 'public'` and `username IS NOT NULL`. The `profile_visibility` column already exists in the DB.
 
-No database changes, no edge function changes needed — this is purely frontend logic.
+Each card displays:
+- Avatar from `avatar_url` with fallback initials badge
+- `stage_name` or `name`
+- `@username`
+- `bio` truncated to 2 lines
+- Social icon buttons (instagram, spotify, soundcloud) — columns already in profiles
+- **"View Profile"** button → links to `/artist/[username]` (existing public profile route)
+
+A narrow RLS `SELECT` policy for anonymous users is needed. Currently profiles are blocked to anon. We add:
+```sql
+CREATE POLICY "Public profiles viewable by all"
+ON public.profiles FOR SELECT
+USING (profile_visibility = 'public' AND username IS NOT NULL);
+```
+This is a one-migration, additive-only change. Existing data and RLS policies are unaffected.
+
+**Route added to `src/App.tsx`** as a public route (no `ProtectedRoute` wrapper):
+```tsx
+<Route path="/artists" element={<Artists />} />
+```
+
+**`src/components/Header.tsx`** — Add "Artists" link to the public nav (visible when not logged in, alongside the existing links).
+
+---
+
+### Task 3 — The Member Lab Sidebar
+
+**New files:**
+- `src/components/LabLayout.tsx` — wraps authenticated pages with `SidebarProvider` + `AppSidebar` + a slim top bar (notification bell, user avatar, `SidebarTrigger`)
+- `src/components/AppSidebar.tsx` — the 4-pillars sidebar
+
+**Sidebar structure:**
+
+```text
+[ Logo ]
+
+OVERVIEW
+  Dashboard            /dashboard
+
+4 PILLARS
+  Workforce Dev        /classroom
+  Distribution         /studio
+  Financial Literacy   /reference
+  Creative Tools       /community
+
+WORKSPACE
+  My Music             /beats
+  Members              /members
+  Events               /events
+
+ACCOUNT
+  Settings             /account
+  Notifications        /notifications
+  [ Admin Panel ]      /admin  (admin-role only)
+```
+
+Uses `collapsible="icon"` — collapses to a 56px icon strip on narrow screens, full Sheet on mobile (built into the existing Sidebar component already in the project at `src/components/ui/sidebar.tsx`).
+
+Active route highlighting uses `useLocation()` from react-router-dom to match `pathname` against each link's `url`.
+
+**`src/App.tsx`** — All authenticated routes wrapped with `<LabLayout>` instead of rendering standalone. Public routes (`/`, `/artists`, `/events`, `/reference`, `/login`, `/reset-password`, `/migrate`, `/apply`, etc.) continue using the `Header` + `Footer` layout as-is.
+
+The `<Header>` is **not rendered** inside `LabLayout` — the sidebar replaces it for authenticated users.
+
+---
+
+### Files Summary
+
+| File | Action | Change |
+|---|---|---|
+| `src/pages/LandingPage.tsx` | Modify | Replace hero image; add Sounds + From the Lab sections |
+| `src/index.css` | Modify | Add `.glass-card` utility class |
+| `src/pages/Artists.tsx` | Create | Public artist marketplace |
+| `src/components/AppSidebar.tsx` | Create | 4-pillars sidebar nav |
+| `src/components/LabLayout.tsx` | Create | Authenticated layout wrapper |
+| `src/App.tsx` | Modify | Add `/artists` route; wrap auth routes in `LabLayout` |
+| `src/components/Header.tsx` | Modify | Add "Artists" link to public nav |
+| DB migration | Add | RLS SELECT policy for public profiles |
+
+### What Is NOT Changed
+- `AuthContext.tsx`, `ProtectedRoute.tsx` — zero changes
+- Patreon OAuth flow, `user_has_tier_access` — zero changes
+- `MigrateToGoogle.tsx`, `ResetPassword.tsx` — already fixed, untouched
+- All edge functions and DB tables (except one additive RLS policy)
