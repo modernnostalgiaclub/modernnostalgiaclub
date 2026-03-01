@@ -7,8 +7,9 @@ import { SyncReadinessQuiz } from '@/components/SyncReadinessQuiz';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import logoCream from '@/assets/logo-cream.png';
-import bgHero from '@/assets/bg-hero.jpg';
 import bgSection1 from '@/assets/bg-section-1.jpg';
 import bgSection2 from '@/assets/bg-section-2.jpg';
 import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
@@ -26,7 +27,194 @@ import {
   Briefcase,
   Handshake,
   ShoppingBag,
+  Play,
+  Newspaper,
 } from 'lucide-react';
+
+// ── Sounds from the Club ────────────────────────────────────────────────────
+function SoundsFromTheClub() {
+  const { data: tracks = [], isLoading } = useQuery({
+    queryKey: ['landing-tracks'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('artist_tracks')
+        .select('id, title, artist_name, disco_url, cover_art_url, created_at')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  if (!isLoading && tracks.length === 0) return null;
+
+  return (
+    <section className="py-24 border-t border-border/50">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+        >
+          <SectionLabel className="mb-4">Sounds from the Club</SectionLabel>
+          <h2 className="text-3xl md:text-5xl font-display mb-12 tracking-wide">
+            Music made here.<br />
+            <span className="text-primary">Built for sync.</span>
+          </h2>
+
+          <div className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 snap-x snap-mandatory">
+            {isLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="glass-card bg-card border border-border rounded-xl p-5 shrink-0 w-56 animate-pulse snap-start"
+                  >
+                    <div className="w-full aspect-square bg-muted rounded-lg mb-4" />
+                    <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-muted rounded w-1/2" />
+                  </div>
+                ))
+              : tracks.map((track, i) => (
+                  <motion.div
+                    key={track.id}
+                    className="glass-card bg-card border border-border rounded-xl p-5 shrink-0 w-56 flex flex-col hover:border-primary/40 transition-colors snap-start"
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.07 }}
+                  >
+                    {track.cover_art_url ? (
+                      <img
+                        src={track.cover_art_url}
+                        alt={track.title}
+                        className="w-full aspect-square object-cover rounded-lg mb-4"
+                      />
+                    ) : (
+                      <div className="w-full aspect-square bg-primary/10 rounded-lg mb-4 flex items-center justify-center">
+                        <Play className="w-10 h-10 text-primary/40" />
+                      </div>
+                    )}
+                    <h3 className="font-display text-sm leading-snug mb-1 truncate">{track.title}</h3>
+                    {track.artist_name && (
+                      <p className="text-xs text-muted-foreground truncate mb-3">{track.artist_name}</p>
+                    )}
+                    {track.disco_url && (
+                      <a
+                        href={track.disco_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-auto flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        View on DISCO <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </motion.div>
+                ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ── From the Lab ─────────────────────────────────────────────────────────────
+function FromTheLab() {
+  const { data: posts = [], isLoading } = useQuery({
+    queryKey: ['landing-blog'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('id, title, excerpt, content, author_name, published_at, cover_image_url, slug')
+        .eq('is_published', true)
+        .order('published_at', { ascending: false })
+        .limit(3);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  if (!isLoading && posts.length === 0) return null;
+
+  return (
+    <section className="py-24 border-t border-border/50 bg-card/30">
+      <div className="container mx-auto px-6">
+        <motion.div
+          className="max-w-5xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6 }}
+        >
+          <SectionLabel className="mb-4">From the Lab</SectionLabel>
+          <h2 className="text-3xl md:text-5xl font-display mb-12 tracking-wide">
+            Intelligence from inside<br />
+            <span className="text-primary">the creative economy.</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {isLoading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="glass-card bg-card border border-border rounded-xl overflow-hidden animate-pulse">
+                    <div className="aspect-video bg-muted" />
+                    <div className="p-5 space-y-3">
+                      <div className="h-4 bg-muted rounded w-3/4" />
+                      <div className="h-3 bg-muted rounded" />
+                      <div className="h-3 bg-muted rounded w-5/6" />
+                    </div>
+                  </div>
+                ))
+              : posts.map((post, i) => {
+                  const excerpt =
+                    post.excerpt ||
+                    (post.content ? post.content.replace(/[#*`>\-\[\]]/g, '').slice(0, 120) + '…' : '');
+                  const date = post.published_at
+                    ? new Date(post.published_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })
+                    : '';
+                  return (
+                    <motion.div
+                      key={post.id}
+                      className="glass-card bg-card border border-border rounded-xl overflow-hidden flex flex-col hover:border-primary/40 transition-colors"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                    >
+                      {post.cover_image_url ? (
+                        <img
+                          src={post.cover_image_url}
+                          alt={post.title}
+                          className="w-full aspect-video object-cover"
+                        />
+                      ) : (
+                        <div className="w-full aspect-video bg-primary/5 flex items-center justify-center">
+                          <Newspaper className="w-12 h-12 text-primary/20" />
+                        </div>
+                      )}
+                      <div className="p-5 flex flex-col flex-1">
+                        <h3 className="font-display text-lg leading-snug mb-2">{post.title}</h3>
+                        {excerpt && (
+                          <p className="text-sm text-muted-foreground mb-4 flex-1 line-clamp-3">{excerpt}</p>
+                        )}
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-3 border-t border-border/50">
+                          <span>{post.author_name}</span>
+                          <span>{date}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 import {
   Accordion,
   AccordionContent,
@@ -74,7 +262,7 @@ export default function LandingPage() {
       <section className="relative pt-32 pb-24 hero-gradient overflow-hidden" aria-labelledby="hero-heading">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{ backgroundImage: `url(${bgHero})` }}
+          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1800&q=80)` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
         <div className="container mx-auto px-6 relative z-10">
@@ -810,6 +998,10 @@ export default function LandingPage() {
         </div>
       </section>
       
+      {/* Sounds from the Club + From the Lab sections */}
+      <SoundsFromTheClub />
+      <FromTheLab />
+
       {/* Bottom CTA Section */}
       <section className="py-24 bg-card/50 border-t border-border/50">
         <div className="container mx-auto px-6">

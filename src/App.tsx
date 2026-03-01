@@ -7,7 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SkipLink } from "@/components/SkipLink";
 import { CookieConsent } from "@/components/CookieConsent";
+import { LabLayout } from "@/components/LabLayout";
 import LandingPage from "./pages/LandingPage";
+import Artists from "./pages/Artists";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
 import CourseDetail from "./pages/CourseDetail";
@@ -54,22 +56,23 @@ const App = () => (
           <CookieConsent />
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/classroom" element={<ProtectedRoute><Classroom /></ProtectedRoute>} />
-            <Route path="/classroom/:slug" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
-            <Route path="/studio" element={<ProtectedRoute><StudioFloor /></ProtectedRoute>} />
-            <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-            <Route path="/members" element={<ProtectedRoute><MemberDirectory /></ProtectedRoute>} />
+            <Route path="/artists" element={<Artists />} />
+            <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
+            <Route path="/classroom" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
+            <Route path="/classroom/:slug" element={<ProtectedRoute><LabLayout><CourseDetail /></LabLayout></ProtectedRoute>} />
+            <Route path="/studio" element={<ProtectedRoute><LabLayout><StudioFloor /></LabLayout></ProtectedRoute>} />
+            <Route path="/community" element={<ProtectedRoute><LabLayout><Community /></LabLayout></ProtectedRoute>} />
+            <Route path="/members" element={<ProtectedRoute><LabLayout><MemberDirectory /></LabLayout></ProtectedRoute>} />
             <Route path="/reference" element={<ArtistResources />} />
             <Route path="/events" element={<Events />} />
-            <Route path="/reference/30-day-tracker" element={<ProtectedRoute><ImplementationTracker /></ProtectedRoute>} />
-            <Route path="/reference/beat-license" element={<ProtectedRoute><BeatLicense /></ProtectedRoute>} />
-            <Route path="/beats" element={<ProtectedRoute><BeatLibrary /></ProtectedRoute>} />
-            <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-            <Route path="/admin/security" element={<ProtectedRoute><SecurityDocs /></ProtectedRoute>} />
-            <Route path="/admin/monitoring" element={<ProtectedRoute><SecurityMonitoring /></ProtectedRoute>} />
+            <Route path="/reference/30-day-tracker" element={<ProtectedRoute><LabLayout><ImplementationTracker /></LabLayout></ProtectedRoute>} />
+            <Route path="/reference/beat-license" element={<ProtectedRoute><LabLayout><BeatLicense /></LabLayout></ProtectedRoute>} />
+            <Route path="/beats" element={<ProtectedRoute><LabLayout><BeatLibrary /></LabLayout></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><LabLayout><Account /></LabLayout></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><LabLayout><Notifications /></LabLayout></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><LabLayout><Admin /></LabLayout></ProtectedRoute>} />
+            <Route path="/admin/security" element={<ProtectedRoute><LabLayout><SecurityDocs /></LabLayout></ProtectedRoute>} />
+            <Route path="/admin/monitoring" element={<ProtectedRoute><LabLayout><SecurityMonitoring /></LabLayout></ProtectedRoute>} />
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             <Route path="/auth/diagnostics" element={<AuthDiagnostics />} />
             <Route path="/apply" element={<LabApplication />} />
