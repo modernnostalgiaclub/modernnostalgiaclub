@@ -1,33 +1,62 @@
 
-## Compact the Landing Page Pricing Section
+## Store Redesign: 4-Column Product Grid + 4-Column Membership Tiers
 
-### What's correct (no changes needed)
-- The 3-column grid (`grid-cols-1 md:grid-cols-3`) stacks to single-column on mobile correctly
-- "Apply Now" at line 636 already links to `/lab-application` — this is already right
+### What the user wants
+1. **Products section** — proper 4-column grid (`grid-cols-2 md:grid-cols-4`) with fresh stock images that better match each product's content
+2. **The 4 "buttons" (membership tiers)** — rendered as side-by-side columns in a single `grid-cols-1 md:grid-cols-2 lg:grid-cols-4` row — treating the Catalog Audit as the 4th tier column alongside Lab Pass, Creator Accelerator, and Creative Economy Lab
 
-### What's being tightened
+---
 
-**File: `src/pages/LandingPage.tsx`** — lines 507–644
+### Products Grid (4 columns)
 
-Reduce vertical bulk across all three pricing cards and the section itself:
+New stock photos chosen for visual accuracy:
 
-| Element | Current | Compact |
+| Product | Stock Photo Concept | Unsplash URL |
 |---|---|---|
-| Section vertical padding | `py-24` | `py-16` |
-| Card padding | `p-8` | `p-5` |
-| Header block bottom margin | `mb-6` | `mb-4` |
-| Price font size | `text-4xl` | `text-3xl` |
-| Description margin | `mb-6` | `mb-4` |
-| Feature list spacing | `space-y-3 mb-8` | `space-y-2 mb-5` |
-| Feature list item size | `text-sm` | `text-xs` |
-| Gap between columns | `gap-6` | `gap-4` |
-| Max width | `max-w-5xl` | `max-w-4xl` |
+| Split Sheet | Contract signing / pen on paper | `https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80` |
+| Pro Tools Template | Studio mixer / DAW close-up | `https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80` |
+| Just Make Noise Bundle | Solo artist at desk, moody light | `https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&q=80` |
+| Be Loud Bundle | Producer confident at console | `https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80` |
 
-The "Most Popular" and "By Application" badge positioning (`absolute -top-3`) stays the same since it depends on card padding being at least ~1.25rem.
+Card layout stays the same (image top, price badge, title, description, purchase button) but:
+- Grid becomes `grid-cols-2 md:grid-cols-4` for a true 4-column layout on desktop and 2-column on tablet/mobile
+- Image height stays `h-48`
 
-The footer note (`mt-8`) reduced to `mt-6`.
+---
 
-These changes apply identically to all three cards — Lab Pass, Creator Accelerator, and Creative Economy Lab. The maroon border highlight on the middle card stays as the visual anchor.
+### Membership Columns: 4 across (new layout)
 
-### No logic, routing, or DB changes
-Purely a density/spacing update. The `/lab-application` link and 3-col grid wiring are already correct.
+Currently: 3-column grid (Lab Pass, Creator Accelerator, Creative Economy Lab)
+
+New: **4-column grid** — Lab Pass, Creator Accelerator, Creative Economy Lab, + **Catalog Audit** as a 4th "tier" column
+
+```
+┌──────────┬──────────┬──────────┬──────────┐
+│ Lab Pass │ Creator  │ Creative │ Catalog  │
+│  $5/mo   │ Accel.   │ Econ Lab │  Audit   │
+│          │ $10/mo   │ $150 1x  │  $249    │
+│ [signup] │[patreon] │ [apply]  │ [book]   │
+└──────────┴──────────┴──────────┴──────────┘
+```
+
+The Catalog Audit column strips out the long FAQ/full-description — that stays in the dedicated service section below. The 4th column just shows: title, price badge ("Professional Service"), short description, key features list (5 bullets from `whatsIncluded`), and a "Book Audit" button (confirmation checkbox stays in the full service section below).
+
+Grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4`
+
+Cards are made more compact to fit 4 across:
+- Reduced padding: `p-5`
+- Smaller price text: `text-3xl`
+- Feature list: `text-xs space-y-2`
+- Badge stays positioned with `absolute -top-3`
+
+The separate Catalog Audit full section (with FAQ and confirmation checkbox) stays below as-is — the 4th column is just a summary card that scrolls down to the full section when "Book Audit" is clicked (via `scrollIntoView` on an anchor).
+
+---
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `src/pages/Store.tsx` | New PRODUCT_PHOTOS map; grid becomes `grid-cols-2 md:grid-cols-4`; membership section becomes 4-column with Catalog Audit as 4th card |
+
+No DB changes, no new files.
