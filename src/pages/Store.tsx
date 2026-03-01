@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ShoppingCart, Package, ExternalLink, Star, ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle } from 'lucide-react';
+import { ShoppingCart, Package, ExternalLink, ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -46,12 +46,11 @@ const catalogAuditFAQ = [
   }
 ];
 
-// Stock photo map per product ID
 const PRODUCT_PHOTOS: Record<string, string> = {
-  'split-sheet': 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80',
-  'pro-tools-template': 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=600&q=80',
-  'just-make-noise-bundle': 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=600&q=80',
-  'be-loud-bundle': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+  'split-sheet': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80',
+  'pro-tools-template': 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80',
+  'just-make-noise-bundle': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&q=80',
+  'be-loud-bundle': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
 };
 
 const fadeIn = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
@@ -61,6 +60,7 @@ export default function Store() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
   const [showJotForm, setShowJotForm] = useState(false);
   const jotformRef = useRef<HTMLDivElement>(null);
+  const auditFullRef = useRef<HTMLDivElement>(null);
 
   const handlePurchase = (paymentLink: string) => {
     window.open(paymentLink, '_blank', 'noopener,noreferrer');
@@ -73,8 +73,12 @@ export default function Store() {
     }, 100);
   };
 
+  const handleBookAudit = () => {
+    auditFullRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const nonServiceProducts = STORE_PRODUCTS.filter(p => !p.isService);
-  const serviceProducts = STORE_PRODUCTS.filter(p => p.isService);
+  const serviceProduct = STORE_PRODUCTS.find(p => p.isService);
 
   return (
     <div className="min-h-screen bg-background studio-grain flex flex-col">
@@ -96,14 +100,13 @@ export default function Store() {
               </p>
             </motion.div>
 
-            {/* Products Grid */}
+            {/* Products Grid — 4 columns */}
             <motion.div variants={fadeIn} className="mb-16">
               <h2 className="text-2xl font-display mb-8">Resources &amp; Templates</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {nonServiceProducts.map((product) => (
                   <Card key={product.id} variant="elevated" className="overflow-hidden flex flex-col">
-                    {/* Stock Photo */}
-                    <div className="h-48 overflow-hidden bg-secondary/30">
+                    <div className="h-40 overflow-hidden bg-secondary/30">
                       <img
                         src={PRODUCT_PHOTOS[product.id] || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80'}
                         alt={product.title}
@@ -112,18 +115,18 @@ export default function Store() {
                       />
                     </div>
 
-                    <div className="p-5 flex flex-col flex-1">
-                      <div className="flex items-center justify-between mb-3">
+                    <div className="p-4 flex flex-col flex-1">
+                      <div className="flex items-center justify-between mb-2">
                         {product.isBundle ? (
-                          <Badge className="bg-amber/20 text-amber border-amber/30">Bundle</Badge>
+                          <Badge className="bg-amber/20 text-amber border-amber/30 text-xs">Bundle</Badge>
                         ) : (
-                          <Badge variant="secondary">Template</Badge>
+                          <Badge variant="secondary" className="text-xs">Template</Badge>
                         )}
-                        <p className="text-xl font-display text-maroon">${product.price}</p>
+                        <p className="text-lg font-display text-maroon">${product.price}</p>
                       </div>
 
-                      <h3 className="font-display text-base mb-2 leading-tight">{product.title}</h3>
-                      <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-1">{product.description}</p>
+                      <h3 className="font-display text-sm mb-1 leading-tight">{product.title}</h3>
+                      <p className="text-muted-foreground text-xs line-clamp-3 mb-3 flex-1">{product.description}</p>
 
                       {product.externalLinks?.map((link) => (
                         <a
@@ -131,7 +134,7 @@ export default function Store() {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-3"
+                          className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-2"
                         >
                           <ExternalLink className="w-3 h-3" />
                           {link.label}
@@ -141,11 +144,11 @@ export default function Store() {
                       <Button
                         variant="maroon"
                         size="sm"
-                        className="w-full mt-auto"
+                        className="w-full mt-auto text-xs"
                         onClick={() => handlePurchase(product.paymentLink)}
                       >
                         Purchase — ${product.price}
-                        <ExternalLink className="w-3 h-3 ml-2" />
+                        <ExternalLink className="w-3 h-3 ml-1" />
                       </Button>
                     </div>
                   </Card>
@@ -153,23 +156,24 @@ export default function Store() {
               </div>
             </motion.div>
 
-            {/* Memberships Section */}
+            {/* Memberships + Catalog Audit — 4 columns */}
             <motion.div variants={fadeIn} className="mb-16">
-              <h2 className="text-2xl font-display mb-2">Memberships</h2>
-              <p className="text-muted-foreground mb-8">Join the club and unlock everything, or go deeper with the Lab.</p>
+              <h2 className="text-2xl font-display mb-2">Memberships &amp; Services</h2>
+              <p className="text-muted-foreground mb-8">Join the club, go deeper with the Lab, or book a professional audit.</p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
                 {/* Lab Pass */}
-                <div className="bg-card border border-border rounded-lg p-8 relative flex flex-col">
-                  <div className="mb-6">
-                    <h3 className="font-display text-2xl mb-2">Lab Pass</h3>
+                <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
+                  <div className="mb-4">
+                    <h3 className="font-display text-xl mb-1">Lab Pass</h3>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-display text-foreground">$5</span>
-                      <span className="text-muted-foreground">/month</span>
+                      <span className="text-3xl font-display text-foreground">$5</span>
+                      <span className="text-muted-foreground text-sm">/month</span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground mb-6 text-sm">Get your foot in the door. Access the fundamentals.</p>
-                  <ul className="space-y-3 mb-8 flex-1">
+                  <p className="text-muted-foreground mb-4 text-xs">Get your foot in the door. Access the fundamentals.</p>
+                  <ul className="space-y-2 mb-5 flex-1">
                     {[
                       'Dashboard access',
                       'Classroom training tracks',
@@ -177,33 +181,33 @@ export default function Store() {
                       'Audio submissions',
                       'All store downloads free',
                     ].map((feature) => (
-                      <li key={feature} className="flex items-center gap-3 text-sm">
-                        <CheckCircle className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <li key={feature} className="flex items-center gap-2 text-xs">
+                        <CheckCircle className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                         <span className="text-muted-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button variant="outline" className="w-full" asChild>
+                  <Button variant="outline" size="sm" className="w-full" asChild>
                     <Link to="/login?tab=signup">Get Started</Link>
                   </Button>
                 </div>
 
                 {/* Creator Accelerator */}
-                <div className="bg-card border-2 border-maroon rounded-lg p-8 relative flex flex-col">
-                  <div className="absolute -top-3 left-6">
+                <div className="bg-card border-2 border-maroon rounded-lg p-5 relative flex flex-col">
+                  <div className="absolute -top-3 left-4">
                     <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
                       Most Popular
                     </span>
                   </div>
-                  <div className="mb-6">
-                    <h3 className="font-display text-2xl mb-2">Creator Accelerator</h3>
+                  <div className="mb-4">
+                    <h3 className="font-display text-xl mb-1">Creator Accelerator</h3>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-display text-maroon">$10</span>
-                      <span className="text-muted-foreground">/month</span>
+                      <span className="text-3xl font-display text-maroon">$10</span>
+                      <span className="text-muted-foreground text-sm">/month</span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground mb-6 text-sm">Professional workflows. Priority access. Real feedback.</p>
-                  <ul className="space-y-3 mb-8 flex-1">
+                  <p className="text-muted-foreground mb-4 text-xs">Professional workflows. Priority access. Real feedback.</p>
+                  <ul className="space-y-2 mb-5 flex-1">
                     {[
                       'Everything in Lab Pass',
                       'Studio Floor access',
@@ -212,13 +216,13 @@ export default function Store() {
                       'Sync workflow training',
                       'Direct-to-fan systems',
                     ].map((feature, i) => (
-                      <li key={feature} className="flex items-center gap-3 text-sm">
-                        <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
+                      <li key={feature} className="flex items-center gap-2 text-xs">
+                        <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
                         <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button variant="maroon" className="w-full" asChild>
+                  <Button variant="maroon" size="sm" className="w-full" asChild>
                     <a href="https://www.patreon.com/modernnostalgia" target="_blank" rel="noopener noreferrer">
                       Start Training
                     </a>
@@ -226,21 +230,21 @@ export default function Store() {
                 </div>
 
                 {/* Creative Economy Lab */}
-                <div className="bg-card border border-border rounded-lg p-8 relative flex flex-col">
-                  <div className="absolute -top-3 left-6">
+                <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
+                  <div className="absolute -top-3 left-4">
                     <span className="bg-amber/20 text-amber border border-amber/30 text-xs font-medium px-3 py-1 rounded-full">
                       By Application
                     </span>
                   </div>
-                  <div className="mb-6">
-                    <h3 className="font-display text-2xl mb-2">Creative Economy Lab</h3>
+                  <div className="mb-4">
+                    <h3 className="font-display text-xl mb-1">Creative Economy Lab</h3>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-display text-amber">$150</span>
-                      <span className="text-muted-foreground">one-time</span>
+                      <span className="text-3xl font-display text-amber">$150</span>
+                      <span className="text-muted-foreground text-sm">one-time</span>
                     </div>
                   </div>
-                  <p className="text-muted-foreground mb-6 text-sm">Serious artists only. Deep work, real results.</p>
-                  <ul className="space-y-3 mb-8 flex-1">
+                  <p className="text-muted-foreground mb-4 text-xs">Serious artists only. Deep work, real results.</p>
+                  <ul className="space-y-2 mb-5 flex-1">
                     {[
                       'Everything in Creator Accelerator',
                       '1-on-1 strategy sessions',
@@ -248,23 +252,59 @@ export default function Store() {
                       'Priority feedback',
                       'Network access',
                     ].map((feature, i) => (
-                      <li key={feature} className="flex items-center gap-3 text-sm">
-                        <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
+                      <li key={feature} className="flex items-center gap-2 text-xs">
+                        <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
                         <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Button
                     variant="outline"
+                    size="sm"
                     className="w-full border-amber/50 text-amber hover:bg-amber/10"
                     onClick={handleApplyNow}
                   >
-                    Apply Now — $150 one-time
+                    Apply Now — $150
                   </Button>
                 </div>
+
+                {/* Catalog Audit — 4th column */}
+                {serviceProduct && (
+                  <div className="bg-card border border-maroon/30 rounded-lg p-5 relative flex flex-col">
+                    <div className="absolute -top-3 left-4">
+                      <span className="bg-maroon/20 text-maroon border border-maroon/30 text-xs font-medium px-3 py-1 rounded-full">
+                        Pro Service
+                      </span>
+                    </div>
+                    <div className="mb-4">
+                      <h3 className="font-display text-xl mb-1">Catalog Audit</h3>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl font-display text-maroon">${serviceProduct.price}</span>
+                        <span className="text-muted-foreground text-sm">one-time</span>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground mb-4 text-xs">{serviceProduct.description}</p>
+                    <ul className="space-y-2 mb-5 flex-1">
+                      {(serviceProduct.whatsIncluded ?? []).slice(0, 5).map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-xs">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-maroon shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      variant="maroon"
+                      size="sm"
+                      className="w-full"
+                      onClick={handleBookAudit}
+                    >
+                      Book Audit — ${serviceProduct.price}
+                    </Button>
+                  </div>
+                )}
               </div>
 
-              {/* JotForm Embed */}
+              {/* JotForm Embed for Creative Economy Lab */}
               {showJotForm && (
                 <div ref={jotformRef} className="mt-8 rounded-xl border border-border overflow-hidden">
                   <div className="p-4 bg-secondary/30 border-b border-border">
@@ -285,9 +325,9 @@ export default function Store() {
               )}
             </motion.div>
 
-            {/* Catalog Audit Service — Featured Section */}
-            {serviceProducts.map((service) => (
-              <motion.div key={service.id} variants={fadeIn} className="mt-4">
+            {/* Catalog Audit Full Service Section */}
+            {serviceProduct && (
+              <motion.div variants={fadeIn} className="mt-4" ref={auditFullRef}>
                 <Card variant="elevated" className="overflow-hidden border-maroon/30">
                   <div className="p-8 md:p-10">
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
@@ -297,27 +337,27 @@ export default function Store() {
                         </div>
                         <div>
                           <Badge className="mb-2 bg-maroon/20 text-maroon border-maroon/30">Professional Service</Badge>
-                          <h3 className="font-display text-2xl md:text-3xl">{service.title}</h3>
+                          <h3 className="font-display text-2xl md:text-3xl">{serviceProduct.title}</h3>
                         </div>
                       </div>
-                      <p className="text-3xl md:text-4xl font-display text-maroon">${service.price}</p>
+                      <p className="text-3xl md:text-4xl font-display text-maroon">${serviceProduct.price}</p>
                     </div>
 
-                    <p className="text-lg text-muted-foreground mb-6">{service.description}</p>
+                    <p className="text-lg text-muted-foreground mb-6">{serviceProduct.description}</p>
 
-                    {service.fullDescription && (
+                    {serviceProduct.fullDescription && (
                       <div className="prose prose-sm max-w-none mb-6">
-                        {service.fullDescription.split('\n\n').map((paragraph, i) => (
+                        {serviceProduct.fullDescription.split('\n\n').map((paragraph, i) => (
                           <p key={i} className="text-foreground/80 mb-4">{paragraph}</p>
                         ))}
                       </div>
                     )}
 
-                    {service.whatsIncluded && (
+                    {serviceProduct.whatsIncluded && (
                       <div className="bg-secondary/30 rounded-lg p-6 mb-6">
                         <h4 className="font-display text-lg mb-4">What's Included</h4>
                         <ul className="space-y-2">
-                          {service.whatsIncluded.map((item, i) => (
+                          {serviceProduct.whatsIncluded.map((item, i) => (
                             <li key={i} className="flex items-start gap-3 text-sm">
                               <CheckCircle2 className="w-5 h-5 text-maroon shrink-0 mt-0.5" />
                               <span>{item}</span>
@@ -404,17 +444,17 @@ export default function Store() {
                         variant="maroon"
                         size="lg"
                         className="w-full md:w-auto"
-                        onClick={() => handlePurchase(service.paymentLink)}
+                        onClick={() => handlePurchase(serviceProduct.paymentLink)}
                         disabled={!auditConfirmed}
                       >
-                        Purchase Catalog Audit — ${service.price}
+                        Purchase Catalog Audit — ${serviceProduct.price}
                         <ExternalLink className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
                   </div>
                 </Card>
               </motion.div>
-            ))}
+            )}
 
             {/* Footer note */}
             <motion.div variants={fadeIn} className="mt-12 text-center">
