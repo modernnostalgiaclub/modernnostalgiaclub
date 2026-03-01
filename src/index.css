@@ -257,4 +257,12 @@
   .hero-gradient {
     background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--maroon) / 0.15), transparent);
   }
+
+  .glass-card {
+    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-xl;
+  }
+
+  .light .glass-card {
+    @apply bg-white/60 border-black/10;
+  }
 }
