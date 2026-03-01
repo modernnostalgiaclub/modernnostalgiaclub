@@ -504,8 +504,8 @@ export default function LandingPage() {
               No contracts. No hidden fees. Cancel anytime.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {/* Lab Pass - $1 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {/* Lab Pass - $5 */}
               <motion.div 
                 className="bg-card border border-border rounded-lg p-8 relative"
                 initial={{ opacity: 0, x: -20 }}
@@ -516,7 +516,7 @@ export default function LandingPage() {
                 <div className="mb-6">
                   <h3 className="font-display text-2xl mb-2">Lab Pass</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-display text-foreground">$1</span>
+                    <span className="text-4xl font-display text-foreground">$5</span>
                     <span className="text-muted-foreground">/month</span>
                   </div>
                 </div>
@@ -590,10 +590,56 @@ export default function LandingPage() {
                   <Link to="/login?tab=signup">Start Your Training</Link>
                 </Button>
               </motion.div>
+
+              {/* Creative Economy Lab - $150 one-time */}
+              <motion.div 
+                className="bg-card border border-border rounded-lg p-8 relative"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="absolute -top-3 left-6">
+                  <span className="bg-amber/20 text-amber border border-amber/30 text-xs font-medium px-3 py-1 rounded-full">
+                    By Application
+                  </span>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="font-display text-2xl mb-2">Creative Economy Lab</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-display text-amber">$150</span>
+                    <span className="text-muted-foreground">one-time</span>
+                  </div>
+                </div>
+
+                <p className="text-muted-foreground mb-6">
+                  Serious artists only. Deep work, real results.
+                </p>
+
+                <ul className="space-y-3 mb-8">
+                  {[
+                    'Everything in Creator Accelerator',
+                    '1-on-1 strategy sessions',
+                    'Sync catalog review',
+                    'Priority feedback',
+                    'Network access',
+                  ].map((feature, i) => (
+                    <li key={feature} className="flex items-center gap-3 text-sm">
+                      <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
+                      <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button variant="outline" className="w-full border-amber/50 text-amber hover:bg-amber/10" asChild>
+                  <Link to="/lab-application">Apply Now</Link>
+                </Button>
+              </motion.div>
             </div>
-            
+
             <p className="text-center text-sm text-muted-foreground mt-8">
-              Looking for more? <Link to="/lab-application" className="text-maroon hover:underline">Apply for the Creative Economy Lab ($150/mo)</Link> — includes 1-on-1 strategy sessions and priority review.
+              No contracts. Cancel anytime. Questions? <Link to="/contact" className="text-maroon hover:underline">Contact us</Link>.
             </p>
           </motion.div>
         </div>

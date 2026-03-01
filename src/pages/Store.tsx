@@ -1,15 +1,14 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ShoppingCart, Package, ExternalLink, Star, ClipboardCheck, CheckCircle2, HelpCircle, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingCart, Package, ExternalLink, Star, ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const catalogAuditFAQ = [
@@ -47,146 +46,106 @@ const catalogAuditFAQ = [
   }
 ];
 
-// Cover images
-import coverJustMakeNoise from '@/assets/cover-just-make-noise.jpg';
-import coverBeLoud from '@/assets/cover-be-loud.jpg';
-
-const coverImages: Record<string, string> = {
-  'just-make-noise': coverJustMakeNoise,
-  'be-loud': coverBeLoud,
+// Stock photo map per product ID
+const PRODUCT_PHOTOS: Record<string, string> = {
+  'split-sheet': 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80',
+  'pro-tools-template': 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=600&q=80',
+  'just-make-noise-bundle': 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=600&q=80',
+  'be-loud-bundle': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
 };
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-const stagger = {
-  visible: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
+const fadeIn = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
+const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export default function Store() {
-  const { user } = useAuth();
   const [auditConfirmed, setAuditConfirmed] = useState(false);
+  const [showJotForm, setShowJotForm] = useState(false);
+  const jotformRef = useRef<HTMLDivElement>(null);
 
   const handlePurchase = (paymentLink: string) => {
     window.open(paymentLink, '_blank', 'noopener,noreferrer');
   };
 
+  const handleApplyNow = () => {
+    setShowJotForm(true);
+    setTimeout(() => {
+      jotformRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
+
+  const nonServiceProducts = STORE_PRODUCTS.filter(p => !p.isService);
+  const serviceProducts = STORE_PRODUCTS.filter(p => p.isService);
+
   return (
     <div className="min-h-screen bg-background studio-grain flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-24 pb-16" id="main-content">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={stagger}
-            className="max-w-5xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
             {/* Header */}
             <motion.div variants={fadeIn} className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-display mb-4">Artist Store</h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Professional templates and resources to level up your music career.
+                Professional templates, guides, and resources to level up your music career.
               </p>
             </motion.div>
 
-            {/* Member CTA */}
-            {!user && (
-              <motion.div variants={fadeIn} className="mb-12">
-                <Card className="p-6 bg-maroon/10 border-maroon/20">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <Star className="w-8 h-8 text-amber" />
-                      <div>
-                        <h3 className="font-display text-lg">Members Get Everything Free!</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Join the club to unlock all downloads at no extra cost.
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="maroon" asChild>
-                      <Link to="/">Become a Member</Link>
-                    </Button>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-
-            {/* If logged in, redirect notice */}
-            {user && (
-              <motion.div variants={fadeIn} className="mb-12">
-                <Card className="p-6 bg-green-500/10 border-green-500/20">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <Star className="w-8 h-8 text-green-500" />
-                      <div>
-                        <h3 className="font-display text-lg">You're a Member!</h3>
-                        <p className="text-sm text-muted-foreground">
-                          All these resources are available for free on your dashboard.
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="maroon" asChild>
-                      <Link to="/dashboard">Go to Dashboard</Link>
-                    </Button>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-
             {/* Products Grid */}
-            <motion.div variants={fadeIn}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {STORE_PRODUCTS.filter(p => !p.isService).map((product) => (
-                  <Card key={product.id} variant="elevated" className="overflow-hidden">
-                    <div className="p-6">
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <div className="p-3 bg-maroon/20 rounded-lg">
-                          {product.isBundle ? (
-                            <Package className="w-6 h-6 text-maroon" />
-                          ) : (
-                            <ShoppingCart className="w-6 h-6 text-maroon" />
-                          )}
-                        </div>
-                        <div className="text-right">
-                          {product.isBundle && (
-                            <Badge className="mb-1 bg-amber/20 text-amber border-amber/30">Bundle</Badge>
-                          )}
-                          <p className="text-2xl font-display text-maroon">${product.price}</p>
-                        </div>
+            <motion.div variants={fadeIn} className="mb-16">
+              <h2 className="text-2xl font-display mb-8">Resources &amp; Templates</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {nonServiceProducts.map((product) => (
+                  <Card key={product.id} variant="elevated" className="overflow-hidden flex flex-col">
+                    {/* Stock Photo */}
+                    <div className="h-48 overflow-hidden bg-secondary/30">
+                      <img
+                        src={PRODUCT_PHOTOS[product.id] || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80'}
+                        alt={product.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    <div className="p-5 flex flex-col flex-1">
+                      <div className="flex items-center justify-between mb-3">
+                        {product.isBundle ? (
+                          <Badge className="bg-amber/20 text-amber border-amber/30">Bundle</Badge>
+                        ) : (
+                          <Badge variant="secondary">Template</Badge>
+                        )}
+                        <p className="text-xl font-display text-maroon">${product.price}</p>
                       </div>
 
-                      <h3 className="font-display text-xl mb-2">{product.title}</h3>
-                      <p className="text-muted-foreground mb-4 text-sm line-clamp-4">{product.description}</p>
+                      <h3 className="font-display text-base mb-2 leading-tight">{product.title}</h3>
+                      <p className="text-muted-foreground text-sm line-clamp-3 mb-4 flex-1">{product.description}</p>
 
-                      {/* External links */}
                       {product.externalLinks?.map((link) => (
                         <a
                           key={link.url}
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm text-maroon hover:underline mb-4"
+                          className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-3"
                         >
-                          <ExternalLink className="w-4 h-4" />
+                          <ExternalLink className="w-3 h-3" />
                           {link.label}
                         </a>
                       ))}
 
-                      <Button 
-                        variant="maroon" 
-                        className="w-full"
+                      <Button
+                        variant="maroon"
+                        size="sm"
+                        className="w-full mt-auto"
                         onClick={() => handlePurchase(product.paymentLink)}
                       >
-                        Purchase - ${product.price}
-                        <ExternalLink className="w-4 h-4 ml-2" />
+                        Purchase — ${product.price}
+                        <ExternalLink className="w-3 h-3 ml-2" />
                       </Button>
                     </div>
                   </Card>
@@ -194,9 +153,141 @@ export default function Store() {
               </div>
             </motion.div>
 
-            {/* Catalog Audit Service - Featured Section */}
-            {STORE_PRODUCTS.filter(p => p.isService).map((service) => (
-              <motion.div key={service.id} variants={fadeIn} className="mt-12">
+            {/* Memberships Section */}
+            <motion.div variants={fadeIn} className="mb-16">
+              <h2 className="text-2xl font-display mb-2">Memberships</h2>
+              <p className="text-muted-foreground mb-8">Join the club and unlock everything, or go deeper with the Lab.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Lab Pass */}
+                <div className="bg-card border border-border rounded-lg p-8 relative flex flex-col">
+                  <div className="mb-6">
+                    <h3 className="font-display text-2xl mb-2">Lab Pass</h3>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-display text-foreground">$5</span>
+                      <span className="text-muted-foreground">/month</span>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground mb-6 text-sm">Get your foot in the door. Access the fundamentals.</p>
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {[
+                      'Dashboard access',
+                      'Classroom training tracks',
+                      'Community discussions',
+                      'Audio submissions',
+                      'All store downloads free',
+                    ].map((feature) => (
+                      <li key={feature} className="flex items-center gap-3 text-sm">
+                        <CheckCircle className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link to="/login?tab=signup">Get Started</Link>
+                  </Button>
+                </div>
+
+                {/* Creator Accelerator */}
+                <div className="bg-card border-2 border-maroon rounded-lg p-8 relative flex flex-col">
+                  <div className="absolute -top-3 left-6">
+                    <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                      Most Popular
+                    </span>
+                  </div>
+                  <div className="mb-6">
+                    <h3 className="font-display text-2xl mb-2">Creator Accelerator</h3>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-display text-maroon">$10</span>
+                      <span className="text-muted-foreground">/month</span>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground mb-6 text-sm">Professional workflows. Priority access. Real feedback.</p>
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {[
+                      'Everything in Lab Pass',
+                      'Studio Floor access',
+                      'Priority submissions',
+                      'Professional feedback',
+                      'Sync workflow training',
+                      'Direct-to-fan systems',
+                    ].map((feature, i) => (
+                      <li key={feature} className="flex items-center gap-3 text-sm">
+                        <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
+                        <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="maroon" className="w-full" asChild>
+                    <a href="https://www.patreon.com/modernnostalgia" target="_blank" rel="noopener noreferrer">
+                      Start Training
+                    </a>
+                  </Button>
+                </div>
+
+                {/* Creative Economy Lab */}
+                <div className="bg-card border border-border rounded-lg p-8 relative flex flex-col">
+                  <div className="absolute -top-3 left-6">
+                    <span className="bg-amber/20 text-amber border border-amber/30 text-xs font-medium px-3 py-1 rounded-full">
+                      By Application
+                    </span>
+                  </div>
+                  <div className="mb-6">
+                    <h3 className="font-display text-2xl mb-2">Creative Economy Lab</h3>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-display text-amber">$150</span>
+                      <span className="text-muted-foreground">one-time</span>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground mb-6 text-sm">Serious artists only. Deep work, real results.</p>
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {[
+                      'Everything in Creator Accelerator',
+                      '1-on-1 strategy sessions',
+                      'Sync catalog review',
+                      'Priority feedback',
+                      'Network access',
+                    ].map((feature, i) => (
+                      <li key={feature} className="flex items-center gap-3 text-sm">
+                        <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
+                        <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    variant="outline"
+                    className="w-full border-amber/50 text-amber hover:bg-amber/10"
+                    onClick={handleApplyNow}
+                  >
+                    Apply Now — $150 one-time
+                  </Button>
+                </div>
+              </div>
+
+              {/* JotForm Embed */}
+              {showJotForm && (
+                <div ref={jotformRef} className="mt-8 rounded-xl border border-border overflow-hidden">
+                  <div className="p-4 bg-secondary/30 border-b border-border">
+                    <h3 className="font-display text-lg">Creative Economy Lab Application</h3>
+                    <p className="text-sm text-muted-foreground">Complete the form below to apply for the $150 one-time program.</p>
+                  </div>
+                  <iframe
+                    src="https://pci.jotform.com/form/253309376850058"
+                    title="Creative Economy Lab Application"
+                    width="100%"
+                    height="700"
+                    frameBorder="0"
+                    scrolling="yes"
+                    className="block"
+                    allow="geolocation; microphone; camera"
+                  />
+                </div>
+              )}
+            </motion.div>
+
+            {/* Catalog Audit Service — Featured Section */}
+            {serviceProducts.map((service) => (
+              <motion.div key={service.id} variants={fadeIn} className="mt-4">
                 <Card variant="elevated" className="overflow-hidden border-maroon/30">
                   <div className="p-8 md:p-10">
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
@@ -266,11 +357,11 @@ export default function Store() {
                       <p className="text-muted-foreground mb-6">
                         Read this before booking. It'll save you time and money.
                       </p>
-                      
+
                       <Accordion type="single" collapsible className="w-full space-y-2">
                         {catalogAuditFAQ.map((faq, index) => (
-                          <AccordionItem 
-                            key={index} 
+                          <AccordionItem
+                            key={index}
                             value={`faq-${index}`}
                             className="border border-border/50 rounded-lg px-4 bg-secondary/10"
                           >
@@ -295,28 +386,28 @@ export default function Store() {
                     {/* Confirmation Checkbox & Purchase Button */}
                     <div className="border-t border-border/50 pt-8">
                       <div className="flex items-start gap-3 mb-6 p-4 bg-secondary/20 rounded-lg">
-                        <Checkbox 
+                        <Checkbox
                           id="audit-confirm"
                           checked={auditConfirmed}
                           onCheckedChange={(checked) => setAuditConfirmed(checked as boolean)}
                           className="mt-0.5"
                         />
-                        <label 
-                          htmlFor="audit-confirm" 
+                        <label
+                          htmlFor="audit-confirm"
                           className="text-sm cursor-pointer leading-relaxed"
                         >
                           I understand this audit focuses on rights clarity and sync readiness, not placements or guarantees.
                         </label>
                       </div>
 
-                      <Button 
-                        variant="maroon" 
+                      <Button
+                        variant="maroon"
                         size="lg"
                         className="w-full md:w-auto"
                         onClick={() => handlePurchase(service.paymentLink)}
                         disabled={!auditConfirmed}
                       >
-                        Purchase Catalog Audit - ${service.price}
+                        Purchase Catalog Audit — ${service.price}
                         <ExternalLink className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
