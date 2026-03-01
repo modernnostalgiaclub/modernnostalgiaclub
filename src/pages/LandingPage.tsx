@@ -504,36 +504,36 @@ export default function LandingPage() {
               No contracts. No hidden fees. Cancel anytime.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {/* Lab Pass - $5 */}
               <motion.div 
-                className="bg-card border border-border rounded-lg p-8 relative"
+                className="bg-card border border-border rounded-lg p-5 relative"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
               >
-                <div className="mb-6">
+                <div className="mb-4">
                   <h3 className="font-display text-2xl mb-2">Lab Pass</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-display text-foreground">$5</span>
+                    <span className="text-3xl font-display text-foreground">$5</span>
                     <span className="text-muted-foreground">/month</span>
                   </div>
                 </div>
                 
-                <p className="text-muted-foreground mb-6">
+                <p className="text-muted-foreground mb-4">
                   Get your foot in the door. Access the fundamentals.
                 </p>
                 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-2 mb-5">
                   {[
                     'Dashboard access',
                     'Classroom training tracks',
                     'Community discussions',
                     'Audio submissions',
                   ].map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <CheckCircle className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <li key={feature} className="flex items-center gap-2 text-xs">
+                      <CheckCircle className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
@@ -546,7 +546,7 @@ export default function LandingPage() {
               
               {/* Creator Accelerator - $10 */}
               <motion.div 
-                className="bg-card border-2 border-maroon rounded-lg p-8 relative"
+                className="bg-card border-2 border-maroon rounded-lg p-5 relative"
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -558,19 +558,19 @@ export default function LandingPage() {
                   </span>
                 </div>
                 
-                <div className="mb-6">
+                <div className="mb-4">
                   <h3 className="font-display text-2xl mb-2">Creator Accelerator</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-display text-maroon">$10</span>
+                    <span className="text-3xl font-display text-maroon">$10</span>
                     <span className="text-muted-foreground">/month</span>
                   </div>
                 </div>
                 
-                <p className="text-muted-foreground mb-6">
+                <p className="text-muted-foreground mb-4">
                   Professional workflows. Priority access. Real feedback.
                 </p>
                 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-2 mb-5">
                   {[
                     'Everything in Lab Pass',
                     'Studio Floor access',
@@ -579,8 +579,8 @@ export default function LandingPage() {
                     'Sync workflow training',
                     'Direct-to-fan systems',
                   ].map((feature, i) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
+                    <li key={feature} className="flex items-center gap-2 text-xs">
+                      <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
                       <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
                     </li>
                   ))}
@@ -593,7 +593,7 @@ export default function LandingPage() {
 
               {/* Creative Economy Lab - $150 one-time */}
               <motion.div 
-                className="bg-card border border-border rounded-lg p-8 relative"
+                className="bg-card border border-border rounded-lg p-5 relative"
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -605,19 +605,19 @@ export default function LandingPage() {
                   </span>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-4">
                   <h3 className="font-display text-2xl mb-2">Creative Economy Lab</h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-display text-amber">$150</span>
+                    <span className="text-3xl font-display text-amber">$150</span>
                     <span className="text-muted-foreground">one-time</span>
                   </div>
                 </div>
 
-                <p className="text-muted-foreground mb-6">
+                <p className="text-muted-foreground mb-4">
                   Serious artists only. Deep work, real results.
                 </p>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-2 mb-5">
                   {[
                     'Everything in Creator Accelerator',
                     '1-on-1 strategy sessions',
@@ -625,8 +625,8 @@ export default function LandingPage() {
                     'Priority feedback',
                     'Network access',
                   ].map((feature, i) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <CheckCircle className={`w-4 h-4 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
+                    <li key={feature} className="flex items-center gap-2 text-xs">
+                      <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
                       <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
                     </li>
                   ))}
@@ -638,7 +638,7 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            <p className="text-center text-sm text-muted-foreground mt-8">
+            <p className="text-center text-sm text-muted-foreground mt-6">
               No contracts. Cancel anytime. Questions? <Link to="/contact" className="text-maroon hover:underline">Contact us</Link>.
             </p>
           </motion.div>
