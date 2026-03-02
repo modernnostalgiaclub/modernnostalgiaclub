@@ -49,8 +49,9 @@ const catalogAuditFAQ = [
 const PRODUCT_PHOTOS: Record<string, string> = {
   'split-sheet': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80',
   'pro-tools-template': 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80',
-  'just-make-noise-bundle': 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&q=80',
-  'be-loud-bundle': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
+  'just-make-noise-bundle': 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=600&q=80',
+  'be-loud-bundle': 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80',
+  'catalog-audit': 'https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=600&q=80',
 };
 
 const fadeIn = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
@@ -270,7 +271,13 @@ export default function Store() {
 
                 {/* Catalog Audit — 4th column */}
                 {serviceProduct && (
-                  <div className="bg-card border border-maroon/30 rounded-lg p-5 relative flex flex-col">
+                  <div className="bg-card border border-maroon/30 rounded-lg overflow-hidden relative flex flex-col">
+                    <img
+                      src={PRODUCT_PHOTOS['catalog-audit']}
+                      alt="Person with headphones in a studio"
+                      className="w-full h-32 object-cover"
+                    />
+                    <div className="p-5 flex flex-col flex-1 relative">
                     <div className="absolute -top-3 left-4">
                       <span className="bg-maroon/20 text-maroon border border-maroon/30 text-xs font-medium px-3 py-1 rounded-full">
                         Pro Service
@@ -300,6 +307,7 @@ export default function Store() {
                     >
                       Book Audit — ${serviceProduct.price}
                     </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -329,6 +337,11 @@ export default function Store() {
             {serviceProduct && (
               <motion.div variants={fadeIn} className="mt-4" ref={auditFullRef}>
                 <Card variant="elevated" className="overflow-hidden border-maroon/30">
+                  <img
+                    src={PRODUCT_PHOTOS['catalog-audit']}
+                    alt="Person listening to music with headphones in a studio"
+                    className="w-full h-48 object-cover"
+                  />
                   <div className="p-8 md:p-10">
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
                       <div className="flex items-center gap-4">
