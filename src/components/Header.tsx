@@ -115,15 +115,6 @@ export function Header({ showNav = true }: HeaderProps) {
         <Link to="/reference" className={linkClasses}>
           Artist Resources
         </Link>
-        <Link to="/events" className={linkClasses}>
-          Events
-        </Link>
-        <Link to="/store" className={linkClasses}>
-          Store
-        </Link>
-        <a href="#partners" className={linkClasses}>
-          Partners
-        </a>
       </>
     );
   };
@@ -183,22 +174,14 @@ export function Header({ showNav = true }: HeaderProps) {
         <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artist Resources
         </Link>
-        <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Events
-        </Link>
-        <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Store
-        </Link>
-        <a href="#partners" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Partners
-        </a>
       </>
     );
   };
 
   return (
-    <header 
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50"
+    <header
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10"
+      style={{ background: 'hsl(222 47% 4% / 0.85)' }}
       role="banner"
     >
       <div className="container mx-auto px-6 h-14 flex items-center justify-between">
