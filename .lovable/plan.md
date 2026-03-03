@@ -1,38 +1,35 @@
 
-## Update Store Stock Photos
+## Plan: Landing Page Updates
 
-### What's changing
+Here's what I'll change in `src/pages/LandingPage.tsx`:
 
-Three photo swaps in `src/pages/Store.tsx`, plus adding a hero photo to the full Catalog Audit service card below the membership columns.
+### 1. Center everything
+- Hero text: add `text-center` and center the CTA buttons (`items-center` instead of `items-start`)
+- All section headers in Feed, ArtistGrid, WhatsInside, PricingSection: center-align
+- Logo centered in hero
 
----
+### 2. Artist Grid → Members-only blur with 40+ count
+- Replace the live profile grid with a **locked/blurred preview** for non-members
+- Show a 4-col grid of blurred placeholder cards (or blurred avatars)
+- Overlay with a lock panel: **"40+ Patreon Members"** count badge + "Members Only" copy + CTA to `/login`
+- Since the RLS already limits `artist_tracks` to authenticated users, we should just show a static teaser for public visitors
 
-### Photo Map Updates (`PRODUCT_PHOTOS` — lines 49–54)
+### 3. Add "Songs by MN.C Members" playlist embed
+- Add a new section between The Feed and Artist Grid (or inside the Artist section)
+- Embed the DISCO playlist already used elsewhere: `https://geohworks.disco.ac/e/p/26502910`
+- Wrap it in a music player-styled card: dark bg, waveform-style header bar with a `Music` icon, track title "Songs by MN.C Members", play indicator dots — essentially a styled iframe container that looks like a player HUD
+- If the iframe renders well, keep the music player wrapper; if it looks off in preview, fall back to a simple video-player card style
 
-| Product | New Concept | New Unsplash URL |
-|---|---|---|
-| `just-make-noise-bundle` | Person in recording studio, moody | `https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=600&q=80` |
-| `be-loud-bundle` | Beat machine / drum machine close-up | `https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80` |
-| `split-sheet` | No change — contract/pen already fits | keep as-is |
-| `pro-tools-template` | No change — DAW already fits | keep as-is |
+### 4. Update Pricing Tiers — add Artist Incubator ($150 one-time)
+- Replace "Creative Economy Lab" ($30/mo) tier with **"Artist Incubator"** ($150 one-time)
+- CTA: **"Apply Now"** → links to `https://pci.jotform.com/form/253309376850058` (external link, opens in new tab)
+- Update features list to match the incubator positioning (application-based, by-approval)
+- Keep "Creator Accelerator" as the highlighted/popular tier
 
-Better URLs for the two changed items:
-- **Just Make Noise** → recording studio with producer at console: `https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80` (studio desk/gear close-up) — actually a better fit is `https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=600&q=80` (person alone in studio, dark moody)
-- **Be Loud** → beat machine/MPC: `https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80` (drum machine / beat pads lit up)
-- **Catalog Audit** column card (in membership grid) + full service section → person with headphones in studio: `https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=600&q=80`
+### Files changed
+- `src/pages/LandingPage.tsx` — all changes in one file
 
----
-
-### Catalog Audit Full Section — Add Hero Image
-
-The full service card (`ref={auditFullRef}`, line ~330) currently starts with just an icon + text. Adding a hero banner photo at the top of the card — a person with headphones in a studio — using the same URL as the column card for visual consistency. It renders as a `w-full h-48 object-cover` image before the `p-8` content area.
-
----
-
-### Files Changed
-
-| File | Change |
-|---|---|
-| `src/pages/Store.tsx` | Update `PRODUCT_PHOTOS` map (2 URL swaps); add `catalog-audit` key to map; add hero `<img>` to the full Catalog Audit service card |
-
-No other files, no DB changes.
+### Technical notes
+- The `ArtistGrid` component will no longer query Supabase (public profiles RLS requires `profile_visibility = 'public'` and `username IS NOT NULL`, so it may already return nothing for anon users). Instead render a static blurred grid + overlay
+- The DISCO embed playlist ID `26502910` already exists in `BeatLibrary.tsx` and `BeatLicense.tsx` — reusing same src URL
+- No new DB migrations needed
