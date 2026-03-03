@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
 import { HelloSkipAgent } from '@/components/HelloSkipAgent';
 import { MemberDownloads } from '@/components/MemberDownloads';
+import { SectionLabel } from '@/components/SectionLabel';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { 
-  GraduationCap, 
-  Music2, 
-  Users, 
+import {
+  GraduationCap,
+  Music2,
+  Users,
   BookOpen,
   ArrowRight,
   Zap,
@@ -29,21 +28,13 @@ import {
   X,
   Link2,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Mic2,
+  Radio,
 } from 'lucide-react';
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
-const stagger = {
-  visible: {
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
+const fadeIn = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
+const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
@@ -58,84 +49,48 @@ export default function Dashboard() {
   const [hasStartedTracker, setHasStartedTracker] = useState(false);
   const [checklistLoading, setChecklistLoading] = useState(true);
 
-  // Show welcome toast for returning members
   useEffect(() => {
     if (searchParams.get('welcome') === 'true' && profile) {
       const userName = profile.name || 'back';
       toast.success(`Welcome ${userName}!`, {
-        description: "You're logged in and ready to go.",
+        description: "You're backstage. Let's get to work.",
         duration: 4000,
       });
-      // Remove the welcome param from URL without refresh
       searchParams.delete('welcome');
       setSearchParams(searchParams, { replace: true });
     }
   }, [searchParams, setSearchParams, profile]);
-  
+
   useEffect(() => {
     const fetchProgress = async () => {
-      if (!user) {
-        setProgressLoading(false);
-        return;
-      }
-      
+      if (!user) { setProgressLoading(false); return; }
       try {
-        // Fetch total published lessons
         const { count: totalLessons } = await supabase
-          .from('lessons')
-          .select('*', { count: 'exact', head: true })
-          .eq('is_published', true);
-        
-        // Fetch user's completed lessons
+          .from('lessons').select('*', { count: 'exact', head: true }).eq('is_published', true);
         const { count: completedLessons } = await supabase
-          .from('user_lesson_progress')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id)
-          .eq('completed', true);
-        
-        setProgress({
-          completed: completedLessons || 0,
-          total: totalLessons || 0
-        });
+          .from('user_lesson_progress').select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id).eq('completed', true);
+        setProgress({ completed: completedLessons || 0, total: totalLessons || 0 });
       } catch (error) {
         console.error('Error fetching progress:', error);
       } finally {
         setProgressLoading(false);
       }
     };
-    
     fetchProgress();
   }, [user]);
 
-  // Fetch checklist status
   useEffect(() => {
     const fetchChecklistStatus = async () => {
-      if (!user) {
-        setChecklistLoading(false);
-        return;
-      }
-      
+      if (!user) { setChecklistLoading(false); return; }
       try {
-        // Check if user has commented
         const { count: commentCount } = await supabase
-          .from('community_comments')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-        
+          .from('community_comments').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
         setHasCommented((commentCount || 0) > 0);
-
-        // Check if user has submitted to Studio Floor via secure RPC
         const { data: submissionsData } = await supabase.rpc('get_user_submissions');
-        const submissionCount = (submissionsData || []).length;
-        
-        setHasSubmitted(submissionCount > 0);
-
-        // Check if user has started the 30-day tracker
+        setHasSubmitted((submissionsData || []).length > 0);
         const { count: trackerCount } = await supabase
-          .from('tracker_sessions')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-        
+          .from('tracker_sessions').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
         setHasStartedTracker((trackerCount || 0) > 0);
       } catch (error) {
         console.error('Error fetching checklist status:', error);
@@ -143,81 +98,21 @@ export default function Dashboard() {
         setChecklistLoading(false);
       }
     };
-    
     fetchChecklistStatus();
   }, [user]);
-  
-  // Redirect to home if not logged in
-  if (!loading && !user) {
-    return <Navigate to="/" replace />;
-  }
+
+  if (!loading && !user) return <Navigate to="/" replace />;
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background studio-grain">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <div className="max-w-5xl mx-auto">
-              {/* Welcome Panel Skeleton */}
-              <div className="mb-12">
-                <Card variant="elevated" className="p-8 border-maroon/20">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="space-y-4 flex-1">
-                      <div className="flex items-center gap-3 mb-4">
-                        <Skeleton className="h-6 w-28 rounded-full" />
-                        <Skeleton className="h-5 w-16 rounded-full" />
-                      </div>
-                      <Skeleton className="h-10 w-64" />
-                      <Skeleton className="h-5 w-80" />
-                    </div>
-                  </div>
-                </Card>
-              </div>
-              
-              {/* Primary Actions Skeleton */}
-              <div className="mb-12">
-                <Skeleton className="h-8 w-36 mb-6" />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <Card key={i} variant="feature" className="h-full">
-                      <CardHeader>
-                        <Skeleton className="w-8 h-8 mb-2 rounded" />
-                        <Skeleton className="h-6 w-24" />
-                        <Skeleton className="h-4 w-32 mt-2" />
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Next Action Skeleton */}
-              <Card variant="console" className="p-6">
-                <div className="flex items-center gap-4">
-                  <Skeleton className="w-12 h-12 rounded-lg" />
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-6 w-48" />
-                    <Skeleton className="h-4 w-64" />
-                  </div>
-                  <Skeleton className="h-10 w-20 rounded-md" />
-                </div>
-              </Card>
-              
-              {/* Tier Features Skeleton */}
-              <div className="mt-12">
-                <Skeleton className="h-8 w-64 mb-6" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex items-center gap-3 p-4 bg-card border border-border rounded-lg">
-                      <Skeleton className="w-2 h-2 rounded-full" />
-                      <Skeleton className="h-4 w-48" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+      <div className="min-h-screen bg-background p-8">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <Skeleton className="h-40 w-full rounded-2xl" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1,2,3,4].map(i => <Skeleton key={i} className="h-32 rounded-xl" />)}
           </div>
-        </main>
+          <Skeleton className="h-64 w-full rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -225,405 +120,389 @@ export default function Dashboard() {
   const tier = (profile?.patreon_tier || 'lab-pass') as PatreonTier;
   const tierInfo = TIER_INFO[tier];
   const userName = profile?.name || user?.email?.split('@')[0] || 'Artist';
-  
+
   const getNextAction = () => {
     switch (tier) {
       case 'lab-pass':
         return { text: 'Start with Foundations of Artist Income', link: '/classroom' };
       case 'creator-accelerator':
-        return { text: 'Submit one track for review', link: '/studio' };
+        return { text: 'Submit one track for professional review', link: '/studio' };
       case 'creative-economy-lab':
         return { text: 'Review your strategy roadmap', link: '/classroom' };
     }
   };
-  
   const nextAction = getNextAction();
-  
-  return (
-    <div className="min-h-screen bg-background studio-grain">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="max-w-5xl mx-auto"
-          >
-            {/* Migration Banner for legacy Patreon members */}
-            {!migrationBannerDismissed && profile?.patreon_id && profile?.patreon_tier !== 'creative-economy-lab' && (
-              <motion.div variants={fadeIn} className="mb-8">
-                <Card className="border-maroon/50 bg-maroon/10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-maroon/5 to-transparent pointer-events-none" />
-                  <CardContent className="p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="space-y-1 flex-1">
-                        <p className="font-display text-lg text-foreground">
-                          You're a founding Patreon member 🎉
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Upgrade to Creative Economy Lab — free, permanently. No credit card needed.
-                        </p>
-                      </div>
-              <div className="flex items-center gap-3 shrink-0">
-                        <Button
-                          variant="maroon"
-                          size="sm"
-                          className="whitespace-nowrap"
-                          onClick={async () => {
-                            if (user?.id) sessionStorage.setItem('patreon_source_user_id', user.id);
-                            if (user?.email) sessionStorage.setItem('patreon_source_email', user.email);
-                            await supabase.auth.signOut();
-                            navigate('/migrate');
-                          }}
-                        >
-                          Claim Your Free Upgrade →
-                        </Button>
-                        <button
-                          onClick={() => setMigrationBannerDismissed(true)}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label="Dismiss banner"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
 
-            {/* Welcome Panel */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <Card variant="elevated" className="p-8 border-maroon/20">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3 mb-4">
-                      <TierBadge tier={tier} />
-                      <span className="text-sm text-green-400 flex items-center gap-1">
-                        <span className="w-2 h-2 bg-green-400 rounded-full" />
-                        Active
-                      </span>
+  const checklistItems = [
+    {
+      done: !!(profile?.stage_name && profile?.username),
+      icon: UserCircle,
+      label: 'Set up your artist profile',
+      sublabel: !profile?.stage_name ? '← your link-in-bio' : undefined,
+      href: '/account',
+      locked: false,
+    },
+    {
+      done: (progress?.completed || 0) > 0,
+      icon: GraduationCap,
+      label: 'Start your first course in the Classroom',
+      href: '/classroom',
+      locked: false,
+    },
+    {
+      done: hasCommented,
+      icon: MessageSquare,
+      label: 'Drop a post in the Community',
+      href: '/community',
+      locked: false,
+    },
+    {
+      done: hasSubmitted,
+      icon: Music2,
+      label: 'Submit a track to the Studio Floor',
+      sublabel: tier === 'lab-pass' ? '(Creator Accelerator+)' : undefined,
+      href: tier !== 'lab-pass' ? '/studio' : '#',
+      locked: tier === 'lab-pass',
+    },
+    {
+      done: hasStartedTracker,
+      icon: Calendar,
+      label: 'Start the 30-Day Implementation Tracker',
+      href: '/reference/30-day-tracker',
+      locked: false,
+    },
+    {
+      done: false,
+      icon: BookOpen,
+      label: 'Explore Artist Resources',
+      href: '/reference',
+      locked: false,
+    },
+  ];
+
+  const pillars = [
+    { icon: GraduationCap, title: 'Classroom', desc: 'Training tracks', link: '/classroom', available: true },
+    { icon: Music2, title: 'Studio Floor', desc: 'Submissions & reviews', link: '/studio', available: tier !== 'lab-pass' },
+    { icon: Users, title: 'Community', desc: 'Focused discussions', link: '/community', available: true },
+    { icon: BookOpen, title: 'Resources', desc: 'Case studies & tools', link: '/reference', available: true },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <main className="pb-20">
+        <div className="container mx-auto px-6 pt-8">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-5xl mx-auto space-y-8">
+
+            {/* ── Migration Banner ─────────────────────────────────────── */}
+            {!migrationBannerDismissed && profile?.patreon_id && profile?.patreon_tier !== 'creative-economy-lab' && (
+              <motion.div variants={fadeIn}>
+                <div className="relative rounded-xl p-5 border overflow-hidden"
+                  style={{ background: 'hsl(217 100% 50% / 0.08)', borderColor: 'hsl(217 100% 50% / 0.3)' }}>
+                  <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'linear-gradient(90deg, hsl(217 100% 50% / 0.05) 0%, transparent 100%)' }} />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <p className="font-serif font-semibold text-foreground">You're a founding Patreon member 🎉</p>
+                      <p className="text-sm text-muted-foreground mt-1">Upgrade to Creative Economy Lab — free, permanently. No credit card needed.</p>
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-display">
-                      Welcome back, {userName}
-                    </h1>
-                    <p className="text-muted-foreground">
-                      You're here to turn creative work into sustainable income. Need help? Our AI assistant is available in the bottom-right corner.
-                    </p>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <Button size="sm" className="whitespace-nowrap"
+                        style={{ background: 'hsl(217 100% 50%)', color: '#fff' }}
+                        onClick={async () => {
+                          if (user?.id) sessionStorage.setItem('patreon_source_user_id', user.id);
+                          if (user?.email) sessionStorage.setItem('patreon_source_email', user.email);
+                          await supabase.auth.signOut();
+                          navigate('/migrate');
+                        }}>
+                        Claim Free Upgrade →
+                      </Button>
+                      <button onClick={() => setMigrationBannerDismissed(true)}
+                        className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Dismiss">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </Card>
-            </motion.div>
-
-            {/* Profile completion banner — shown when no stage_name set */}
-            {!profile?.stage_name && !checklistLoading && (
-              <motion.div variants={fadeIn} className="mb-8">
-                <Card className="border-primary/40 bg-primary/5 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
-                  <CardContent className="p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Link2 className="w-4 h-4 text-primary" />
-                          <p className="text-xs uppercase tracking-widest text-primary font-medium">Your Artist Profile</p>
-                        </div>
-                        <p className="font-display text-lg text-foreground">
-                          Your artist profile is your link in bio.
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Set your stage name, add your music, and get a shareable URL at{' '}
-                          <span className="text-foreground font-mono text-xs">modernnostalgia.club/artist/[username]</span>
-                        </p>
-                      </div>
-                      <Button asChild variant="maroon" size="sm" className="whitespace-nowrap shrink-0">
-                        <Link to="/account">Set Up Your Profile →</Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
               </motion.div>
             )}
 
-            {/* Public profile link card — shown once profile is set up */}
-            {profile?.username && profile?.stage_name && (
-              <motion.div variants={fadeIn} className="mb-8">
-                <Card className="border-border/50 bg-card">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Link2 className="w-4 h-4 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-muted-foreground mb-0.5">Your artist link</p>
-                        <p className="text-sm font-mono truncate text-foreground">
-                          modernnostalgia.club/artist/{profile.username}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 gap-1.5"
-                          onClick={() => {
-                            navigator.clipboard.writeText(`https://modernnostalgia.club/artist/${profile.username}`);
-                            setProfileLinkCopied(true);
-                            setTimeout(() => setProfileLinkCopied(false), 2000);
-                          }}
-                        >
-                          {profileLinkCopied ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
-                          {profileLinkCopied ? 'Copied!' : 'Copy'}
-                        </Button>
-                        <Button asChild variant="ghost" size="sm" className="h-8">
-                          <Link to={`/artist/${profile.username}`} target="_blank">
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
+            {/* ── Backstage Header ─────────────────────────────────────── */}
+            <motion.div variants={fadeIn}>
+              <div className="relative rounded-2xl overflow-hidden border border-border/30"
+                style={{ background: 'linear-gradient(135deg, hsl(222 40% 7%) 0%, hsl(222 47% 5%) 60%, hsl(217 60% 8%) 100%)' }}>
+                {/* Blue glow accent */}
+                <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none"
+                  style={{ background: 'radial-gradient(circle, hsl(217 100% 50% / 0.1) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
+                {/* Stage light line */}
+                <div className="absolute top-0 left-0 right-0 h-px"
+                  style={{ background: 'linear-gradient(90deg, transparent, hsl(217 100% 50% / 0.6), transparent)' }} />
 
-            {/* Getting Started Checklist */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <Card variant="elevated" className="p-6 border-maroon/20">
-                <h2 className="font-display text-xl mb-4">Getting Started Checklist</h2>
-                {checklistLoading ? (
-                  <div className="space-y-3">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Skeleton key={i} className="h-10 w-full" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {/* 1. Set up your artist profile (link-in-bio) */}
-                    <Link to="/account" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
-                      {profile?.stage_name && profile?.username ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      )}
-                      <UserCircle className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <div className="flex-1">
-                        <span className={profile?.stage_name && profile?.username ? 'text-muted-foreground line-through' : 'font-medium'}>
-                          Set up your artist profile
+                <div className="relative p-8">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <SectionLabel>Backstage</SectionLabel>
+                        <span className="flex items-center gap-1.5 text-xs font-medium"
+                          style={{ color: 'hsl(142 71% 55%)' }}>
+                          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'hsl(142 71% 55%)' }} />
+                          Live
                         </span>
-                        {!profile?.stage_name && (
-                          <span className="ml-2 text-xs text-primary">← your link-in-bio</span>
-                        )}
                       </div>
-                    </Link>
-
-                    {/* 2. Complete your first course */}
-                    <Link to="/classroom" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
-                      {(progress?.completed || 0) > 0 ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      <h1 className="text-3xl md:text-5xl font-serif font-bold leading-tight">
+                        Welcome back,<br />
+                        <span style={{ color: 'hsl(217 100% 65%)' }}>{userName}.</span>
+                      </h1>
+                      <p className="text-muted-foreground max-w-md">
+                        You're here to turn creative work into sustainable income. Everything you need is in the sidebar.
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+                      <TierBadge tier={tier} />
+                      {profile?.username && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Radio className="w-3 h-3 text-primary" />
+                          <span className="font-mono">modernnostalgia.club/artist/{profile.username}</span>
+                        </div>
                       )}
-                      <GraduationCap className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span className={(progress?.completed || 0) > 0 ? 'text-muted-foreground line-through' : ''}>
-                        Start your first course in the Classroom
-                      </span>
-                    </Link>
-
-                    {/* 3. Comment in the community */}
-                    <Link to="/community" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
-                      {hasCommented ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      )}
-                      <MessageSquare className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span className={hasCommented ? 'text-muted-foreground line-through' : ''}>
-                        Comment in the Community
-                      </span>
-                    </Link>
-
-                    {/* 4. Submit to Studio Floor */}
-                    <Link 
-                      to={tier !== 'lab-pass' ? '/studio' : '#'} 
-                      className={`flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50 ${tier === 'lab-pass' ? 'opacity-60 pointer-events-none' : ''}`}
-                    >
-                      {hasSubmitted ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      )}
-                      <Music2 className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span className={hasSubmitted ? 'text-muted-foreground line-through' : ''}>
-                        Submit to the Studio Floor
-                        {tier === 'lab-pass' && <span className="text-xs text-muted-foreground ml-2">(Higher tier)</span>}
-                      </span>
-                    </Link>
-
-                    {/* 5. Start 30-Day Tracker */}
-                    <Link to="/reference/30-day-tracker" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
-                      {hasStartedTracker ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      )}
-                      <Calendar className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span className={hasStartedTracker ? 'text-muted-foreground line-through' : ''}>
-                        Start the 30-Day Implementation Tracker
-                      </span>
-                    </Link>
-
-                    {/* 6. Check out Artist Resources */}
-                    <Link to="/reference" className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50">
-                      <Circle className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                      <BookOpen className="w-5 h-5 text-maroon flex-shrink-0" />
-                      <span>Check out Artist Resources</span>
-                    </Link>
+                    </div>
                   </div>
-                )}
-              </Card>
+                </div>
+              </div>
             </motion.div>
 
-            {/* Member Downloads */}
-            <MemberDownloads />
-            
-            {/* Primary Actions */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <h2 className="font-display text-2xl mb-6">Enter the Lab</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                {[
-                  { 
-                    icon: GraduationCap, 
-                    title: 'Classroom', 
-                    desc: 'Training tracks',
-                    link: '/classroom',
-                    available: true
-                  },
-                  { 
-                    icon: Music2, 
-                    title: 'Studio Floor', 
-                    desc: 'Submissions & reviews',
-                    link: '/studio',
-                    available: tier !== 'lab-pass'
-                  },
-                  { 
-                    icon: Users, 
-                    title: 'Community', 
-                    desc: 'Discussions',
-                    link: '/community',
-                    available: true
-                  },
-                  { 
-                    icon: BookOpen, 
-                    title: 'Artist Resources', 
-                    desc: 'Examples & case studies',
-                    link: '/reference',
-                    available: true
-                  },
-                ].map((item) => (
-                  <Link 
-                    key={item.title} 
-                    to={item.available ? item.link : '#'}
-                    className={!item.available ? 'pointer-events-none' : ''}
-                  >
-                    <Card 
-                      variant={item.available ? "feature" : "locked"}
-                      className="h-full hover:scale-[1.02] transition-transform"
+            {/* ── Profile setup banner ─────────────────────────────────── */}
+            {!profile?.stage_name && !checklistLoading && (
+              <motion.div variants={fadeIn}>
+                <div className="rounded-xl p-5 border flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  style={{ background: 'hsl(217 100% 50% / 0.06)', borderColor: 'hsl(217 100% 50% / 0.25)' }}>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Link2 className="w-4 h-4 text-primary" />
+                      <p className="text-xs uppercase tracking-widest text-primary font-medium">Your Artist Profile</p>
+                    </div>
+                    <p className="font-serif font-semibold text-foreground">Your artist profile is your link in bio.</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      Set your stage name and get a shareable URL at{' '}
+                      <span className="text-foreground font-mono text-xs">modernnostalgia.club/artist/[username]</span>
+                    </p>
+                  </div>
+                  <Button size="sm" className="whitespace-nowrap shrink-0" asChild
+                    style={{ background: 'hsl(217 100% 50%)', color: '#fff' }}>
+                    <Link to="/account">Set Up Profile →</Link>
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── Profile link ─────────────────────────────────────────── */}
+            {profile?.username && profile?.stage_name && (
+              <motion.div variants={fadeIn}>
+                <div className="rounded-xl border border-border/40 bg-card p-4 flex items-center gap-3">
+                  <div className="p-2 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
+                    <Link2 className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground mb-0.5">Your artist link</p>
+                    <p className="text-sm font-mono truncate">modernnostalgia.club/artist/{profile.username}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button variant="outline" size="sm" className="h-8 gap-1.5"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`https://modernnostalgia.club/artist/${profile.username}`);
+                        setProfileLinkCopied(true);
+                        setTimeout(() => setProfileLinkCopied(false), 2000);
+                      }}>
+                      {profileLinkCopied ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
+                      {profileLinkCopied ? 'Copied!' : 'Copy'}
+                    </Button>
+                    <Button asChild variant="ghost" size="sm" className="h-8">
+                      <Link to={`/artist/${profile.username}`} target="_blank">
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── Four Pillars ─────────────────────────────────────────── */}
+            <motion.div variants={fadeIn}>
+              <SectionLabel className="mb-4">Enter the Lab</SectionLabel>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {pillars.map((item, i) => (
+                  <Link key={item.title} to={item.available ? item.link : '#'}
+                    className={!item.available ? 'pointer-events-none' : ''}>
+                    <motion.div
+                      className={`rounded-xl p-5 border h-full flex flex-col transition-all duration-200 ${
+                        item.available
+                          ? 'hover:border-primary/40 cursor-pointer'
+                          : 'opacity-50 cursor-not-allowed'
+                      }`}
+                      style={{
+                        background: item.available
+                          ? 'hsl(222 40% 7% / 0.8)'
+                          : 'hsl(222 30% 6%)',
+                        borderColor: 'hsl(222 25% 16%)',
+                        backdropFilter: 'blur(12px)',
+                      }}
+                      whileHover={item.available ? { y: -2 } : {}}
+                      transition={{ duration: 0.15 }}
                     >
-                      <CardHeader>
-                        <item.icon className={`w-8 h-8 mb-2 ${item.available ? 'text-maroon' : 'text-muted-foreground'}`} />
-                        <CardTitle className="text-lg">{item.title}</CardTitle>
-                        <CardDescription>
-                          {item.available ? item.desc : 'Available in higher tiers'}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
+                      <item.icon className={`w-7 h-7 mb-3 ${item.available ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <p className="font-serif font-semibold text-sm">{item.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {item.available ? item.desc : 'Higher tier required'}
+                      </p>
+                    </motion.div>
                   </Link>
                 ))}
               </div>
             </motion.div>
-            {/* Learning Progress */}
-            <motion.div variants={fadeIn} className="mb-8">
-              <Card variant="elevated" className="p-6 border-maroon/20">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 bg-maroon/20 rounded-lg">
-                    <TrendingUp className="w-6 h-6 text-maroon" />
+
+            {/* ── Getting Started Checklist ─────────────────────────────── */}
+            <motion.div variants={fadeIn}>
+              <div className="rounded-2xl border border-border/30 overflow-hidden"
+                style={{ background: 'hsl(222 40% 7%)' }}>
+                <div className="px-6 py-5 border-b border-border/30 flex items-center justify-between">
+                  <div>
+                    <SectionLabel className="mb-1">Onboarding</SectionLabel>
+                    <h2 className="font-serif font-bold text-xl">Getting Started Checklist</h2>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-display text-lg">Learning Progress</h3>
-                    <p className="text-sm text-muted-foreground">Your overall course completion</p>
+                  {!checklistLoading && (
+                    <div className="text-right">
+                      <span className="text-2xl font-serif font-bold" style={{ color: 'hsl(217 100% 65%)' }}>
+                        {checklistItems.filter(c => c.done).length}
+                        <span className="text-muted-foreground text-lg">/{checklistItems.length}</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-4 space-y-1">
+                  {checklistLoading
+                    ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-12 w-full rounded-lg" />)
+                    : checklistItems.map((item) => (
+                        <Link
+                          key={item.label}
+                          to={item.href}
+                          className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-150 group ${
+                            item.locked
+                              ? 'opacity-50 pointer-events-none'
+                              : 'hover:bg-white/5'
+                          }`}
+                        >
+                          {item.done
+                            ? <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: 'hsl(142 71% 55%)' }} />
+                            : <Circle className="w-5 h-5 text-muted-foreground/50 shrink-0 group-hover:text-muted-foreground transition-colors" />
+                          }
+                          <item.icon className={`w-4 h-4 shrink-0 ${item.done ? 'text-muted-foreground' : 'text-primary'}`} />
+                          <div className="flex-1 flex items-center gap-2">
+                            <span className={`text-sm ${item.done ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                              {item.label}
+                            </span>
+                            {item.sublabel && (
+                              <span className="text-xs text-muted-foreground">{item.sublabel}</span>
+                            )}
+                          </div>
+                          {!item.done && !item.locked && (
+                            <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                          )}
+                        </Link>
+                      ))
+                  }
+                </div>
+              </div>
+            </motion.div>
+
+            {/* ── Member Downloads ──────────────────────────────────────── */}
+            <MemberDownloads />
+
+            {/* ── Learning Progress + Next Action (side by side) ────────── */}
+            <motion.div variants={fadeIn} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Learning Progress */}
+              <div className="rounded-xl border border-border/30 p-6"
+                style={{ background: 'hsl(222 40% 7%)' }}>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
+                    <TrendingUp className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-semibold">Learning Progress</h3>
+                    <p className="text-xs text-muted-foreground">Overall course completion</p>
                   </div>
                   {!progressLoading && progress && (
-                    <span className="text-2xl font-display text-maroon">
+                    <span className="ml-auto text-2xl font-serif font-bold" style={{ color: 'hsl(217 100% 65%)' }}>
                       {progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0}%
                     </span>
                   )}
                 </div>
                 {progressLoading ? (
-                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-2 w-full rounded-full" />
                 ) : progress && progress.total > 0 ? (
                   <div className="space-y-2">
-                    <Progress value={(progress.completed / progress.total) * 100} className="h-3" />
-                    <p className="text-xs text-muted-foreground text-right">
+                    <Progress value={(progress.completed / progress.total) * 100} className="h-2" />
+                    <p className="text-xs text-muted-foreground">
                       {progress.completed} of {progress.total} lessons completed
                     </p>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">No lessons available yet. Check back soon!</p>
+                  <p className="text-sm text-muted-foreground">No lessons available yet — check back soon.</p>
                 )}
-              </Card>
-            </motion.div>
-            
-            {/* Next Recommended Action */}
-            <motion.div variants={fadeIn}>
-              <Card variant="console" className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-maroon/20 rounded-lg">
-                    <Zap className="w-6 h-6 text-maroon" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-display text-lg mb-1">Next Recommended Action</h3>
-                    <p className="text-muted-foreground">{nextAction.text}</p>
-                  </div>
-                  <Button variant="maroon" asChild>
-                    <Link to={nextAction.link}>
-                      Go
-                      <ArrowRight className="ml-2 w-4 h-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </Card>
-            </motion.div>
-            
-            {/* Tier Features */}
-            <motion.div variants={fadeIn} className="mt-12">
-              <h2 className="font-display text-2xl mb-6">Your {tierInfo.name} Features</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {tierInfo.features.map((feature) => (
-                  <div 
-                    key={feature}
-                    className="flex items-center gap-3 p-4 bg-card border border-border rounded-lg"
-                  >
-                    <span className="w-2 h-2 bg-maroon rounded-full" />
-                    <span className="text-sm">{feature}</span>
-                  </div>
-                ))}
               </div>
-              <div className="mt-4">
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/account">
-                    View all tier options
-                    <ArrowRight className="ml-2 w-4 h-4" />
+
+              {/* Next Recommended Action */}
+              <div className="rounded-xl border p-6 flex flex-col justify-between"
+                style={{
+                  background: 'linear-gradient(135deg, hsl(217 100% 50% / 0.1) 0%, hsl(222 40% 7%) 100%)',
+                  borderColor: 'hsl(217 100% 50% / 0.25)',
+                }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.15)' }}>
+                    <Zap className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-semibold">Next Up</h3>
+                    <p className="text-xs text-muted-foreground">Recommended action</p>
+                  </div>
+                </div>
+                <p className="text-sm text-foreground mb-5 leading-relaxed">{nextAction.text}</p>
+                <Button asChild style={{ background: 'hsl(217 100% 50%)', color: '#fff' }}>
+                  <Link to={nextAction.link}>
+                    Go <ArrowRight className="ml-2 w-4 h-4" />
                   </Link>
                 </Button>
               </div>
             </motion.div>
 
-            {/* HelloSkip AI Agent - loads script only */}
-            <HelloSkipAgent />
+            {/* ── Tier Features ─────────────────────────────────────────── */}
+            <motion.div variants={fadeIn}>
+              <div className="rounded-2xl border border-border/30 p-6" style={{ background: 'hsl(222 40% 7%)' }}>
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <SectionLabel className="mb-1">Access Level</SectionLabel>
+                    <h2 className="font-serif font-bold text-xl">Your {tierInfo.name} Features</h2>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/account">Upgrade <ArrowRight className="ml-1.5 w-3.5 h-3.5" /></Link>
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {tierInfo.features.map((feature) => (
+                    <div key={feature} className="flex items-center gap-3 p-3 rounded-lg"
+                      style={{ background: 'hsl(222 30% 10%)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'hsl(217 100% 50%)' }} />
+                      <span className="text-sm text-muted-foreground">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
           </motion.div>
         </div>
       </main>
+
+      {/* AI Agent */}
+      <HelloSkipAgent />
     </div>
   );
 }
