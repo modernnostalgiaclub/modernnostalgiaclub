@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["DM Sans", "system-ui", "sans-serif"],
+        serif: ["Playfair Display", "Georgia", "serif"],
         display: ["Maximum Impact", "system-ui", "sans-serif"],
       },
       colors: {
@@ -76,6 +77,11 @@ export default {
           muted: "hsl(var(--maroon-muted))",
           glow: "hsl(var(--maroon-glow))",
         },
+        blue: {
+          DEFAULT: "hsl(var(--blue))",
+          glow: "hsl(var(--blue-glow))",
+        },
+        navy: "hsl(var(--navy))",
       },
       borderRadius: {
         lg: "var(--radius)",
