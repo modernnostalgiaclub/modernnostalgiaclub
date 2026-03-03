@@ -18,13 +18,14 @@ import {
   Users,
   TrendingUp,
   CheckCircle,
+  Lock,
+  Music,
 } from 'lucide-react';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 // ── The Feed ─────────────────────────────────────────────────────────────────
-// Merges blog posts + artist tracks into one scrollable editorial feed
 function TheFeed() {
   const { data: posts = [], isLoading: postsLoading } = useQuery({
     queryKey: ['feed-blog'],
@@ -70,20 +71,12 @@ function TheFeed() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <SectionLabel className="mb-3">The Feed</SectionLabel>
-              <h2 className="text-4xl md:text-6xl font-serif font-bold leading-tight">
-                Sounds & Stories<br />
-                <span className="text-primary italic">from the Club.</span>
-              </h2>
-            </div>
-            <Link
-              to="/artists"
-              className="hidden md:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              All Artists <ArrowRight className="w-4 h-4" />
-            </Link>
+          <div className="text-center mb-12">
+            <SectionLabel className="mb-3">The Feed</SectionLabel>
+            <h2 className="text-4xl md:text-6xl font-serif font-bold leading-tight">
+              Sounds & Stories<br />
+              <span className="text-primary italic">from the Club.</span>
+            </h2>
           </div>
 
           {isLoading ? (
@@ -137,7 +130,6 @@ function TheFeed() {
                           }
                         </div>
                       )}
-                      {/* Type badge */}
                       <span className="absolute top-3 left-3 text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
                         style={{ background: 'hsl(217 100% 50% / 0.2)', color: 'hsl(217 100% 75%)', border: '1px solid hsl(217 100% 50% / 0.3)' }}>
                         {isPost ? 'Editorial' : 'Track'}
@@ -171,24 +163,85 @@ function TheFeed() {
               })}
             </div>
           )}
+
+          <div className="mt-10 text-center">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/artists">All Artists <ArrowRight className="w-3 h-3 ml-1" /></Link>
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>
   );
 }
 
-// ── Artist Grid ───────────────────────────────────────────────────────────────
+// ── MNC Playlist Embed ────────────────────────────────────────────────────────
+function MNCPlaylist() {
+  return (
+    <section className="py-20 border-t border-border/30">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mx-auto"
+        >
+          {/* Music player HUD */}
+          <div className="rounded-2xl overflow-hidden border border-border/40"
+            style={{ background: 'hsl(222 47% 6%)', boxShadow: '0 0 40px hsl(217 100% 50% / 0.08)' }}>
+            {/* Header bar */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30"
+              style={{ background: 'hsl(222 47% 4%)' }}>
+              <div className="flex items-center justify-center w-8 h-8 rounded-full"
+                style={{ background: 'hsl(217 100% 50% / 0.15)' }}>
+                <Music className="w-4 h-4" style={{ color: 'hsl(217 100% 65%)' }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-0.5">Now Playing</p>
+                <p className="font-serif font-semibold text-sm truncate">Songs by MN.C Members</p>
+              </div>
+              {/* Animated play dots */}
+              <div className="flex items-end gap-0.5 h-5">
+                {[1, 2, 3, 4].map(n => (
+                  <span
+                    key={n}
+                    className="w-1 rounded-full"
+                    style={{
+                      background: 'hsl(217 100% 60%)',
+                      height: `${[60, 100, 40, 80][n - 1]}%`,
+                      animation: `bounce ${0.6 + n * 0.1}s ease-in-out infinite alternate`,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* DISCO embed */}
+            <div className="relative" style={{ paddingBottom: '56.25%', height: 0 }}>
+              <iframe
+                src="https://geohworks.disco.ac/e/p/26502910"
+                title="Songs by MN.C Members"
+                className="absolute inset-0 w-full h-full"
+                allow="autoplay; clipboard-write; encrypted-media"
+                style={{ border: 'none' }}
+              />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ── Artist Grid (Members-Only) ────────────────────────────────────────────────
+// Placeholder avatars for blurred preview
+const PLACEHOLDER_NAMES = [
+  'J.R.', 'M.K.', 'A.T.', 'D.L.',
+  'S.B.', 'N.P.', 'C.W.', 'R.O.',
+];
+
 function ArtistGrid() {
-  const { data: artists = [], isLoading } = useQuery({
-    queryKey: ['landing-artists'],
-    queryFn: async () => {
-      const { data } = await supabase.rpc('get_public_profiles');
-      return (data || []).slice(0, 8);
-    },
-  });
-
-  if (!isLoading && artists.length === 0) return null;
-
   return (
     <section className="py-28 border-t border-border/30">
       <div className="container mx-auto px-6">
@@ -198,65 +251,50 @@ function ArtistGrid() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <SectionLabel className="mb-3">The Artists</SectionLabel>
-              <h2 className="text-4xl md:text-6xl font-serif font-bold leading-tight">
-                Independent Artists.<br />
-                <span className="text-primary italic">Professional Sound.</span>
-              </h2>
-            </div>
-            <Link
-              to="/artists"
-              className="hidden md:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              Full Directory <ArrowRight className="w-4 h-4" />
-            </Link>
+          <div className="text-center mb-12">
+            <SectionLabel className="mb-3">The Artists</SectionLabel>
+            <h2 className="text-4xl md:text-6xl font-serif font-bold leading-tight">
+              Independent Artists.<br />
+              <span className="text-primary italic">Professional Sound.</span>
+            </h2>
           </div>
 
-          {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="feed-card rounded-xl p-5 animate-pulse">
-                  <div className="w-14 h-14 rounded-full bg-muted mb-3" />
-                  <div className="h-4 bg-muted rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
+          {/* Blurred grid + overlay */}
+          <div className="relative">
+            {/* Blurred placeholder grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 select-none pointer-events-none"
+              style={{ filter: 'blur(8px)', opacity: 0.45 }}>
+              {PLACEHOLDER_NAMES.map((name, i) => (
+                <div key={i} className="feed-card rounded-xl p-5 flex flex-col">
+                  <div className="w-14 h-14 rounded-full overflow-hidden bg-primary/10 mb-3 ring-2 ring-primary/20 flex items-center justify-center text-primary/40 text-lg font-serif font-bold">
+                    {name[0]}
+                  </div>
+                  <p className="font-serif font-semibold text-sm leading-snug truncate">{name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">MN.C Member</p>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {artists.map((artist, i) => (
-                <motion.div
-                  key={artist.user_id}
-                  className="feed-card rounded-xl p-5 flex flex-col group"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <div className="w-14 h-14 rounded-full overflow-hidden bg-primary/10 mb-3 ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all">
-                    {artist.avatar_url ? (
-                      <img src={artist.avatar_url} alt={artist.stage_name ?? ''} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-primary/40 text-xl font-serif font-bold">
-                        {(artist.stage_name ?? 'A')[0].toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <p className="font-serif font-semibold text-sm leading-snug truncate">{artist.stage_name}</p>
-                  {artist.pro && (
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{artist.pro}</p>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          )}
 
-          <div className="mt-8 text-center md:hidden">
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/artists">View All Artists <ArrowRight className="w-3 h-3 ml-1" /></Link>
-            </Button>
+            {/* Lock overlay */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
+              style={{ background: 'linear-gradient(to bottom, transparent 0%, hsl(222 47% 4% / 0.6) 30%, hsl(222 47% 4% / 0.92) 70%)' }}>
+              <div className="flex items-center justify-center w-14 h-14 rounded-full mb-4"
+                style={{ background: 'hsl(217 100% 50% / 0.15)', border: '1px solid hsl(217 100% 50% / 0.3)' }}>
+                <Lock className="w-6 h-6" style={{ color: 'hsl(217 100% 65%)' }} />
+              </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 text-xs font-semibold uppercase tracking-widest"
+                style={{ background: 'hsl(217 100% 50% / 0.15)', color: 'hsl(217 100% 75%)', border: '1px solid hsl(217 100% 50% / 0.25)' }}>
+                <Users className="w-3 h-3" /> 40+ Patreon Members
+              </div>
+              <h3 className="font-serif text-2xl font-bold mb-2">Members Only</h3>
+              <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+                Join the lab to access the full artist directory and connect with fellow members.
+              </p>
+              <Button size="lg" asChild
+                style={{ background: 'hsl(217 100% 50%)', color: '#fff', boxShadow: '0 0 20px hsl(217 100% 50% / 0.35)' }}>
+                <Link to="/login">Join to See Members <ArrowRight className="w-4 h-4 ml-2" /></Link>
+              </Button>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -281,14 +319,14 @@ function WhatsInside() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6 }}
-          className="max-w-5xl mx-auto"
+          className="max-w-5xl mx-auto text-center"
         >
           <SectionLabel className="mb-4">What's Inside</SectionLabel>
           <h2 className="text-4xl md:text-6xl font-serif font-bold mb-6 leading-tight">
             This is not a course.<br />
             <span className="text-primary italic">This is a working lab.</span>
           </h2>
-          <p className="text-lg text-muted-foreground mb-16 max-w-2xl">
+          <p className="text-lg text-muted-foreground mb-16 max-w-2xl mx-auto">
             Artists learn how money actually moves, build catalogs the right way, and practice professional workflows used in sync, licensing, and direct-to-fan careers.
           </p>
 
@@ -296,13 +334,13 @@ function WhatsInside() {
             {PILLARS.map((pillar, i) => (
               <motion.div
                 key={pillar.title}
-                className="feed-card rounded-xl p-6"
+                className="feed-card rounded-xl p-6 text-center"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <pillar.icon className="w-8 h-8 text-primary mb-4" />
+                <pillar.icon className="w-8 h-8 text-primary mb-4 mx-auto" />
                 <h3 className="font-serif font-semibold text-lg mb-2">{pillar.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{pillar.desc}</p>
               </motion.div>
@@ -324,6 +362,7 @@ const TIERS = [
     href: '/login?tab=signup',
     features: ['Community Forum', 'Artist Resources', 'Sync Quiz', 'Public Artist Profile'],
     highlighted: false,
+    external: false,
   },
   {
     name: 'Creator Accelerator',
@@ -333,15 +372,18 @@ const TIERS = [
     href: 'https://www.patreon.com/modernnostalgiaclub',
     features: ['Everything in Lab Pass', 'Full Classroom', 'Studio Floor Submissions', 'Beat Library'],
     highlighted: true,
+    external: true,
   },
   {
-    name: 'Creative Economy Lab',
-    price: '$30/mo',
-    desc: 'The complete institutional experience for serious artists.',
-    cta: 'Join the Lab',
-    href: 'https://www.patreon.com/modernnostalgiaclub',
-    features: ['Everything in Accelerator', 'Catalog Audit Service', 'Direct Strategy Sessions', 'Priority Review'],
+    name: 'Artist Incubator',
+    price: '$150',
+    desc: 'One-time payment. By application only — for serious artists ready to level up.',
+    cta: 'Apply Now',
+    href: 'https://pci.jotform.com/form/253309376850058',
+    features: ['Everything in Accelerator', 'Catalog Audit Service', 'Direct Strategy Sessions', 'Priority Review', 'Application-Based Admission'],
     highlighted: false,
+    external: true,
+    badge: 'One-Time',
   },
 ];
 
@@ -391,6 +433,14 @@ function PricingSection() {
                     </span>
                   </div>
                 )}
+                {'badge' in tier && tier.badge && (
+                  <div className="absolute top-4 right-4">
+                    <span className="text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full"
+                      style={{ background: 'hsl(142 70% 45% / 0.2)', color: 'hsl(142 70% 65%)', border: '1px solid hsl(142 70% 45% / 0.3)' }}>
+                      {tier.badge}
+                    </span>
+                  </div>
+                )}
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">{tier.name}</p>
                 <p className="text-4xl font-serif font-bold mb-2">{tier.price}</p>
                 <p className="text-sm text-muted-foreground mb-6 flex-shrink-0">{tier.desc}</p>
@@ -407,7 +457,7 @@ function PricingSection() {
                   className="w-full"
                   asChild
                 >
-                  {tier.href.startsWith('http')
+                  {tier.external
                     ? <a href={tier.href} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
                     : <Link to={tier.href}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                   }
@@ -456,12 +506,12 @@ export default function LandingPage() {
 
           <div className="container mx-auto px-6 relative z-10 pt-28 pb-20">
             <motion.div
-              className="max-w-4xl"
+              className="max-w-4xl mx-auto text-center"
               initial="hidden"
               animate="visible"
               variants={stagger}
             >
-              <motion.div variants={fadeIn} className="mb-8">
+              <motion.div variants={fadeIn} className="mb-8 flex justify-center">
                 <img
                   src={logoCream}
                   alt="ModernNostalgia.club"
@@ -469,7 +519,7 @@ export default function LandingPage() {
                 />
               </motion.div>
 
-              <motion.div variants={fadeIn}>
+              <motion.div variants={fadeIn} className="flex justify-center">
                 <SectionLabel className="mb-5">Creative Economy Lab</SectionLabel>
               </motion.div>
 
@@ -489,14 +539,14 @@ export default function LandingPage() {
               </motion.h1>
 
               <motion.p
-                className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl leading-relaxed"
+                className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
                 variants={fadeIn}
               >
                 Training, systems, and professional workflows for independent artists building sustainable music careers.
               </motion.p>
 
               <motion.div
-                className="flex flex-col sm:flex-row items-start gap-4"
+                className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 variants={fadeIn}
               >
                 <Button
@@ -533,6 +583,9 @@ export default function LandingPage() {
 
         {/* ── The Feed ─────────────────────────────────────────────── */}
         <TheFeed />
+
+        {/* ── MNC Playlist ─────────────────────────────────────────── */}
+        <MNCPlaylist />
 
         {/* ── Artist Grid ──────────────────────────────────────────── */}
         <ArtistGrid />
