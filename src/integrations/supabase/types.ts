@@ -81,8 +81,11 @@ export type Database = {
           is_email_gated: boolean | null
           is_for_licensing: boolean | null
           is_published: boolean | null
+          mp3_storage_paths: Json | null
           price: number | null
           sections: Json | null
+          show_add_to_disco_button: boolean
+          show_in_landing_player: boolean
           sort_order: number | null
           title: string
           track_type: string | null
@@ -100,8 +103,11 @@ export type Database = {
           is_email_gated?: boolean | null
           is_for_licensing?: boolean | null
           is_published?: boolean | null
+          mp3_storage_paths?: Json | null
           price?: number | null
           sections?: Json | null
+          show_add_to_disco_button?: boolean
+          show_in_landing_player?: boolean
           sort_order?: number | null
           title: string
           track_type?: string | null
@@ -119,8 +125,11 @@ export type Database = {
           is_email_gated?: boolean | null
           is_for_licensing?: boolean | null
           is_published?: boolean | null
+          mp3_storage_paths?: Json | null
           price?: number | null
           sections?: Json | null
+          show_add_to_disco_button?: boolean
+          show_in_landing_player?: boolean
           sort_order?: number | null
           title?: string
           track_type?: string | null
@@ -1228,18 +1237,34 @@ export type Database = {
           youtube: string
         }[]
       }
+      get_landing_player_tracks: {
+        Args: never
+        Returns: {
+          artist_name: string
+          cover_art_url: string
+          duration: string
+          id: string
+          mp3_storage_paths: Json
+          sort_order: number
+          title: string
+          track_type: string
+          versions: Json
+        }[]
+      }
       get_public_artist_tracks: {
         Args: { p_username: string }
         Returns: {
           artist_name: string
           cover_art_url: string
           created_at: string
+          disco_url: string
           duration: string
           id: string
           is_email_gated: boolean
           is_for_licensing: boolean
           price: number
           sections: Json
+          show_add_to_disco_button: boolean
           sort_order: number
           title: string
           track_type: string
