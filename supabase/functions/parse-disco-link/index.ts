@@ -56,8 +56,9 @@ Deno.serve(async (req) => {
       userId = user.id;
     }
 
-    const body = await req.json();
-    const { disco_url } = body;
+    // Body may have been consumed already in the service-role branch; use _parsedBody if set
+    const body = (req as unknown as { _parsedBody?: Record<string, unknown> })._parsedBody ?? await req.json();
+    const { disco_url } = body as { disco_url?: string };
 
     if (!disco_url || !isDiscoUrl(disco_url)) {
       return new Response(JSON.stringify({ error: 'Invalid DISCO URL. Must be a disco.ac link (e.g. s.disco.ac/..., artist.disco.ac/e/p/..., or disco.ac/...).' }), {
