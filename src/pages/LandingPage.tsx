@@ -217,16 +217,24 @@ function MNCPlaylist() {
               </div>
             </div>
 
-            {/* DISCO embed */}
-            <div className="relative" style={{ paddingBottom: '56.25%', height: 0 }}>
-              <iframe
-                src="https://geohworks.disco.ac/e/p/26502910"
-                title="Songs by MN.C Members"
-                className="absolute inset-0 w-full h-full"
-                allow="autoplay; clipboard-write; encrypted-media"
-                style={{ border: 'none' }}
-              />
-            </div>
+            {/* DISCO playlist link — iframe embedding is blocked by DISCO */}
+            <a
+              href="https://geohworks.disco.ac/e/p/26502910"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-5 py-4 rounded-xl bg-muted/40 border border-border hover:bg-muted/70 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Play className="w-4 h-4 text-primary fill-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Songs by MN.C Members</p>
+                  <p className="text-xs text-muted-foreground">Open playlist on DISCO ↗</p>
+                </div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+            </a>
           </div>
         </motion.div>
       </div>
