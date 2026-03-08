@@ -50,6 +50,8 @@ interface PublicTrack {
   is_email_gated: boolean;
   is_for_licensing: boolean;
   sort_order: number;
+  show_add_to_disco_button: boolean;
+  disco_url: string | null;
 }
 
 const BUDGET_RANGES = [
