@@ -26,8 +26,61 @@ Deno.serve(async (req) => {
   );
 
   try {
-    const { disco_url, user_id, show_in_landing_player = true } = await req.json();
+    const body = await req.json();
+    const { disco_url, user_id, show_in_landing_player = true, track_id: existingTrackId } = body;
 
+    // ── Mode: ingest existing track's versions from storage ──────────────────
+    if (existingTrackId) {
+      const { data: existingTrack } = await supabase
+        .from('artist_tracks')
+        .select('id, versions')
+        .eq('id', existingTrackId)
+        .single();
+
+      if (!existingTrack) {
+        return new Response(JSON.stringify({ error: 'Track not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      const existingVersions = (existingTrack.versions as { name: string; version_tag: string; duration: string; mp3_url: string }[]) || [];
+      const storagePaths: { version_name: string; version_tag: string; storage_path: string }[] = [];
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const version of existingVersions) {
+        if (!version.mp3_url) { failCount++; continue; }
+        try {
+          const fileResp = await fetch(version.mp3_url, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+          });
+          if (!fileResp.ok) { console.error(`MP3 fetch failed: ${fileResp.status} for ${version.mp3_url}`); failCount++; continue; }
+
+          const arrayBuffer = await fileResp.arrayBuffer();
+          const safeName = version.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+          const storagePath = `${existingTrackId}/${safeName}.mp3`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('track-audio')
+            .upload(storagePath, new Uint8Array(arrayBuffer), { contentType: 'audio/mpeg', upsert: true });
+
+          if (uploadError) { console.error('Upload error:', uploadError); failCount++; continue; }
+
+          storagePaths.push({ version_name: version.name, version_tag: version.version_tag, storage_path: storagePath });
+          successCount++;
+        } catch (err) { console.error('Error:', err); failCount++; }
+      }
+
+      if (storagePaths.length > 0) {
+        await supabase.from('artist_tracks').update({ mp3_storage_paths: storagePaths }).eq('id', existingTrackId);
+      }
+
+      return new Response(JSON.stringify({ success: true, track_id: existingTrackId, ingested: successCount, failed: failCount, storage_paths: storagePaths }), {
+        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // ── Mode: parse + insert + ingest from disco_url ──────────────────────────
     if (!disco_url || !isDiscoUrl(disco_url)) {
       return new Response(JSON.stringify({ error: 'Invalid disco_url' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
