@@ -196,7 +196,6 @@ export function MNCPlayer() {
               onCanPlay={() => setIsBuffering(false)}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
-              volume={isMuted ? 0 : volume}
             />
           )}
 
