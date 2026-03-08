@@ -105,6 +105,10 @@ export default function Admin() {
                 <Music className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Tracks
               </TabsTrigger>
+              <TabsTrigger value="artist-tracks" className="gap-2" aria-label="Manage artist tracks">
+                <Music className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Artist Tracks
+              </TabsTrigger>
               <TabsTrigger value="submissions" className="gap-2" aria-label="Review submissions">
                 <Users className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Submissions
