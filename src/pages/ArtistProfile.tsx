@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import {
   Instagram, Music2, ExternalLink, Download, Mail,
   DollarSign, Youtube, Headphones, Heart, Send,
-  ChevronDown, ChevronUp, Play, Users, Loader2
+  ChevronDown, ChevronUp, Play, Users, Loader2, ListMusic
 } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 

@@ -179,6 +179,10 @@ export default function Admin() {
               <TracksManager />
             </TabsContent>
 
+            <TabsContent value="artist-tracks">
+              <AdminArtistTracks />
+            </TabsContent>
+
             <TabsContent value="submissions">
               <SubmissionsReviewer />
             </TabsContent>
