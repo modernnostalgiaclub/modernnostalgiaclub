@@ -2,10 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, SkipBack, SkipForward,
-  Volume2, VolumeX, Music2, Loader2, ExternalLink
+  Volume2, VolumeX, Music2, Loader2
 } from 'lucide-react';
 
 interface PlayerTrack {
