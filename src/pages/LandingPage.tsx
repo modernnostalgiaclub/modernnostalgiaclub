@@ -21,6 +21,7 @@ import {
   Lock,
   Music,
 } from 'lucide-react';
+import { MNCPlayer } from '@/components/MNCPlayer';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
@@ -175,72 +176,6 @@ function TheFeed() {
   );
 }
 
-// ── MNC Playlist Embed ────────────────────────────────────────────────────────
-function MNCPlaylist() {
-  return (
-    <section className="py-20 border-t border-border/30">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto"
-        >
-          {/* Music player HUD */}
-          <div className="rounded-2xl overflow-hidden border border-border/40"
-            style={{ background: 'hsl(222 47% 6%)', boxShadow: '0 0 40px hsl(217 100% 50% / 0.08)' }}>
-            {/* Header bar */}
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30"
-              style={{ background: 'hsl(222 47% 4%)' }}>
-              <div className="flex items-center justify-center w-8 h-8 rounded-full"
-                style={{ background: 'hsl(217 100% 50% / 0.15)' }}>
-                <Music className="w-4 h-4" style={{ color: 'hsl(217 100% 65%)' }} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-0.5">Now Playing</p>
-                <p className="font-serif font-semibold text-sm truncate">Songs by MN.C Members</p>
-              </div>
-              {/* Animated play dots */}
-              <div className="flex items-end gap-0.5 h-5">
-                {[1, 2, 3, 4].map(n => (
-                  <span
-                    key={n}
-                    className="w-1 rounded-full"
-                    style={{
-                      background: 'hsl(217 100% 60%)',
-                      height: `${[60, 100, 40, 80][n - 1]}%`,
-                      animation: `bounce ${0.6 + n * 0.1}s ease-in-out infinite alternate`,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* DISCO playlist link — iframe embedding is blocked by DISCO */}
-            <a
-              href="https://geohworks.disco.ac/e/p/26502910"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between px-5 py-4 rounded-xl bg-muted/40 border border-border hover:bg-muted/70 transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Play className="w-4 h-4 text-primary fill-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">Songs by MN.C Members</p>
-                  <p className="text-xs text-muted-foreground">Open playlist on DISCO ↗</p>
-                </div>
-              </div>
-              <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-            </a>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
 
 // ── Artist Grid (Members-Only) ────────────────────────────────────────────────
 // Placeholder avatars for blurred preview
@@ -592,8 +527,8 @@ export default function LandingPage() {
         {/* ── The Feed ─────────────────────────────────────────────── */}
         <TheFeed />
 
-        {/* ── MNC Playlist ─────────────────────────────────────────── */}
-        <MNCPlaylist />
+        {/* ── MNC Player ───────────────────────────────────────────── */}
+        <MNCPlayer />
 
         {/* ── Artist Grid ──────────────────────────────────────────── */}
         <ArtistGrid />

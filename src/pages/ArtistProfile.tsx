@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import {
   Instagram, Music2, ExternalLink, Download, Mail,
   DollarSign, Youtube, Headphones, Heart, Send,
-  ChevronDown, ChevronUp, Play, Users, Loader2
+  ChevronDown, ChevronUp, Play, Users, Loader2, ListMusic
 } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 
@@ -50,6 +50,8 @@ interface PublicTrack {
   is_email_gated: boolean;
   is_for_licensing: boolean;
   sort_order: number;
+  show_add_to_disco_button: boolean;
+  disco_url: string | null;
 }
 
 const BUDGET_RANGES = [
@@ -441,6 +443,25 @@ export default function ArtistProfile() {
                             {expandedTracks.has(track.id) ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                             {track.versions.length} versions
                           </Button>
+                        )}
+
+                        {/* Add to DISCO button — shown to music supervisors when enabled */}
+                        {track.show_add_to_disco_button && track.disco_url && (
+                          <a
+                            href={track.disco_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              size="sm"
+                              variant="maroonOutline"
+                              className="gap-1.5"
+                              title="Add to your DISCO library"
+                            >
+                              <ListMusic className="w-3.5 h-3.5" />
+                              Add to DISCO
+                            </Button>
+                          </a>
                         )}
                       </div>
 
