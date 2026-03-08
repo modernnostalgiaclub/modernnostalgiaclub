@@ -155,12 +155,12 @@ export function AdminArtistTracks() {
                       {/* Audio storage status */}
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
                         {hasStoredAudio ? (
-                          <span className="flex items-center gap-1 text-xs text-emerald-500">
+                          <span className="flex items-center gap-1 text-xs text-primary">
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             {storagePaths.length} version{storagePaths.length !== 1 ? 's' : ''} stored
                           </span>
                         ) : hasMp3Urls ? (
-                          <span className="flex items-center gap-1 text-xs text-amber-500">
+                          <span className="flex items-center gap-1 text-xs text-foreground/60">
                             <Download className="w-3.5 h-3.5" />
                             MP3 URLs found — ready to ingest
                           </span>
