@@ -80,15 +80,26 @@ export function MNCPlayer() {
     setAudioUrl(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('artist-track-download', {
-        body: { track_id: track.id, version_index: versionIndex }
+      // Use fetch directly so we get a proper binary Response (invoke() wraps data and loses Content-Type)
+      const { data: { session } } = await supabase.auth.getSession();
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const fnUrl = `https://${projectId}.supabase.co/functions/v1/artist-track-download`;
+
+      const resp = await fetch(fnUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ track_id: track.id, version_index: versionIndex }),
       });
 
-      if (error) return;
+      if (!resp.ok) return;
 
-      // The function returns a binary response — convert to blob URL
-      if (data instanceof Blob) {
-        const url = URL.createObjectURL(data);
+      const blob = await resp.blob();
+      if (blob.size > 0) {
+        const url = URL.createObjectURL(blob);
         objectUrlRef.current = url;
         setAudioUrl(url);
       }
