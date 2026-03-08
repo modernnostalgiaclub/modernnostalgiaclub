@@ -101,6 +101,16 @@ export default function Store() {
               </p>
             </motion.div>
 
+            {/* Legal Disclaimer */}
+            <motion.div variants={fadeIn} className="mb-10">
+              <div className="flex items-start gap-3 bg-secondary/40 border border-border rounded-lg px-5 py-4">
+                <span className="text-muted-foreground mt-0.5 shrink-0 text-base">⚖️</span>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <span className="font-semibold text-foreground">Legal Disclaimer:</span> We are not lawyers. Nothing in this store constitutes legal advice. The templates and documents provided — including the Split Sheet and One Stop Agreement — are designed to give independent artists a practical starting point for documenting splits and licensing terms. They are not a substitute for professional legal counsel. If your situation is complex or involves significant money, we strongly recommend consulting a music attorney.
+                </p>
+              </div>
+            </motion.div>
+
             {/* Products Grid — 4 columns */}
             <motion.div variants={fadeIn} className="mb-16">
               <h2 className="text-2xl font-display mb-8">Resources &amp; Templates</h2>
