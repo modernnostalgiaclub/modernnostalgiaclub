@@ -2,10 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, SkipBack, SkipForward,
-  Volume2, VolumeX, Music2, Loader2, ExternalLink
+  Volume2, VolumeX, Music2, Loader2
 } from 'lucide-react';
 
 interface PlayerTrack {
@@ -177,13 +176,7 @@ export function MNCPlayer() {
   return (
     <section className="py-20 border-t border-border/30">
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto"
-        >
+        <div className="max-w-3xl mx-auto">
           {/* Hidden audio element */}
           {audioUrl && (
             <audio
@@ -201,17 +194,14 @@ export function MNCPlayer() {
           )}
 
           {loading ? (
-            <div className="rounded-2xl overflow-hidden border border-border/40 h-48 flex items-center justify-center"
-              style={{ background: 'hsl(222 47% 6%)' }}>
+            <div className="rounded-2xl overflow-hidden border border-border/40 h-48 flex items-center justify-center bg-card">
               <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
             </div>
           ) : (
-            <div className="rounded-2xl overflow-hidden border border-border/40"
-              style={{ background: 'hsl(222 47% 6%)', boxShadow: '0 0 40px hsl(var(--primary) / 0.08)' }}>
+            <div className="rounded-2xl overflow-hidden border border-border/40 bg-card shadow-lg">
 
               {/* Header bar */}
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30"
-                style={{ background: 'hsl(222 47% 4%)' }}>
+              <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30 bg-muted/30">
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/15">
                   <Music2 className="w-4 h-4 text-primary" />
                 </div>
@@ -236,50 +226,44 @@ export function MNCPlayer() {
               </div>
 
               {/* Now playing */}
-              <AnimatePresence mode="wait">
-                {currentTrack && (
-                  <motion.div
-                    key={currentTrack.id}
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex items-center gap-4 px-5 py-4"
-                  >
-                    {/* Cover art */}
-                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted shrink-0">
-                      {currentTrack.cover_art_url ? (
-                        <img src={currentTrack.cover_art_url} alt={currentTrack.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-primary/10">
-                          <Music2 className="w-6 h-6 text-primary" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Track info */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-serif font-semibold text-sm truncate">{currentTrack.title}</h3>
-                      {currentTrack.artist_name && (
-                        <p className="text-xs text-muted-foreground truncate mt-0.5">{currentTrack.artist_name}</p>
-                      )}
-                      {/* Progress bar */}
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="text-xs text-muted-foreground w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
-                        <Slider
-                          value={[progressPct]}
-                          onValueChange={handleSeek}
-                          min={0}
-                          max={100}
-                          step={0.1}
-                          className="flex-1 h-1"
-                        />
-                        <span className="text-xs text-muted-foreground w-8 tabular-nums">{formatTime(duration)}</span>
+              {currentTrack && (
+                <div
+                  key={currentTrack.id}
+                  className="flex items-center gap-4 px-5 py-4 transition-opacity duration-200"
+                >
+                  {/* Cover art */}
+                  <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted shrink-0">
+                    {currentTrack.cover_art_url ? (
+                      <img src={currentTrack.cover_art_url} alt={currentTrack.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                        <Music2 className="w-6 h-6 text-primary" />
                       </div>
+                    )}
+                  </div>
+
+                  {/* Track info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif font-semibold text-sm truncate">{currentTrack.title}</h3>
+                    {currentTrack.artist_name && (
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{currentTrack.artist_name}</p>
+                    )}
+                    {/* Progress bar */}
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs text-muted-foreground w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
+                      <Slider
+                        value={[progressPct]}
+                        onValueChange={handleSeek}
+                        min={0}
+                        max={100}
+                        step={0.1}
+                        className="flex-1 h-1"
+                      />
+                      <span className="text-xs text-muted-foreground w-8 tabular-nums">{formatTime(duration)}</span>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </div>
+              )}
 
               {/* Controls */}
               <div className="flex items-center justify-between px-5 pb-4">
@@ -343,8 +327,7 @@ export function MNCPlayer() {
 
               {/* Track list */}
               {tracks.length > 1 && (
-                <div className="border-t border-border/30 px-5 py-3"
-                  style={{ background: 'hsl(222 47% 4%)' }}>
+                <div className="border-t border-border/30 px-5 py-3 bg-muted/20">
                   <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                     {tracks.map((t, i) => (
                       <button
@@ -375,7 +358,7 @@ export function MNCPlayer() {
               )}
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
