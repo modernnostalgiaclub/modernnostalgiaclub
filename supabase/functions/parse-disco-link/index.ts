@@ -204,7 +204,7 @@ Deno.serve(async (req) => {
 
     // ─── Store in database (with MP3 URLs) ──────────────────────────────────
     const insertData = {
-      user_id: user.id,
+      user_id: userId,
       title: title.slice(0, 255),
       artist_name: artistName?.slice(0, 255) || null,
       disco_url: disco_url,
