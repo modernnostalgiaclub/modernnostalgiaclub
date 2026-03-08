@@ -2,12 +2,22 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
+
+// Accept any disco.ac URL variant
+function isDiscoUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.endsWith('disco.ac') || parsed.hostname === 'disco.ac';
+  } catch {
+    return false;
+  }
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
@@ -41,8 +51,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { disco_url } = body;
 
-    if (!disco_url || !disco_url.includes('s.disco.ac')) {
-      return new Response(JSON.stringify({ error: 'Invalid DISCO URL. Must be an s.disco.ac link.' }), {
+    if (!disco_url || !isDiscoUrl(disco_url)) {
+      return new Response(JSON.stringify({ error: 'Invalid DISCO URL. Must be a disco.ac link (e.g. s.disco.ac/..., artist.disco.ac/e/p/..., or disco.ac/...).' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
@@ -98,14 +108,10 @@ Deno.serve(async (req) => {
     const versionsPublic: { name: string; version_tag: string; duration: string }[] = [];
 
     if (trackType === 'single') {
-      // Find download links with trackfiles
-      const downloadLinkRegex = /href="(https?:\/\/[^"]*(?:download2|trackfiles)[^"]*)"[^>]*>.*?<\/a>/gis;
-      const versionBlockRegex = /class="[^"]*version[^"]*"[^>]*>([\s\S]*?)(?=class="[^"]*version[^"]*"|<\/[^>]+>$)/gi;
-
       // Extract all MP3 download URLs
       const mp3Urls: string[] = [];
-      let dlMatch;
       const dlRegex = /href="(https?:\/\/[^"]*(?:trackfile|download)[^"]*\.mp3[^"]*)"/gi;
+      let dlMatch;
       while ((dlMatch = dlRegex.exec(html)) !== null) {
         mp3Urls.push(dlMatch[1]);
       }
@@ -188,7 +194,6 @@ Deno.serve(async (req) => {
     }
 
     // ─── Store in database (with MP3 URLs) ──────────────────────────────────
-    // We store the full data including disco_url and MP3 URLs — only owner/admin can read
     const insertData = {
       user_id: user.id,
       title: title.slice(0, 255),
@@ -204,7 +209,10 @@ Deno.serve(async (req) => {
       is_email_gated: false,
       is_for_licensing: false,
       is_published: true,
-      sort_order: 0
+      sort_order: 0,
+      show_in_landing_player: false,
+      show_add_to_disco_button: false,
+      mp3_storage_paths: [],
     };
 
     const { data: track, error: insertError } = await supabase
@@ -231,7 +239,9 @@ Deno.serve(async (req) => {
       versions: versionsPublic,
       sections: sectionsPublic,
       version_count: versionsPublic.length,
-      track_count: sectionsPublic.reduce((sum, s) => sum + s.track_count, 0)
+      track_count: sectionsPublic.reduce((sum, s) => sum + s.track_count, 0),
+      // Inform admin whether MP3 URLs were found
+      has_mp3_urls: versionsMp3.some(v => v.mp3_url) || sectionsMp3.some(s => s.tracks.some(t => t.mp3_url)),
     };
 
     return new Response(JSON.stringify({ success: true, track: publicMetadata }), {
