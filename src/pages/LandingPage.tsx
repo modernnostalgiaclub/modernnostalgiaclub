@@ -527,8 +527,8 @@ export default function LandingPage() {
         {/* ── The Feed ─────────────────────────────────────────────── */}
         <TheFeed />
 
-        {/* ── MNC Playlist ─────────────────────────────────────────── */}
-        <MNCPlaylist />
+        {/* ── MNC Player ───────────────────────────────────────────── */}
+        <MNCPlayer />
 
         {/* ── Artist Grid ──────────────────────────────────────────── */}
         <ArtistGrid />
