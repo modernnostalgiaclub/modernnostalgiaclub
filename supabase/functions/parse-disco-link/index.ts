@@ -29,23 +29,31 @@ Deno.serve(async (req) => {
       });
     }
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(Deno.env.get('SUPABASE_URL')!, serviceRoleKey);
+    const token = authHeader.replace('Bearer ', '');
 
-    // Get user from JWT
-    const anonClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!
-    );
-    const { data: { user }, error: authError } = await anonClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    );
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+    let userId: string;
+
+    if (token === serviceRoleKey) {
+      // Internal/admin call — use the track owner's user_id from the body if provided
+      const body = await req.json();
+      userId = body.user_id || '00000000-0000-0000-0000-000000000000';
+      // Re-attach body for later use
+      Object.defineProperty(req, '_parsedBody', { value: body, writable: false });
+    } else {
+      // Get user from JWT
+      const anonClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!
+      );
+      const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+      userId = user.id;
     }
 
     const body = await req.json();
