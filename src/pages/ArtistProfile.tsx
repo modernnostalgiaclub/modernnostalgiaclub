@@ -444,6 +444,25 @@ export default function ArtistProfile() {
                             {track.versions.length} versions
                           </Button>
                         )}
+
+                        {/* Add to DISCO button — shown to music supervisors when enabled */}
+                        {track.show_add_to_disco_button && track.disco_url && (
+                          <a
+                            href={track.disco_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              size="sm"
+                              variant="maroonOutline"
+                              className="gap-1.5"
+                              title="Add to your DISCO library"
+                            >
+                              <ListMusic className="w-3.5 h-3.5" />
+                              Add to DISCO
+                            </Button>
+                          </a>
+                        )}
                       </div>
 
                       {/* Expanded versions */}
