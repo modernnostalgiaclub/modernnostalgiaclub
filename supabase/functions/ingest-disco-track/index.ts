@@ -19,38 +19,42 @@ Deno.serve(async (req) => {
       });
     }
 
-    const anonClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!
-    );
     const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await anonClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    const userId = claimsData.claims.sub;
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
     // Use service role for all DB/storage ops
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      serviceRoleKey
     );
 
-    // Check admin role
-    const { data: roleData } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId)
-      .eq('role', 'admin')
-      .single();
+    // Allow direct service-role calls (internal/admin tool use)
+    // Otherwise verify the JWT belongs to an admin user
+    if (token !== serviceRoleKey) {
+      const anonClient = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!
+      );
+      const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
 
-    if (!roleData) {
-      return new Response(JSON.stringify({ error: 'Admin access required' }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+      // Check admin role
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .single();
+
+      if (!roleData) {
+        return new Response(JSON.stringify({ error: 'Admin access required' }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     const body = await req.json();
