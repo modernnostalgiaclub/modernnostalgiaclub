@@ -237,8 +237,11 @@ export function MyMusicTab() {
   };
 
   const handleParseDiscoLink = async () => {
-    if (!discoUrl || !discoUrl.includes('s.disco.ac')) {
-      toast.error('Please enter a valid s.disco.ac share link');
+    const isDiscoUrl = (() => {
+      try { return new URL(discoUrl).hostname.endsWith('disco.ac'); } catch { return false; }
+    })();
+    if (!discoUrl || !isDiscoUrl) {
+      toast.error('Please enter a valid DISCO link (e.g. s.disco.ac/... or artist.disco.ac/e/p/...)');
       return;
     }
     setParsing(true);
