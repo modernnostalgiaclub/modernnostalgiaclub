@@ -18,13 +18,13 @@ export function MNCPlayer() {
           </div>
 
           {/* DISCO embed */}
-          <div className="rounded-2xl overflow-hidden border border-border/40 shadow-lg mx-auto max-w-[480px]">
+          <div className="rounded-2xl overflow-hidden border border-border/40 shadow-lg mx-auto max-w-[500px]">
             <iframe
               id="disco-playlist-28389354"
               name="disco-playlist-28389354"
               src="https://geohworks.disco.ac/e/p/28389354?download=false&s=vkGsc11Q4t-yDoVG_oa3knlKgXY%3A2zm102ef&artwork=true&color=%234E98FF&theme=dark"
               width="100%"
-              height="395"
+              height="800"
               allowFullScreen
               frameBorder="0"
               className="disco-embed block"
