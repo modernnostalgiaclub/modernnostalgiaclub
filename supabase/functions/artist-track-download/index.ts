@@ -46,8 +46,6 @@ Deno.serve(async (req) => {
           status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
-
-      // Record the access
       await supabase.from('artist_track_access').insert({
         track_id,
         email: email.toLowerCase(),
@@ -57,7 +55,7 @@ Deno.serve(async (req) => {
 
     // ─── Payment check ──────────────────────────────────────────────────────
     if (track.price > 0) {
-      return new Response(JSON.stringify({ 
+      return new Response(JSON.stringify({
         error: 'Paid downloads require Stripe setup (coming soon)',
         requires_payment: true,
         price: track.price
@@ -66,37 +64,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ─── Try storage paths first (ingested MP3s) ─────────────────────────────
+    // ─── Try storage paths first — return a short-lived signed URL ───────────
     const storagePaths = (track.mp3_storage_paths as { version_name: string; version_tag: string; storage_path: string }[]) || [];
 
     if (storagePaths.length > 0) {
       const targetPath = storagePaths[version_index] || storagePaths[0];
 
-      // Download from private storage
-      const { data: fileData, error: downloadError } = await supabase.storage
+      const { data: signedData, error: signError } = await supabase.storage
         .from('track-audio')
-        .download(targetPath.storage_path);
+        .createSignedUrl(targetPath.storage_path, 3600); // 1-hour expiry
 
-      if (!downloadError && fileData) {
-        const arrayBuffer = await fileData.arrayBuffer();
-        const filename = `${track.title.replace(/[^a-z0-9]/gi, '_')}_${targetPath.version_name.replace(/[^a-z0-9]/gi, '_')}.mp3`;
-
-        return new Response(arrayBuffer, {
+      if (!signError && signedData?.signedUrl) {
+        return new Response(JSON.stringify({ signed_url: signedData.signedUrl }), {
           status: 200,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'audio/mpeg',
-            'Content-Disposition': `inline; filename="${filename}"`,
-            'Cache-Control': 'no-store',
-            'Accept-Ranges': 'bytes',
-          }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
-      // Fall through to DISCO CDN if storage fails
-      console.warn('Storage download failed, falling back to DISCO CDN:', downloadError);
+      console.warn('Signed URL creation failed, falling back to DISCO CDN:', signError);
     }
 
-    // ─── Fall back to parsing MP3 URL from stored versions ──────────────────
+    // ─── Fall back to public MP3 URL from stored versions ───────────────────
     let mp3Url: string | null = null;
 
     if (track.track_type === 'single') {
@@ -106,7 +93,7 @@ Deno.serve(async (req) => {
         mp3Url = targetVersion?.mp3_url || null;
       }
     } else if (track.track_type === 'playlist') {
-      return new Response(JSON.stringify({ 
+      return new Response(JSON.stringify({
         error: 'Playlist downloads are not yet supported',
         message: 'Please use the DISCO embed player to listen.'
       }), {
@@ -115,7 +102,7 @@ Deno.serve(async (req) => {
     }
 
     if (!mp3Url) {
-      return new Response(JSON.stringify({ 
+      return new Response(JSON.stringify({
         error: 'No downloadable file found',
         fallback_url: track.disco_url
       }), {
@@ -123,27 +110,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ─── Proxy the MP3 file from DISCO CDN ───────────────────────────────────
-    const fileResponse = await fetch(mp3Url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MNCBot/1.0)' }
-    });
-
-    if (!fileResponse.ok) {
-      return new Response(JSON.stringify({ error: 'Failed to fetch audio file' }), {
-        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    const filename = `${track.title.replace(/[^a-z0-9]/gi, '_')}.mp3`;
-
-    return new Response(fileResponse.body, {
+    // Return the DISCO CDN URL directly so the browser can stream it natively
+    return new Response(JSON.stringify({ signed_url: mp3Url }), {
       status: 200,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'audio/mpeg',
-        'Content-Disposition': `inline; filename="${filename}"`,
-        'Cache-Control': 'no-store'
-      }
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (err) {
