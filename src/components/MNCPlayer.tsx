@@ -107,14 +107,14 @@ export function MNCPlayer() {
         setIsPlaying(false);
       } else {
         audioRef.current.play().catch(() => setIsPlaying(false));
-        setIsPlaying(true);
       }
     }
   }, [currentTrack, audioUrl, loadingTrack, isPlaying, fetchAudio]);
 
-  // Auto-play once audio URL is set
+  // Auto-play once audio URL is set — clear buffering flag first
   useEffect(() => {
     if (audioUrl && audioRef.current && !loadingTrack) {
+      setIsBuffering(false);
       audioRef.current.play()
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
