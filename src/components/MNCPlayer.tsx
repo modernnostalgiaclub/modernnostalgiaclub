@@ -17,18 +17,16 @@ export function MNCPlayer() {
             </div>
           </div>
 
-          {/* DISCO embed */}
-          <div className="rounded-2xl overflow-hidden border border-border/40 shadow-lg mx-auto max-w-[500px]">
+          {/* HRMNY embed */}
+          <div className="mx-auto max-w-[400px]">
             <iframe
-              id="disco-playlist-28389354"
-              name="disco-playlist-28389354"
-              src="https://geohworks.disco.ac/e/p/28389354?download=false&s=vkGsc11Q4t-yDoVG_oa3knlKgXY%3A2zm102ef&artwork=true&color=%234E98FF&theme=dark"
+              src="https://cfb99341-687d-445e-a1bb-8e44c3f5b56a-00-26mzj8kream7k.worf.replit.dev/embed/manager/b2e20348-2813-46d7-996e-e3d3f9fde44d"
               width="100%"
-              height="800"
-              allowFullScreen
+              height="240"
               frameBorder="0"
-              className="disco-embed block"
-              title="MN.C Member Tracks"
+              allow="autoplay; encrypted-media"
+              style={{ borderRadius: '12px', overflow: 'hidden' }}
+              title="modernnostalgiaclub - HRMNY"
             />
           </div>
 
