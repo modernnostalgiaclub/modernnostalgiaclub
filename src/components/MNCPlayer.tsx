@@ -275,9 +275,9 @@ export function MNCPlayer() {
                     size="icon"
                     className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90"
                     onClick={handlePlay}
-                    disabled={loadingTrack || isBuffering || !currentTrack}
+                    disabled={loadingTrack || !currentTrack}
                   >
-                    {loadingTrack || isBuffering ? (
+                    {loadingTrack ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : isPlaying ? (
                       <Pause className="w-4 h-4" />
