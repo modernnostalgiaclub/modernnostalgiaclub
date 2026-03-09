@@ -18,11 +18,11 @@ export function MNCPlayer() {
           </div>
 
           {/* HRMNY embed */}
-          <div className="mx-auto max-w-[400px]">
+          <div className="mx-auto max-w-[500px]">
             <iframe
               src="https://cfb99341-687d-445e-a1bb-8e44c3f5b56a-00-26mzj8kream7k.worf.replit.dev/embed/manager/b2e20348-2813-46d7-996e-e3d3f9fde44d"
               width="100%"
-              height="240"
+              height="290"
               frameBorder="0"
               allow="autoplay; encrypted-media"
               style={{ borderRadius: '12px', overflow: 'hidden' }}
