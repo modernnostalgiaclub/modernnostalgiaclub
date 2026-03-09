@@ -72,7 +72,7 @@ export function MNCPlayer() {
     setLoadingTrack(true);
     setIsPlaying(false);
 
-    // Revoke previous object URL
+    // Revoke any previous object URL
     if (objectUrlRef.current) {
       URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
@@ -80,7 +80,6 @@ export function MNCPlayer() {
     setAudioUrl(null);
 
     try {
-      // Use fetch directly so we get a proper binary Response (invoke() wraps data and loses Content-Type)
       const { data: { session } } = await supabase.auth.getSession();
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
       const fnUrl = `https://${projectId}.supabase.co/functions/v1/artist-track-download`;
@@ -97,11 +96,9 @@ export function MNCPlayer() {
 
       if (!resp.ok) return;
 
-      const blob = await resp.blob();
-      if (blob.size > 0) {
-        const url = URL.createObjectURL(blob);
-        objectUrlRef.current = url;
-        setAudioUrl(url);
+      const json = await resp.json();
+      if (json.signed_url) {
+        setAudioUrl(json.signed_url);
       }
     } catch {
       // fail silently
