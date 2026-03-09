@@ -96,30 +96,52 @@ export function MNCPlayer() {
   const handlePlay = useCallback(async () => {
     if (!currentTrack) return;
 
-    if (!audioUrl && !loadingTrack) {
-      await fetchAudio(currentTrack);
+    // Toggle play/pause if audio is already loaded
+    if (audioUrl && audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(() => setIsPlaying(false));
+      }
       return;
     }
 
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
+    // Fetch signed URL then play — must stay in user-gesture chain
+    if (!loadingTrack) {
+      setLoadingTrack(true);
+      setIsPlaying(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const resp = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/artist-track-download`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify({ track_id: currentTrack.id, version_index: 0 }),
+          }
+        );
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json.signed_url && audioRef.current) {
+            setAudioUrl(json.signed_url);
+            audioRef.current.src = json.signed_url;
+            audioRef.current.load();
+            await audioRef.current.play();
+            setIsPlaying(true);
+          }
+        }
+      } catch {
         setIsPlaying(false);
-      } else {
-        audioRef.current.play().catch(() => setIsPlaying(false));
-        setIsPlaying(true);
+      } finally {
+        setLoadingTrack(false);
       }
     }
-  }, [currentTrack, audioUrl, loadingTrack, isPlaying, fetchAudio]);
-
-  // Auto-play once audio URL is set
-  useEffect(() => {
-    if (audioUrl && audioRef.current && !loadingTrack) {
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    }
-  }, [audioUrl, loadingTrack]);
+  }, [currentTrack, audioUrl, loadingTrack, isPlaying]);
 
   const handlePrev = () => {
     const newIdx = (currentIndex - 1 + tracks.length) % tracks.length;
@@ -169,21 +191,18 @@ export function MNCPlayer() {
     <section className="py-20 border-t border-border/30">
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto">
-          {/* Hidden audio element */}
-          {audioUrl && (
-            <audio
-              ref={audioRef}
-              src={audioUrl}
-              onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
-              onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
-              onEnded={handleNext}
-              onWaiting={() => setIsBuffering(true)}
-              onCanPlay={() => setIsBuffering(false)}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onVolumeChange={() => {}}
-            />
-          )}
+          {/* Hidden audio element — always mounted so ref is available */}
+          <audio
+            ref={audioRef}
+            src={audioUrl ?? undefined}
+            onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
+            onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
+            onEnded={handleNext}
+            onWaiting={() => setIsBuffering(true)}
+            onCanPlay={() => setIsBuffering(false)}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+          />
 
           {loading ? (
             <div className="rounded-2xl overflow-hidden border border-border/40 h-48 flex items-center justify-center bg-card">
@@ -275,9 +294,9 @@ export function MNCPlayer() {
                     size="icon"
                     className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90"
                     onClick={handlePlay}
-                    disabled={loadingTrack || isBuffering || !currentTrack}
+                    disabled={loadingTrack || !currentTrack}
                   >
-                    {loadingTrack || isBuffering ? (
+                    {loadingTrack ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : isPlaying ? (
                       <Pause className="w-4 h-4" />
