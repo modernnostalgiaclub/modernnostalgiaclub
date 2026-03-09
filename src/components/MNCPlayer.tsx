@@ -171,21 +171,18 @@ export function MNCPlayer() {
     <section className="py-20 border-t border-border/30">
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto">
-          {/* Hidden audio element */}
-          {audioUrl && (
-            <audio
-              ref={audioRef}
-              src={audioUrl}
-              onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
-              onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
-              onEnded={handleNext}
-              onWaiting={() => setIsBuffering(true)}
-              onCanPlay={() => setIsBuffering(false)}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onVolumeChange={() => {}}
-            />
-          )}
+          {/* Hidden audio element — always mounted so ref is available */}
+          <audio
+            ref={audioRef}
+            src={audioUrl ?? undefined}
+            onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
+            onDurationChange={() => setDuration(audioRef.current?.duration ?? 0)}
+            onEnded={handleNext}
+            onWaiting={() => setIsBuffering(true)}
+            onCanPlay={() => setIsBuffering(false)}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+          />
 
           {loading ? (
             <div className="rounded-2xl overflow-hidden border border-border/40 h-48 flex items-center justify-center bg-card">
