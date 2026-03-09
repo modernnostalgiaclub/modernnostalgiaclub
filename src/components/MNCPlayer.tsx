@@ -96,25 +96,27 @@ export function MNCPlayer() {
   const handlePlay = useCallback(async () => {
     if (!currentTrack) return;
 
-    if (!audioUrl && !loadingTrack) {
-      await fetchAudio(currentTrack);
-      return;
-    }
-
-    if (audioRef.current) {
+    // If we already have audio loaded, just toggle play/pause
+    if (audioUrl && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
-        setIsPlaying(false);
       } else {
         audioRef.current.play().catch(() => setIsPlaying(false));
       }
+      return;
+    }
+
+    // Fetch audio URL (first play)
+    if (!loadingTrack) {
+      await fetchAudio(currentTrack);
     }
   }, [currentTrack, audioUrl, loadingTrack, isPlaying, fetchAudio]);
 
-  // Auto-play once audio URL is set — clear buffering flag first
+  // Auto-play once audio URL is set (after fetchAudio resolves)
   useEffect(() => {
     if (audioUrl && audioRef.current && !loadingTrack) {
       setIsBuffering(false);
+      audioRef.current.load(); // ensure src is loaded before play
       audioRef.current.play()
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
