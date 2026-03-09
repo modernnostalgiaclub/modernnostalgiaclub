@@ -96,7 +96,7 @@ export function MNCPlayer() {
   const handlePlay = useCallback(async () => {
     if (!currentTrack) return;
 
-    // If we already have audio loaded, just toggle play/pause
+    // Toggle play/pause if audio is already loaded
     if (audioUrl && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -106,22 +106,42 @@ export function MNCPlayer() {
       return;
     }
 
-    // Fetch audio URL (first play)
+    // Fetch signed URL then play — must stay in user-gesture chain
     if (!loadingTrack) {
-      await fetchAudio(currentTrack);
+      setLoadingTrack(true);
+      setIsPlaying(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const resp = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/artist-track-download`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify({ track_id: currentTrack.id, version_index: 0 }),
+          }
+        );
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json.signed_url && audioRef.current) {
+            setAudioUrl(json.signed_url);
+            audioRef.current.src = json.signed_url;
+            audioRef.current.load();
+            await audioRef.current.play();
+            setIsPlaying(true);
+          }
+        }
+      } catch {
+        setIsPlaying(false);
+      } finally {
+        setLoadingTrack(false);
+      }
     }
-  }, [currentTrack, audioUrl, loadingTrack, isPlaying, fetchAudio]);
-
-  // Auto-play once audio URL is set (after fetchAudio resolves)
-  useEffect(() => {
-    if (audioUrl && audioRef.current && !loadingTrack) {
-      setIsBuffering(false);
-      audioRef.current.load(); // ensure src is loaded before play
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    }
-  }, [audioUrl, loadingTrack]);
+  }, [currentTrack, audioUrl, loadingTrack, isPlaying]);
 
   const handlePrev = () => {
     const newIdx = (currentIndex - 1 + tracks.length) % tracks.length;
