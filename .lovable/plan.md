@@ -1,50 +1,35 @@
 
-## Replace MNCPlayer with DISCO Playlist Embed
+## Plan: Landing Page Updates
 
-The user wants to swap the custom `MNCPlayer` React component for the official DISCO iframe embed:
-```
-https://geohworks.disco.ac/e/p/28389354?download=false&s=vkGsc11Q4t-yDoVG_oa3knlKgXY%3A2zm102ef&artwork=true&color=%234E98FF&theme=dark
-```
-Size: 480×395px.
+Here's what I'll change in `src/pages/LandingPage.tsx`:
 
-### Approach
+### 1. Center everything
+- Hero text: add `text-center` and center the CTA buttons (`items-center` instead of `items-start`)
+- All section headers in Feed, ArtistGrid, WhatsInside, PricingSection: center-align
+- Logo centered in hero
 
-**1. Replace `MNCPlayer.tsx`** — Rewrite the component to be a simple, styled section that wraps the DISCO iframe. No more audio state, Supabase RPC, or edge function calls. Just:
-- A section wrapper matching the current landing page styling (`py-20 border-t border-border/30`)
-- A centered card container (`max-w-3xl mx-auto`) with a rounded border to match the existing design language
-- A small header bar above the iframe: "MN.C Player" label + "Songs by MN.C Members" title (keeps the branding)
-- The `<iframe>` set to `width="100%"` with `height="395"`, `allowFullScreen`, `frameBorder="0"`, and `title` for accessibility
-- The iframe is responsive: container `max-w-[480px]` centered, or full-width up to 480px
+### 2. Artist Grid → Members-only blur with 40+ count
+- Replace the live profile grid with a **locked/blurred preview** for non-members
+- Show a 4-col grid of blurred placeholder cards (or blurred avatars)
+- Overlay with a lock panel: **"40+ Patreon Members"** count badge + "Members Only" copy + CTA to `/login`
+- Since the RLS already limits `artist_tracks` to authenticated users, we should just show a static teaser for public visitors
 
-**2. `LandingPage.tsx`** — No change needed. It already imports and renders `<MNCPlayer />` at line 531. The component swap is transparent.
+### 3. Add "Songs by MN.C Members" playlist embed
+- Add a new section between The Feed and Artist Grid (or inside the Artist section)
+- Embed the DISCO playlist already used elsewhere: `https://geohworks.disco.ac/e/p/26502910`
+- Wrap it in a music player-styled card: dark bg, waveform-style header bar with a `Music` icon, track title "Songs by MN.C Members", play indicator dots — essentially a styled iframe container that looks like a player HUD
+- If the iframe renders well, keep the music player wrapper; if it looks off in preview, fall back to a simple video-player card style
 
-**3. No DB/edge function changes needed.** The ingested tracks and `artist-track-download` function remain intact (they're still used by the admin Artist Tracks panel for downloads). Only the landing page presentation changes.
+### 4. Update Pricing Tiers — add Artist Incubator ($150 one-time)
+- Replace "Creative Economy Lab" ($30/mo) tier with **"Artist Incubator"** ($150 one-time)
+- CTA: **"Apply Now"** → links to `https://pci.jotform.com/form/253309376850058` (external link, opens in new tab)
+- Update features list to match the incubator positioning (application-based, by-approval)
+- Keep "Creator Accelerator" as the highlighted/popular tier
 
-### Component Structure
+### Files changed
+- `src/pages/LandingPage.tsx` — all changes in one file
 
-```text
-<section py-20 border-t>
-  <div container mx-auto px-6>
-    <div max-w-3xl mx-auto>
-
-      [Header bar: Music2 icon | "MN.C Player" / "Songs by MN.C Members" | animated bars]
-
-      <div rounded-2xl overflow-hidden border bg-card shadow-lg>
-        <iframe
-          src="https://geohworks.disco.ac/e/p/28389354?..."
-          width="100%"
-          height="395"
-          allowFullScreen
-          title="MN.C Member Tracks"
-        />
-      </div>
-
-    </div>
-  </div>
-</section>
-```
-
-The header bar above the iframe keeps the existing visual branding. The iframe itself is the full player — DISCO handles playback, tracklist, artwork, and controls natively with their dark theme + blue `#4E98FF` accent (which matches the site's primary blue).
-
-### Files Changed
-- `src/components/MNCPlayer.tsx` — complete rewrite, ~30 lines instead of ~376
+### Technical notes
+- The `ArtistGrid` component will no longer query Supabase (public profiles RLS requires `profile_visibility = 'public'` and `username IS NOT NULL`, so it may already return nothing for anon users). Instead render a static blurred grid + overlay
+- The DISCO embed playlist ID `26502910` already exists in `BeatLibrary.tsx` and `BeatLicense.tsx` — reusing same src URL
+- No new DB migrations needed
