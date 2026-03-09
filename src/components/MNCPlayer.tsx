@@ -40,19 +40,9 @@ export function MNCPlayer() {
   const [loadingTrack, setLoadingTrack] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const objectUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     loadTracks();
-  }, []);
-
-  // Cleanup object URL on unmount
-  useEffect(() => {
-    return () => {
-      if (objectUrlRef.current) {
-        URL.revokeObjectURL(objectUrlRef.current);
-      }
-    };
   }, []);
 
   async function loadTracks() {
