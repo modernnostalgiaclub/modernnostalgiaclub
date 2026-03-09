@@ -61,12 +61,6 @@ export function MNCPlayer() {
   const fetchAudio = useCallback(async (track: PlayerTrack, versionIndex = 0) => {
     setLoadingTrack(true);
     setIsPlaying(false);
-
-    // Revoke any previous object URL
-    if (objectUrlRef.current) {
-      URL.revokeObjectURL(objectUrlRef.current);
-      objectUrlRef.current = null;
-    }
     setAudioUrl(null);
 
     try {
