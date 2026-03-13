@@ -1,75 +1,35 @@
 
-## Redesign /connect as a Personal Bio Link Page (Linktree-style)
+## Plan: Landing Page Updates
 
-### What's changing
-The `/connect` page becomes a full personal bio link hub — a single destination from the QR code that surfaces all public-facing funnel content, social links, a newsletter signup, and a "Join the Club" CTA. The networking contact capture form moves to the bottom as a secondary action (still valuable for in-person use).
+Here's what I'll change in `src/pages/LandingPage.tsx`:
 
-### Layout (top to bottom, single column, max-w-md centered)
+### 1. Center everything
+- Hero text: add `text-center` and center the CTA buttons (`items-center` instead of `items-start`)
+- All section headers in Feed, ArtistGrid, WhatsInside, PricingSection: center-align
+- Logo centered in hero
 
-```text
-┌─────────────────────────────┐
-│  Logo (h-20)                │
-│  Ge Oh                      │
-│  modernnostalgia.club       │
-│  Tagline (italic)           │
-├─────────────────────────────┤
-│  SOCIAL ICONS ROW           │
-│  (Instagram, Twitter,       │
-│   TikTok, YouTube,          │
-│   Spotify, SoundCloud)      │
-├─────────────────────────────┤
-│  FUNNEL LINKS (full-width)  │
-│  ┌───────────────────────┐  │
-│  │ 🎵 Free Artist Guide  │  │  → /free-guide
-│  ├───────────────────────┤  │
-│  │ 🎯 Sync Readiness Quiz│  │  → /sync-quiz
-│  ├───────────────────────┤  │
-│  │ 🏪 The Store          │  │  → /store
-│  ├───────────────────────┤  │
-│  │ 📚 Artist Resources   │  │  → /reference
-│  ├───────────────────────┤  │
-│  │ 🎵 MN.C Music (DISCO) │  │  → external DISCO profile
-│  └───────────────────────┘  │
-├─────────────────────────────┤
-│  JOIN THE CLUB (maroon btn) │  → /login?tab=signup
-│  Already a member? Log in   │  → /login
-├─────────────────────────────┤
-│  NEWSLETTER SECTION         │
-│  "Stay in the loop."        │
-│  [email input] [Subscribe]  │
-│  (reuses capture-download-  │
-│   email edge function with  │
-│   trackId='newsletter')     │
-├─────────────────────────────┤
-│  ─────── DIVIDER ────────── │
-│  "Met in person?"           │
-│  [Drop your info form]      │
-│  (existing contact form,    │
-│   collapsed/accordion style)│
-├─────────────────────────────┤
-│  Footer quote               │
-└─────────────────────────────┘
-```
+### 2. Artist Grid → Members-only blur with 40+ count
+- Replace the live profile grid with a **locked/blurred preview** for non-members
+- Show a 4-col grid of blurred placeholder cards (or blurred avatars)
+- Overlay with a lock panel: **"40+ Patreon Members"** count badge + "Members Only" copy + CTA to `/login`
+- Since the RLS already limits `artist_tracks` to authenticated users, we should just show a static teaser for public visitors
 
-### Social links
-The social handles are stored on the user's profile in the database (`instagram`, `twitter`, `tiktok`, `youtube`, `spotify`, `soundcloud`). Rather than hardcode them, we fetch the **admin's profile** (or simply hardcode as static constants for the business owner's known handles — this is a personal bio link, not user-generated). Given this is Ge Oh's personal bio link, we hardcode the known social URLs as constants and add them as static links. The admin can update the `networking_links` table for the dynamic funnel links or we can hardcode them — since the funnel links are fixed pages, hardcoding is cleaner and avoids DB dependency.
+### 3. Add "Songs by MN.C Members" playlist embed
+- Add a new section between The Feed and Artist Grid (or inside the Artist section)
+- Embed the DISCO playlist already used elsewhere: `https://geohworks.disco.ac/e/p/26502910`
+- Wrap it in a music player-styled card: dark bg, waveform-style header bar with a `Music` icon, track title "Songs by MN.C Members", play indicator dots — essentially a styled iframe container that looks like a player HUD
+- If the iframe renders well, keep the music player wrapper; if it looks off in preview, fall back to a simple video-player card style
 
-### Newsletter
-We reuse the existing `capture-download-email` edge function with `trackId: 'newsletter'` and `trackTitle: 'Newsletter Signup'`. This stores the email in `download_email_captures` which is already viewable in the admin panel under "Email Captures." No new infrastructure needed.
-
-### Funnel links (hardcoded, full-width stacked buttons)
-| Label | Destination | Icon |
-|---|---|---|
-| Free Artist Survival Guide | /free-guide | Download |
-| Are You Sync Ready? | /sync-quiz | Target |
-| The Store | /store | ShoppingBag |
-| Artist Resources | /reference | BookOpen |
-| Listen on DISCO | https://geohworks.disco.ac | Music |
-
-### Networking contact form
-Kept intact at the bottom. Wrapped in a subtle "Met me in person?" collapsible section so it doesn't dominate the page for people who arrived via social media (where it's less relevant).
+### 4. Update Pricing Tiers — add Artist Incubator ($150 one-time)
+- Replace "Creative Economy Lab" ($30/mo) tier with **"Artist Incubator"** ($150 one-time)
+- CTA: **"Apply Now"** → links to `https://pci.jotform.com/form/253309376850058` (external link, opens in new tab)
+- Update features list to match the incubator positioning (application-based, by-approval)
+- Keep "Creator Accelerator" as the highlighted/popular tier
 
 ### Files changed
-- `src/pages/Connect.tsx` — full rewrite with new layout structure
+- `src/pages/LandingPage.tsx` — all changes in one file
 
-No DB changes, no new edge functions, no route changes.
+### Technical notes
+- The `ArtistGrid` component will no longer query Supabase (public profiles RLS requires `profile_visibility = 'public'` and `username IS NOT NULL`, so it may already return nothing for anon users). Instead render a static blurred grid + overlay
+- The DISCO embed playlist ID `26502910` already exists in `BeatLibrary.tsx` and `BeatLicense.tsx` — reusing same src URL
+- No new DB migrations needed
