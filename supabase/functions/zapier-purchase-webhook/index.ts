@@ -80,19 +80,29 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const payload: PurchaseWebhookPayload = await req.json();
+    const rawBody = await req.json();
     
-    console.log("Received purchase webhook:", {
+    // Log FULL raw payload so we can see exactly what Zapier is sending
+    console.log("Raw webhook payload from Zapier:", JSON.stringify(rawBody));
+
+    const payload: PurchaseWebhookPayload = rawBody;
+    
+    console.log("Parsed fields:", {
       email: payload.customer_email,
-      product: payload.product_id,
+      product_id: payload.product_id,
       order: payload.order_id,
+      all_keys: Object.keys(rawBody),
     });
 
     // Validate required fields
     if (!payload.customer_email || !payload.product_id) {
-      console.error("Missing required fields:", payload);
+      console.error("Missing required fields. Got keys:", Object.keys(rawBody));
       return new Response(
-        JSON.stringify({ error: "Missing customer_email or product_id" }),
+        JSON.stringify({ 
+          error: "Missing customer_email or product_id",
+          received_keys: Object.keys(rawBody),
+          hint: "Zapier must send: customer_email, product_id (e.g. 'split-sheet', 'just-make-noise-bundle', 'be-loud-bundle', 'pro-tools-template', 'catalog-audit')"
+        }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
@@ -100,9 +110,14 @@ const handler = async (req: Request): Promise<Response> => {
     // Get product info
     const product = PRODUCT_DOWNLOADS[payload.product_id];
     if (!product) {
-      console.error("Unknown product:", payload.product_id);
+      const validIds = Object.keys(PRODUCT_DOWNLOADS);
+      console.error(`Unknown product_id: "${payload.product_id}". Valid IDs: ${validIds.join(', ')}`);
       return new Response(
-        JSON.stringify({ error: `Unknown product: ${payload.product_id}` }),
+        JSON.stringify({ 
+          error: `Unknown product_id: "${payload.product_id}"`,
+          valid_product_ids: validIds,
+          hint: "Check your Zapier step — the product_id field must exactly match one of the valid_product_ids listed above."
+        }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
