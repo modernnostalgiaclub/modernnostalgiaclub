@@ -49,6 +49,41 @@ const PRODUCT_DOWNLOADS: Record<string, { title: string; files: string[]; isServ
   },
 };
 
+// Fuzzy name-to-ID lookup — maps product names/keywords Zapier might send to canonical product IDs
+// Add more entries here as you identify what Zapier actually sends
+const PRODUCT_NAME_MAP: Record<string, string> = {
+  // just-make-noise-bundle
+  'just make noise': 'just-make-noise-bundle',
+  'just make noise bundle': 'just-make-noise-bundle',
+  'just make noise: 2026 indie artist bundle': 'just-make-noise-bundle',
+  'indie artist bundle': 'just-make-noise-bundle',
+  // be-loud-bundle
+  'be loud': 'be-loud-bundle',
+  'be loud bundle': 'be-loud-bundle',
+  'be loud: how to make a living making beats': 'be-loud-bundle',
+  'making beats': 'be-loud-bundle',
+  // split-sheet
+  'split sheet': 'split-sheet',
+  'split sheet w/ one stop agreement': 'split-sheet',
+  'one stop agreement': 'split-sheet',
+  // pro-tools-template
+  'pro tools': 'pro-tools-template',
+  'pro tools template': 'pro-tools-template',
+  'pro tools intro recording template': 'pro-tools-template',
+  // catalog-audit
+  'catalog audit': 'catalog-audit',
+  'catalog audit for sync': 'catalog-audit',
+  'sync audit': 'catalog-audit',
+};
+
+function resolveProductId(rawId: string): string {
+  // First try exact match
+  if (PRODUCT_DOWNLOADS[rawId]) return rawId;
+  // Then try fuzzy match (case-insensitive, trimmed)
+  const normalized = rawId.toLowerCase().trim();
+  return PRODUCT_NAME_MAP[normalized] || rawId;
+}
+
 // Base URL for downloads - update this to your production domain
 const BASE_URL = Deno.env.get("SITE_URL") || "https://modernnostalgiaclub.lovable.app";
 
@@ -82,17 +117,10 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const rawBody = await req.json();
     
-    // Log FULL raw payload so we can see exactly what Zapier is sending
+    // Log FULL raw payload so we can debug exactly what Zapier is sending
     console.log("Raw webhook payload from Zapier:", JSON.stringify(rawBody));
 
     const payload: PurchaseWebhookPayload = rawBody;
-    
-    console.log("Parsed fields:", {
-      email: payload.customer_email,
-      product_id: payload.product_id,
-      order: payload.order_id,
-      all_keys: Object.keys(rawBody),
-    });
 
     // Validate required fields
     if (!payload.customer_email || !payload.product_id) {
@@ -107,16 +135,21 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Resolve product ID — handles exact IDs and fuzzy name matching
+    const resolvedProductId = resolveProductId(payload.product_id);
+    console.log(`Product lookup: raw="${payload.product_id}" → resolved="${resolvedProductId}"`);
+
     // Get product info
-    const product = PRODUCT_DOWNLOADS[payload.product_id];
+    const product = PRODUCT_DOWNLOADS[resolvedProductId];
     if (!product) {
       const validIds = Object.keys(PRODUCT_DOWNLOADS);
-      console.error(`Unknown product_id: "${payload.product_id}". Valid IDs: ${validIds.join(', ')}`);
+      console.error(`Unknown product_id: "${payload.product_id}" (resolved: "${resolvedProductId}"). Valid IDs: ${validIds.join(', ')}`);
       return new Response(
         JSON.stringify({ 
           error: `Unknown product_id: "${payload.product_id}"`,
           valid_product_ids: validIds,
-          hint: "Check your Zapier step — the product_id field must exactly match one of the valid_product_ids listed above."
+          fuzzy_name_hints: Object.keys(PRODUCT_NAME_MAP),
+          hint: "The product_id must match a valid ID or a known product name. Check fuzzy_name_hints for accepted names."
         }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
