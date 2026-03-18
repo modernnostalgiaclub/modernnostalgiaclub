@@ -49,6 +49,41 @@ const PRODUCT_DOWNLOADS: Record<string, { title: string; files: string[]; isServ
   },
 };
 
+// Fuzzy name-to-ID lookup — maps product names/keywords Zapier might send to canonical product IDs
+// Add more entries here as you identify what Zapier actually sends
+const PRODUCT_NAME_MAP: Record<string, string> = {
+  // just-make-noise-bundle
+  'just make noise': 'just-make-noise-bundle',
+  'just make noise bundle': 'just-make-noise-bundle',
+  'just make noise: 2026 indie artist bundle': 'just-make-noise-bundle',
+  'indie artist bundle': 'just-make-noise-bundle',
+  // be-loud-bundle
+  'be loud': 'be-loud-bundle',
+  'be loud bundle': 'be-loud-bundle',
+  'be loud: how to make a living making beats': 'be-loud-bundle',
+  'making beats': 'be-loud-bundle',
+  // split-sheet
+  'split sheet': 'split-sheet',
+  'split sheet w/ one stop agreement': 'split-sheet',
+  'one stop agreement': 'split-sheet',
+  // pro-tools-template
+  'pro tools': 'pro-tools-template',
+  'pro tools template': 'pro-tools-template',
+  'pro tools intro recording template': 'pro-tools-template',
+  // catalog-audit
+  'catalog audit': 'catalog-audit',
+  'catalog audit for sync': 'catalog-audit',
+  'sync audit': 'catalog-audit',
+};
+
+function resolveProductId(rawId: string): string {
+  // First try exact match
+  if (PRODUCT_DOWNLOADS[rawId]) return rawId;
+  // Then try fuzzy match (case-insensitive, trimmed)
+  const normalized = rawId.toLowerCase().trim();
+  return PRODUCT_NAME_MAP[normalized] || rawId;
+}
+
 // Base URL for downloads - update this to your production domain
 const BASE_URL = Deno.env.get("SITE_URL") || "https://modernnostalgiaclub.lovable.app";
 
