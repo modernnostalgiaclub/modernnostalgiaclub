@@ -62,11 +62,23 @@ const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 export default function Store() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
   const [showJotForm, setShowJotForm] = useState(false);
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const jotformRef = useRef<HTMLDivElement>(null);
   const auditFullRef = useRef<HTMLDivElement>(null);
 
-  const handlePurchase = (paymentLink: string) => {
-    window.open(paymentLink, '_blank', 'noopener,noreferrer');
+  const handlePurchase = async (productId: string) => {
+    setLoadingProductId(productId);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-store-checkout', {
+        body: { product_id: productId },
+      });
+      if (error || !data?.url) throw new Error(error?.message || 'Could not create checkout session');
+      window.location.href = data.url;
+    } catch (err: any) {
+      toast.error(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoadingProductId(null);
+    }
   };
 
   const handleApplyNow = () => {
