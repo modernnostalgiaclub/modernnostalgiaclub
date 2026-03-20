@@ -161,7 +161,6 @@ export default function Store() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-2"
                         >
-                          <ExternalLink className="w-3 h-3" />
                           {link.label}
                         </a>
                       ))}
@@ -170,10 +169,13 @@ export default function Store() {
                         variant="maroon"
                         size="sm"
                         className="w-full mt-auto text-xs"
-                        onClick={() => handlePurchase(product.paymentLink)}
+                        onClick={() => handlePurchase(product.id)}
+                        disabled={loadingProductId === product.id}
                       >
+                        {loadingProductId === product.id ? (
+                          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                        ) : null}
                         Purchase — ${product.price}
-                        <ExternalLink className="w-3 h-3 ml-1" />
                       </Button>
                     </div>
                   </Card>
