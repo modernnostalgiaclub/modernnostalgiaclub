@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ShoppingCart, Package, ExternalLink, ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle } from 'lucide-react';
+import { ShoppingCart, Package, ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const catalogAuditFAQ = [
   {
@@ -60,11 +62,23 @@ const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 export default function Store() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
   const [showJotForm, setShowJotForm] = useState(false);
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const jotformRef = useRef<HTMLDivElement>(null);
   const auditFullRef = useRef<HTMLDivElement>(null);
 
-  const handlePurchase = (paymentLink: string) => {
-    window.open(paymentLink, '_blank', 'noopener,noreferrer');
+  const handlePurchase = async (productId: string) => {
+    setLoadingProductId(productId);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-store-checkout', {
+        body: { product_id: productId },
+      });
+      if (error || !data?.url) throw new Error(error?.message || 'Could not create checkout session');
+      window.location.href = data.url;
+    } catch (err: any) {
+      toast.error(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoadingProductId(null);
+    }
   };
 
   const handleApplyNow = () => {
@@ -147,7 +161,6 @@ export default function Store() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-2"
                         >
-                          <ExternalLink className="w-3 h-3" />
                           {link.label}
                         </a>
                       ))}
@@ -156,10 +169,13 @@ export default function Store() {
                         variant="maroon"
                         size="sm"
                         className="w-full mt-auto text-xs"
-                        onClick={() => handlePurchase(product.paymentLink)}
+                        onClick={() => handlePurchase(product.id)}
+                        disabled={loadingProductId === product.id}
                       >
+                        {loadingProductId === product.id ? (
+                          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                        ) : null}
                         Purchase — ${product.price}
-                        <ExternalLink className="w-3 h-3 ml-1" />
                       </Button>
                     </div>
                   </Card>
@@ -467,11 +483,13 @@ export default function Store() {
                         variant="maroon"
                         size="lg"
                         className="w-full md:w-auto"
-                        onClick={() => handlePurchase(serviceProduct.paymentLink)}
-                        disabled={!auditConfirmed}
+                        onClick={() => handlePurchase(serviceProduct.id)}
+                        disabled={!auditConfirmed || loadingProductId === serviceProduct.id}
                       >
+                        {loadingProductId === serviceProduct.id ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : null}
                         Purchase Catalog Audit — ${serviceProduct.price}
-                        <ExternalLink className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
                   </div>
@@ -482,7 +500,7 @@ export default function Store() {
             {/* Footer note */}
             <motion.div variants={fadeIn} className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                Secure checkout powered by Intuit. After purchase, you'll receive your download via email.
+                Secure checkout powered by Stripe. Downloads are available immediately after purchase.
               </p>
             </motion.div>
           </motion.div>

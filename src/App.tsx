@@ -33,6 +33,7 @@ import Contact from "./pages/Contact";
 import MemberDirectory from "./pages/MemberDirectory";
 import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
+import StoreSuccess from "./pages/StoreSuccess";
 import SyncQuiz from "./pages/SyncQuiz";
 import CatalogAudit from "./pages/CatalogAudit";
 import Connect from "./pages/Connect";
@@ -80,6 +81,7 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/store" element={<Store />} />
+            <Route path="/store/success" element={<StoreSuccess />} />
             <Route path="/catalog-audit" element={<CatalogAudit />} />
             <Route path="/sync-quiz" element={<SyncQuiz />} />
             <Route path="/connect" element={<Connect />} />
