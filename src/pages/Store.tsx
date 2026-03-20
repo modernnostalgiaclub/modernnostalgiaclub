@@ -483,11 +483,13 @@ export default function Store() {
                         variant="maroon"
                         size="lg"
                         className="w-full md:w-auto"
-                        onClick={() => handlePurchase(serviceProduct.paymentLink)}
-                        disabled={!auditConfirmed}
+                        onClick={() => handlePurchase(serviceProduct.id)}
+                        disabled={!auditConfirmed || loadingProductId === serviceProduct.id}
                       >
+                        {loadingProductId === serviceProduct.id ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : null}
                         Purchase Catalog Audit — ${serviceProduct.price}
-                        <ExternalLink className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
                   </div>
