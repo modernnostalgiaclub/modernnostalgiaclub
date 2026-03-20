@@ -57,8 +57,8 @@ export default function StoreSuccess() {
           >
             {/* Success icon */}
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center">
-                <CheckCircle2 className="w-10 h-10 text-green-500" />
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-primary" />
               </div>
             </div>
 
