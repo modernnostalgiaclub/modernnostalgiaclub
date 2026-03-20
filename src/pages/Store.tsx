@@ -500,7 +500,7 @@ export default function Store() {
             {/* Footer note */}
             <motion.div variants={fadeIn} className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                Secure checkout powered by Intuit. After purchase, you'll receive your download via email.
+                Secure checkout powered by Stripe. Downloads are available immediately after purchase.
               </p>
             </motion.div>
           </motion.div>
