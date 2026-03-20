@@ -33,6 +33,7 @@ import Contact from "./pages/Contact";
 import MemberDirectory from "./pages/MemberDirectory";
 import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
+import StoreSuccess from "./pages/StoreSuccess";
 import SyncQuiz from "./pages/SyncQuiz";
 import CatalogAudit from "./pages/CatalogAudit";
 import Connect from "./pages/Connect";
