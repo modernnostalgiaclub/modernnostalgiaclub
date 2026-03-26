@@ -11,6 +11,7 @@ import { LabLayout } from "@/components/LabLayout";
 import MusicBlogHome from "./pages/MusicBlogHome";
 import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
+import BlogIndex from "./pages/BlogIndex";
 import Artists from "./pages/Artists";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/" element={<MusicBlogHome />} />
             <Route path="/lab" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/blog" element={<BlogIndex />} />
             <Route path="/artists" element={<Artists />} />
             <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
             <Route path="/classroom" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
