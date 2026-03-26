@@ -66,7 +66,7 @@ export default function AboutPage() {
                 <SectionLabel className="mb-6">About</SectionLabel>
               </motion.div>
               <motion.h1
-                className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold leading-[0.95] mb-8 text-foreground"
+                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.95] mb-8 text-foreground break-words"
                 variants={fadeIn}
               >
                 ModernNostalgia.club<br />

@@ -11,6 +11,7 @@ import { LabLayout } from "@/components/LabLayout";
 import MusicBlogHome from "./pages/MusicBlogHome";
 import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
+import BlogIndex from "./pages/BlogIndex";
 import Artists from "./pages/Artists";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
