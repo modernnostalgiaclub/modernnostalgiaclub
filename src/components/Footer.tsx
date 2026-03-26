@@ -14,21 +14,21 @@ export function Footer() {
           </div>
           
           <nav aria-label="Lab navigation">
-            <h4 className="font-display text-lg mb-4">Lab</h4>
+            <h4 className="font-display text-lg mb-4">Explore</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/classroom" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Classroom
+                <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  About MNC
                 </Link>
               </li>
               <li>
-                <Link to="/studio" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Studio Floor
+                <Link to="/lab" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Creator Economy Lab
                 </Link>
               </li>
               <li>
-                <Link to="/community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Community
+                <Link to="/artists" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Artists
                 </Link>
               </li>
               <li>

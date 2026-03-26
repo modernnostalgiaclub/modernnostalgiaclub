@@ -58,7 +58,9 @@ const App = () => (
           <Sonner />
           <CookieConsent />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<MusicBlogHome />} />
+            <Route path="/lab" element={<LandingPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/artists" element={<Artists />} />
             <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
             <Route path="/classroom" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
