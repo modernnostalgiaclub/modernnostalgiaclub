@@ -103,9 +103,12 @@ export function Header({ showNav = true }: HeaderProps) {
     
     return (
       <>
-        <a href="#what-this-is" className={linkClasses}>
+        <Link to="/about" className={linkClasses}>
           About
-        </a>
+        </Link>
+        <Link to="/lab" className={linkClasses}>
+          The Lab
+        </Link>
         <Link to="/artists" className={linkClasses}>
           Artists
         </Link>
@@ -162,9 +165,12 @@ export function Header({ showNav = true }: HeaderProps) {
     
     return (
       <>
-        <a href="#what-this-is" className={mobileLinkClasses} onClick={closeMobileMenu}>
+        <Link to="/about" className={mobileLinkClasses} onClick={closeMobileMenu}>
           About
-        </a>
+        </Link>
+        <Link to="/lab" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          The Lab
+        </Link>
         <Link to="/artists" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artists
         </Link>
