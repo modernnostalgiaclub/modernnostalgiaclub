@@ -1,0 +1,463 @@
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { SectionLabel } from '@/components/SectionLabel';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import {
+  ArrowRight,
+  ExternalLink,
+  Play,
+  Newspaper,
+  Calendar,
+  Music,
+} from 'lucide-react';
+import { MNCPlayer } from '@/components/MNCPlayer';
+
+const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
+const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
+
+// ── Masthead / Hero ────────────────────────────────────────────────────────────
+function Masthead() {
+  return (
+    <section
+      className="relative border-b border-border/40 overflow-hidden"
+      style={{ background: 'hsl(var(--background))' }}
+    >
+      {/* Subtle texture pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(0deg, hsl(var(--border)/0.4) 0px, hsl(var(--border)/0.4) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, hsl(var(--border)/0.4) 0px, hsl(var(--border)/0.4) 1px, transparent 1px, transparent 40px)',
+        }}
+      />
+      <div className="container mx-auto px-6 pt-32 pb-20 relative z-10">
+        <motion.div
+          className="max-w-3xl"
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+        >
+          <motion.div variants={fadeIn}>
+            <SectionLabel className="mb-5">Music Blog</SectionLabel>
+          </motion.div>
+          <motion.h1
+            className="text-6xl md:text-8xl font-serif font-bold leading-[1.0] mb-6 text-foreground"
+            variants={fadeIn}
+          >
+            Music for<br />
+            <span className="italic text-primary">Active Listeners.</span>
+          </motion.h1>
+          <motion.p
+            className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mb-8"
+            variants={fadeIn}
+          >
+            Editorial picks, curated playlists, and tracks from independent artists who make music that moves.
+          </motion.p>
+          <motion.div className="flex items-center gap-4 flex-wrap" variants={fadeIn}>
+            <Button variant="default" size="lg" asChild>
+              <a href="#posts">Read the Blog <ArrowRight className="w-4 h-4 ml-2" /></a>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <a href="#playlists">Listen Now</a>
+            </Button>
+          </motion.div>
+        </motion.div>
+
+        {/* Decorative rule */}
+        <div className="mt-16 border-t border-border/50 pt-4 flex items-center gap-6 text-xs uppercase tracking-widest text-muted-foreground">
+          <span>Editorial</span>
+          <span className="w-px h-3 bg-border inline-block" />
+          <span>Playlists</span>
+          <span className="w-px h-3 bg-border inline-block" />
+          <span>Sync Music</span>
+          <span className="w-px h-3 bg-border inline-block" />
+          <span>Independent Artists</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Featured Post ──────────────────────────────────────────────────────────────
+function FeaturedPost() {
+  const { data: post } = useQuery({
+    queryKey: ['featured-post'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('id, title, excerpt, cover_image_url, author_name, published_at, slug')
+        .eq('is_published', true)
+        .order('published_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    },
+  });
+
+  if (!post) return null;
+
+  return (
+    <section className="border-b border-border/40 bg-card/20">
+      <div className="container mx-auto px-6 py-16">
+        <SectionLabel className="mb-8">Featured</SectionLabel>
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Cover */}
+          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-muted">
+            {post.cover_image_url ? (
+              <img
+                src={post.cover_image_url}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Newspaper className="w-20 h-20 text-primary/20" />
+              </div>
+            )}
+            {/* Overlay tag */}
+            <span
+              className="absolute top-4 left-4 text-[10px] uppercase tracking-widest font-semibold px-3 py-1 rounded-full backdrop-blur-sm"
+              style={{
+                background: 'hsl(var(--primary)/0.2)',
+                color: 'hsl(var(--primary-foreground))',
+                border: '1px solid hsl(var(--primary)/0.35)',
+              }}
+            >
+              Editorial
+            </span>
+          </div>
+
+          {/* Copy */}
+          <div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4 uppercase tracking-widest">
+              <Calendar className="w-3 h-3" />
+              {post.published_at
+                ? new Date(post.published_at).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'Recent'}
+              {post.author_name && (
+                <>
+                  <span className="mx-1">·</span>
+                  <span>{post.author_name}</span>
+                </>
+              )}
+            </div>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold leading-tight mb-4">
+              {post.title}
+            </h2>
+            {post.excerpt && (
+              <p className="text-muted-foreground text-base leading-relaxed mb-6">
+                {post.excerpt}
+              </p>
+            )}
+            <Button variant="outline" asChild>
+              <span className="cursor-pointer">
+                Read More <ArrowRight className="w-4 h-4 ml-2" />
+              </span>
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ── Latest Posts Grid ──────────────────────────────────────────────────────────
+function LatestPostsGrid() {
+  const { data: posts = [], isLoading } = useQuery({
+    queryKey: ['blog-home-posts'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('id, title, excerpt, cover_image_url, author_name, published_at, slug')
+        .eq('is_published', true)
+        .order('published_at', { ascending: false })
+        .range(1, 6); // skip the first (featured)
+      return data || [];
+    },
+  });
+
+  if (!isLoading && posts.length === 0) return null;
+
+  return (
+    <section id="posts" className="border-b border-border/40">
+      <div className="container mx-auto px-6 py-16">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <SectionLabel className="mb-2">Latest</SectionLabel>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold">The Blog</h2>
+          </div>
+          <Link
+            to="/artists"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:flex items-center gap-1"
+          >
+            All Artists <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-xl overflow-hidden animate-pulse bg-card/50">
+                <div className="aspect-video bg-muted" />
+                <div className="p-5 space-y-3">
+                  <div className="h-4 bg-muted rounded w-3/4" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post, i) => (
+              <motion.article
+                key={post.id}
+                className="group rounded-xl overflow-hidden flex flex-col bg-card/40 border border-border/40 hover:border-border transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+              >
+                <div className="relative aspect-video overflow-hidden bg-muted">
+                  {post.cover_image_url ? (
+                    <img
+                      src={post.cover_image_url}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Newspaper className="w-10 h-10 text-primary/20" />
+                    </div>
+                  )}
+                  <span
+                    className="absolute top-3 left-3 text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                    style={{
+                      background: 'hsl(var(--primary)/0.2)',
+                      color: 'hsl(var(--primary)/0.9)',
+                      border: '1px solid hsl(var(--primary)/0.3)',
+                    }}
+                  >
+                    Editorial
+                  </span>
+                </div>
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="font-serif text-base font-semibold leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <div className="mt-auto pt-3 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{post.author_name}</span>
+                    {post.published_at && (
+                      <span>
+                        {new Date(post.published_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Latest Tracks ──────────────────────────────────────────────────────────────
+function LatestTracks() {
+  const { data: tracks = [], isLoading } = useQuery({
+    queryKey: ['home-tracks'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('artist_tracks')
+        .select('id, title, artist_name, disco_url, cover_art_url, created_at')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+  });
+
+  if (!isLoading && tracks.length === 0) return null;
+
+  return (
+    <section className="border-b border-border/40">
+      <div className="container mx-auto px-6 py-16">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <SectionLabel className="mb-2">New Music</SectionLabel>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold">Latest Tracks</h2>
+          </div>
+          <Link
+            to="/artists"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:flex items-center gap-1"
+          >
+            All Artists <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        {isLoading ? (
+          <div className="flex gap-4 overflow-hidden">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="w-44 shrink-0 rounded-xl overflow-hidden animate-pulse bg-card/50">
+                <div className="aspect-square bg-muted" />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 bg-muted rounded w-3/4" />
+                  <div className="h-2.5 bg-muted rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
+            {tracks.map((track, i) => (
+              <motion.div
+                key={track.id}
+                className="w-44 shrink-0 group"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+              >
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-muted mb-3">
+                  {track.cover_art_url ? (
+                    <img
+                      src={track.cover_art_url}
+                      alt={track.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Music className="w-8 h-8 text-primary/20" />
+                    </div>
+                  )}
+                  {/* Play overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    style={{ background: 'hsl(var(--background)/0.7)' }}>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{ background: 'hsl(var(--primary))' }}>
+                      <Play className="w-4 h-4 text-primary-foreground ml-0.5" />
+                    </div>
+                  </div>
+                </div>
+                <p className="font-serif text-sm font-semibold leading-tight line-clamp-1 mb-0.5">
+                  {track.title}
+                </p>
+                <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
+                  {track.artist_name}
+                </p>
+                {track.disco_url && (
+                  <a
+                    href={track.disco_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary hover:underline"
+                  >
+                    DISCO <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ── Playlists Section ──────────────────────────────────────────────────────────
+function PlaylistsSection() {
+  return (
+    <section id="playlists" className="border-b border-border/40 bg-card/20">
+      <div className="container mx-auto px-6 py-16">
+        <div className="max-w-[800px] mx-auto">
+          <div className="mb-10">
+            <SectionLabel className="mb-2">Listen</SectionLabel>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-2">
+              Curated Playlists
+            </h2>
+            <p className="text-muted-foreground text-base">
+              Human-curated music for active listeners — sync-ready, mood-forward, catalog-built.
+            </p>
+          </div>
+          <MNCPlayer />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Lab CTA Strip ──────────────────────────────────────────────────────────────
+function LabCTA() {
+  return (
+    <section>
+      <div className="container mx-auto px-6 py-20">
+        <motion.div
+          className="max-w-3xl mx-auto text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <SectionLabel className="mb-4">For Independent Artists</SectionLabel>
+          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6 leading-tight">
+            Ready to Build a<br />
+            <span className="italic text-primary">Sustainable Music Career?</span>
+          </h2>
+          <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+            The Creator Economy Lab gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
+          </p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <Button size="lg" asChild>
+              <Link to="/lab">
+                Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/about">Learn About MNC</Link>
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+export default function MusicBlogHome() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main id="main-content" role="main">
+        <Masthead />
+        <FeaturedPost />
+        <LatestPostsGrid />
+        <LatestTracks />
+        <PlaylistsSection />
+        <LabCTA />
+      </main>
+      <Footer />
+    </div>
+  );
+}
