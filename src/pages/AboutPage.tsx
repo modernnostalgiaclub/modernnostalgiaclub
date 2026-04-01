@@ -3,7 +3,7 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Star, Users, Heart } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import aboutHero from '@/assets/about-hero.jpg';
 import founderImg from '@/assets/founder.jpg';
 import mncLogo from '@/assets/mnc-circle-logo.png';
