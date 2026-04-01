@@ -27,7 +27,7 @@ export function EditorialArticles() {
             Where Timeless Art<br />Meets the Modern Economy
           </h2>
           <p className="mt-4 text-sm md:text-base text-gray-500 uppercase tracking-[0.2em]">
-            Indie music and everything in between
+            highlighting Indie music and everything in between
           </p>
         </div>
 
