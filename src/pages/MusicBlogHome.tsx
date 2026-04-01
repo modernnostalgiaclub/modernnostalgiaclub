@@ -377,30 +377,30 @@ function LabCTA() {
   return (
     <section className="bg-white">
       <div className="container mx-auto px-6 py-20">
-        <motion.div
-          className="max-w-2xl"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="flex items-center gap-5 mb-4">
-            <img src={mncLogoBlue} alt="" className="h-20 w-auto" aria-hidden="true" />
+        <div className="flex items-center justify-between gap-12">
+          <motion.div
+            className="max-w-xl"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="font-anton text-4xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05] text-black">
               Join the Club
             </h2>
+            <p className="text-black/50 text-lg mb-8 mt-4 max-w-xl leading-relaxed">
+              Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
+            </p>
+            <Button size="lg" asChild>
+              <Link to="/lab">
+                Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </motion.div>
+          <div className="hidden md:flex items-center justify-center flex-shrink-0">
+            <img src={mncLogoBlue} alt="" className="h-40 w-auto" aria-hidden="true" />
           </div>
-          <div className="pl-[calc(5rem+1.25rem)]">
-          <p className="text-black/50 text-lg mb-8 max-w-xl leading-relaxed">
-            Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
-          </p>
-          <Button size="lg" asChild>
-            <Link to="/lab">
-              Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
