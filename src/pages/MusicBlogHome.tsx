@@ -26,8 +26,9 @@ function Masthead() {
   return (
     <section
       className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-end"
-      style={{ background: '#0a0a0a' }}
     >
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
+      <div className="absolute inset-0" style={{ background: 'rgba(10,10,10,0.6)' }} />
 
       <div className="container mx-auto px-6 py-32 relative z-10">
         <motion.div
