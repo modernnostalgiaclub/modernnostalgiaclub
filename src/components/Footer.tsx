@@ -9,7 +9,10 @@ export function Footer() {
           <div className="md:col-span-2">
             <img src={logoBlue} alt="" className="h-12 w-auto mb-4" aria-hidden="true" />
             <p className="text-sm text-muted-foreground max-w-sm">
-              A Creative Economy Lab for artists building sustainable income. Training, systems, and professional workflows for the modern music economy.
+              Modern Nostalgia Club is a creative economy designed for artists who want to build sustainable income through music. It combines training, systems, and real-world workflows to help artists move beyond just creating and into operating like modern, independent businesses.
+            </p>
+            <p className="text-sm text-muted-foreground max-w-sm mt-3">
+              It's not just about making music. It's about building a structure around your creativity so it can actually pay you.
             </p>
           </div>
           
