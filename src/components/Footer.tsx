@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logoBlue from '@/assets/mnc-logo-blue.png';
+import logoFooter from '@/assets/mnc-logo-footer.png';
 
 export function Footer() {
   return (
@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <img src={logoBlue} alt="" className="h-12 w-auto mb-4" aria-hidden="true" />
+            <img src={logoFooter} alt="" className="h-12 w-auto mb-4" aria-hidden="true" />
             <p className="text-sm text-muted-foreground max-w-sm">
               Modern Nostalgia Club is a creative economy designed for artists who want to build sustainable income through music. It combines training, systems, and real-world workflows to help artists move beyond just creating and into operating like modern, independent businesses.
             </p>
