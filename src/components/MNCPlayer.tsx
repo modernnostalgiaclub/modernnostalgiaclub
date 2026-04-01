@@ -16,7 +16,7 @@ export function MNCPlayer() {
           </div>
 
           {/* Both playlists side by side */}
-          <div className="lg:w-3/5 w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Day Party</p>
               <div className="rounded-xl overflow-hidden">
