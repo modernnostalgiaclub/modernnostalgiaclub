@@ -203,7 +203,7 @@ export function Header({ showNav = true }: HeaderProps) {
           </nav>
         )}
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
