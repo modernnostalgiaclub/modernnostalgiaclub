@@ -362,6 +362,7 @@ function PlaylistsSection() {
       <MNCPlayer />
       <PlaylistSubmit />
       <ArtistResources />
+      <SyncReadyCTA />
     </>
   );
 }
