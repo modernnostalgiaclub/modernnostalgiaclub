@@ -17,6 +17,7 @@ import {
 import { MNCPlayer } from '@/components/MNCPlayer';
 import { PlaylistSubmit } from '@/components/PlaylistSubmit';
 import { ArtistResources } from '@/components/ArtistResources';
+import { SyncReadyCTA } from '@/components/SyncReadyCTA';
 import { EditorialArticles } from '@/components/EditorialArticles';
 import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
@@ -361,6 +362,7 @@ function PlaylistsSection() {
       <MNCPlayer />
       <PlaylistSubmit />
       <ArtistResources />
+      <SyncReadyCTA />
     </>
   );
 }
