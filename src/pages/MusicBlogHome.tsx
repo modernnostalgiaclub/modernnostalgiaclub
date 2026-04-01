@@ -417,8 +417,7 @@ export default function MusicBlogHome() {
       <Header />
       <main id="main-content" role="main">
         <Masthead />
-        <FeaturedPost />
-        <LatestPostsGrid />
+        <EditorialArticles />
         <LatestTracks />
         <PlaylistsSection />
         <LabCTA />
