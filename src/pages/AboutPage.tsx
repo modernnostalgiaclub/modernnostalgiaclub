@@ -80,6 +80,15 @@ export default function AboutPage() {
                 At the intersection of timeless artistry and the modern music economy, we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+                We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard — not just streamed.
+              </motion.p>
+              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+                MN.C works with independent artists to develop catalog intentionally — music crafted with placement, sync licensing, and closed-audience discovery in mind. This is music built to work.
+              </motion.p>
+              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+                The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct-to-fan, and sustainable career infrastructure — not just Spotify streams.
+              </motion.p>
+              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
                 Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
