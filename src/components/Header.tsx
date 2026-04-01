@@ -53,7 +53,7 @@ export function Header({ showNav = true }: HeaderProps) {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
 
-  const linkClasses = "text-sm text-white hover:text-white/70 transition-colors";
+  const linkClasses = "text-sm text-white hover:text-primary transition-colors";
   const mobileLinkClasses = "block py-3 text-lg text-foreground hover:text-primary transition-colors";
 
   const DesktopNavLinks = () => {
