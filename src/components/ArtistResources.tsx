@@ -1,4 +1,5 @@
 import { Briefcase, Music, Mic, Monitor, ArrowRight } from 'lucide-react';
+import artistResourcesImg from '@/assets/artist-resources.jpg';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
