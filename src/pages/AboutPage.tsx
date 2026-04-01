@@ -61,7 +61,7 @@ export default function AboutPage() {
               className="max-w-4xl mx-auto text-center"
             >
               <motion.h1
-                className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-foreground leading-[1.05]"
+                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-foreground leading-[1.05]"
                 variants={fadeIn}
               >
                 ABOUT{' '}
