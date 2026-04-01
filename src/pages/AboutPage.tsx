@@ -5,6 +5,8 @@ import { SectionLabel } from '@/components/SectionLabel';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Headphones, Music2, GraduationCap, ArrowRight } from 'lucide-react';
+import heroBg from '@/assets/hero-bg.jpg';
+import mncHeroLogo from '@/assets/mnc-hero-logo.png';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
@@ -45,35 +47,46 @@ export default function AboutPage() {
       <Header />
       <main id="main-content" role="main">
 
-        {/* ── Hero ──────────────────────────────────────────────────────── */}
-        <section className="border-b border-border/40 relative overflow-hidden">
-          {/* Grid texture */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-20"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(0deg, hsl(var(--border)/0.5) 0px, hsl(var(--border)/0.5) 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, hsl(var(--border)/0.5) 0px, hsl(var(--border)/0.5) 1px, transparent 1px, transparent 60px)',
-            }}
-          />
-          <div className="container mx-auto px-6 pt-36 pb-24 relative z-10">
+        {/* ── Hero (matches home page) ──────────────────────────────── */}
+        <section className="relative border-b border-border/40 overflow-hidden min-h-[95vh] flex items-center justify-center">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
+          <div className="absolute inset-0" style={{ background: 'rgba(10,10,10,0.6)' }} />
+          <div className="relative z-10">
             <motion.div
-              className="max-w-4xl"
               initial="hidden"
               animate="visible"
               variants={stagger}
+              className="flex flex-col items-center"
+            >
+              <motion.h1 variants={fadeIn}>
+                <img src={mncHeroLogo} alt="Modern Nostalgia Club" className="h-20 md:h-32 lg:h-40 mx-auto" />
+              </motion.h1>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ── About Content (white background) ─────────────────────── */}
+        <section className="bg-white text-black">
+          <div className="container mx-auto px-6 pt-24 pb-12">
+            <motion.div
+              className="max-w-4xl"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={stagger}
             >
               <motion.div variants={fadeIn}>
-                <SectionLabel className="mb-6">About</SectionLabel>
+                <SectionLabel className="mb-6 !text-black/50">About</SectionLabel>
               </motion.div>
-              <motion.h1
-                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.95] mb-8 text-foreground break-words"
+              <motion.h2
+                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.95] mb-8 text-black break-words"
                 variants={fadeIn}
               >
                 ModernNostalgia.club<br />
-                <span className="italic text-primary">is a Creative Firm.</span>
-              </motion.h1>
+                <span className="italic" style={{ color: 'hsl(var(--primary))' }}>is a Creative Firm.</span>
+              </motion.h2>
               <motion.p
-                className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed"
+                className="text-xl md:text-2xl text-black/60 max-w-2xl leading-relaxed"
                 variants={fadeIn}
               >
                 We curate, create, and educate at the intersection of timeless artistry and the modern music economy.
@@ -83,7 +96,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── Three Pillars ─────────────────────────────────────────────── */}
-        <section className="border-b border-border/40">
+        <section className="bg-white text-black border-b border-black/10">
           <div className="container mx-auto px-6 py-24">
             <motion.div
               className="mb-16 max-w-2xl"
@@ -92,8 +105,8 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <SectionLabel className="mb-4">What We Do</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight">
+              <SectionLabel className="mb-4 !text-black/50">What We Do</SectionLabel>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight text-black">
                 Three things.<br />
                 <span className="text-primary italic">Done with intention.</span>
               </h2>
@@ -103,8 +116,8 @@ export default function AboutPage() {
               {PILLARS.map((pillar, i) => (
                 <motion.div
                   key={pillar.verb}
-                  className="group rounded-2xl p-8 md:p-10 border border-border/40 flex flex-col md:flex-row md:items-start gap-8 transition-all duration-300 hover:border-border"
-                  style={{ background: 'hsl(var(--card)/0.4)' }}
+                  className="group rounded-2xl p-8 md:p-10 border border-black/10 flex flex-col md:flex-row md:items-start gap-8 transition-all duration-300 hover:border-black/20"
+                  style={{ background: 'rgba(0,0,0,0.02)' }}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -134,10 +147,10 @@ export default function AboutPage() {
                     >
                       {pillar.verb}
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-4 text-foreground">
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-4 text-black">
                       {pillar.headline}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed text-base max-w-2xl">
+                    <p className="text-black/60 leading-relaxed text-base max-w-2xl">
                       {pillar.body}
                     </p>
                   </div>
@@ -148,7 +161,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── Manifesto quote ───────────────────────────────────────────── */}
-        <section className="border-b border-border/40 bg-card/20">
+        <section className="bg-white text-black border-b border-black/10">
           <div className="container mx-auto px-6 py-24">
             <motion.blockquote
               className="max-w-3xl mx-auto text-center"
@@ -157,10 +170,10 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-3xl md:text-4xl font-serif font-bold italic leading-snug mb-6 text-foreground">
+              <p className="text-3xl md:text-4xl font-serif font-bold italic leading-snug mb-6 text-black">
                 "The future of music is independent artists with professional infrastructure."
               </p>
-              <cite className="text-sm text-muted-foreground not-italic uppercase tracking-widest">
+              <cite className="text-sm text-black/50 not-italic uppercase tracking-widest">
                 — ModernNostalgia.club
               </cite>
             </motion.blockquote>
@@ -168,7 +181,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── CTA Strip ─────────────────────────────────────────────────── */}
-        <section>
+        <section className="bg-white text-black">
           <div className="container mx-auto px-6 py-20">
             <motion.div
               className="max-w-2xl mx-auto text-center"
@@ -177,10 +190,10 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <SectionLabel className="mb-6">What's Next</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-10 leading-tight">
+              <SectionLabel className="mb-6 !text-black/50">What's Next</SectionLabel>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-10 leading-tight text-black">
                 Explore the music.<br />
-                <span className="italic text-primary">Join the Lab.</span>
+                <span className="italic text-primary">Join the Club.</span>
               </h2>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <Button size="lg" asChild>
@@ -188,9 +201,9 @@ export default function AboutPage() {
                     Explore the Music <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link to="/lab">
-                    Join the Creator Economy Lab
+                <Button variant="outline" size="lg" asChild className="border-black/20 text-black hover:bg-black/5">
+                  <Link to="/join">
+                    Join the Club
                   </Link>
                 </Button>
               </div>
