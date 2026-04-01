@@ -3,7 +3,7 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Headphones, Music2, GraduationCap, ArrowRight, Star, Users, Heart } from 'lucide-react';
+import { ArrowRight, Star, Users, Heart } from 'lucide-react';
 import aboutHero from '@/assets/about-hero.jpg';
 import founderImg from '@/assets/founder.jpg';
 import mncLogo from '@/assets/mnc-circle-logo.png';
@@ -11,26 +11,6 @@ import mncLogo from '@/assets/mnc-circle-logo.png';
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
 
-const PILLARS = [
-  {
-    icon: Headphones,
-    verb: 'Curate',
-    headline: 'Human music for active listeners.',
-    body: 'We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard — not just streamed.',
-  },
-  {
-    icon: Music2,
-    verb: 'Create',
-    headline: 'Music built for Closed Audience Playlists and Sync Licensing.',
-    body: 'MN.C works with independent artists to develop catalog intentionally — music crafted with placement, sync licensing, and closed-audience discovery in mind. This is music built to work.',
-  },
-  {
-    icon: GraduationCap,
-    verb: 'Educate',
-    headline: 'Independent musicians on how to monetize beyond streaming.',
-    body: 'The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct-to-fan, and sustainable career infrastructure — not just Spotify streams.',
-  },
-];
 
 export default function AboutPage() {
   return (
@@ -98,44 +78,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── What We Do (white background, after Who Are We) ────── */}
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="max-w-3xl">
-              <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">
-                What We Do
-              </p>
-              <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-black leading-[1.05] mb-10">
-                What We Do
-              </h2>
-
-              <div className="space-y-8">
-                {PILLARS.map((pillar, i) => (
-                  <motion.div
-                    key={pillar.verb}
-                    className="flex gap-5"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
-                      <pillar.icon className="w-6 h-6 text-gray-500" />
-                    </div>
-                    <div>
-                      <h3 className="font-anton text-sm md:text-base uppercase tracking-tight text-black mb-1">
-                        {pillar.verb}
-                      </h3>
-                      <p className="text-sm text-gray-500 leading-relaxed">
-                        {pillar.body}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ── Our Values (dark card grid) ─────────────────────────── */}
         <section className="py-20 bg-background">
