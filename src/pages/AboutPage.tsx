@@ -109,7 +109,7 @@ export default function AboutPage() {
                   Beyond music creation, he develops frameworks that teach artists how to generate consistent income, while also educating listeners on the real economics behind the music they love. His mission is simple but ambitious: to rebuild the bridge between artist and audience, making music sustainable again for both sides.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed">
-                  Through ModernNostalgia.club, Ge Oh is creating more than a platform — he's building a blueprint for the future of independent music.
+                  Through ModernNostalgia.club, Ge Oh is creating more than a platform, he's building a blueprint for the future of independent music.
                 </p>
               </div>
             </div>
