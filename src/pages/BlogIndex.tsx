@@ -243,7 +243,7 @@ export default function BlogIndex() {
             </p>
             <Button size="lg" asChild>
               <Link to="/lab">
-                Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
+                Join the Club <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
           </div>
