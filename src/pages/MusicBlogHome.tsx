@@ -15,6 +15,7 @@ import {
   Music,
 } from 'lucide-react';
 import { MNCPlayer } from '@/components/MNCPlayer';
+import { PlaylistSubmit } from '@/components/PlaylistSubmit';
 import { EditorialArticles } from '@/components/EditorialArticles';
 import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
@@ -354,7 +355,12 @@ function LatestTracks() {
 
 // ── Playlists Section ──────────────────────────────────────────────────────────
 function PlaylistsSection() {
-  return <MNCPlayer />;
+  return (
+    <>
+      <MNCPlayer />
+      <PlaylistSubmit />
+    </>
+  );
 }
 
 // ── Lab CTA Strip ──────────────────────────────────────────────────────────────
