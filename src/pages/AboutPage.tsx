@@ -147,10 +147,10 @@ export default function AboutPage() {
                     >
                       {pillar.verb}
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-4 text-foreground">
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-4 text-black">
                       {pillar.headline}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed text-base max-w-2xl">
+                    <p className="text-black/60 leading-relaxed text-base max-w-2xl">
                       {pillar.body}
                     </p>
                   </div>
