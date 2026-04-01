@@ -15,6 +15,7 @@ import {
   Music,
 } from 'lucide-react';
 import { MNCPlayer } from '@/components/MNCPlayer';
+import { EditorialArticles } from '@/components/EditorialArticles';
 import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
 import mncHeroLogo from '@/assets/mnc-hero-logo.png';
