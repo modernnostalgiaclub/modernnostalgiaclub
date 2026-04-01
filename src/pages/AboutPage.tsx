@@ -103,32 +103,31 @@ export default function AboutPage() {
               variants={stagger}
             >
               <motion.h2
-                className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-foreground leading-[1.05] mb-8"
+                className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-foreground leading-[1.05] mb-4"
                 variants={fadeIn}
               >
                 Who We Are
               </motion.h2>
-              <motion.h3
-                className="text-3xl md:text-4xl font-serif font-bold leading-tight mb-8 text-foreground"
+              <motion.p
+                className="font-sans mt-4 text-sm md:text-base text-muted-foreground uppercase tracking-[0.2em] mb-10"
                 variants={fadeIn}
               >
-                ModernNostalgia.club<br />
-                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>is a Creative Firm.</span>
-              </motion.h3>
+                ModernNostalgia.club is a Creative Firm.
+              </motion.p>
               <motion.p
-                className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6"
+                className="font-sans text-sm md:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6"
                 variants={fadeIn}
               >
                 At the intersection of timeless artistry and the modern music economy — we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
               <motion.p
-                className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6"
+                className="font-sans text-sm md:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6"
                 variants={fadeIn}
               >
                 Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
               </motion.p>
               <motion.p
-                className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+                className="font-sans text-sm md:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed"
                 variants={fadeIn}
               >
                 Because it's not just about creating music — it's about building a structure around your creativity so it can actually work for you.
