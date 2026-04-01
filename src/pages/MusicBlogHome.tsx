@@ -26,25 +26,18 @@ function Masthead() {
   return (
     <section
       className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-center justify-center"
+      style={{ background: '#0a0a0a' }}
     >
-      {/* Hero background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${heroBg})`,
-        }}
-      />
-      {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.4)' }} />
 
-      <div className="container mx-auto px-6 py-32 relative z-10 text-center">
+      <div className="container mx-auto px-6 py-32 relative z-10 flex flex-col items-center justify-center">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
+          className="flex flex-col items-center"
         >
           <motion.p
-            className="text-sm md:text-base text-muted-foreground tracking-widest uppercase mb-4"
+            className="text-[10px] md:text-xs text-muted-foreground tracking-[0.25em] uppercase mb-2 self-start ml-1"
             variants={fadeIn}
           >
             For Real Music Lovers
@@ -53,7 +46,7 @@ function Masthead() {
             className="mb-8"
             variants={fadeIn}
           >
-            <img src={mncLogo} alt="Modern Nostalgia Club" className="h-16 md:h-24 lg:h-28 mx-auto" />
+            <img src={mncLogo} alt="Modern Nostalgia Club" className="h-24 md:h-36 lg:h-44 mx-auto" />
           </motion.h1>
           <motion.div className="flex items-center justify-center gap-4 flex-wrap" variants={fadeIn}>
             <Button variant="default" size="lg" asChild>
