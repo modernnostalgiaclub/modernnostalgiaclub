@@ -42,14 +42,15 @@ function Masthead() {
           variants={stagger}
         >
           <motion.div variants={fadeIn}>
-            <SectionLabel className="mb-5">Music Blog</SectionLabel>
+            <SectionLabel className="mb-5">Music Blog · For Real Music Lovers</SectionLabel>
           </motion.div>
           <motion.h1
             className="text-6xl md:text-8xl font-serif font-bold leading-[1.0] mb-6 text-foreground"
             variants={fadeIn}
           >
-            Music for<br />
-            <span className="italic text-primary">Active Listeners.</span>
+            MODERN<br />
+            <span className="italic text-primary">NOSTALGIA</span><br />
+            <span className="italic text-primary">CLUB.</span>
           </motion.h1>
           <motion.p
             className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mb-8"
