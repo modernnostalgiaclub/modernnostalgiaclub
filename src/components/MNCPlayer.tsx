@@ -1,36 +1,70 @@
-import { Music2 } from 'lucide-react';
+import { useState } from 'react';
+
+const playlists = [
+  {
+    name: 'Day Party',
+    embedUrl: 'https://music.youtube.com/playlist?list=PL8vMWEFhhyIL7pHJSKNzrqS3mq0OC5InH',
+    embedSrc: 'https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyIL7pHJSKNzrqS3mq0OC5InH',
+  },
+  {
+    name: 'MNC Artists',
+    embedUrl: 'https://music.youtube.com/playlist?list=PL8vMWEFhhyILw_nrgbYLjDsuaiQLeKLvQ',
+    embedSrc: 'https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyILw_nrgbYLjDsuaiQLeKLvQ',
+  },
+];
 
 export function MNCPlayer() {
-  return (
-    <section className="py-20 border-t border-border/30">
-      <div className="container mx-auto px-6">
-        <div className="max-w-[800px] mx-auto">
+  const [active, setActive] = useState(0);
 
-          {/* Header bar */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/15">
-              <Music2 className="w-4 h-4 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-0.5">MN.C Player</p>
-              <p className="font-serif font-semibold text-sm">Songs by MN.C Members</p>
+  return (
+    <section className="py-20 border-t border-border/30" style={{ background: '#0a0a0a' }}>
+      <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+
+          {/* Left – text */}
+          <div className="lg:w-1/2 flex flex-col justify-center">
+            <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2">Listen</p>
+            <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-white uppercase tracking-tight leading-[1.05]">
+              Listen to our<br />Playlist
+            </h2>
+            <p className="mt-4 text-sm md:text-base text-gray-400">
+              Human-curated music for active listeners — sync-ready, mood-forward, catalog-built.
+            </p>
+
+            {/* Playlist tabs */}
+            <div className="mt-8 flex gap-3">
+              {playlists.map((pl, i) => (
+                <button
+                  key={pl.name}
+                  onClick={() => setActive(i)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    active === i
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  }`}
+                >
+                  {pl.name}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* DISCO embed */}
-          <div className="mx-auto max-w-[480px]">
-            <iframe
-              id="disco-playlist-28389354"
-              name="disco-playlist-28389354"
-              src="https://geohworks.disco.ac/e/p/28389354?download=false&s=LvCZEdEzXNDzoMJzQf9NBb-6Q0s%3AL0Elg6Ls&artwork=true&color=%234E98FF&theme=dark"
-              width="100%"
-              height="800"
-              frameBorder="0"
-              allowFullScreen
-              className="disco-embed"
-              style={{ borderRadius: '12px', overflow: 'hidden' }}
-              title="modernnostalgiaclub - DISCO Playlist"
-            />
+          {/* Right – playlist embed */}
+          <div className="lg:w-1/2 w-full">
+            <div className="rounded-xl overflow-hidden">
+              <iframe
+                key={playlists[active].name}
+                src={playlists[active].embedSrc}
+                width="100%"
+                height="500"
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                title={`${playlists[active].name} – YouTube Music Playlist`}
+                className="w-full"
+                style={{ borderRadius: '12px' }}
+              />
+            </div>
           </div>
 
         </div>
