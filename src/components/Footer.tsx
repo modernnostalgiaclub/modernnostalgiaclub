@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from 'next-themes';
-import { Twitter } from 'lucide-react';
+import { Twitter, Instagram, AtSign } from 'lucide-react';
 import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
 
