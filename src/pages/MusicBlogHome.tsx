@@ -23,7 +23,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden min-h-[70vh] flex items-center justify-center"
+      className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-center justify-center"
     >
       {/* Hero background image */}
       <div
