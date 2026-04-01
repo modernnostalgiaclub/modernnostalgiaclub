@@ -61,11 +61,11 @@ export default function AboutPage() {
               className="max-w-4xl mx-auto text-center"
             >
               <motion.h1
-                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-foreground leading-[1.05]"
+                className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-foreground leading-[1.05]"
                 variants={fadeIn}
               >
                 ABOUT{' '}
-                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>US</span>
+                <span style={{ color: 'hsl(217 100% 65%)' }}>US</span>
               </motion.h1>
             </motion.div>
           </div>
