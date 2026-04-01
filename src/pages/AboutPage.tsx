@@ -105,8 +105,8 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <SectionLabel className="mb-4">What We Do</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight">
+              <SectionLabel className="mb-4 !text-black/50">What We Do</SectionLabel>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight text-black">
                 Three things.<br />
                 <span className="text-primary italic">Done with intention.</span>
               </h2>
