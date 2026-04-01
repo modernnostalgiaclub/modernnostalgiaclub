@@ -64,6 +64,7 @@ const App = () => (
             <Route path="/lab" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/artists" element={<Artists />} />
             <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
             <Route path="/classroom" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
