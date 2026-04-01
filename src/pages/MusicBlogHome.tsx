@@ -395,6 +395,7 @@ function LabCTA() {
               Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
+          </div>
         </motion.div>
       </div>
     </section>
