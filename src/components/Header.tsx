@@ -208,7 +208,7 @@ export function Header({ showNav = true }: HeaderProps) {
         )}
         
         {/* Right side: social + auth buttons */}
-        <div className="flex items-center gap-4 shrink-0 ml-auto">
+        <div className="flex items-center gap-4 shrink-0 ml-auto relative z-10">
           <div className="hidden md:flex items-center gap-3">
             <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors" aria-label="Instagram (opens in new tab)">
               <Instagram className="h-4 w-4" />
