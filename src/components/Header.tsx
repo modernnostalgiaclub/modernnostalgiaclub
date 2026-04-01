@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import logoCream from '@/assets/logo-cream.png';
+import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,7 +29,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const logo = resolvedTheme === 'dark' ? logoCream : logoBlack;
+  const logo = resolvedTheme === 'dark' ? mncLogo : logoBlack;
   const isAdmin = hasRole('admin');
   const isAdminOrMod = isAdmin || hasRole('moderator');
 

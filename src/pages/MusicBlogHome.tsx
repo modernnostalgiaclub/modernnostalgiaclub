@@ -15,6 +15,8 @@ import {
   Music,
 } from 'lucide-react';
 import { MNCPlayer } from '@/components/MNCPlayer';
+import heroBg from '@/assets/hero-bg.jpg';
+import mncLogo from '@/assets/mnc-logo.png';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
@@ -29,11 +31,11 @@ function Masthead() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1920&q=80)',
+          backgroundImage: `url(${heroBg})`,
         }}
       />
       {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.7)' }} />
+      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.4)' }} />
 
       <div className="container mx-auto px-6 py-32 relative z-10 text-center">
         <motion.div
@@ -48,10 +50,10 @@ function Masthead() {
             For Real Music Lovers
           </motion.p>
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight mb-8 text-foreground uppercase"
+            className="mb-8"
             variants={fadeIn}
           >
-            MODERN NOSTALGIA CLUB
+            <img src={mncLogo} alt="Modern Nostalgia Club" className="h-16 md:h-24 lg:h-28 mx-auto" />
           </motion.h1>
           <motion.div className="flex items-center justify-center gap-4 flex-wrap" variants={fadeIn}>
             <Button variant="default" size="lg" asChild>
