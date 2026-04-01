@@ -46,6 +46,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import ArtistProfile from "./pages/ArtistProfile";
 import MigrateToGoogle from "./pages/MigrateToGoogle";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
