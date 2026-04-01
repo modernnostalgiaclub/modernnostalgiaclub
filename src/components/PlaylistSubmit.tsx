@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 
 export function PlaylistSubmit() {
