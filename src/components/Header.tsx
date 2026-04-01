@@ -104,20 +104,26 @@ export function Header({ showNav = true }: HeaderProps) {
     
     return (
       <>
+        <Link to="/" className={linkClasses}>
+          Home
+        </Link>
         <Link to="/about" className={linkClasses}>
           About
         </Link>
         <Link to="/blog" className={linkClasses}>
           Blog
         </Link>
-        <Link to="/lab" className={linkClasses}>
-          The Lab
-        </Link>
-        <Link to="/artists" className={linkClasses}>
-          Artists
-        </Link>
         <Link to="/reference" className={linkClasses}>
           Artist Resources
+        </Link>
+        <Link to="/join" className={linkClasses}>
+          Join MNC
+        </Link>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScQm7rwO_R-O1Fg_0LR1_A3dyq_aPPB4JRJs6UvN63hBuprMQ/viewform" target="_blank" rel="noopener noreferrer" className={linkClasses}>
+          Submit Music
+        </a>
+        <Link to="/contact" className={linkClasses}>
+          Contact
         </Link>
       </>
     );
@@ -166,20 +172,26 @@ export function Header({ showNav = true }: HeaderProps) {
     
     return (
       <>
+        <Link to="/" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Home
+        </Link>
         <Link to="/about" className={mobileLinkClasses} onClick={closeMobileMenu}>
           About
         </Link>
         <Link to="/blog" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Blog
         </Link>
-        <Link to="/lab" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          The Lab
-        </Link>
-        <Link to="/artists" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Artists
-        </Link>
         <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artist Resources
+        </Link>
+        <Link to="/join" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Join MNC
+        </Link>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScQm7rwO_R-O1Fg_0LR1_A3dyq_aPPB4JRJs6UvN63hBuprMQ/viewform" target="_blank" rel="noopener noreferrer" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Submit Music
+        </a>
+        <Link to="/contact" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Contact
         </Link>
       </>
     );
