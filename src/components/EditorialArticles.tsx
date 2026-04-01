@@ -21,10 +21,15 @@ export function EditorialArticles() {
   return (
     <section className="bg-white py-20">
       <div className="container mx-auto px-6">
-        {/* Anton heading */}
-        <h2 className="font-anton text-2xl md:text-3xl text-black uppercase tracking-tight mb-10 text-center">
-          For Real Music Lovers
-        </h2>
+        {/* Heading */}
+        <div className="text-center mb-12">
+          <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05]">
+            Where Timeless Art<br />Meets the Modern Economy
+          </h2>
+          <p className="mt-4 text-sm md:text-base text-gray-500 uppercase tracking-[0.2em]">
+            Indie music and everything in between
+          </p>
+        </div>
 
         {/* Articles grid */}
         {isLoading ? (
