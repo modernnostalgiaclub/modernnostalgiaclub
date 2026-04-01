@@ -232,7 +232,7 @@ export default function Admin() {
         </main>
         <Footer />
       </div>
-    </AdminMFAGate>
+    
   );
 }
 
