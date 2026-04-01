@@ -364,6 +364,9 @@ function PlaylistsSection() {
       <PlaylistSubmit />
       <ArtistResources />
       <SyncReadyCTA />
+      <section className="w-full">
+        <img src={syncPerformer} alt="Artist performing on stage" className="w-full h-[60vh] object-cover" />
+      </section>
     </>
   );
 }
