@@ -21,7 +21,7 @@ export function MNCPlayer() {
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Day Party</p>
               <div className="rounded-xl overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyIL7pHJSKNzrqS3mq0OC5InH"
+                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyIL7pHJSKNzrqS3mq0OC5InH&autoplay=0"
                   width="100%"
                   height="400"
                   frameBorder="0"
