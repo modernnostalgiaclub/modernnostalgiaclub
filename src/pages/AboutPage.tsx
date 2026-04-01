@@ -11,26 +11,6 @@ import mncLogo from '@/assets/mnc-circle-logo.png';
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
 
-const PILLARS = [
-  {
-    icon: Headphones,
-    verb: 'Curate',
-    headline: 'Human music for active listeners.',
-    body: 'We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard — not just streamed.',
-  },
-  {
-    icon: Music2,
-    verb: 'Create',
-    headline: 'Music built for Closed Audience Playlists and Sync Licensing.',
-    body: 'MN.C works with independent artists to develop catalog intentionally — music crafted with placement, sync licensing, and closed-audience discovery in mind. This is music built to work.',
-  },
-  {
-    icon: GraduationCap,
-    verb: 'Educate',
-    headline: 'Independent musicians on how to monetize beyond streaming.',
-    body: 'The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct-to-fan, and sustainable career infrastructure — not just Spotify streams.',
-  },
-];
 
 export default function AboutPage() {
   return (
