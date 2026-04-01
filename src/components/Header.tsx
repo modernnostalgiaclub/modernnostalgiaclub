@@ -266,10 +266,11 @@ export function Header({ showNav = true }: HeaderProps) {
               </DropdownMenu>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-3 ml-4">
               <Button 
                 variant="outline"
                 size="sm"
+                className="w-24"
                 onClick={handleLogin}
               >
                 Log In
@@ -277,6 +278,7 @@ export function Header({ showNav = true }: HeaderProps) {
               <Button 
                 variant="maroon"
                 size="sm"
+                className="w-24"
                 onClick={handleSignUp}
               >
                 Join Now
