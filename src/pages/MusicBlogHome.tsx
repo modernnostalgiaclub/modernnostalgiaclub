@@ -31,11 +31,11 @@ function Masthead() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1920&q=80)',
+          backgroundImage: `url(${heroBg})`,
         }}
       />
       {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.7)' }} />
+      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.4)' }} />
 
       <div className="container mx-auto px-6 py-32 relative z-10 text-center">
         <motion.div
