@@ -354,7 +354,12 @@ function LatestTracks() {
 
 // ── Playlists Section ──────────────────────────────────────────────────────────
 function PlaylistsSection() {
-  return <MNCPlayer />;
+  return (
+    <>
+      <MNCPlayer />
+      <PlaylistSubmit />
+    </>
+  );
 }
 
 // ── Lab CTA Strip ──────────────────────────────────────────────────────────────
