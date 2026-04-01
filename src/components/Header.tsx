@@ -177,9 +177,6 @@ export function Header({ showNav = true }: HeaderProps) {
         <Link to="/artists" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artists
         </Link>
-        <Link to="/sync-quiz" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Is Your Music Sync Ready?
-        </Link>
         <Link to="/reference" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artist Resources
         </Link>
