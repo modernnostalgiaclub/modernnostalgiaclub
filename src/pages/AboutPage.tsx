@@ -116,8 +116,8 @@ export default function AboutPage() {
               {PILLARS.map((pillar, i) => (
                 <motion.div
                   key={pillar.verb}
-                  className="group rounded-2xl p-8 md:p-10 border border-border/40 flex flex-col md:flex-row md:items-start gap-8 transition-all duration-300 hover:border-border"
-                  style={{ background: 'hsl(var(--card)/0.4)' }}
+                  className="group rounded-2xl p-8 md:p-10 border border-black/10 flex flex-col md:flex-row md:items-start gap-8 transition-all duration-300 hover:border-black/20"
+                  style={{ background: 'rgba(0,0,0,0.02)' }}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
