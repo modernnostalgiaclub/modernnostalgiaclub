@@ -243,39 +243,34 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── CTA Strip ────────────────────────────────────────────── */}
+        {/* ── Join the Club (split layout, white bg) ───────────── */}
         <section className="bg-white py-20 border-t border-gray-200">
           <div className="container mx-auto px-6">
-            <motion.div
-              className="max-w-2xl mx-auto text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05] mb-4">
-                Join the Club
-              </h2>
-              <p className="mt-4 text-sm md:text-base text-gray-500 uppercase tracking-[0.2em] mb-10">
-                Explore the music. Build your career.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 max-w-5xl mx-auto">
+              {/* Left: text + CTA */}
+              <div className="lg:w-1/2">
+                <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05] mb-4">
+                  Join the Club
+                </h2>
+                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-8 max-w-md">
+                  Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
+                </p>
                 <Button
                   size="lg"
-                  className="text-base px-8 h-14 font-semibold bg-black text-white hover:bg-black/90"
+                  className="text-base px-8 h-14 font-semibold"
+                  style={{ background: 'hsl(var(--primary))', color: '#fff' }}
                   asChild
                 >
-                  <Link to="/">
-                    Explore the Music <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" className="text-base px-8 h-14 border-gray-300 text-black hover:bg-gray-100" asChild>
                   <Link to="/join">
-                    Join the Club
+                    Join the Club <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
                 </Button>
               </div>
-            </motion.div>
+              {/* Right: MNC logo */}
+              <div className="lg:w-1/2 flex justify-center">
+                <img src={logoBlack} alt="MNC Logo" className="w-40 md:w-52 h-auto" />
+              </div>
+            </div>
           </div>
         </section>
 
