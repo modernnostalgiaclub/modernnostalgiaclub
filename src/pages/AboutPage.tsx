@@ -60,13 +60,13 @@ export default function AboutPage() {
                 At the intersection of timeless artistry and the modern music economy, we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard — not just streamed.
+                We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard, not just streamed.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                MN.C works with independent artists to develop catalog intentionally — music crafted with placement, sync licensing, and closed-audience discovery in mind. This is music built to work.
+                MN.C works with independent artists to develop catalog intentionally, music crafted with placement, sync licensing, and closed audience discovery in mind. This is music built to work.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct-to-fan, and sustainable career infrastructure — not just Spotify streams.
+                The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct to fan, and sustainable career infrastructure, not just Spotify streams.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
                 Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
@@ -100,16 +100,16 @@ export default function AboutPage() {
                   Meet the Founder
                 </h2>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  Eugene-Andrew "Ge Oh" Sarmiento is a songwriter, producer, and sync licensing strategist focused on redefining how music creates value in the modern era. With a catalog of hundreds of pre-cleared songs and years of experience navigating both the creative and business sides of the industry, his work sits at the intersection of artistry, ownership, and infrastructure.
+                  Eugene Andrew "Ge Oh" Sarmiento is a songwriter, producer, and sync licensing strategist focused on redefining how music creates value in the modern era. With a catalog of hundreds of pre cleared songs and years of experience navigating both the creative and business sides of the industry, his work sits at the intersection of artistry, ownership, and infrastructure.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  As the founder of ModernNostalgia.club, Ge Oh built the platform to challenge a broken music economy — one where artists are often underpaid, undervalued, and disconnected from their audience. His approach centers on direct-to-fan monetization, sync licensing systems, and deal structures that prioritize independence without sacrificing scalability.
+                  As the founder of ModernNostalgia.club, Ge Oh built the platform to challenge a broken music economy, one where artists are often underpaid, undervalued, and disconnected from their audience. His approach centers on direct to fan monetization, sync licensing systems, and deal structures that prioritize independence without sacrificing scalability.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
                   Beyond music creation, he develops frameworks that teach artists how to generate consistent income, while also educating listeners on the real economics behind the music they love. His mission is simple but ambitious: to rebuild the bridge between artist and audience, making music sustainable again for both sides.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed">
-                  Through ModernNostalgia.club, Ge Oh is creating more than a platform — he's building a blueprint for the future of independent music.
+                  Through ModernNostalgia.club, Ge Oh is creating more than a platform, he's building a blueprint for the future of independent music.
                 </p>
               </div>
             </div>
