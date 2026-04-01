@@ -2,6 +2,8 @@ import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
+// @ts-ignore
+import "@fontsource/anton";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(

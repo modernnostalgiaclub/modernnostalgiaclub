@@ -17,6 +17,7 @@ export default {
         sans: ["DM Sans", "system-ui", "sans-serif"],
         serif: ["Poppins", "system-ui", "sans-serif"],
         display: ["Maximum Impact", "system-ui", "sans-serif"],
+        anton: ["Anton", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
