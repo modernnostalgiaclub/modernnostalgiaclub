@@ -36,7 +36,7 @@ export function MNCPlayer() {
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">MNC Artists</p>
               <div className="rounded-xl overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyILw_nrgbYLjDsuaiQLeKLvQ"
+                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyILw_nrgbYLjDsuaiQLeKLvQ&autoplay=0"
                   width="100%"
                   height="400"
                   frameBorder="0"
