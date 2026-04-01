@@ -15,6 +15,8 @@ import {
   Music,
 } from 'lucide-react';
 import { MNCPlayer } from '@/components/MNCPlayer';
+import heroBg from '@/assets/hero-bg.jpg';
+import mncLogo from '@/assets/mnc-logo.png';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
