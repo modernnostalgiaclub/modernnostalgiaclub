@@ -3,7 +3,7 @@ import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun } from 'lucide-react';
+import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
