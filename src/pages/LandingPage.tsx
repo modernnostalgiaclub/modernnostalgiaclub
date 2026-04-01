@@ -530,6 +530,7 @@ export default function LandingPage() {
 
         {/* ── MNC Player ───────────────────────────────────────────── */}
         <MNCPlayer />
+        <PlaylistSubmit />
 
         {/* ── Artist Grid ──────────────────────────────────────────── */}
         <ArtistGrid />
