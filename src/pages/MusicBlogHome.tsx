@@ -23,7 +23,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden min-h-[70vh] flex items-center justify-center"
+      className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-center justify-center"
     >
       {/* Hero background image */}
       <div
@@ -42,7 +42,7 @@ function Masthead() {
           variants={stagger}
         >
           <motion.p
-            className="text-lg md:text-xl text-muted-foreground tracking-widest uppercase mb-4"
+            className="text-sm md:text-base text-muted-foreground tracking-widest uppercase mb-4"
             variants={fadeIn}
           >
             For Real Music Lovers
