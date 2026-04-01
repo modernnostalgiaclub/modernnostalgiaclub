@@ -268,7 +268,7 @@ export default function AboutPage() {
               </div>
               {/* Right: MNC logo */}
               <div className="lg:w-1/2 flex justify-center">
-                <img src={logoBlack} alt="MNC Logo" className="w-40 md:w-52 h-auto" />
+                <img src={mncLogo} alt="MNC Logo" className="w-40 md:w-52 h-auto" />
               </div>
             </div>
           </div>
