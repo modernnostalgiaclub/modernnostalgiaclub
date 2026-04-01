@@ -5,8 +5,7 @@ import { SectionLabel } from '@/components/SectionLabel';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Headphones, Music2, GraduationCap, ArrowRight } from 'lucide-react';
-import heroBg from '@/assets/hero-bg.jpg';
-import mncHeroLogo from '@/assets/mnc-hero-logo.png';
+import aboutHero from '@/assets/about-hero.jpg';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
@@ -49,17 +48,24 @@ export default function AboutPage() {
 
         {/* ── Hero (matches home page) ──────────────────────────────── */}
         <section className="relative border-b border-border/40 overflow-hidden min-h-[95vh] flex items-center justify-center">
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-          <div className="absolute inset-0" style={{ background: 'rgba(10,10,10,0.6)' }} />
-          <div className="relative z-10">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${aboutHero})` }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.85) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(217 100% 10% / 0.5) 100%)' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, hsl(217 100% 50% / 0.08) 0%, transparent 70%)' }} />
+          <div className="container mx-auto px-6 relative z-10">
             <motion.div
               initial="hidden"
               animate="visible"
               variants={stagger}
-              className="flex flex-col items-center"
+              className="max-w-4xl mx-auto text-center"
             >
-              <motion.h1 variants={fadeIn}>
-                <img src={mncHeroLogo} alt="Modern Nostalgia Club" className="h-20 md:h-32 lg:h-40 mx-auto" />
+              <motion.h1
+                className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-foreground leading-[1.05]"
+                variants={fadeIn}
+              >
+                ABOUT{' '}
+                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>US</span>
               </motion.h1>
             </motion.div>
           </div>
