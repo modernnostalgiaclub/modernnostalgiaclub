@@ -50,10 +50,10 @@ function Masthead() {
             For Real Music Lovers
           </motion.p>
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight mb-8 text-foreground uppercase"
+            className="mb-8"
             variants={fadeIn}
           >
-            MODERN NOSTALGIA CLUB
+            <img src={mncLogo} alt="Modern Nostalgia Club" className="h-16 md:h-24 lg:h-28 mx-auto" />
           </motion.h1>
           <motion.div className="flex items-center justify-center gap-4 flex-wrap" variants={fadeIn}>
             <Button variant="default" size="lg" asChild>
