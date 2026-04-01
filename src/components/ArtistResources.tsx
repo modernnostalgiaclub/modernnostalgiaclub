@@ -79,6 +79,12 @@ export function ArtistResources() {
                 </div>
               ))}
             </div>
+
+            <Button asChild size="lg" variant="secondary" className="mt-8">
+              <Link to="/reference">
+                Explore Resources <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </div>
