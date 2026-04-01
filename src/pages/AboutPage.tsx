@@ -100,10 +100,16 @@ export default function AboutPage() {
                   Meet the Founder
                 </h2>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  ModernNostalgia.club was built by a music creator who saw firsthand how difficult it is for independent artists to turn talent into sustainable income.
+                  Eugene-Andrew "Ge Oh" Sarmiento is a songwriter, producer, and sync licensing strategist focused on redefining how music creates value in the modern era. With a catalog of hundreds of pre-cleared songs and years of experience navigating both the creative and business sides of the industry, his work sits at the intersection of artistry, ownership, and infrastructure.
+                </p>
+                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
+                  As the founder of ModernNostalgia.club, Ge Oh built the platform to challenge a broken music economy — one where artists are often underpaid, undervalued, and disconnected from their audience. His approach centers on direct-to-fan monetization, sync licensing systems, and deal structures that prioritize independence without sacrificing scalability.
+                </p>
+                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
+                  Beyond music creation, he develops frameworks that teach artists how to generate consistent income, while also educating listeners on the real economics behind the music they love. His mission is simple but ambitious: to rebuild the bridge between artist and audience, making music sustainable again for both sides.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed">
-                  What started as a personal mission to understand sync licensing, catalog development, and the business side of music became a full creative economy designed to help other artists do the same.
+                  Through ModernNostalgia.club, Ge Oh is creating more than a platform — he's building a blueprint for the future of independent music.
                 </p>
               </div>
             </div>
