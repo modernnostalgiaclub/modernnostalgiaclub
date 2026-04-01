@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <img src={logoCream} alt="" className="h-12 w-auto mb-4" aria-hidden="true" />
+            <img src={logoBlue} alt="" className="h-12 w-auto mb-4" aria-hidden="true" />
             <p className="text-sm text-muted-foreground max-w-sm">
               A Creative Economy Lab for artists building sustainable income. Training, systems, and professional workflows for the modern music economy.
             </p>

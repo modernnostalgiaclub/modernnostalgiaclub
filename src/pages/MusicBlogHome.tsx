@@ -373,16 +373,19 @@ function LabCTA() {
     <section className="bg-white">
       <div className="container mx-auto px-6 py-20">
         <motion.div
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-2xl"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-anton text-4xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05] text-black">
-            Join the Club
-          </h2>
-          <p className="text-black/50 text-lg mb-10 mt-4 max-w-xl mx-auto leading-relaxed">
+          <div className="flex items-center gap-4 mb-4">
+            <img src={mncLogoBlue} alt="" className="h-14 w-auto" aria-hidden="true" />
+            <h2 className="font-anton text-4xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05] text-black">
+              Join the Club
+            </h2>
+          </div>
+          <p className="text-black/50 text-lg mb-8 max-w-xl leading-relaxed">
             Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
           </p>
           <Button size="lg" asChild>
