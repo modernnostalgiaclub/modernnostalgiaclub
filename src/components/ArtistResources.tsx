@@ -40,12 +40,11 @@ export function ArtistResources() {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <div className="relative w-64 h-[480px] rounded-[2.5rem] border-2 border-primary-foreground/20 bg-primary-foreground/5 flex items-center justify-center">
-              <div className="text-center px-6">
-                <Music className="w-16 h-16 mx-auto mb-4 text-primary-foreground/60" />
-                <p className="text-primary-foreground/60 text-sm font-medium">Artist Toolkit</p>
-              </div>
-            </div>
+            <img 
+              src={artistResourcesImg} 
+              alt="Artist working in a studio" 
+              className="rounded-2xl object-cover w-full max-w-md h-[480px] shadow-2xl"
+            />
           </motion.div>
 
           {/* Right side — text + feature list */}
