@@ -22,6 +22,7 @@ import {
   Music,
 } from 'lucide-react';
 import { MNCPlayer } from '@/components/MNCPlayer';
+import { PlaylistSubmit } from '@/components/PlaylistSubmit';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
