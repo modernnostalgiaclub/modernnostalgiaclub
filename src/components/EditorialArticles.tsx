@@ -53,7 +53,7 @@ export function EditorialArticles() {
                 transition={{ delay: i * 0.1 }}
               >
                 <Link to={`/blog/${post.slug}`} className="group block">
-                  <div className="aspect-[3/4] max-h-[320px] overflow-hidden bg-gray-100">
+                  <div className="aspect-[3/4] max-h-[480px] overflow-hidden bg-gray-100">
                     {post.cover_image_url ? (
                       <img
                         src={post.cover_image_url}
