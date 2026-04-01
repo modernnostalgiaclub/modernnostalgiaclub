@@ -10,8 +10,8 @@ export function Footer() {
   return (
     <footer className="border-t border-white/10" style={{ background: '#1a1a1a' }} role="contentinfo">
       <div className="container mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
+        <div className="flex flex-col md:flex-row gap-8 md:gap-16">
+          <div className="flex-1">
             <div className="flex items-center mb-4">
               <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
               <span className="font-anton text-sm uppercase tracking-tight text-white -ml-1">Modern Nostalgia<span className="text-primary">.Club</span></span>
@@ -24,8 +24,7 @@ export function Footer() {
             </p>
           </div>
           
-          <nav aria-label="Site navigation">
-            <h4 className="font-display text-lg mb-4 text-white">Explore</h4>
+          <nav aria-label="Site navigation" className="pt-1">
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-sm text-white/70 hover:text-primary transition-colors">
@@ -49,7 +48,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/join" className="text-sm text-white/70 hover:text-primary transition-colors">
-                  Join MNC
+                  Join the Club
                 </Link>
               </li>
               <li>
@@ -70,7 +69,6 @@ export function Footer() {
               </li>
             </ul>
           </nav>
-          
         </div>
         
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
