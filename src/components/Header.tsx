@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
+import mncTextLogo from '@/assets/mnc-text-logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram } from 'lucide-react';
