@@ -161,7 +161,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── Manifesto quote ───────────────────────────────────────────── */}
-        <section className="border-b border-border/40 bg-card/20">
+        <section className="bg-white text-black border-b border-black/10">
           <div className="container mx-auto px-6 py-24">
             <motion.blockquote
               className="max-w-3xl mx-auto text-center"
@@ -170,10 +170,10 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-3xl md:text-4xl font-serif font-bold italic leading-snug mb-6 text-foreground">
+              <p className="text-3xl md:text-4xl font-serif font-bold italic leading-snug mb-6 text-black">
                 "The future of music is independent artists with professional infrastructure."
               </p>
-              <cite className="text-sm text-muted-foreground not-italic uppercase tracking-widest">
+              <cite className="text-sm text-black/50 not-italic uppercase tracking-widest">
                 — ModernNostalgia.club
               </cite>
             </motion.blockquote>
