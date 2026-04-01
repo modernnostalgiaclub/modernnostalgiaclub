@@ -12,9 +12,9 @@ export function Footer() {
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-0.5 mb-4">
+            <div className="flex items-center mb-4">
               <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
-              <span className="font-anton text-sm uppercase tracking-tight text-white">Modern Nostalgia<span className="text-primary">.Club</span></span>
+              <span className="font-anton text-sm uppercase tracking-tight text-white -ml-1">Modern Nostalgia<span className="text-primary">.Club</span></span>
             </div>
             <p className="text-sm text-white/70 max-w-sm">
               Modern Nostalgia Club is a creative economy designed for artists who want to build sustainable income through music. It combines training, systems, and real-world workflows to help artists move beyond just creating and into operating like modern, independent businesses.
