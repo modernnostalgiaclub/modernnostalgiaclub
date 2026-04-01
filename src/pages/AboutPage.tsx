@@ -87,43 +87,67 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── What We Do (white editorial section with image grid) ── */}
-        <section className="bg-white py-20 border-t border-gray-200">
+        {/* ── What We Do (split layout, blue background) ────────── */}
+        <section className="py-20" style={{ background: 'hsl(var(--primary))' }}>
           <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05]">
-                What We Do
-              </h2>
-              <p className="mt-4 text-sm md:text-base text-gray-500 uppercase tracking-[0.2em]">
-                Three things. Done with intention.
-              </p>
-            </div>
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+              {/* Left: title + pillars list */}
+              <div className="lg:w-1/2">
+                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-white/60 mb-3">
+                  What We Do
+                </p>
+                <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-white leading-[1.05] mb-10">
+                  Three Things.<br />Done With Intention.
+                </h2>
 
-            {/* 3-column pillar grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {PILLARS.map((pillar, i) => (
-                <motion.div
-                  key={pillar.verb}
-                  className="text-center"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.6 }}
-                >
-                  <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-5">
-                    <pillar.icon className="w-7 h-7 text-gray-800" />
-                  </div>
-                  <h3 className="font-anton text-lg md:text-xl uppercase tracking-tight text-black mb-3">
-                    {pillar.verb}
-                  </h3>
-                  <p className="font-serif text-base md:text-lg font-bold text-black leading-snug mb-3">
-                    {pillar.headline}
-                  </p>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    {pillar.body}
-                  </p>
-                </motion.div>
-              ))}
+                <div className="space-y-8">
+                  {PILLARS.map((pillar, i) => (
+                    <motion.div
+                      key={pillar.verb}
+                      className="flex gap-5"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1, duration: 0.5 }}
+                    >
+                      <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+                        <pillar.icon className="w-6 h-6 text-white/70" />
+                      </div>
+                      <div>
+                        <h3 className="font-anton text-sm md:text-base uppercase tracking-tight text-white mb-1">
+                          {pillar.verb}
+                        </h3>
+                        <p className="text-sm text-white/60 leading-relaxed">
+                          {pillar.body}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="mt-10">
+                  <Button
+                    size="lg"
+                    className="text-base px-8 h-14 font-semibold bg-white text-black hover:bg-white/90"
+                    asChild
+                  >
+                    <Link to="/join">
+                      Learn More <ArrowRight className="w-5 h-5 ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Right: hero image */}
+              <div className="lg:w-1/2">
+                <div className="rounded-xl overflow-hidden">
+                  <img
+                    src={aboutHero}
+                    alt="Studio session"
+                    className="w-full h-auto object-cover aspect-[4/3]"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
