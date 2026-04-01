@@ -60,7 +60,6 @@ export default function Admin() {
   }
 
   return (
-    <AdminMFAGate>
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8">
