@@ -29,7 +29,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const logo = resolvedTheme === 'dark' ? logoCream : logoBlack;
+  const logo = resolvedTheme === 'dark' ? mncLogo : logoBlack;
   const isAdmin = hasRole('admin');
   const isAdminOrMod = isAdmin || hasRole('moderator');
 
