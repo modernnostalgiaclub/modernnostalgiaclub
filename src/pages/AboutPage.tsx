@@ -37,18 +37,10 @@ export default function AboutPage() {
       <main id="main-content" role="main">
 
         {/* ── Hero — clean image with just the title ────────────────── */}
-        <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[50vh] overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${aboutHero})` }} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.85) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(217 100% 10% / 0.5) 100%)' }} />
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent" />
-          <motion.h1
-            className="relative z-10 font-anton text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight text-white leading-[1.05] text-center"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            About Us
-          </motion.h1>
         </section>
 
         {/* ── Who We Are (white editorial section) ─────────────────── */}
