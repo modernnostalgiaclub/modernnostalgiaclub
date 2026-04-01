@@ -370,7 +370,7 @@ function PlaylistsSection() {
 // ── Lab CTA Strip ──────────────────────────────────────────────────────────────
 function LabCTA() {
   return (
-    <section>
+    <section className="bg-white">
       <div className="container mx-auto px-6 py-20">
         <motion.div
           className="max-w-3xl mx-auto text-center"
@@ -379,24 +379,17 @@ function LabCTA() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <SectionLabel className="mb-4">For Independent Artists</SectionLabel>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6 leading-tight">
-            Ready to Build a<br />
-            <span className="italic text-primary">Sustainable Music Career?</span>
+          <h2 className="font-anton text-4xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05] text-black">
+            Join the Club
           </h2>
-          <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-            The Creator Economy Lab gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
+          <p className="text-black/50 text-lg mb-10 mt-4 max-w-xl mx-auto leading-relaxed">
+            Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
           </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Button size="lg" asChild>
-              <Link to="/lab">
-                Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link to="/about">Learn About MNC</Link>
-            </Button>
-          </div>
+          <Button size="lg" asChild>
+            <Link to="/lab">
+              Explore the Creator Economy Lab <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </Button>
         </motion.div>
       </div>
     </section>
