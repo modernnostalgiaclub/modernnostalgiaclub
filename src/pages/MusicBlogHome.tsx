@@ -48,14 +48,6 @@ function Masthead() {
           >
             <img src={mncLogo} alt="Modern Nostalgia Club" className="h-24 md:h-36 lg:h-44 mx-auto" />
           </motion.h1>
-          <motion.div className="flex items-center justify-center gap-4 flex-wrap" variants={fadeIn}>
-            <Button variant="default" size="lg" asChild>
-              <Link to="/blog">Read the Blog <ArrowRight className="w-4 h-4 ml-2" /></Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a href="#playlists">Listen Now</a>
-            </Button>
-          </motion.div>
         </motion.div>
       </div>
     </section>
