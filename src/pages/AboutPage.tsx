@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Headphones, Music2, GraduationCap, ArrowRight, Star, Users, Heart } from 'lucide-react';
 import aboutHero from '@/assets/about-hero.jpg';
 import founderImg from '@/assets/founder.jpg';
+import logoBlack from '@/assets/logo-black.png';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
