@@ -354,24 +354,7 @@ function LatestTracks() {
 
 // ── Playlists Section ──────────────────────────────────────────────────────────
 function PlaylistsSection() {
-  return (
-    <section id="playlists" className="border-b border-border/40 bg-card/20">
-      <div className="container mx-auto px-6 py-16">
-        <div className="max-w-[800px] mx-auto">
-          <div className="mb-10">
-            <SectionLabel className="mb-2">Listen</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-2">
-              Curated Playlists
-            </h2>
-            <p className="text-muted-foreground text-base">
-              Human-curated music for active listeners — sync-ready, mood-forward, catalog-built.
-            </p>
-          </div>
-          <MNCPlayer />
-        </div>
-      </div>
-    </section>
-  );
+  return <MNCPlayer />;
 }
 
 // ── Lab CTA Strip ──────────────────────────────────────────────────────────────
