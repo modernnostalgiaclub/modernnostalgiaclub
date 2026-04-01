@@ -23,40 +23,36 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden"
-      style={{ background: 'hsl(var(--background))' }}
+      className="relative border-b border-border/40 overflow-hidden min-h-[70vh] flex items-center"
     >
-      {/* Subtle texture pattern */}
+      {/* Hero background image */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-30"
+        className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, hsl(var(--border)/0.4) 0px, hsl(var(--border)/0.4) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, hsl(var(--border)/0.4) 0px, hsl(var(--border)/0.4) 1px, transparent 1px, transparent 40px)',
+          backgroundImage: 'url(https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1920&q=80)',
         }}
       />
+      {/* Dark overlay */}
+      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.75)' }} />
+
       <div className="container mx-auto px-6 pt-32 pb-20 relative z-10">
         <motion.div
-          className="max-w-3xl"
+          className="max-w-5xl"
           initial="hidden"
           animate="visible"
           variants={stagger}
         >
-          <motion.div variants={fadeIn}>
-            <SectionLabel className="mb-5">Music Blog · For Real Music Lovers</SectionLabel>
-          </motion.div>
           <motion.h1
-            className="text-6xl md:text-8xl font-serif font-bold leading-[1.0] mb-6 text-foreground"
+            className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight mb-6 text-foreground uppercase whitespace-nowrap"
             variants={fadeIn}
           >
-            MODERN<br />
-            <span className="italic text-primary">NOSTALGIA</span><br />
-            <span className="italic text-primary">CLUB.</span>
+            MODERN NOSTALGIA CLUB
           </motion.h1>
           <motion.p
             className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mb-8"
             variants={fadeIn}
           >
-            Editorial picks, curated playlists, and tracks from independent artists who make music that moves.
+            For Real Music Lovers.
           </motion.p>
           <motion.div className="flex items-center gap-4 flex-wrap" variants={fadeIn}>
             <Button variant="default" size="lg" asChild>
