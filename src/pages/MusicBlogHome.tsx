@@ -23,6 +23,7 @@ import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
 import mncHeroLogo from '@/assets/mnc-hero-logo.png';
 import mncLogoBlue from '@/assets/mnc-logo-blue.png';
+import syncPerformer from '@/assets/sync-performer.jpg';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
