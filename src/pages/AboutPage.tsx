@@ -103,7 +103,7 @@ export default function AboutPage() {
                   Eugene Andrew "Ge Oh" Sarmiento is a songwriter, producer, and sync licensing strategist focused on redefining how music creates value in the modern era. With a catalog of hundreds of pre cleared songs and years of experience navigating both the creative and business sides of the industry, his work sits at the intersection of artistry, ownership, and infrastructure.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  As the founder of ModernNostalgia.club, Ge Oh built the platform to challenge a broken music economy — one where artists are often underpaid, undervalued, and disconnected from their audience. His approach centers on direct-to-fan monetization, sync licensing systems, and deal structures that prioritize independence without sacrificing scalability.
+                  As the founder of ModernNostalgia.club, Ge Oh built the platform to challenge a broken music economy, one where artists are often underpaid, undervalued, and disconnected from their audience. His approach centers on direct to fan monetization, sync licensing systems, and deal structures that prioritize independence without sacrificing scalability.
                 </p>
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
                   Beyond music creation, he develops frameworks that teach artists how to generate consistent income, while also educating listeners on the real economics behind the music they love. His mission is simple but ambitious: to rebuild the bridge between artist and audience, making music sustainable again for both sides.
