@@ -22,9 +22,7 @@ export function EditorialArticles() {
     <section className="bg-white py-20">
       <div className="container mx-auto px-6">
         {/* Anton heading */}
-        <h2
-          className="font-anton text-5xl md:text-7xl lg:text-8xl text-black uppercase tracking-tight mb-14 text-center"
-        >
+        <h2 className="font-anton text-2xl md:text-3xl text-black uppercase tracking-tight mb-10 text-center">
           For Real Music Lovers
         </h2>
 
@@ -50,7 +48,7 @@ export function EditorialArticles() {
                 transition={{ delay: i * 0.1 }}
               >
                 <Link to={`/blog/${post.slug}`} className="group block">
-                  <div className="aspect-[4/5] overflow-hidden bg-gray-100">
+                  <div className="aspect-[3/4] max-h-[320px] overflow-hidden bg-gray-100">
                     {post.cover_image_url ? (
                       <img
                         src={post.cover_image_url}
