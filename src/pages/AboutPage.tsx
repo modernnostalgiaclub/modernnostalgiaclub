@@ -92,10 +92,22 @@ export default function AboutPage() {
                 <span className="italic" style={{ color: 'hsl(var(--primary))' }}>is a Creative Firm.</span>
               </motion.h2>
               <motion.p
+                className="text-xl md:text-2xl text-black/60 max-w-2xl leading-relaxed mb-6"
+                variants={fadeIn}
+              >
+                At the intersection of timeless artistry and the modern music economy — we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
+              </motion.p>
+              <motion.p
+                className="text-xl md:text-2xl text-black/60 max-w-2xl leading-relaxed mb-6"
+                variants={fadeIn}
+              >
+                Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
+              </motion.p>
+              <motion.p
                 className="text-xl md:text-2xl text-black/60 max-w-2xl leading-relaxed"
                 variants={fadeIn}
               >
-                We curate, create, and educate at the intersection of timeless artistry and the modern music economy.
+                Because it's not just about creating music — it's about building a structure around your creativity so it can actually work for you.
               </motion.p>
             </motion.div>
           </div>
