@@ -3,7 +3,7 @@ import logoFooter from '@/assets/mnc-logo-footer.png';
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card/50" role="contentinfo">
+    <footer className="border-t border-border" style={{ background: '#0a0a0a' }} role="contentinfo">
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
