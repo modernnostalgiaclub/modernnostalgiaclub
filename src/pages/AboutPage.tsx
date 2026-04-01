@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Headphones, Music2, GraduationCap, ArrowRight } from 'lucide-react';
 import aboutHero from '@/assets/about-hero.jpg';
+import logoCream from '@/assets/logo-cream.png';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
@@ -46,65 +47,85 @@ export default function AboutPage() {
       <Header />
       <main id="main-content" role="main">
 
-        {/* ── Hero (matches home page) ──────────────────────────────── */}
-        <section className="relative border-b border-border/40 overflow-hidden min-h-[95vh] flex items-center justify-center">
+        {/* ── Hero (mirrors home page) ──────────────────────────────── */}
+        <section
+          className="relative min-h-screen flex items-center overflow-hidden"
+          aria-labelledby="about-heading"
+        >
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${aboutHero})` }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.85) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(217 100% 10% / 0.5) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.97) 0%, hsl(222 47% 4% / 0.8) 50%, hsl(217 100% 10% / 0.7) 100%)' }} />
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
             style={{ background: 'radial-gradient(circle, hsl(217 100% 50% / 0.08) 0%, transparent 70%)' }} />
-          <div className="container mx-auto px-6 relative z-10">
+
+          <div className="container mx-auto px-6 relative z-10 pt-28 pb-20">
             <motion.div
+              className="max-w-4xl mx-auto text-center"
               initial="hidden"
               animate="visible"
               variants={stagger}
-              className="max-w-4xl mx-auto text-center"
             >
+              <motion.div variants={fadeIn} className="mb-8 flex justify-center">
+                <img src={logoCream} alt="ModernNostalgia.club" className="h-16 md:h-20 w-auto" />
+              </motion.div>
+
+              <motion.div variants={fadeIn} className="flex justify-center">
+                <SectionLabel className="mb-5">About</SectionLabel>
+              </motion.div>
+
               <motion.h1
-                className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-foreground leading-[1.05]"
+                id="about-heading"
+                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-[1.05] text-foreground"
                 variants={fadeIn}
               >
-                ABOUT{' '}
-                <span style={{ color: 'hsl(217 100% 65%)' }}>US</span>
+                About{' '}
+                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>Us.</span>
               </motion.h1>
+
+              <motion.p
+                className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
+                variants={fadeIn}
+              >
+                A creative firm at the intersection of timeless artistry and the modern music economy.
+              </motion.p>
             </motion.div>
           </div>
         </section>
 
-        {/* ── About Content (white background) ─────────────────────── */}
-        <section className="bg-white text-black">
-          <div className="container mx-auto px-6 pt-24 pb-12">
+        {/* ── About Content ─────────────────────────────────────────── */}
+        <section className="py-28 border-t border-border/30">
+          <div className="container mx-auto px-6">
             <motion.div
-              className="max-w-4xl"
+              className="max-w-4xl mx-auto text-center"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={stagger}
             >
-              <motion.div variants={fadeIn}>
-                <SectionLabel className="mb-6 !text-black/50">About</SectionLabel>
+              <motion.div variants={fadeIn} className="flex justify-center">
+                <SectionLabel className="mb-5">Who We Are</SectionLabel>
               </motion.div>
               <motion.h2
-                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.95] mb-8 text-black break-words"
+                className="text-4xl md:text-6xl font-serif font-bold leading-tight mb-8 text-foreground"
                 variants={fadeIn}
               >
                 ModernNostalgia.club<br />
-                <span className="italic" style={{ color: 'hsl(var(--primary))' }}>is a Creative Firm.</span>
+                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>is a Creative Firm.</span>
               </motion.h2>
               <motion.p
-                className="font-sans text-base md:text-lg text-black/60 max-w-2xl leading-relaxed mb-6"
+                className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6"
                 variants={fadeIn}
               >
-                At the intersection of timeless artistry and the modern music economy — we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
+                We curate, create, and educate — helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
               <motion.p
-                className="font-sans text-base md:text-lg text-black/60 max-w-2xl leading-relaxed mb-6"
+                className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-6"
                 variants={fadeIn}
               >
                 Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
               </motion.p>
               <motion.p
-                className="font-sans text-base md:text-lg text-black/60 max-w-2xl leading-relaxed"
+                className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
                 variants={fadeIn}
               >
                 Because it's not just about creating music — it's about building a structure around your creativity so it can actually work for you.
@@ -113,35 +134,34 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Three Pillars ─────────────────────────────────────────────── */}
-        <section className="bg-white text-black border-b border-black/10">
-          <div className="container mx-auto px-6 py-24">
+        {/* ── Three Pillars ─────────────────────────────────────────── */}
+        <section className="py-28 border-t border-border/30">
+          <div className="container mx-auto px-6">
             <motion.div
-              className="mb-16 max-w-2xl"
+              className="mb-16 max-w-4xl mx-auto text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <SectionLabel className="mb-4 !text-black/50">What We Do</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight text-black">
+              <SectionLabel className="mb-5">What We Do</SectionLabel>
+              <h2 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-foreground">
                 Three things.<br />
-                <span className="text-primary italic">Done with intention.</span>
+                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>Done with intention.</span>
               </h2>
             </motion.div>
 
-            <div className="space-y-6">
+            <div className="space-y-6 max-w-4xl mx-auto">
               {PILLARS.map((pillar, i) => (
                 <motion.div
                   key={pillar.verb}
-                  className="group rounded-2xl p-8 md:p-10 border border-black/10 flex flex-col md:flex-row md:items-start gap-8 transition-all duration-300 hover:border-black/20"
-                  style={{ background: 'rgba(0,0,0,0.02)' }}
+                  className="group rounded-2xl p-8 md:p-10 border border-border/30 flex flex-col md:flex-row md:items-start gap-8 transition-all duration-300 hover:border-border/60"
+                  style={{ background: 'hsl(var(--card))' }}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.12, duration: 0.6 }}
                 >
-                  {/* Number + icon */}
                   <div className="shrink-0 flex items-start gap-4 md:flex-col md:gap-3 md:w-28">
                     <span
                       className="text-7xl md:text-8xl font-serif font-bold leading-none select-none"
@@ -157,7 +177,6 @@ export default function AboutPage() {
                     </div>
                   </div>
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
                     <p
                       className="text-xs uppercase tracking-widest font-semibold mb-2"
@@ -165,10 +184,10 @@ export default function AboutPage() {
                     >
                       {pillar.verb}
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-4 text-black">
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold leading-tight mb-4 text-foreground">
                       {pillar.headline}
                     </h3>
-                    <p className="text-black/60 leading-relaxed text-base max-w-2xl">
+                    <p className="text-muted-foreground leading-relaxed text-base max-w-2xl">
                       {pillar.body}
                     </p>
                   </div>
@@ -178,9 +197,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Manifesto quote ───────────────────────────────────────────── */}
-        <section className="bg-white text-black border-b border-black/10">
-          <div className="container mx-auto px-6 py-24">
+        {/* ── Manifesto quote ──────────────────────────────────────── */}
+        <section className="py-28 border-t border-border/30">
+          <div className="container mx-auto px-6">
             <motion.blockquote
               className="max-w-3xl mx-auto text-center"
               initial={{ opacity: 0, y: 30 }}
@@ -188,19 +207,19 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-3xl md:text-4xl font-serif font-bold italic leading-snug mb-6 text-black">
+              <p className="text-3xl md:text-4xl font-serif font-bold italic leading-snug mb-6 text-foreground">
                 "The future of music is independent artists with professional infrastructure."
               </p>
-              <cite className="text-sm text-black/50 not-italic uppercase tracking-widest">
+              <cite className="text-sm text-muted-foreground not-italic uppercase tracking-widest">
                 — ModernNostalgia.club
               </cite>
             </motion.blockquote>
           </div>
         </section>
 
-        {/* ── CTA Strip ─────────────────────────────────────────────────── */}
-        <section className="bg-white text-black">
-          <div className="container mx-auto px-6 py-20">
+        {/* ── CTA Strip ────────────────────────────────────────────── */}
+        <section className="py-28 border-t border-border/30">
+          <div className="container mx-auto px-6">
             <motion.div
               className="max-w-2xl mx-auto text-center"
               initial={{ opacity: 0, y: 30 }}
@@ -208,18 +227,23 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <SectionLabel className="mb-6 !text-black/50">What's Next</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-10 leading-tight text-black">
+              <SectionLabel className="mb-5">What's Next</SectionLabel>
+              <h2 className="text-4xl md:text-6xl font-serif font-bold mb-10 leading-tight text-foreground">
                 Explore the music.<br />
-                <span className="italic text-primary">Join the Club.</span>
+                <span className="italic" style={{ color: 'hsl(217 100% 65%)' }}>Join the Club.</span>
               </h2>
-              <div className="flex items-center justify-center gap-4 flex-wrap">
-                <Button size="lg" asChild>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  className="text-base px-8 h-14 font-semibold"
+                  style={{ background: 'hsl(217 100% 50%)', color: '#fff', boxShadow: '0 0 24px hsl(217 100% 50% / 0.4)' }}
+                  asChild
+                >
                   <Link to="/">
-                    Explore the Music <ArrowRight className="w-4 h-4 ml-2" />
+                    Explore the Music <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild className="border-black/20 text-black hover:bg-black/5">
+                <Button variant="outline" size="lg" className="text-base px-8 h-14" asChild>
                   <Link to="/join">
                     Join the Club
                   </Link>
