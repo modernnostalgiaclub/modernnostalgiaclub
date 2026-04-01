@@ -85,6 +85,30 @@ export function Footer() {
                   <span>Twitter/X</span>
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://www.instagram.com/modernnostalgia.club/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-primary transition-colors md:justify-end"
+                  aria-label="Follow Modern Nostalgia Club on Instagram (opens in new tab)"
+                >
+                  <Instagram size={16} />
+                  <span>Instagram</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.threads.net/@modernnostalgia.club"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-primary transition-colors md:justify-end"
+                  aria-label="Follow Modern Nostalgia Club on Threads (opens in new tab)"
+                >
+                  <AtSign size={16} />
+                  <span>Threads</span>
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
