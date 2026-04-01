@@ -83,13 +83,13 @@ export default function AboutPage() {
               variants={stagger}
             >
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                At the intersection of timeless artistry and the modern music economy — we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
+                At the intersection of timeless artistry and the modern music economy, we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
                 Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                Because it's not just about creating music — it's about building a structure around your creativity so it can actually work for you.
+                Because it's not just about creating music, it's about building a structure around your creativity so it can actually work for you.
               </motion.p>
             </motion.div>
           </div>
