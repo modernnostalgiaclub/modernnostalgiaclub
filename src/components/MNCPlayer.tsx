@@ -2,7 +2,7 @@ export function MNCPlayer() {
   return (
     <section className="py-20 border-t border-border/30" style={{ background: '#0a0a0a' }}>
       <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
 
           {/* Left – text */}
           <div className="lg:w-2/5 flex flex-col justify-center">
@@ -11,7 +11,7 @@ export function MNCPlayer() {
               Listen to our<br />Playlist
             </h2>
             <p className="mt-4 text-sm md:text-base text-gray-400">
-              Human-curated music for active listeners — sync-ready, mood-forward, catalog-built.
+              Human curates music for active listeners, sync ready, mood forward, catalog built
             </p>
           </div>
 
@@ -21,7 +21,7 @@ export function MNCPlayer() {
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Day Party</p>
               <div className="rounded-xl overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyIL7pHJSKNzrqS3mq0OC5InH"
+                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyIL7pHJSKNzrqS3mq0OC5InH&autoplay=0"
                   width="100%"
                   height="400"
                   frameBorder="0"
@@ -36,7 +36,7 @@ export function MNCPlayer() {
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">MNC Artists</p>
               <div className="rounded-xl overflow-hidden">
                 <iframe
-                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyILw_nrgbYLjDsuaiQLeKLvQ"
+                  src="https://www.youtube.com/embed/videoseries?list=PL8vMWEFhhyILw_nrgbYLjDsuaiQLeKLvQ&autoplay=0"
                   width="100%"
                   height="400"
                   frameBorder="0"
