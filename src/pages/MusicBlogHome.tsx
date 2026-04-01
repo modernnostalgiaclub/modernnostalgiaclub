@@ -32,7 +32,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-center justify-center"
+      className="relative border-b border-border/40 overflow-hidden min-h-[95vh] flex items-center justify-center"
     >
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
       <div className="absolute inset-0" style={{ background: 'rgba(10,10,10,0.6)' }} />
