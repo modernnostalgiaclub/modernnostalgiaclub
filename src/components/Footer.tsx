@@ -71,33 +71,6 @@ export function Footer() {
             </ul>
           </nav>
           
-          <nav aria-label="External links">
-            <h4 className="font-display text-lg mb-4 text-white">Connect</h4>
-            <ul className="space-y-2">
-              <li>
-                <a 
-                  href="https://www.patreon.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-white/70 hover:text-primary transition-colors"
-                  aria-label="Patreon (opens in new tab)"
-                >
-                  Patreon
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://disco.ac/signup?b=5076&u=23831" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-white/70 hover:text-primary transition-colors"
-                  aria-label="DISCO (opens in new tab)"
-                >
-                  DISCO
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
         
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
