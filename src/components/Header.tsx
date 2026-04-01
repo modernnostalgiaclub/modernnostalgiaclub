@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import logoCream from '@/assets/logo-cream.png';
+import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
