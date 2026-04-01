@@ -200,8 +200,10 @@ export function Header({ showNav = true }: HeaderProps) {
         
         {/* Desktop Navigation - truly centered */}
         {showNav && (
-          <nav className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2" aria-label="Main navigation">
-            <DesktopNavLinks />
+          <nav className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 pointer-events-none" aria-label="Main navigation">
+            <div className="flex items-center gap-6 pointer-events-auto">
+              <DesktopNavLinks />
+            </div>
           </nav>
         )}
         
