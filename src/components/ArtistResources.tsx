@@ -61,11 +61,6 @@ export function ArtistResources() {
               Artist Resources
             </h2>
 
-            <Button asChild size="lg" variant="secondary" className="mb-4">
-              <Link to="/reference">
-                Explore Resources <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
 
             <div className="space-y-6 mt-8">
               {resources.map((resource) => (
