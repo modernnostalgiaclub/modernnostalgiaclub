@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function SyncReadyCTA() {
   return (
@@ -12,9 +13,9 @@ export function SyncReadyCTA() {
           Most artists think they are. Take this quiz to check and see where you stand.
         </p>
         <Button asChild size="lg" className="mt-8">
-          <a href="https://www.modernnostalgia.club/sync-quiz" target="_blank" rel="noopener noreferrer">
+          <Link to="/sync-quiz">
             Take the Quiz <ArrowRight className="ml-2 h-4 w-4" />
-          </a>
+          </Link>
         </Button>
       </div>
     </section>
