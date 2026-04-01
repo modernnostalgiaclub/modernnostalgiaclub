@@ -60,7 +60,7 @@ export default function AboutPage() {
                 At the intersection of timeless artistry and the modern music economy, we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard — not just streamed.
+                We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard, not just streamed.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
                 MN.C works with independent artists to develop catalog intentionally — music crafted with placement, sync licensing, and closed-audience discovery in mind. This is music built to work.
