@@ -191,7 +191,7 @@ export function Header({ showNav = true }: HeaderProps) {
       role="banner"
     >
       <div className="container mx-auto px-2 md:px-4 h-14 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3" aria-label="ModernNostalgia.club home">
+        <Link to="/" className="flex items-center gap-3 mr-auto" aria-label="ModernNostalgia.club home">
           <img src={logo} alt="" className="h-12 w-auto" aria-hidden="true" />
           <span className="sr-only">ModernNostalgia.club</span>
         </Link>
