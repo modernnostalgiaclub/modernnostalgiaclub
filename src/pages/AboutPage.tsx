@@ -5,8 +5,7 @@ import { SectionLabel } from '@/components/SectionLabel';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Headphones, Music2, GraduationCap, ArrowRight } from 'lucide-react';
-import heroBg from '@/assets/hero-bg.jpg';
-import mncHeroLogo from '@/assets/mnc-hero-logo.png';
+import aboutHero from '@/assets/about-hero.jpg';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
