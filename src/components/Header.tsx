@@ -191,21 +191,24 @@ export function Header({ showNav = true }: HeaderProps) {
       style={{ background: '#0a0a0a' }}
       role="banner"
     >
-      <div className="container mx-auto px-2 md:px-4 h-14 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 mr-auto" aria-label="ModernNostalgia.club home">
-          <img src={logo} alt="" className="h-12 w-auto" aria-hidden="true" />
+      <div className="w-full px-4 md:px-6 h-14 flex items-center">
+        {/* Logo - far left */}
+        <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="ModernNostalgia.club home">
+          <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
+          <img src={mncTextLogo} alt="" className="h-5 w-auto hidden sm:block" aria-hidden="true" />
           <span className="sr-only">ModernNostalgia.club</span>
         </Link>
         
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation - centered */}
         {showNav && (
-          <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center gap-6 flex-1 justify-center" aria-label="Main navigation">
             <DesktopNavLinks />
           </nav>
         )}
         
-        <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2">
+        {/* Right side: social + auth buttons */}
+        <div className="flex items-center gap-4 shrink-0 ml-auto">
+          <div className="hidden md:flex items-center gap-3">
             <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Instagram">
               <Instagram className="h-4 w-4" />
             </a>
