@@ -203,7 +203,7 @@ export function Header({ showNav = true }: HeaderProps) {
           </nav>
         )}
         
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-2">
             <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Instagram">
               <Instagram className="h-4 w-4" />
