@@ -2,7 +2,7 @@ export function MNCPlayer() {
   return (
     <section className="py-20 border-t border-border/30" style={{ background: '#0a0a0a' }}>
       <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
 
           {/* Left – text */}
           <div className="lg:w-2/5 flex flex-col justify-center">
@@ -11,7 +11,7 @@ export function MNCPlayer() {
               Listen to our<br />Playlist
             </h2>
             <p className="mt-4 text-sm md:text-base text-gray-400">
-              Human-curated music for active listeners — sync-ready, mood-forward, catalog-built.
+              Human curates music for active listeners, sync ready, mood forward, catalog built
             </p>
           </div>
 
