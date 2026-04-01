@@ -25,19 +25,19 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-center justify-center"
+      className="relative border-b border-border/40 overflow-hidden min-h-[85vh] flex items-end"
       style={{ background: '#0a0a0a' }}
     >
 
-      <div className="container mx-auto px-6 py-32 relative z-10 flex flex-col items-center justify-center">
+      <div className="container mx-auto px-6 py-32 relative z-10">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="flex flex-col items-center"
+          className="flex flex-col items-start"
         >
           <motion.p
-            className="text-[10px] md:text-xs text-muted-foreground tracking-[0.25em] uppercase mb-2 self-start ml-1"
+            className="text-[10px] md:text-xs text-muted-foreground tracking-[0.25em] uppercase mb-2"
             variants={fadeIn}
           >
             For Real Music Lovers
@@ -46,7 +46,7 @@ function Masthead() {
             className="mb-8"
             variants={fadeIn}
           >
-            <img src={mncLogo} alt="Modern Nostalgia Club" className="h-24 md:h-36 lg:h-44 mx-auto" />
+            <img src={mncLogo} alt="Modern Nostalgia Club" className="h-24 md:h-36 lg:h-44" />
           </motion.h1>
         </motion.div>
       </div>
