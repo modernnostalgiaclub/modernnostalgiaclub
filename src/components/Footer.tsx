@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logoCream from '@/assets/logo-cream.png';
+import logoBlue from '@/assets/mnc-logo-blue.png';
 
 export function Footer() {
   return (
