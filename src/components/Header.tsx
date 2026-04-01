@@ -191,7 +191,7 @@ export function Header({ showNav = true }: HeaderProps) {
       style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0a0a0a 60%, transparent 100%)' }}
       role="banner"
     >
-      <div className="w-full px-4 md:px-6 h-16 relative flex items-center justify-between">
+      <div className="w-full px-4 md:px-6 h-20 relative flex items-center justify-between">
         {/* Logo - far left */}
         <Link to="/" className="flex items-center shrink-0" aria-label="ModernNostalgia.club home">
           <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
