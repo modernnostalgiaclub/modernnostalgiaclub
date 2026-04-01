@@ -1,4 +1,6 @@
-import { Briefcase, Music, Mic, Monitor } from 'lucide-react';
+import { Briefcase, Music, Mic, Monitor, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const resources = [
@@ -58,6 +60,12 @@ export function ArtistResources() {
             <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05] text-primary-foreground mb-6">
               Artist Resources
             </h2>
+
+            <Button asChild size="lg" variant="secondary" className="mb-4">
+              <Link to="/reference">
+                Explore Resources <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
 
             <div className="space-y-6 mt-8">
               {resources.map((resource) => (
