@@ -11,8 +11,8 @@ export function Footer() {
   return (
     <footer className="border-t border-white/10" style={{ background: '#1a1a1a' }} role="contentinfo">
       <div className="container mx-auto px-6 py-12">
-        <div className="flex flex-col md:flex-row gap-8 md:gap-16 md:items-start">
-          <div className="flex-1">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-start md:gap-16">
+          <div className="max-w-sm">
             <div className="flex items-center mb-4">
               <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
               <span className="font-anton text-sm uppercase tracking-tight text-white -ml-1">Modern Nostalgia<span className="text-primary">.Club</span></span>
@@ -23,20 +23,9 @@ export function Footer() {
             <p className="text-sm text-white/70 max-w-sm mt-3">
               It's not just about making music. It's about building a structure around your creativity so it can actually pay you.
             </p>
-            <div className="flex items-center gap-4 mt-4">
-              <a
-                href="https://x.com/geohworks"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/50 hover:text-primary transition-colors"
-                aria-label="Follow us on X (opens in new tab)"
-              >
-                <Twitter size={18} />
-              </a>
-            </div>
           </div>
           
-          <nav aria-label="Site navigation" className="pt-1 shrink-0">
+          <nav aria-label="Site navigation" className="md:justify-self-center md:pt-1">
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-sm text-white/70 hover:text-primary transition-colors">
@@ -78,6 +67,23 @@ export function Footer() {
                 <Link to="/contact" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Contact
                 </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <nav aria-label="Social links" className="md:justify-self-end md:pt-1">
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="https://x.com/geohworks"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-primary transition-colors md:justify-end"
+                  aria-label="Follow Modern Nostalgia Club on Twitter/X (opens in new tab)"
+                >
+                  <Twitter size={16} />
+                  <span>Twitter/X</span>
+                </a>
               </li>
             </ul>
           </nav>
