@@ -28,27 +28,27 @@ export function Footer() {
             <h4 className="font-display text-lg mb-4 text-white">Explore</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/about" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link to="/about" className="text-sm text-white/70 hover:text-primary transition-colors">
                   About MNC
                 </Link>
               </li>
               <li>
-                <Link to="/lab" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link to="/lab" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Creator Economy Lab
                 </Link>
               </li>
               <li>
-                <Link to="/artists" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link to="/artists" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Artists
                 </Link>
               </li>
               <li>
-                <Link to="/reference" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link to="/reference" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Artist Resources
                 </Link>
               </li>
               <li>
-                <Link to="/events" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link to="/events" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Events
                 </Link>
               </li>
@@ -63,7 +63,7 @@ export function Footer() {
                   href="https://www.patreon.com" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-white/70 hover:text-white transition-colors"
+                  className="text-sm text-white/70 hover:text-primary transition-colors"
                   aria-label="Patreon (opens in new tab)"
                 >
                   Patreon
@@ -74,7 +74,7 @@ export function Footer() {
                   href="https://disco.ac/signup?b=5076&u=23831" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-white/70 hover:text-white transition-colors"
+                  className="text-sm text-white/70 hover:text-primary transition-colors"
                   aria-label="DISCO (opens in new tab)"
                 >
                   DISCO
@@ -89,13 +89,13 @@ export function Footer() {
             © {new Date().getFullYear()} ModernNostalgia.club. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link to="/contact" className="text-xs text-white/50 hover:text-white transition-colors">
+            <Link to="/contact" className="text-xs text-white/50 hover:text-primary transition-colors">
               Contact
             </Link>
-            <Link to="/terms" className="text-xs text-white/50 hover:text-white transition-colors">
+            <Link to="/terms" className="text-xs text-white/50 hover:text-primary transition-colors">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="text-xs text-white/50 hover:text-white transition-colors">
+            <Link to="/privacy" className="text-xs text-white/50 hover:text-primary transition-colors">
               Privacy Policy
             </Link>
           </div>
