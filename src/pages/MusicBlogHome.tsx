@@ -42,7 +42,7 @@ function Masthead() {
           variants={stagger}
         >
           <motion.p
-            className="text-lg md:text-xl text-muted-foreground tracking-widest uppercase mb-4"
+            className="text-sm md:text-base text-muted-foreground tracking-widest uppercase mb-4"
             variants={fadeIn}
           >
             For Real Music Lovers
