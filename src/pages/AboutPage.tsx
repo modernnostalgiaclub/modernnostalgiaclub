@@ -63,7 +63,7 @@ export default function AboutPage() {
                 We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard, not just streamed.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
-                MN.C works with independent artists to develop catalog intentionally — music crafted with placement, sync licensing, and closed-audience discovery in mind. This is music built to work.
+                MN.C works with independent artists to develop catalog intentionally, music crafted with placement, sync licensing, and closed audience discovery in mind. This is music built to work.
               </motion.p>
               <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
                 The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct-to-fan, and sustainable career infrastructure — not just Spotify streams.
