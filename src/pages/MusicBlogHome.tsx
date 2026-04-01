@@ -23,38 +23,37 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden min-h-[70vh] flex items-center"
+      className="relative border-b border-border/40 overflow-hidden min-h-[70vh] flex items-center justify-center"
     >
       {/* Hero background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1920&q=80)',
+          backgroundImage: 'url(https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1920&q=80)',
         }}
       />
       {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.75)' }} />
+      <div className="absolute inset-0" style={{ background: 'hsl(var(--background) / 0.7)' }} />
 
-      <div className="container mx-auto px-6 pt-32 pb-20 relative z-10">
+      <div className="container mx-auto px-6 py-32 relative z-10 text-center">
         <motion.div
-          className="max-w-5xl"
           initial="hidden"
           animate="visible"
           variants={stagger}
         >
+          <motion.p
+            className="text-lg md:text-xl text-muted-foreground tracking-widest uppercase mb-4"
+            variants={fadeIn}
+          >
+            For Real Music Lovers
+          </motion.p>
           <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold tracking-tight mb-6 text-foreground uppercase whitespace-nowrap"
+            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight mb-8 text-foreground uppercase"
             variants={fadeIn}
           >
             MODERN NOSTALGIA CLUB
           </motion.h1>
-          <motion.p
-            className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mb-8"
-            variants={fadeIn}
-          >
-            For Real Music Lovers.
-          </motion.p>
-          <motion.div className="flex items-center gap-4 flex-wrap" variants={fadeIn}>
+          <motion.div className="flex items-center justify-center gap-4 flex-wrap" variants={fadeIn}>
             <Button variant="default" size="lg" asChild>
               <Link to="/blog">Read the Blog <ArrowRight className="w-4 h-4 ml-2" /></Link>
             </Button>
@@ -63,17 +62,6 @@ function Masthead() {
             </Button>
           </motion.div>
         </motion.div>
-
-        {/* Decorative rule */}
-        <div className="mt-16 border-t border-border/50 pt-4 flex items-center gap-6 text-xs uppercase tracking-widest text-muted-foreground">
-          <span>Editorial</span>
-          <span className="w-px h-3 bg-border inline-block" />
-          <span>Playlists</span>
-          <span className="w-px h-3 bg-border inline-block" />
-          <span>Sync Music</span>
-          <span className="w-px h-3 bg-border inline-block" />
-          <span>Independent Artists</span>
-        </div>
       </div>
     </section>
   );
