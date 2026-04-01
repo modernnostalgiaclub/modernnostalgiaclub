@@ -181,7 +181,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── CTA Strip ─────────────────────────────────────────────────── */}
-        <section>
+        <section className="bg-white text-black">
           <div className="container mx-auto px-6 py-20">
             <motion.div
               className="max-w-2xl mx-auto text-center"
@@ -190,10 +190,10 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <SectionLabel className="mb-6">What's Next</SectionLabel>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-10 leading-tight">
+              <SectionLabel className="mb-6 !text-black/50">What's Next</SectionLabel>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-10 leading-tight text-black">
                 Explore the music.<br />
-                <span className="italic text-primary">Join the Lab.</span>
+                <span className="italic text-primary">Join the Club.</span>
               </h2>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <Button size="lg" asChild>
@@ -201,9 +201,9 @@ export default function AboutPage() {
                     Explore the Music <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link to="/lab">
-                    Join the Creator Economy Lab
+                <Button variant="outline" size="lg" asChild className="border-black/20 text-black hover:bg-black/5">
+                  <Link to="/join">
+                    Join the Club
                   </Link>
                 </Button>
               </div>
