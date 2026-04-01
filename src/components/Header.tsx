@@ -194,9 +194,8 @@ export function Header({ showNav = true }: HeaderProps) {
       <div className="w-full px-4 md:px-6 h-14 flex items-center">
         {/* Logo - far left */}
         <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="ModernNostalgia.club home">
-          <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
-          <img src={mncTextLogo} alt="" className="h-5 w-auto hidden sm:block" aria-hidden="true" />
-          <span className="sr-only">ModernNostalgia.club</span>
+          <img src={logo} alt="" className="h-8 w-auto" aria-hidden="true" />
+          <span className="hidden sm:inline font-anton text-sm uppercase tracking-tight text-white">Modern Nostalgia<span className="text-primary">.Club</span></span>
         </Link>
         
         {/* Desktop Navigation - centered */}
