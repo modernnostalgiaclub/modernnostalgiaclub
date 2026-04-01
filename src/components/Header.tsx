@@ -192,8 +192,8 @@ export function Header({ showNav = true }: HeaderProps) {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10"
-      style={{ background: 'hsl(222 47% 4% / 0.85)' }}
+      className="fixed top-0 left-0 right-0 z-50 border-b border-white/10"
+      style={{ background: '#0a0a0a' }}
       role="banner"
     >
       <div className="container mx-auto px-2 md:px-4 h-14 flex items-center justify-between">
