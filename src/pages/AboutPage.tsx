@@ -98,44 +98,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── What We Do (white background, after Who Are We) ────── */}
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="max-w-3xl">
-              <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">
-                What We Do
-              </p>
-              <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-black leading-[1.05] mb-10">
-                What We Do
-              </h2>
-
-              <div className="space-y-8">
-                {PILLARS.map((pillar, i) => (
-                  <motion.div
-                    key={pillar.verb}
-                    className="flex gap-5"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
-                      <pillar.icon className="w-6 h-6 text-gray-500" />
-                    </div>
-                    <div>
-                      <h3 className="font-anton text-sm md:text-base uppercase tracking-tight text-black mb-1">
-                        {pillar.verb}
-                      </h3>
-                      <p className="text-sm text-gray-500 leading-relaxed">
-                        {pillar.body}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ── Our Values (dark card grid) ─────────────────────────── */}
         <section className="py-20 bg-background">
