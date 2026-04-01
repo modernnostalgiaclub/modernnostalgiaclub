@@ -4,7 +4,7 @@ import { Send } from 'lucide-react';
 
 export function PlaylistSubmit() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20" style={{ background: '#ffffff' }}>
       <div className="container mx-auto px-6 text-center max-w-2xl">
         <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-tight leading-[1.05]">
           Submit to Our Playlists
