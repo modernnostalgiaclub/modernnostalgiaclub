@@ -93,7 +93,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── About Content ─────────────────────────────────────────── */}
-        <section className="py-28 border-t border-border/30">
+        <section className="light bg-background text-foreground py-28 border-t border-border/30">
           <div className="container mx-auto px-6">
             <motion.div
               className="max-w-4xl mx-auto text-center"
