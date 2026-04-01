@@ -129,69 +129,70 @@ export default function BlogIndex() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {paginatedPosts.map((post, i) => (
-                    <motion.article
-                      key={post.id}
-                      className="group rounded-xl overflow-hidden flex flex-col bg-card/40 border border-border/40 hover:border-border transition-all duration-300"
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true }}
-                      variants={fadeIn}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <div className="relative aspect-video overflow-hidden bg-muted">
-                        {post.cover_image_url ? (
-                          <img
-                            src={post.cover_image_url}
-                            alt={post.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Newspaper className="w-10 h-10 text-primary/20" />
-                          </div>
-                        )}
-                        {post.tags && post.tags.length > 0 && (
-                          <div className="absolute top-3 left-3 flex gap-1 flex-wrap">
-                            {post.tags.slice(0, 2).map((tag: string) => (
-                              <span
-                                key={tag}
-                                className="text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
-                                style={{
-                                  background: 'hsl(var(--primary)/0.2)',
-                                  color: 'hsl(var(--primary)/0.9)',
-                                  border: '1px solid hsl(var(--primary)/0.3)',
-                                }}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-5 flex flex-col flex-1">
-                        <h2 className="font-serif text-base font-semibold leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                          {post.title}
-                        </h2>
-                        {post.excerpt && (
-                          <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
-                            {post.excerpt}
-                          </p>
-                        )}
-                        <div className="mt-auto pt-3 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
-                          <span>{post.author_name}</span>
-                          {post.published_at && (
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {new Date(post.published_at).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                              })}
-                            </span>
+                    <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                      <motion.article
+                        className="group rounded-xl overflow-hidden flex flex-col bg-card/40 border border-border/40 hover:border-border transition-all duration-300"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeIn}
+                        transition={{ delay: i * 0.05 }}
+                      >
+                        <div className="relative aspect-video overflow-hidden bg-muted">
+                          {post.cover_image_url ? (
+                            <img
+                              src={post.cover_image_url}
+                              alt={post.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Newspaper className="w-10 h-10 text-primary/20" />
+                            </div>
+                          )}
+                          {post.tags && post.tags.length > 0 && (
+                            <div className="absolute top-3 left-3 flex gap-1 flex-wrap">
+                              {post.tags.slice(0, 2).map((tag: string) => (
+                                <span
+                                  key={tag}
+                                  className="text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full backdrop-blur-sm"
+                                  style={{
+                                    background: 'hsl(var(--primary)/0.2)',
+                                    color: 'hsl(var(--primary)/0.9)',
+                                    border: '1px solid hsl(var(--primary)/0.3)',
+                                  }}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
                           )}
                         </div>
-                      </div>
-                    </motion.article>
+                        <div className="p-5 flex flex-col flex-1">
+                          <h2 className="font-serif text-base font-semibold leading-snug mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </h2>
+                          {post.excerpt && (
+                            <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
+                              {post.excerpt}
+                            </p>
+                          )}
+                          <div className="mt-auto pt-3 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
+                            <span>{post.author_name}</span>
+                            {post.published_at && (
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-3 h-3" />
+                                {new Date(post.published_at).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                })}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </motion.article>
+                    </Link>
                   ))}
                 </div>
 
