@@ -47,35 +47,46 @@ export default function AboutPage() {
       <Header />
       <main id="main-content" role="main">
 
-        {/* ── Hero ──────────────────────────────────────────────────────── */}
-        <section className="border-b border-border/40 relative overflow-hidden">
-          {/* Grid texture */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-20"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(0deg, hsl(var(--border)/0.5) 0px, hsl(var(--border)/0.5) 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, hsl(var(--border)/0.5) 0px, hsl(var(--border)/0.5) 1px, transparent 1px, transparent 60px)',
-            }}
-          />
-          <div className="container mx-auto px-6 pt-36 pb-24 relative z-10">
+        {/* ── Hero (matches home page) ──────────────────────────────── */}
+        <section className="relative border-b border-border/40 overflow-hidden min-h-[95vh] flex items-center justify-center">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
+          <div className="absolute inset-0" style={{ background: 'rgba(10,10,10,0.6)' }} />
+          <div className="relative z-10">
             <motion.div
-              className="max-w-4xl"
               initial="hidden"
               animate="visible"
               variants={stagger}
+              className="flex flex-col items-center"
+            >
+              <motion.h1 variants={fadeIn}>
+                <img src={mncHeroLogo} alt="Modern Nostalgia Club" className="h-20 md:h-32 lg:h-40 mx-auto" />
+              </motion.h1>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ── About Content (white background) ─────────────────────── */}
+        <section className="bg-white text-black">
+          <div className="container mx-auto px-6 pt-24 pb-12">
+            <motion.div
+              className="max-w-4xl"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={stagger}
             >
               <motion.div variants={fadeIn}>
-                <SectionLabel className="mb-6">About</SectionLabel>
+                <SectionLabel className="mb-6 !text-black/50">About</SectionLabel>
               </motion.div>
-              <motion.h1
-                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.95] mb-8 text-foreground break-words"
+              <motion.h2
+                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.95] mb-8 text-black break-words"
                 variants={fadeIn}
               >
                 ModernNostalgia.club<br />
-                <span className="italic text-primary">is a Creative Firm.</span>
-              </motion.h1>
+                <span className="italic" style={{ color: 'hsl(var(--primary))' }}>is a Creative Firm.</span>
+              </motion.h2>
               <motion.p
-                className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed"
+                className="text-xl md:text-2xl text-black/60 max-w-2xl leading-relaxed"
                 variants={fadeIn}
               >
                 We curate, create, and educate at the intersection of timeless artistry and the modern music economy.
@@ -85,7 +96,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── Three Pillars ─────────────────────────────────────────────── */}
-        <section className="border-b border-border/40">
+        <section className="bg-white text-black border-b border-black/10">
           <div className="container mx-auto px-6 py-24">
             <motion.div
               className="mb-16 max-w-2xl"
