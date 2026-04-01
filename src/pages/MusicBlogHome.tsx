@@ -360,6 +360,7 @@ function PlaylistsSection() {
     <>
       <MNCPlayer />
       <PlaylistSubmit />
+      <ArtistResources />
     </>
   );
 }
