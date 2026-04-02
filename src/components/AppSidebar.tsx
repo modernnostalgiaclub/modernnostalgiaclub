@@ -84,8 +84,11 @@ export function AppSidebar() {
       style={{ '--sidebar-accent': '210 100% 50% / 0.15', '--sidebar-accent-foreground': '210 100% 65%' } as React.CSSProperties}
     >
       <SidebarContent className="pt-2">
-        <div className="flex items-center justify-end px-3 py-2 group-data-[collapsible=icon]:group-data-[state=collapsed]:justify-center group-data-[collapsible=icon]:group-data-[state=collapsed]:px-0">
-          <SidebarTrigger className="h-7 w-7 text-primary hover:text-primary" />
+        <div className="flex items-center justify-between px-3 py-2 group-data-[collapsible=icon]:group-data-[state=collapsed]:justify-center group-data-[collapsible=icon]:group-data-[state=collapsed]:px-0">
+          {!collapsed && memberName && (
+            <span className="text-sm font-medium text-white truncate">{memberName}</span>
+          )}
+          <SidebarTrigger className="h-7 w-7 text-primary hover:text-primary shrink-0" />
         </div>
         <SidebarGroup>
           <SidebarGroupContent>{renderItems(topItems)}</SidebarGroupContent>
