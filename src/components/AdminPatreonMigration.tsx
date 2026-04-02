@@ -128,7 +128,7 @@ export function AdminPatreonMigration() {
       const notifications = pending.map(m => ({
         user_id: m.user_id,
         title: '🎉 You\'re Getting a Free Upgrade',
-        message: 'As a founding Patreon member, you\'re being upgraded to Creative Economy Lab — our highest tier — for free. Sign in with Google to claim your upgrade.',
+        message: 'As a founding Patreon member, you\'re being upgraded to Artist Incubator — our highest tier — for free. Sign in with Google to claim your upgrade.',
         type: 'upgrade',
         link: '/migrate',
       }));
