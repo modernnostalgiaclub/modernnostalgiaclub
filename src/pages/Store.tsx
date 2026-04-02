@@ -182,39 +182,6 @@ export default function Store() {
                     </div>
                   </div>
                 ))}
-
-                {/* Catalog Audit Card */}
-                {serviceProduct && (
-                  <div className="!bg-white border !border-gray-200 rounded-lg overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                    <div className="h-44 overflow-hidden">
-                      <img
-                        src={PRODUCT_PHOTOS['catalog-audit']}
-                        alt="Catalog Audit for Sync"
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-
-                    <div className="p-5 flex flex-col flex-1">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-maroon !bg-red-50 px-2 py-0.5 rounded">Service</span>
-                        <span className="text-lg font-display text-maroon">${serviceProduct.price}</span>
-                      </div>
-
-                      <h3 className="font-display text-sm !text-gray-900 mb-2 leading-snug">{serviceProduct.title}</h3>
-                      <p className="!text-gray-500 text-xs line-clamp-3 mb-4 flex-1">{serviceProduct.description}</p>
-
-                      <Button
-                        variant="maroon"
-                        size="sm"
-                        className="w-full mt-auto text-xs"
-                        onClick={handleBookAudit}
-                      >
-                        Learn More
-                      </Button>
-                    </div>
-                  </div>
-                )}
               </div>
             </motion.div>
 
