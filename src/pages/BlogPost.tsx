@@ -129,7 +129,7 @@ export default function BlogPost() {
           {post.content ? (
             <MarkdownRenderer
               content={post.content}
-              className="prose-lg prose-gray !text-gray-800 prose-headings:text-black prose-headings:font-bold prose-a:text-black prose-a:underline prose-blockquote:border-gray-300 prose-blockquote:text-gray-600"
+              className="prose-lg prose-gray !text-gray-800 prose-headings:text-gray-800 prose-headings:font-bold prose-a:text-gray-800 prose-a:underline prose-blockquote:border-gray-300 prose-blockquote:text-gray-600"
             />
           ) : (
             <p className="text-gray-500 italic">This article has no content yet.</p>
