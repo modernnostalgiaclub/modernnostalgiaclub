@@ -81,7 +81,7 @@ export function ArtistResources() {
             </div>
 
             <Button asChild size="lg" variant="secondary" className="mt-8">
-              <Link to="/reference">
+              <Link to="/artistresources">
                 Explore Resources <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>

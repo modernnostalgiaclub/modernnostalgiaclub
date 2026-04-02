@@ -70,7 +70,7 @@ const fallbackTracks = [
     artist: 'Modernnostalgia.club',
     type: 'Members Only',
     description: 'A printable 30-day action plan to organize, create, publish, and monetize your music career. Available to logged-in members.',
-    link: '/reference/30-day-tracker',
+    link: '/artistresources/30-day-tracker',
     is_download: false,
     is_internal: true,
   },

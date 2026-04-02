@@ -52,7 +52,7 @@ const FUNNEL_LINKS = [
     label: 'Artist Resources',
     sublabel: 'Reference shelf & guides',
     icon: BookOpen,
-    to: '/reference',
+    to: '/artistresources',
     external: false,
   },
   {

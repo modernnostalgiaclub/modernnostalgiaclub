@@ -41,7 +41,7 @@ const navSections = [
     items: [
       { title: 'Workforce Dev', url: '/classroom', icon: GraduationCap },
       { title: 'Distribution', url: '/studio', icon: Disc3 },
-      { title: 'Financial Literacy', url: '/reference', icon: BookOpen },
+      { title: 'Financial Literacy', url: '/artistresources', icon: BookOpen },
       { title: 'Creative Tools', url: '/community', icon: Users },
     ],
   },

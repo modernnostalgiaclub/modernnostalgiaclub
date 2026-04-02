@@ -168,14 +168,14 @@ export default function Dashboard() {
       done: hasStartedTracker,
       icon: Calendar,
       label: 'Start the 30-Day Implementation Tracker',
-      href: '/reference/30-day-tracker',
+      href: '/artistresources/30-day-tracker',
       locked: false,
     },
     {
       done: false,
       icon: BookOpen,
       label: 'Explore Artist Resources',
-      href: '/reference',
+      href: '/artistresources',
       locked: false,
     },
   ];
@@ -184,7 +184,7 @@ export default function Dashboard() {
     { icon: GraduationCap, title: 'Classroom', desc: 'Training tracks', link: '/classroom', available: true },
     { icon: Music2, title: 'Studio Floor', desc: 'Submissions & reviews', link: '/studio', available: tier !== 'lab-pass' },
     { icon: Users, title: 'Community', desc: 'Focused discussions', link: '/community', available: true },
-    { icon: BookOpen, title: 'Resources', desc: 'Case studies & tools', link: '/reference', available: true },
+    { icon: BookOpen, title: 'Resources', desc: 'Case studies & tools', link: '/artistresources', available: true },
   ];
 
   return (
