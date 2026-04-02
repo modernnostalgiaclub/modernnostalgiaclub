@@ -9,6 +9,7 @@ import {
   Disc3,
   BookOpen,
   Users,
+  User,
   Music,
   Calendar,
   Settings,
@@ -53,6 +54,7 @@ const navSections = [
   {
     label: 'Account',
     items: [
+      { title: 'Artist Profile', url: '/profile', icon: User },
       { title: 'Settings', url: '/account', icon: Settings },
     ],
   },

@@ -49,6 +49,7 @@ import NotFound from "./pages/NotFound";
 import ArtistProfile from "./pages/ArtistProfile";
 import MigrateToGoogle from "./pages/MigrateToGoogle";
 import BlogPost from "./pages/BlogPost";
+import ArtistProfileSettings from "./pages/ArtistProfileSettings";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
             <Route path="/artistresources/beat-license" element={<ProtectedRoute><LabLayout><BeatLicense /></LabLayout></ProtectedRoute>} />
             <Route path="/beatlibrary" element={<ProtectedRoute><LabLayout><BeatLibrary /></LabLayout></ProtectedRoute>} />
             <Route path="/beats" element={<ProtectedRoute><LabLayout><BeatLibrary /></LabLayout></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><LabLayout><ArtistProfileSettings /></LabLayout></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><LabLayout><Account /></LabLayout></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><LabLayout><Notifications /></LabLayout></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><LabLayout><Admin /></LabLayout></ProtectedRoute>} />
