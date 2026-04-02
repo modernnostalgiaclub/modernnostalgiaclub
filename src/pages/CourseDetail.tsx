@@ -270,9 +270,9 @@ export default function CourseDetail() {
             </p>
             <div className="flex gap-4 justify-center">
               <Button variant="outline" asChild>
-                <Link to="/classroom">
+                <Link to="/courses">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Classroom
+                  Back to Courses
                 </Link>
               </Button>
               <Button variant="maroon" asChild>
