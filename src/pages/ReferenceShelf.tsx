@@ -314,9 +314,9 @@ export default function ReferenceShelf() {
 
                     <Accordion type="single" collapsible className="w-full">
                       <AccordionItem value="what-is-disco">
-                        <AccordionTrigger>What is DISCO?</AccordionTrigger>
+                        <AccordionTrigger className="text-gray-800">What is DISCO?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-gray-500">
+                          <p className="text-gray-600">
                             DISCO is the music industry's leading platform for music delivery and catalog management. 
                             Used by major labels, sync agents, and music supervisors worldwide, it's the professional 
                             standard for sharing music.
@@ -324,9 +324,9 @@ export default function ReferenceShelf() {
                         </AccordionContent>
                       </AccordionItem>
                       <AccordionItem value="why-disco">
-                        <AccordionTrigger>Why does the Lab use DISCO?</AccordionTrigger>
+                        <AccordionTrigger className="text-gray-800">Why does the Lab use DISCO?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-gray-500">
+                          <p className="text-gray-600">
                             We use DISCO because it mirrors real-world sync licensing workflows. When you learn to 
                             organize and deliver music through DISCO, you're building skills that directly translate 
                             to professional opportunities.
@@ -334,9 +334,9 @@ export default function ReferenceShelf() {
                         </AccordionContent>
                       </AccordionItem>
                       <AccordionItem value="is-it-free">
-                        <AccordionTrigger>Is DISCO free?</AccordionTrigger>
+                        <AccordionTrigger className="text-gray-800">Is DISCO free?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-gray-500">
+                          <p className="text-gray-600">
                             DISCO offers a free tier that's perfect for getting started. You can upload tracks, 
                             create playlists, and share links at no cost. Paid plans offer additional features 
                             like analytics and larger storage.
@@ -344,9 +344,9 @@ export default function ReferenceShelf() {
                         </AccordionContent>
                       </AccordionItem>
                       <AccordionItem value="how-to-share">
-                        <AccordionTrigger>How do I get a share link?</AccordionTrigger>
+                        <AccordionTrigger className="text-gray-800">How do I get a share link?</AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-3 text-gray-500">
+                          <div className="space-y-3 text-gray-600">
                             <p>To get a shareable DISCO link:</p>
                             <ol className="list-decimal list-inside space-y-2 ml-2">
                               <li>Upload your track(s) to DISCO</li>
@@ -359,9 +359,9 @@ export default function ReferenceShelf() {
                         </AccordionContent>
                       </AccordionItem>
                       <AccordionItem value="metadata-tips">
-                        <AccordionTrigger>What metadata should I include?</AccordionTrigger>
+                        <AccordionTrigger className="text-gray-800">What metadata should I include?</AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-3 text-gray-500">
+                          <div className="space-y-3 text-gray-600">
                             <p>Complete metadata increases your chances of sync placement:</p>
                             <ul className="space-y-2">
                               {['Title: Clear, descriptive name', 'Artist/Composer: Your professional name', 'Genre: Primary and secondary genres', 'Mood/Energy: Emotional descriptors', 'Tempo (BPM): Beats per minute', 'Instrumentation: Key instruments used'].map(item => (
