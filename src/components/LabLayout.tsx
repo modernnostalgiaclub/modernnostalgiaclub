@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Header } from '@/components/Header';
 
@@ -11,10 +11,11 @@ export function LabLayout({ children }: LabLayoutProps) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full">
-        {/* Same header as public pages */}
+        {/* Same header as public pages - fixed, z-50 */}
         <Header />
 
-        <div className="flex flex-1 pt-20">
+        {/* Below the fixed header */}
+        <div className="flex flex-1 mt-20">
           <AppSidebar />
 
           {/* White content area */}
