@@ -169,7 +169,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation to the sender
     const confirmationResponse = await resend.emails.send({
-      from: "ModernNostalgia.club <onboarding@resend.dev>",
+      from: "ModernNostalgia.club <ge@modernnostalgia.club>",
       to: [email],
       subject: "We received your message!",
       html: `
