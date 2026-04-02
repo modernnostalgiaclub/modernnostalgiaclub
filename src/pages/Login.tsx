@@ -22,6 +22,14 @@ export default function Login() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
 
+  const loginInputClassName =
+    '!bg-white border-gray-200 !text-gray-900 placeholder:!text-gray-400 h-12 outline-none focus:outline-none focus:border-gray-300 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0';
+  const loginInputStyle = {
+    WebkitBoxShadow: '0 0 0 1000px white inset',
+    WebkitTextFillColor: '#111827',
+    caretColor: '#111827',
+  };
+
   useEffect(() => {
     if (user) navigate('/dashboard', { replace: true });
   }, [user, navigate]);
@@ -153,7 +161,8 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="!bg-white border-gray-200 !text-gray-900 placeholder:!text-gray-400 h-12"
+              className={loginInputClassName}
+              style={loginInputStyle}
             />
           </div>
           <div className="space-y-2">
@@ -166,7 +175,8 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="!bg-white border-gray-200 !text-gray-900 placeholder:!text-gray-400 h-12"
+              className={loginInputClassName}
+              style={loginInputStyle}
             />
           </div>
           <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
