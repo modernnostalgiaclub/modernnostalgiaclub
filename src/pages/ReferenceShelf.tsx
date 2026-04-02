@@ -301,7 +301,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="what-is-disco">
                         <AccordionTrigger>What is DISCO?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-muted-foreground">
+                          <p className="text-gray-500">
                             DISCO is the music industry's leading platform for music delivery and catalog management. 
                             Used by major labels, sync agents, and music supervisors worldwide, it's the professional 
                             standard for sharing music.
