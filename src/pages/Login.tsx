@@ -151,15 +151,15 @@ export default function Login() {
             <span className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-gray-400">or sign in with email</span>
+            <span className="bg-white px-2 text-gray-400">or {mode === 'signup' ? 'sign up' : 'sign in'} with email</span>
           </div>
         </div>
 
-        <form onSubmit={handleSignIn} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="signin-email" className="text-gray-700">Email</Label>
+            <Label htmlFor="auth-email" className="text-gray-700">Email</Label>
             <Input
-              id="signin-email"
+              id="auth-email"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -170,34 +170,39 @@ export default function Login() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="signin-password" className="text-gray-700">Password</Label>
+            <Label htmlFor="auth-password" className="text-gray-700">Password</Label>
             <Input
-              id="signin-password"
+              id="auth-password"
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="current-password"
+              autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
               className={loginInputClassName}
             />
           </div>
           <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === 'signup' ? 'Create Account' : 'Sign In'}
           </Button>
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            disabled={resetLoading}
-            className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
-          >
-            {resetLoading ? 'Sending…' : 'Forgot password?'}
-          </button>
+          {mode === 'signin' && (
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={resetLoading}
+              className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
+            >
+              {resetLoading ? 'Sending…' : 'Forgot password?'}
+            </button>
+          )}
         </form>
 
         <p className="text-center text-xs text-gray-400">
-          Not a member?{' '}
-          <Link to="/join" className="underline hover:text-gray-700">Join the Club</Link>
+          {mode === 'signin' ? (
+            <>Not a member?{' '}<button onClick={() => setMode('signup')} className="underline hover:text-gray-700">Create an account</button></>
+          ) : (
+            <>Already have an account?{' '}<button onClick={() => setMode('signin')} className="underline hover:text-gray-700">Sign in</button></>
+          )}
         </p>
       </div>
     </div>
