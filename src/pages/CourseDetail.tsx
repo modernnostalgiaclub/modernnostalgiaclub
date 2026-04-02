@@ -250,7 +250,7 @@ export default function CourseDetail() {
   }
 
   if (!course) {
-    return <Navigate to="/classroom" replace />;
+    return <Navigate to="/courses" replace />;
   }
 
   // Check tier access
