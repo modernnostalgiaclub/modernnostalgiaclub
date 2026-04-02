@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
-import { HelloSkipAgent } from '@/components/HelloSkipAgent';
+
 import { MemberDownloads } from '@/components/MemberDownloads';
 import { SectionLabel } from '@/components/SectionLabel';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
