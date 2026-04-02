@@ -59,7 +59,7 @@ export default function BlogIndex() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Header />
       <main id="main-content" role="main">
         {/* Hero */}
