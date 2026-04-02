@@ -50,22 +50,25 @@ export default function Contact() {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
-      {/* Hero image */}
-      <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
-        <img
-          src={contactHero}
-          alt="Studio session"
-          className="w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+      {/* Hero */}
+      <section className="relative h-[50vh] overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${contactHero})` }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.85) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(217 100% 10% / 0.5) 100%)' }} />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+      </section>
 
-      {/* Contact heading below hero */}
-      <div className="text-center py-10">
-        <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight text-gray-900">
-          Contact
-        </h1>
-      </div>
+      {/* Title */}
+      <section>
+        <div className="container mx-auto px-6 pt-12 pb-8">
+          <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">Get In Touch</p>
+          <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight leading-[1.05] mb-4 text-gray-900">
+            Contact
+          </h1>
+          <p className="text-lg text-gray-500 max-w-xl leading-relaxed">
+            Have a question or want to collaborate? We'd love to hear from you.
+          </p>
+        </div>
+      </section>
 
       <main id="main-content" className="flex-1 px-6 py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
