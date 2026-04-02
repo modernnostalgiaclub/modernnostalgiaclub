@@ -64,7 +64,7 @@ export default function Contact() {
           <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight leading-[1.05] mb-4 text-gray-900">
             Contact
           </h1>
-          <p className="text-lg text-gray-500 max-w-xl leading-relaxed">
+          <p className="text-lg text-gray-500 max-w-xl leading-relaxed mx-auto">
             Have a question or want to collaborate? We'd love to hear from you.
           </p>
         </div>
