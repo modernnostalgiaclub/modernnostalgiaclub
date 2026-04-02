@@ -439,7 +439,7 @@ function ResourceCard({ item, user, signInWithPatreon, onDownloadClick, tracks }
     }
 
     return (
-      <Button variant="outline" size="sm" className="w-full mt-3" asChild>
+      <Button variant="default" size="sm" className="w-full mt-3" asChild>
         <a href={item.url} target="_blank" rel="noopener noreferrer">
           Visit <ExternalLink className="w-3.5 h-3.5 ml-2" />
         </a>
