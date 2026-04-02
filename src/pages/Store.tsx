@@ -6,11 +6,12 @@ import storeHero from '@/assets/store-hero.jpg';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useCart } from '@/contexts/CartContext';
 
 const catalogAuditFAQ = [
   {
