@@ -273,7 +273,7 @@ export default function ReferenceShelf() {
                               <div className="p-2 rounded-lg bg-primary/10">
                                 <Icon className="w-5 h-5 text-primary" />
                               </div>
-                              <h2 className="font-anton text-xl md:text-2xl uppercase tracking-tight text-foreground">
+                              <h2 className="font-anton text-xl md:text-2xl uppercase tracking-tight text-gray-900">
                                 {cat.label}
                               </h2>
                             </div>
