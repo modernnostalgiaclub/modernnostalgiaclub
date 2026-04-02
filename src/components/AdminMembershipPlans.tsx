@@ -291,15 +291,15 @@ export function AdminMembershipPlans() {
                 </div>
               )}
 
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => toggleActive(plan)}
-              >
-                <ToggleLeft className="h-4 w-4 mr-2" />
-                {plan.is_active ? 'Deactivate' : 'Activate'}
-              </Button>
+              <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={plan.is_active}
+                    onCheckedChange={() => toggleActive(plan)}
+                  />
+                  <span className="text-sm text-muted-foreground">{plan.is_active ? 'Active' : 'Inactive'}</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))}
