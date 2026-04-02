@@ -132,7 +132,7 @@ export function Header({ showNav = true }: HeaderProps) {
               </a>
               <button
                 onClick={() => setCartOpen(true)}
-                className="relative text-blue hover:text-blue-glow transition-colors"
+                className="relative text-white hover:text-white/80 transition-colors"
                 aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
               >
                 <ShoppingCart className="h-4 w-4" />
