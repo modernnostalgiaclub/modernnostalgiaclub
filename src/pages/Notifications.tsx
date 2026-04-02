@@ -60,7 +60,7 @@ export default function Notifications() {
             <div className="flex items-center gap-3">
               <Bell className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="font-display text-3xl font-bold text-foreground">Notification Center</h1>
+                <h1 className="text-4xl md:text-5xl font-display uppercase text-foreground">Notifications</h1>
                 <p className="text-muted-foreground">
                   {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
                 </p>

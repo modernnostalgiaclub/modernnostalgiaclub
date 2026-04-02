@@ -448,7 +448,7 @@ export default function Community() {
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <MessageSquare className="w-6 h-6 text-maroon" />
-                <h1 className="text-3xl font-display text-cream">Group Chat</h1>
+                <h1 className="text-4xl md:text-5xl font-display uppercase text-cream">Group Chat</h1>
               </div>
               <p className="text-cream/60">Connect with the community in real-time</p>
             </div>
