@@ -294,34 +294,45 @@ export default function ReferenceShelf() {
                 </motion.section>
               )}
 
-              {/* Courses */}
-              {sections['courses']?.length > 0 && (
-                <motion.section variants={fadeIn}>
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <GraduationCap className="w-5 h-5 text-primary" />
-                    </div>
-                    <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-gray-900">
-                      Courses
-                    </h2>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {sections['courses'].map(item => (
-                      <ResourceCard
-                        key={item.id}
-                        item={item}
-                        user={user}
-                        signInWithPatreon={signInWithPatreon}
-                        onDownloadClick={handleDownloadClick}
-                        tracks={tracks}
-                      />
-                    ))}
-                  </div>
-                </motion.section>
+              {/* Courses + Music Tools side by side */}
+              {(sections['courses']?.length > 0 || sections['music-tools']?.length > 0) && (
+                <motion.div variants={fadeIn} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[
+                    { key: 'courses', icon: GraduationCap, label: 'Courses' },
+                    { key: 'music-tools', icon: Wrench, label: 'Music Tools' },
+                  ].map(({ key, icon: Icon, label }) => {
+                    const items = sections[key];
+                    if (!items || items.length === 0) return null;
+                    return (
+                      <div key={key}>
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="p-2 rounded-lg bg-primary/10">
+                            <Icon className="w-5 h-5 text-primary" />
+                          </div>
+                          <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-gray-900">
+                            {label}
+                          </h2>
+                        </div>
+                        <div className="space-y-4">
+                          {items.map(item => (
+                            <ResourceCard
+                              key={item.id}
+                              item={item}
+                              user={user}
+                              signInWithPatreon={signInWithPatreon}
+                              onDownloadClick={handleDownloadClick}
+                              tracks={tracks}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </motion.div>
               )}
 
               {/* Remaining categories */}
-              {CATEGORIES.filter(c => !['ebooks', 'sync', 'courses', 'business'].includes(c.key)).map(cat => {
+              {CATEGORIES.filter(c => !['ebooks', 'sync', 'courses', 'business', 'music-tools'].includes(c.key)).map(cat => {
                 const items = sections[cat.key];
                 if (!items || items.length === 0) return null;
                 const Icon = cat.icon;
