@@ -140,35 +140,40 @@ export function Header({ showNav = true }: HeaderProps) {
               
               {/* User Dropdown */}
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <DropdownMenuTrigger className="flex items-center gap-2 text-sm text-white hover:text-white/80 transition-colors">
                   <User className="h-4 w-4" />
                   {profile?.name || user?.email?.split('@')[0] || 'Account'}
                   <ChevronDown className="h-3 w-3" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-background border-border w-48">
-                  <DropdownMenuItem asChild>
-                    <Link to="/account" className="cursor-pointer flex items-center gap-2">
+                <DropdownMenuContent align="end" className="w-48" style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
+                    <Link to="/profile" className="cursor-pointer flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      Account
+                      Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer flex items-center gap-2">
-                    {resolvedTheme === 'dark' ? (
-                      <>
-                        <Sun className="h-4 w-4" />
-                        Light Mode
-                      </>
-                    ) : (
-                      <>
-                        <Moon className="h-4 w-4" />
-                        Dark Mode
-                      </>
-                    )}
+                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
+                    <Link to="/dashboard" className="cursor-pointer flex items-center gap-2">
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
+                    <Link to="/community" className="cursor-pointer flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Community
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
+                    <Link to="/account" className="cursor-pointer flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Settings
+                    </Link>
                   </DropdownMenuItem>
                   {isAdminOrMod && (
                     <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
+                      <DropdownMenuSeparator className="bg-white/10" />
+                      <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
                         <Link to="/admin" className="cursor-pointer flex items-center gap-2">
                           <Shield className="h-4 w-4" />
                           Admin
@@ -176,8 +181,8 @@ export function Header({ showNav = true }: HeaderProps) {
                       </DropdownMenuItem>
                     </>
                   )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer flex items-center gap-2 text-destructive">
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer flex items-center gap-2 text-red-400 focus:text-red-400 focus:bg-white/10">
                     <LogOut className="h-4 w-4" />
                     Sign Out
                   </DropdownMenuItem>
