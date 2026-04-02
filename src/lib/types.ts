@@ -68,7 +68,7 @@ export const TIER_INFO: Record<PatreonTier, {
       'Everything in Club Pass',
       'Priority submissions',
       'Feedback visibility',
-      'Studio Floor access',
+      'Submit for Feedback access',
     ],
     color: 'amber',
   },

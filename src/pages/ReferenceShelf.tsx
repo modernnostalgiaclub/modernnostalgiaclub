@@ -386,7 +386,7 @@ export default function ReferenceShelf() {
                               <li>Create a playlist and add your tracks</li>
                               <li>Click the "Share" button on your playlist</li>
                               <li>Copy the share link (starts with https://disco.ac/)</li>
-                              <li>Paste this link when submitting in the Studio Floor</li>
+                              <li>Paste this link when submitting for feedback</li>
                             </ol>
                           </div>
                         </AccordionContent>
