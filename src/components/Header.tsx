@@ -233,19 +233,19 @@ export function Header({ showNav = true }: HeaderProps) {
             <a href="https://x.com/geohworks" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors" aria-label="Twitter/X (opens in new tab)">
               <Twitter className="h-4 w-4" />
             </a>
-            <button
-              onClick={() => setCartOpen(true)}
-              className="relative text-white hover:text-primary transition-colors"
-              aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
-            >
-              <ShoppingCart className="h-4 w-4" />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </button>
           </div>
+          <button
+            onClick={() => setCartOpen(true)}
+            className="hidden md:flex relative text-white hover:text-primary transition-colors"
+            aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+          </button>
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
