@@ -517,10 +517,7 @@ export default function LandingPage() {
                       className={`w-full ${tier.highlighted ? 'bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white' : 'border border-gray-300 bg-white text-black hover:bg-gray-50'}`}
                       asChild
                     >
-                      {tier.external
-                        ? <a href={tier.href} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
-                        : <Link to={tier.href}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
-                      }
+                      <Link to={`/login?redirect=/checkout&plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                     </Button>
                   </motion.div>
                 ))}
