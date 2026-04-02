@@ -21,7 +21,9 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (isInCooldown) return;
+    const spamError = validate();
+    if (spamError) { toast({ title: spamError, variant: 'destructive' }); return; }
     if (!name.trim() || !email.trim() || !message.trim()) {
       toast({ title: 'Please fill in all required fields', variant: 'destructive' });
       return;
