@@ -355,6 +355,7 @@ const TIERS = [
 ];
 
 function PricingSection() {
+  const { user } = useAuth();
   return (
     <section id="pricing" className="py-28 border-t border-border/30">
       <div className="container mx-auto px-6">
