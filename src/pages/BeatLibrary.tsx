@@ -44,7 +44,7 @@ export default function BeatLibrary() {
                 Exclusive Production Catalog
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Browse exclusive beats from Ge Oh & collaborators. Available for licensing to Creative Economy Lab members at special member rates.
+                Browse exclusive beats from Ge Oh & collaborators. Available for licensing to Artist Incubator members at special member rates.
               </p>
             </motion.div>
 
