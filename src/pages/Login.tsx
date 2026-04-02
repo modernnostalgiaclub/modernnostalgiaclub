@@ -166,7 +166,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
+              className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
             />
           </div>
           <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
