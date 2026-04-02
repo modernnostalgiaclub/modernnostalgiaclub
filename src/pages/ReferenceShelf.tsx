@@ -331,7 +331,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="how-to-share">
                         <AccordionTrigger>How do I get a share link?</AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-3 text-muted-foreground">
+                          <div className="space-y-3 text-gray-500">
                             <p>To get a shareable DISCO link:</p>
                             <ol className="list-decimal list-inside space-y-2 ml-2">
                               <li>Upload your track(s) to DISCO</li>
