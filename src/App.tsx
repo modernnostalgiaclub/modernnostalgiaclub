@@ -107,10 +107,10 @@ const App = () => (
             <Route path="/catalog-audit" element={<AuthAwareLayout><CatalogAudit /></AuthAwareLayout>} />
             <Route path="/sync-quiz" element={<AuthAwareLayout><SyncQuiz /></AuthAwareLayout>} />
             <Route path="/connect" element={<AuthAwareLayout><Connect /></AuthAwareLayout>} />
-            <Route path="/free-guide" element={<FreeGuide />} />
+            <Route path="/free-guide" element={<AuthAwareLayout><FreeGuide /></AuthAwareLayout>} />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/artist/:username" element={<ArtistProfile />} />
+            <Route path="/artist/:username" element={<AuthAwareLayout><ArtistProfile /></AuthAwareLayout>} />
             <Route path="/migrate" element={<MigrateToGoogle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
