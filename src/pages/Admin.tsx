@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon, Database as DatabaseIcon, Users2 } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon, Database as DatabaseIcon, Users2, Crown } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { AdminLessonProgress } from '@/components/AdminLessonProgress';
