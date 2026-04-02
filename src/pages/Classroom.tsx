@@ -234,7 +234,7 @@ export default function Classroom() {
             className="max-w-4xl mx-auto"
           >
             <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">The Classroom</SectionLabel>
+              <SectionLabel className="mb-4">Courses</SectionLabel>
               <h1 className="text-4xl md:text-5xl font-display mb-4">
                 Training Tracks
               </h1>
