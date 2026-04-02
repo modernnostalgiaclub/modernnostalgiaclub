@@ -317,232 +317,224 @@ export function AdminMembershipPlans() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingPlan ? 'Edit Membership Plan' : 'Create Membership Plan'}</DialogTitle>
-            <DialogDescription>
-              {editingPlan ? 'Update the plan details below.' : 'Fill in the details for the new membership plan.'}
-            </DialogDescription>
+            <DialogTitle className="font-anton uppercase tracking-tight">
+              {editingPlan ? `Editing: ${editingPlan.name}` : 'Create Membership Plan'}
+            </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6">
-            {/* Basic Info */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Basic Information</h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="plan-name">Plan Name *</Label>
-                  <Input
-                    id="plan-name"
-                    value={form.name}
-                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="e.g., Club Pass"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="plan-sort">Sort Order</Label>
-                  <Input
-                    id="plan-sort"
-                    type="number"
-                    value={form.sort_order}
-                    onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value) || 0 }))}
-                  />
-                </div>
+          <div className="space-y-5">
+            {/* Plan Name & Price */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="plan-name">Plan Name</Label>
+                <Input
+                  id="plan-name"
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="e.g., Club Pass"
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="plan-desc">Description</Label>
-                <Textarea
-                  id="plan-desc"
-                  value={form.description || ''}
-                  onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="Brief description of this membership tier..."
-                  rows={3}
+                <Label htmlFor="plan-price">Price (USD)</Label>
+                <Input
+                  id="plan-price"
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  value={form.price}
+                  onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))}
                 />
               </div>
             </div>
 
-            {/* Pricing */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Pricing</h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="plan-price">Price ($)</Label>
-                  <Input
-                    id="plan-price"
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    value={form.price}
-                    onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="plan-billing">Billing Period</Label>
-                  <Select
-                    value={form.billing_period}
-                    onValueChange={v => setForm(f => ({ ...f, billing_period: v }))}
-                  >
-                    <SelectTrigger id="plan-billing">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="yearly">Yearly</SelectItem>
-                      <SelectItem value="one-time">One-Time</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="stripe-price">Stripe Price ID</Label>
-                  <Input
-                    id="stripe-price"
-                    value={form.stripe_price_id || ''}
-                    onChange={e => setForm(f => ({ ...f, stripe_price_id: e.target.value || null }))}
-                    placeholder="price_..."
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="stripe-product">Stripe Product ID</Label>
-                  <Input
-                    id="stripe-product"
-                    value={form.stripe_product_id || ''}
-                    onChange={e => setForm(f => ({ ...f, stripe_product_id: e.target.value || null }))}
-                    placeholder="prod_..."
-                  />
-                </div>
-              </div>
-
-              {/* Link to parent plan for multi-pricing */}
+            {/* Billing Period & Description */}
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="parent-plan">Parent Plan (for grouped pricing options)</Label>
+                <Label htmlFor="plan-billing">Billing Period</Label>
                 <Select
-                  value={form.parent_plan_id || 'none'}
-                  onValueChange={v => setForm(f => ({ ...f, parent_plan_id: v === 'none' ? null : v }))}
+                  value={form.billing_period}
+                  onValueChange={v => setForm(f => ({ ...f, billing_period: v }))}
                 >
-                  <SelectTrigger id="parent-plan">
-                    <SelectValue placeholder="None (standalone plan)" />
+                  <SelectTrigger id="plan-billing">
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">None (standalone plan)</SelectItem>
-                    {plans
-                      .filter(p => p.id !== editingPlan?.id && !p.parent_plan_id)
-                      .map(p => (
-                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                      ))}
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                    <SelectItem value="yearly">Yearly</SelectItem>
+                    <SelectItem value="one-time">One-Time</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="plan-desc">Description</Label>
+                <Input
+                  id="plan-desc"
+                  value={form.description || ''}
+                  onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                  placeholder="Brief description of this tier..."
+                />
               </div>
             </div>
 
             {/* Features */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Features</h3>
-              <div className="flex gap-2">
-                <Input
-                  value={newFeature}
-                  onChange={e => setNewFeature(e.target.value)}
-                  placeholder="Add a feature..."
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                />
-                <Button type="button" variant="outline" onClick={addFeature}>Add</Button>
-              </div>
-              {form.features.length > 0 && (
-                <ul className="space-y-1">
-                  {form.features.map((f, i) => (
-                    <li key={i} className="flex items-center justify-between bg-muted/50 rounded px-3 py-1.5 text-sm">
-                      <span>{f}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeFeature(i)}>
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
+            <div className="space-y-3">
+              <Label>Features (one per line)</Label>
+              <Textarea
+                value={form.features.join('\n')}
+                onChange={e => setForm(f => ({ ...f, features: e.target.value.split('\n').filter(line => line.trim()) }))}
+                placeholder={"Submit remixes, mashups\nTrack submission status\nCreator dashboard access"}
+                rows={4}
+              />
+            </div>
+
+            {/* Stripe Price ID — read-only info */}
+            <div className="space-y-1">
+              <Label className="text-sm">Stripe Price ID</Label>
+              {form.stripe_price_id ? (
+                <p className="text-xs text-muted-foreground font-mono bg-muted/50 rounded px-3 py-2">{form.stripe_price_id}</p>
+              ) : (
+                <p className="text-xs text-muted-foreground">Will be auto-generated when you save this paid plan.</p>
               )}
             </div>
 
-            {/* Promo Codes */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Promo Codes</h3>
-              <div className="flex gap-2 items-end">
-                <div className="flex-1 space-y-1">
-                  <Label className="text-xs">Code</Label>
-                  <Input
-                    value={newPromoCode}
-                    onChange={e => setNewPromoCode(e.target.value)}
-                    placeholder="WELCOME20"
+            {/* Free Trial — toggle section */}
+            <Card className="border-border/50">
+              <CardContent className="py-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold text-sm text-foreground">Free Trial</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Switch
+                    checked={form.grace_period_days > 0}
+                    onCheckedChange={v => setForm(f => ({ ...f, grace_period_days: v ? 7 : 0 }))}
                   />
+                  <span className="text-sm text-muted-foreground">Enable Free Trial</span>
                 </div>
-                <div className="w-24 space-y-1">
-                  <Label className="text-xs">Discount %</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={newPromoDiscount}
-                    onChange={e => setNewPromoDiscount(parseInt(e.target.value) || 0)}
+              </CardContent>
+            </Card>
+
+            {/* Sale & Promo Code — toggle section */}
+            <Card className="border-primary/30 bg-primary/5">
+              <CardContent className="py-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-primary" />
+                  <span className="font-semibold text-sm text-foreground">Sale & Promo Code</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Switch
+                    checked={Array.isArray(form.promo_codes) && form.promo_codes.length > 0}
+                    onCheckedChange={v => {
+                      if (!v) setForm(f => ({ ...f, promo_codes: [] }));
+                    }}
                   />
+                  <span className="text-sm text-muted-foreground">Put on Sale</span>
                 </div>
-                <Button type="button" variant="outline" onClick={addPromoCode}>Add</Button>
-              </div>
-              {Array.isArray(form.promo_codes) && form.promo_codes.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {form.promo_codes.map((p: any, i: number) => (
-                    <Badge key={i} variant="secondary" className="gap-1">
-                      {p.code} ({p.discount_percent}% off)
-                      <button onClick={() => removePromoCode(i)} className="ml-1 hover:text-destructive">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            {/* Administrative Controls */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Administrative Controls</h3>
-              <div className="space-y-2">
-                <Label htmlFor="grace-period">Grace Period (days)</Label>
-                <Input
-                  id="grace-period"
-                  type="number"
-                  min={0}
-                  value={form.grace_period_days}
-                  onChange={e => setForm(f => ({ ...f, grace_period_days: parseInt(e.target.value) || 0 }))}
-                />
-                <p className="text-xs text-muted-foreground">Number of days after payment due date before access is revoked.</p>
-              </div>
+                <div className="space-y-2">
+                  <Label className="text-xs">Apply Promo Code</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={newPromoCode}
+                      onChange={e => setNewPromoCode(e.target.value)}
+                      placeholder="e.g., NEWYEAR24"
+                      onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addPromoCode())}
+                    />
+                    <div className="w-24">
+                      <Input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={newPromoDiscount}
+                        onChange={e => setNewPromoDiscount(parseInt(e.target.value) || 0)}
+                        placeholder="%"
+                      />
+                    </div>
+                    <Button type="button" variant="outline" size="sm" onClick={addPromoCode}>Add</Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Link a promo code that applies to this plan</p>
+                </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label>Plan Active</Label>
-                    <p className="text-xs text-muted-foreground">Members can sign up for this plan</p>
+                {Array.isArray(form.promo_codes) && form.promo_codes.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {form.promo_codes.map((p: any, i: number) => (
+                      <Badge key={i} variant="secondary" className="gap-1">
+                        {p.code} ({p.discount_percent}% off)
+                        <button onClick={() => removePromoCode(i)} className="ml-1 hover:text-destructive">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
                   </div>
-                  <Switch checked={form.is_active} onCheckedChange={v => setForm(f => ({ ...f, is_active: v }))} />
-                </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Limit 1 Membership per Email */}
+            <Card className="border-primary/30">
+              <CardContent className="py-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Mark as Popular</Label>
-                    <p className="text-xs text-muted-foreground">Highlights this plan as featured</p>
-                  </div>
-                  <Switch checked={form.is_popular} onCheckedChange={v => setForm(f => ({ ...f, is_popular: v }))} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label>Limit One per Email</Label>
-                    <p className="text-xs text-muted-foreground">Restrict to one membership per email address</p>
+                    <span className="font-semibold text-sm text-foreground">Limit to 1 Membership per Email</span>
+                    <p className="text-xs text-muted-foreground mt-0.5">Prevents users from purchasing this plan more than once with the same email</p>
                   </div>
                   <Switch checked={form.limit_one_per_email} onCheckedChange={v => setForm(f => ({ ...f, limit_one_per_email: v }))} />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Grace Period */}
+            <Card className="border-amber-500/30 bg-amber-500/5">
+              <CardContent className="py-4 space-y-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-amber-500" />
+                    <span className="font-semibold text-sm text-foreground">Grace Period (Payment Failures)</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">When a payment fails, members keep access during the grace period before being downgraded.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Switch
+                    checked={form.grace_period_days > 0}
+                    onCheckedChange={v => setForm(f => ({ ...f, grace_period_days: v ? 7 : 0 }))}
+                  />
+                  <span className="text-sm">Enable Grace Period</span>
+                  {form.grace_period_days > 0 && (
+                    <Input
+                      type="number"
+                      min={1}
+                      className="w-20"
+                      value={form.grace_period_days}
+                      onChange={e => setForm(f => ({ ...f, grace_period_days: parseInt(e.target.value) || 0 }))}
+                    />
+                  )}
+                  {form.grace_period_days > 0 && <span className="text-sm text-muted-foreground">days</span>}
+                </div>
+                {form.grace_period_days > 0 && (
+                  <p className="text-xs text-green-500">✓ Members will have {form.grace_period_days} days to update their payment method before losing access</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Plan Active / Mark as Popular */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <Switch checked={form.is_active} onCheckedChange={v => setForm(f => ({ ...f, is_active: v }))} />
+                <span className="text-sm font-medium">Plan Active</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={form.is_popular} onCheckedChange={v => setForm(f => ({ ...f, is_popular: v }))} />
+                <span className="text-sm font-medium">Mark as Popular</span>
               </div>
             </div>
           </div>
 
           <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving...' : editingPlan ? 'Update Plan' : 'Create Plan'}
+            <Button variant="outline" onClick={() => setDialogOpen(false)} className="gap-2">
+              <X className="h-4 w-4" /> Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={saving} className="gap-2">
+              {saving ? 'Saving...' : '💾 Save Changes'}
             </Button>
           </DialogFooter>
         </DialogContent>
