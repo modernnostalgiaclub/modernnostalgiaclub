@@ -142,108 +142,50 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Email / Password */}
-        <Tabs value={tab} onValueChange={setTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-100">
-            <TabsTrigger value="signin" className="data-[state=active]:bg-white data-[state=active]:text-gray-900 text-gray-500">Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-gray-900 text-gray-500">Sign Up</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="signin">
-            <form onSubmit={handleSignIn} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="signin-email" className="text-gray-700">Email</Label>
-                <Input
-                  id="signin-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signin-password" className="text-gray-700">Password</Label>
-                <Input
-                  id="signin-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
-                />
-              </div>
-              <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
-              </Button>
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                disabled={resetLoading}
-                className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
-              >
-                {resetLoading ? 'Sending…' : 'Forgot password?'}
-              </button>
-            </form>
-          </TabsContent>
-
-          <TabsContent value="signup">
-            <form onSubmit={handleSignUp} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="signup-email" className="text-gray-700">Email</Label>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-password" className="text-gray-700">Password</Label>
-                <Input
-                  id="signup-password"
-                  type="password"
-                  placeholder="Min 6 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  autoComplete="new-password"
-                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-confirm" className="text-gray-700">Confirm Password</Label>
-                <Input
-                  id="signup-confirm"
-                  type="password"
-                  placeholder="Re-enter password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
-                />
-              </div>
-              <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
+        {/* Email / Password Sign In */}
+        <form onSubmit={handleSignIn} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="signin-email" className="text-gray-700">Email</Label>
+            <Input
+              id="signin-email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="signin-password" className="text-gray-700">Password</Label>
+            <Input
+              id="signin-password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
+            />
+          </div>
+          <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
+          </Button>
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            disabled={resetLoading}
+            className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
+          >
+            {resetLoading ? 'Sending…' : 'Forgot password?'}
+          </button>
+        </form>
 
         <p className="text-center text-xs text-gray-400">
-          By signing up you agree to our{' '}
-          <Link to="/terms" className="underline hover:text-gray-700">Terms</Link> &{' '}
-          <Link to="/privacy" className="underline hover:text-gray-700">Privacy Policy</Link>.
+          Not a member?{' '}
+          <Link to="/join" className="underline hover:text-gray-700">Join the Club</Link>
         </p>
       </div>
     </div>
