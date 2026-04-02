@@ -36,6 +36,7 @@ export default function Contact() {
       });
       if (error) throw error;
       toast({ title: 'Message sent!', description: "We'll get back to you soon." });
+      triggerCooldown();
       setName(''); setEmail(''); setSubject(''); setMessage('');
     } catch {
       toast({ title: 'Failed to send', description: 'Please try again or email us directly.', variant: 'destructive' });
