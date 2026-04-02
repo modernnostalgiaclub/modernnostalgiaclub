@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ShoppingCart, Package, ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -61,9 +60,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
 
 export default function Store() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
-  const [showJotForm, setShowJotForm] = useState(false);
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
-  const jotformRef = useRef<HTMLDivElement>(null);
   const auditFullRef = useRef<HTMLDivElement>(null);
 
   const handlePurchase = async (productId: string) => {
@@ -81,13 +78,6 @@ export default function Store() {
     }
   };
 
-  const handleApplyNow = () => {
-    setShowJotForm(true);
-    setTimeout(() => {
-      jotformRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  };
-
   const handleBookAudit = () => {
     auditFullRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -96,7 +86,7 @@ export default function Store() {
   const serviceProduct = STORE_PRODUCTS.find(p => p.isService);
 
   return (
-    <div className="min-h-screen bg-background studio-grain flex flex-col">
+    <div className="min-h-screen !bg-white flex flex-col">
       <Header />
 
       <main className="flex-1 pt-24 pb-16" id="main-content">
@@ -105,33 +95,33 @@ export default function Store() {
             initial="hidden"
             animate="visible"
             variants={stagger}
-            className="max-w-6xl mx-auto"
+            className="max-w-5xl mx-auto"
           >
-            {/* Header */}
-            <motion.div variants={fadeIn} className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-display mb-4">Artist Store</h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Professional templates, guides, and resources to level up your music career.
+            {/* Page Header */}
+            <motion.div variants={fadeIn} className="mb-12">
+              <h1 className="text-5xl md:text-6xl font-display !text-gray-900 mb-3">Store</h1>
+              <p className="text-lg !text-gray-500 max-w-xl">
+                Professional templates, guides, and services for independent artists.
               </p>
             </motion.div>
 
             {/* Legal Disclaimer */}
             <motion.div variants={fadeIn} className="mb-10">
-              <div className="flex items-start gap-3 bg-secondary/40 border border-border rounded-lg px-5 py-4">
-                <span className="text-muted-foreground mt-0.5 shrink-0 text-base">⚖️</span>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  <span className="font-semibold text-foreground">Legal Disclaimer:</span> We are not lawyers. Nothing in this store constitutes legal advice. The templates and documents provided — including the Split Sheet and One Stop Agreement — are designed to give independent artists a practical starting point for documenting splits and licensing terms. They are not a substitute for professional legal counsel. If your situation is complex or involves significant money, we strongly recommend consulting a music attorney.
+              <div className="flex items-start gap-3 !bg-gray-50 border !border-gray-200 rounded-lg px-5 py-4">
+                <span className="!text-gray-400 mt-0.5 shrink-0 text-base">⚖️</span>
+                <p className="text-xs !text-gray-500 leading-relaxed">
+                  <span className="font-semibold !text-gray-900">Legal Disclaimer:</span> We are not lawyers. Nothing in this store constitutes legal advice. The templates and documents provided — including the Split Sheet and One Stop Agreement — are designed to give independent artists a practical starting point for documenting splits and licensing terms. They are not a substitute for professional legal counsel.
                 </p>
               </div>
             </motion.div>
 
-            {/* Products Grid — 4 columns */}
+            {/* Products Grid */}
             <motion.div variants={fadeIn} className="mb-16">
-              <h2 className="text-2xl font-display mb-8">Resources &amp; Templates</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <h2 className="text-2xl font-display !text-gray-900 mb-6">Resources & Templates</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {nonServiceProducts.map((product) => (
-                  <Card key={product.id} variant="elevated" className="overflow-hidden flex flex-col">
-                    <div className="h-40 overflow-hidden bg-secondary/30">
+                  <div key={product.id} className="!bg-white border !border-gray-200 rounded-lg overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                    <div className="h-44 overflow-hidden">
                       <img
                         src={PRODUCT_PHOTOS[product.id] || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80'}
                         alt={product.title}
@@ -140,18 +130,18 @@ export default function Store() {
                       />
                     </div>
 
-                    <div className="p-4 flex flex-col flex-1">
-                      <div className="flex items-center justify-between mb-2">
+                    <div className="p-5 flex flex-col flex-1">
+                      <div className="flex items-center justify-between mb-3">
                         {product.isBundle ? (
-                          <Badge className="bg-amber/20 text-amber border-amber/30 text-xs">Bundle</Badge>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider !text-amber-700 !bg-amber-50 px-2 py-0.5 rounded">Bundle</span>
                         ) : (
-                          <Badge variant="secondary" className="text-xs">Template</Badge>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider !text-gray-500 !bg-gray-100 px-2 py-0.5 rounded">Template</span>
                         )}
-                        <p className="text-lg font-display text-maroon">${product.price}</p>
+                        <span className="text-lg font-display text-maroon">${product.price}</span>
                       </div>
 
-                      <h3 className="font-display text-sm mb-1 leading-tight">{product.title}</h3>
-                      <p className="text-muted-foreground text-xs line-clamp-3 mb-3 flex-1">{product.description}</p>
+                      <h3 className="font-display text-sm !text-gray-900 mb-2 leading-snug">{product.title}</h3>
+                      <p className="!text-gray-500 text-xs line-clamp-3 mb-4 flex-1">{product.description}</p>
 
                       {product.externalLinks?.map((link) => (
                         <a
@@ -159,7 +149,7 @@ export default function Store() {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-2"
+                          className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-3"
                         >
                           {link.label}
                         </a>
@@ -178,191 +168,48 @@ export default function Store() {
                         Purchase — ${product.price}
                       </Button>
                     </div>
-                  </Card>
+                  </div>
                 ))}
-              </div>
-            </motion.div>
 
-            {/* Memberships + Catalog Audit — 4 columns */}
-            <motion.div variants={fadeIn} className="mb-16">
-              <h2 className="text-2xl font-display mb-2">Memberships &amp; Services</h2>
-              <p className="text-muted-foreground mb-8">Join the club, go deeper with the Lab, or book a professional audit.</p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                {/* Club Pass */}
-                <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
-                  <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Club Pass</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-display text-foreground">$5</span>
-                      <span className="text-muted-foreground text-sm">/month</span>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mb-4 text-xs">Get your foot in the door. Access the fundamentals.</p>
-                  <ul className="space-y-2 mb-5 flex-1">
-                    {[
-                      'Dashboard access',
-                      'Classroom training tracks',
-                      'Community discussions',
-                      'Audio submissions',
-                      'All store downloads free',
-                    ].map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-xs">
-                        <CheckCircle className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                        <span className="text-muted-foreground">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button variant="outline" size="sm" className="w-full" asChild>
-                    <Link to="/login?tab=signup">Get Started</Link>
-                  </Button>
-                </div>
-
-                {/* Accelerator */}
-                <div className="bg-card border-2 border-maroon rounded-lg p-5 relative flex flex-col">
-                  <div className="absolute -top-3 left-4">
-                    <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
-                      Most Popular
-                    </span>
-                  </div>
-                  <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Accelerator</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-display text-maroon">$10</span>
-                      <span className="text-muted-foreground text-sm">/month</span>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mb-4 text-xs">Professional workflows. Priority access. Real feedback.</p>
-                  <ul className="space-y-2 mb-5 flex-1">
-                    {[
-                      'Everything in Club Pass',
-                      'Studio Floor access',
-                      'Priority submissions',
-                      'Professional feedback',
-                      'Sync workflow training',
-                      'Direct-to-fan systems',
-                    ].map((feature, i) => (
-                      <li key={feature} className="flex items-center gap-2 text-xs">
-                        <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-maroon'}`} />
-                        <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button variant="maroon" size="sm" className="w-full" asChild>
-                    <a href="https://www.patreon.com/modernnostalgia" target="_blank" rel="noopener noreferrer">
-                      Start Training
-                    </a>
-                  </Button>
-                </div>
-
-                {/* Artist Incubator */}
-                <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
-                  <div className="absolute -top-3 left-4">
-                    <span className="bg-amber/20 text-amber border border-amber/30 text-xs font-medium px-3 py-1 rounded-full">
-                      By Application
-                    </span>
-                  </div>
-                  <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Artist Incubator</h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-display text-amber">$150</span>
-                      <span className="text-muted-foreground text-sm">one-time</span>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mb-4 text-xs">Serious artists only. Deep work, real results.</p>
-                  <ul className="space-y-2 mb-5 flex-1">
-                    {[
-                      'Everything in Accelerator',
-                      '1-on-1 strategy sessions',
-                      'Sync catalog review',
-                      'Priority feedback',
-                      'Network access',
-                    ].map((feature, i) => (
-                      <li key={feature} className="flex items-center gap-2 text-xs">
-                        <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${i === 0 ? 'text-muted-foreground' : 'text-amber'}`} />
-                        <span className={i === 0 ? 'text-muted-foreground' : 'text-foreground'}>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full border-amber/50 text-amber hover:bg-amber/10"
-                    onClick={handleApplyNow}
-                  >
-                    Apply Now — $150
-                  </Button>
-                </div>
-
-                {/* Catalog Audit — 4th column */}
+                {/* Catalog Audit Card */}
                 {serviceProduct && (
-                  <div className="bg-card border border-maroon/30 rounded-lg overflow-hidden relative flex flex-col">
-                    <img
-                      src={PRODUCT_PHOTOS['catalog-audit']}
-                      alt="Person with headphones in a studio"
-                      className="w-full h-32 object-cover"
-                    />
-                    <div className="p-5 flex flex-col flex-1 relative">
-                    <div className="absolute -top-3 left-4">
-                      <span className="bg-maroon/20 text-maroon border border-maroon/30 text-xs font-medium px-3 py-1 rounded-full">
-                        Pro Service
-                      </span>
+                  <div className="!bg-white border !border-gray-200 rounded-lg overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                    <div className="h-44 overflow-hidden">
+                      <img
+                        src={PRODUCT_PHOTOS['catalog-audit']}
+                        alt="Catalog Audit for Sync"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <h3 className="font-display text-xl mb-1">Catalog Audit</h3>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-display text-maroon">${serviceProduct.price}</span>
-                        <span className="text-muted-foreground text-sm">one-time</span>
+
+                    <div className="p-5 flex flex-col flex-1">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-maroon !bg-red-50 px-2 py-0.5 rounded">Service</span>
+                        <span className="text-lg font-display text-maroon">${serviceProduct.price}</span>
                       </div>
-                    </div>
-                    <p className="text-muted-foreground mb-4 text-xs">{serviceProduct.description}</p>
-                    <ul className="space-y-2 mb-5 flex-1">
-                      {(serviceProduct.whatsIncluded ?? []).slice(0, 5).map((item) => (
-                        <li key={item} className="flex items-start gap-2 text-xs">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-maroon shrink-0 mt-0.5" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      variant="maroon"
-                      size="sm"
-                      className="w-full"
-                      onClick={handleBookAudit}
-                    >
-                      Book Audit — ${serviceProduct.price}
-                    </Button>
+
+                      <h3 className="font-display text-sm !text-gray-900 mb-2 leading-snug">{serviceProduct.title}</h3>
+                      <p className="!text-gray-500 text-xs line-clamp-3 mb-4 flex-1">{serviceProduct.description}</p>
+
+                      <Button
+                        variant="maroon"
+                        size="sm"
+                        className="w-full mt-auto text-xs"
+                        onClick={handleBookAudit}
+                      >
+                        Learn More
+                      </Button>
                     </div>
                   </div>
                 )}
               </div>
-
-              {/* JotForm Embed for Artist Incubator */}
-              {showJotForm && (
-                <div ref={jotformRef} className="mt-8 rounded-xl border border-border overflow-hidden">
-                  <div className="p-4 bg-secondary/30 border-b border-border">
-                    <h3 className="font-display text-lg">Artist Incubator Application</h3>
-                    <p className="text-sm text-muted-foreground">Complete the form below to apply for the $300 one-time program.</p>
-                  </div>
-                  <iframe
-                    src="https://pci.jotform.com/form/253309376850058"
-                    title="Artist Incubator Application"
-                    width="100%"
-                    height="700"
-                    frameBorder="0"
-                    scrolling="yes"
-                    className="block"
-                    allow="geolocation; microphone; camera"
-                  />
-                </div>
-              )}
             </motion.div>
 
-            {/* Catalog Audit Full Service Section */}
+            {/* Catalog Audit Full Detail Section */}
             {serviceProduct && (
-              <motion.div variants={fadeIn} className="mt-4" ref={auditFullRef}>
-                <Card variant="elevated" className="overflow-hidden border-maroon/30">
+              <motion.div variants={fadeIn} ref={auditFullRef} className="mb-16">
+                <div className="!bg-white border !border-gray-200 rounded-lg overflow-hidden">
                   <img
                     src={PRODUCT_PHOTOS['catalog-audit']}
                     alt="Person listening to music with headphones in a studio"
@@ -371,35 +218,35 @@ export default function Store() {
                   <div className="p-8 md:p-10">
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
                       <div className="flex items-center gap-4">
-                        <div className="p-4 bg-maroon/20 rounded-lg">
+                        <div className="p-4 bg-maroon/10 rounded-lg">
                           <ClipboardCheck className="w-8 h-8 text-maroon" />
                         </div>
                         <div>
-                          <Badge className="mb-2 bg-maroon/20 text-maroon border-maroon/30">Professional Service</Badge>
-                          <h3 className="font-display text-2xl md:text-3xl">{serviceProduct.title}</h3>
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-maroon !bg-red-50 px-2 py-0.5 rounded mb-2 inline-block">Professional Service</span>
+                          <h3 className="font-display text-2xl md:text-3xl !text-gray-900">{serviceProduct.title}</h3>
                         </div>
                       </div>
                       <p className="text-3xl md:text-4xl font-display text-maroon">${serviceProduct.price}</p>
                     </div>
 
-                    <p className="text-lg text-muted-foreground mb-6">{serviceProduct.description}</p>
+                    <p className="text-base !text-gray-500 mb-6">{serviceProduct.description}</p>
 
                     {serviceProduct.fullDescription && (
-                      <div className="prose prose-sm max-w-none mb-6">
+                      <div className="mb-6">
                         {serviceProduct.fullDescription.split('\n\n').map((paragraph, i) => (
-                          <p key={i} className="text-foreground/80 mb-4">{paragraph}</p>
+                          <p key={i} className="!text-gray-600 text-sm mb-4">{paragraph}</p>
                         ))}
                       </div>
                     )}
 
                     {serviceProduct.whatsIncluded && (
-                      <div className="bg-secondary/30 rounded-lg p-6 mb-6">
-                        <h4 className="font-display text-lg mb-4">What's Included</h4>
+                      <div className="!bg-gray-50 rounded-lg p-6 mb-6">
+                        <h4 className="font-display text-lg !text-gray-900 mb-4">What's Included</h4>
                         <ul className="space-y-2">
                           {serviceProduct.whatsIncluded.map((item, i) => (
                             <li key={i} className="flex items-start gap-3 text-sm">
                               <CheckCircle2 className="w-5 h-5 text-maroon shrink-0 mt-0.5" />
-                              <span>{item}</span>
+                              <span className="!text-gray-700">{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -408,8 +255,8 @@ export default function Store() {
 
                     <div className="grid md:grid-cols-2 gap-6 mb-8">
                       <div>
-                        <h4 className="font-display text-lg mb-3">Who This Is For</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
+                        <h4 className="font-display text-lg !text-gray-900 mb-3">Who This Is For</h4>
+                        <ul className="space-y-2 text-sm !text-gray-500">
                           <li>• Artists preparing to pitch for sync</li>
                           <li>• Producers managing multiple collaborators</li>
                           <li>• Managers or reps vetting catalogs</li>
@@ -417,23 +264,23 @@ export default function Store() {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-display text-lg mb-3">What This Is Not</h4>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
+                        <h4 className="font-display text-lg !text-gray-900 mb-3">What This Is Not</h4>
+                        <ul className="space-y-2 text-sm !text-gray-500">
                           <li>• Legal representation</li>
                           <li>• Guaranteed placements</li>
                           <li>• Creative feedback or song critique</li>
                         </ul>
-                        <p className="text-sm text-foreground/80 mt-3 italic">This is about structure, not taste.</p>
+                        <p className="text-sm !text-gray-600 mt-3 italic">This is about structure, not taste.</p>
                       </div>
                     </div>
 
-                    {/* FAQ Section */}
-                    <div className="border-t border-border/50 pt-8 mb-8">
+                    {/* FAQ */}
+                    <div className="border-t !border-gray-200 pt-8 mb-8">
                       <div className="flex items-center gap-3 mb-6">
                         <HelpCircle className="w-6 h-6 text-maroon" />
-                        <h4 className="font-display text-xl">Is the Catalog Audit Right for You?</h4>
+                        <h4 className="font-display text-xl !text-gray-900">Is the Catalog Audit Right for You?</h4>
                       </div>
-                      <p className="text-muted-foreground mb-6">
+                      <p className="!text-gray-500 mb-6">
                         Read this before booking. It'll save you time and money.
                       </p>
 
@@ -442,17 +289,17 @@ export default function Store() {
                           <AccordionItem
                             key={index}
                             value={`faq-${index}`}
-                            className="border border-border/50 rounded-lg px-4 bg-secondary/10"
+                            className="border !border-gray-200 rounded-lg px-4 !bg-gray-50/50"
                           >
                             <AccordionTrigger className="text-left hover:no-underline py-4">
-                              <span className="font-medium text-sm md:text-base">
+                              <span className="font-medium text-sm md:text-base !text-gray-900">
                                 Q{index + 1}. {faq.question}
                               </span>
                             </AccordionTrigger>
                             <AccordionContent className="pb-4">
-                              <p className="text-muted-foreground text-sm mb-2">{faq.answer}</p>
+                              <p className="!text-gray-500 text-sm mb-2">{faq.answer}</p>
                               {faq.recommendation && (
-                                <p className="text-sm text-foreground/80 font-medium mt-3">
+                                <p className="text-sm !text-gray-700 font-medium mt-3">
                                   <span className="text-maroon">Better next step:</span> {faq.recommendation}
                                 </p>
                               )}
@@ -462,9 +309,9 @@ export default function Store() {
                       </Accordion>
                     </div>
 
-                    {/* Confirmation Checkbox & Purchase Button */}
-                    <div className="border-t border-border/50 pt-8">
-                      <div className="flex items-start gap-3 mb-6 p-4 bg-secondary/20 rounded-lg">
+                    {/* Confirmation & Purchase */}
+                    <div className="border-t !border-gray-200 pt-8">
+                      <div className="flex items-start gap-3 mb-6 p-4 !bg-gray-50 rounded-lg">
                         <Checkbox
                           id="audit-confirm"
                           checked={auditConfirmed}
@@ -473,7 +320,7 @@ export default function Store() {
                         />
                         <label
                           htmlFor="audit-confirm"
-                          className="text-sm cursor-pointer leading-relaxed"
+                          className="text-sm cursor-pointer leading-relaxed !text-gray-700"
                         >
                           I understand this audit focuses on rights clarity and sync readiness, not placements or guarantees.
                         </label>
@@ -493,13 +340,13 @@ export default function Store() {
                       </Button>
                     </div>
                   </div>
-                </Card>
+                </div>
               </motion.div>
             )}
 
             {/* Footer note */}
-            <motion.div variants={fadeIn} className="mt-12 text-center">
-              <p className="text-sm text-muted-foreground">
+            <motion.div variants={fadeIn} className="text-center">
+              <p className="text-sm !text-gray-400">
                 Secure checkout powered by Stripe. Downloads are available immediately after purchase.
               </p>
             </motion.div>
