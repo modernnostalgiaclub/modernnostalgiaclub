@@ -621,7 +621,7 @@ export default function StudioFloor() {
           >
             <motion.div variants={fadeIn} className="mb-8">
               <SectionLabel className="mb-4">Submit for Feedback</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display uppercase mb-4">
+              <h1 className="text-4xl md:text-5xl font-anton uppercase mb-4">
                 Submissions & Reviews
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl">

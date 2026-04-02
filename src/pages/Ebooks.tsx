@@ -62,7 +62,7 @@ export default function Ebooks() {
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-display uppercase text-foreground flex items-center gap-3">
+        <h1 className="text-4xl md:text-5xl font-anton uppercase text-foreground flex items-center gap-3">
           <BookOpen className="h-8 w-8 text-primary" />
           Ebooks &amp; Downloads
         </h1>

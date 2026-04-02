@@ -74,7 +74,7 @@ export default function MemberDirectory() {
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <Users className="h-8 w-8 text-primary" />
-                <h1 className="text-4xl md:text-5xl font-display uppercase text-foreground">
+                <h1 className="text-4xl md:text-5xl font-anton uppercase text-foreground">
                   Member Directory
                 </h1>
               </div>
