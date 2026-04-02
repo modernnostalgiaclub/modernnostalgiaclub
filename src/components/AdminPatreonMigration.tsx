@@ -176,7 +176,7 @@ export function AdminPatreonMigration() {
             Patreon Migration
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Notify founding Patreon members to claim their free Creative Economy Lab upgrade
+            Notify founding Patreon members to claim their free Artist Incubator upgrade
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={loadMembers} className="gap-2">

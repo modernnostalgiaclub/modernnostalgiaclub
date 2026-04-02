@@ -147,7 +147,7 @@ export default function BeatLicense() {
                       <span className="text-muted-foreground"> (% Divided between Producers)</span>
                     </p>
                     <p className="text-sm text-maroon mt-2 font-medium">
-                      THIS PRICE IS ONLY FOR CREATIVE ECONOMY LAB MEMBERS
+                      THIS PRICE IS ONLY FOR ARTIST INCUBATOR MEMBERS
                     </p>
                   </div>
 

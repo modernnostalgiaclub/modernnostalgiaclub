@@ -138,7 +138,7 @@ export const PatreonBlog = () => {
             Latest from the Lab
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Livestreams, Op-Eds, and insights from the Creative Economy Lab
+            Livestreams, Op-Eds, and insights from the Club
           </p>
         </motion.div>
 

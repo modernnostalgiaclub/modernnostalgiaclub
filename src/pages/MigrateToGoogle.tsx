@@ -190,8 +190,8 @@ export default function MigrateToGoogle() {
             className="text-muted-foreground text-sm leading-relaxed"
           >
             {prefillEmail
-              ? <>Claim your upgrade for <strong className="text-foreground">{prefillEmail}</strong> — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.</>
-              : <>Sign in or create a new account — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.</>
+              ? <>Claim your upgrade for <strong className="text-foreground">{prefillEmail}</strong> — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Artist Incubator</strong> — free, permanently.</>
+              : <>Sign in or create a new account — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Artist Incubator</strong> — free, permanently.</>
             }
           </motion.p>
         </div>

@@ -50,7 +50,7 @@ const LabApplication = () => {
               <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-lg">
                 <iframe
                   src="https://pci.jotform.com/form/253309376850058"
-                  title="Creative Economy Lab Application Form"
+                  title="Artist Incubator Application Form"
                   className="w-full border-0"
                   style={{ minHeight: "800px", height: "100vh", maxHeight: "1200px" }}
                   allowFullScreen
