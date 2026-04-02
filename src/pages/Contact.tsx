@@ -17,7 +17,7 @@ export default function Contact() {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
-  const { canSubmit, cooldownRemaining, honeypotProps } = useAntiSpam({ cooldownMs: 15000 });
+  const { isInCooldown, cooldownRemaining, honeypotProps, validate, triggerCooldown } = useAntiSpam({ cooldownMs: 15000 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
