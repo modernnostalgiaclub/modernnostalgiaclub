@@ -322,7 +322,7 @@ export default function ReferenceShelf() {
                       {[
                         { step: '1', title: 'Create Account', desc: 'Sign up for a free DISCO account using our referral link below.' },
                         { step: '2', title: 'Upload Tracks', desc: 'Upload your music with complete metadata (title, artist, genre, mood, tempo).' },
-                        { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit in the Studio Floor.' },
+                        { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit for feedback.' },
                       ].map(s => (
                         <div key={s.step} className="p-4 bg-white rounded-lg border border-gray-200">
                           <div className="flex items-center gap-2 mb-2">
@@ -386,7 +386,7 @@ export default function ReferenceShelf() {
                               <li>Create a playlist and add your tracks</li>
                               <li>Click the "Share" button on your playlist</li>
                               <li>Copy the share link (starts with https://disco.ac/)</li>
-                              <li>Paste this link when submitting in the Studio Floor</li>
+                              <li>Paste this link when submitting for feedback</li>
                             </ol>
                           </div>
                         </AccordionContent>

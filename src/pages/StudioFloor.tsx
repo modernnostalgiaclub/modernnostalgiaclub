@@ -318,7 +318,7 @@ export default function StudioFloor() {
         currentTier={userTier}
         lockedContent={
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">Studio Floor access requires Accelerator tier or higher.</p>
+            <p className="text-muted-foreground mb-4">Submit for Feedback access requires Accelerator tier or higher.</p>
             <Button variant="maroon" asChild>
               <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
                 Upgrade on Patreon
@@ -620,7 +620,7 @@ export default function StudioFloor() {
             className="max-w-5xl mx-auto"
           >
             <motion.div variants={fadeIn} className="mb-8">
-              <SectionLabel className="mb-4">Studio Floor</SectionLabel>
+              <SectionLabel className="mb-4">Submit for Feedback</SectionLabel>
               <h1 className="text-4xl md:text-5xl font-display mb-4">
                 Submissions & Reviews
               </h1>

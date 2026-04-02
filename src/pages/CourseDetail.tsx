@@ -250,7 +250,7 @@ export default function CourseDetail() {
   }
 
   if (!course) {
-    return <Navigate to="/classroom" replace />;
+    return <Navigate to="/courses" replace />;
   }
 
   // Check tier access
@@ -270,9 +270,9 @@ export default function CourseDetail() {
             </p>
             <div className="flex gap-4 justify-center">
               <Button variant="outline" asChild>
-                <Link to="/classroom">
+                <Link to="/courses">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Classroom
+                  Back to Courses
                 </Link>
               </Button>
               <Button variant="maroon" asChild>
@@ -302,11 +302,11 @@ export default function CourseDetail() {
             {/* Header */}
             <motion.div variants={fadeIn} className="mb-8">
               <Link 
-                to="/classroom" 
+                to="/courses" 
                 className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Classroom
+                Back to Courses
               </Link>
               
               <div className="flex items-start justify-between gap-4 flex-wrap">

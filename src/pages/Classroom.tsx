@@ -234,7 +234,7 @@ export default function Classroom() {
             className="max-w-4xl mx-auto"
           >
             <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">The Classroom</SectionLabel>
+              <SectionLabel className="mb-4">Courses</SectionLabel>
               <h1 className="text-4xl md:text-5xl font-display mb-4">
                 Training Tracks
               </h1>
@@ -259,7 +259,7 @@ export default function Classroom() {
                         </p>
                       </div>
                       <Button variant="maroon" size="sm" asChild>
-                        <Link to={`/classroom/${continueData.courseSlug}`}>
+                        <Link to={`/courses/${continueData.courseSlug}`}>
                           Continue
                           <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>
@@ -340,7 +340,7 @@ export default function Classroom() {
                               </Button>
                             ) : (
                               <Button variant="maroon" size="sm" asChild>
-                                <Link to={`/classroom/${course.slug}`}>
+                                <Link to={`/courses/${course.slug}`}>
                                   {course.completed_count > 0 ? 'Continue' : 'Start'}
                                   <ArrowRight className="ml-2 w-4 h-4" />
                                 </Link>

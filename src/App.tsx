@@ -72,11 +72,15 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/artists" element={<Artists />} />
             <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
+            <Route path="/courses" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
+            <Route path="/courses/:slug" element={<ProtectedRoute><LabLayout><CourseDetail /></LabLayout></ProtectedRoute>} />
+            <Route path="/feedback" element={<ProtectedRoute><LabLayout><StudioFloor /></LabLayout></ProtectedRoute>} />
+            <Route path="/community" element={<ProtectedRoute><LabLayout><Community /></LabLayout></ProtectedRoute>} />
+            <Route path="/members" element={<ProtectedRoute><LabLayout><MemberDirectory /></LabLayout></ProtectedRoute>} />
+            {/* Legacy redirects */}
             <Route path="/classroom" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
             <Route path="/classroom/:slug" element={<ProtectedRoute><LabLayout><CourseDetail /></LabLayout></ProtectedRoute>} />
             <Route path="/studio" element={<ProtectedRoute><LabLayout><StudioFloor /></LabLayout></ProtectedRoute>} />
-            <Route path="/community" element={<ProtectedRoute><LabLayout><Community /></LabLayout></ProtectedRoute>} />
-            <Route path="/members" element={<ProtectedRoute><LabLayout><MemberDirectory /></LabLayout></ProtectedRoute>} />
             <Route path="/artistresources" element={<ArtistResources />} />
             <Route path="/events" element={<Events />} />
             <Route path="/artistresources/30-day-tracker" element={<ProtectedRoute><LabLayout><ImplementationTracker /></LabLayout></ProtectedRoute>} />

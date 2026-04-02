@@ -54,7 +54,7 @@ export const TIER_INFO: Record<PatreonTier, {
     price: '$10',
     features: [
       'Dashboard access',
-      'Classroom access',
+      'Courses access',
       'Community access',
       'Submit audio',
       'Listen to approved audio',
@@ -68,7 +68,7 @@ export const TIER_INFO: Record<PatreonTier, {
       'Everything in Club Pass',
       'Priority submissions',
       'Feedback visibility',
-      'Studio Floor access',
+      'Submit for Feedback access',
     ],
     color: 'amber',
   },
