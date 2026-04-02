@@ -234,22 +234,23 @@ export function Header({ showNav = true }: HeaderProps) {
               <Twitter className="h-4 w-4" />
             </a>
           </div>
-          <button
-            onClick={() => setCartOpen(true)}
-            className="hidden md:flex relative text-white hover:text-primary transition-colors"
-            aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
-          >
-            <ShoppingCart className="h-4 w-4" />
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </button>
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
             <div className="hidden md:flex items-center gap-3">
+              {/* Cart */}
+              <button
+                onClick={() => setCartOpen(true)}
+                className="relative text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
               {/* Notifications */}
               <NotificationBell />
               
@@ -301,6 +302,18 @@ export function Header({ showNav = true }: HeaderProps) {
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-3 ml-4">
+              <button
+                onClick={() => setCartOpen(true)}
+                className="relative text-white hover:text-primary transition-colors"
+                aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
               <Button 
                 variant="outline"
                 size="sm"
