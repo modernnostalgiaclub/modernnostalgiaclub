@@ -395,6 +395,7 @@ export default function ArtistProfileSettings() {
 
       setAvatarUrl(urlWithCache);
       toast.success('Profile picture updated!');
+      await refreshProfile();
     } catch (error) {
       console.error('Avatar upload error:', error);
       toast.error('Failed to upload profile picture');
