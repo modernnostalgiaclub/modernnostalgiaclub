@@ -358,6 +358,7 @@ export default function Classroom() {
               </p>
             </motion.div>
       </motion.div>
+    <Footer />
     </div>
   );
 }

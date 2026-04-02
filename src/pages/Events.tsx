@@ -148,6 +148,7 @@ export default function Events() {
           </Button>
         </motion.div>
       </motion.div>
+    <Footer />
     </div>
   );
 }
