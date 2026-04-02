@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import logoCream from '@/assets/logo-cream.png';
+import mncLogoBlack from '@/assets/mnc-logo-black.png';
 import {
   ArrowRight,
   ExternalLink,
@@ -431,122 +432,96 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background studio-grain">
+    <div className="min-h-screen bg-white">
       <Header />
 
-      <main id="main-content" role="main">
-        {/* ── Hero ──────────────────────────────────────────────────────── */}
-        <section
-          className="relative min-h-screen flex items-center overflow-hidden"
-          aria-labelledby="hero-heading"
-        >
-          {/* Background image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url(https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1800&q=80)`,
-            }}
+      <main id="main-content" role="main" className="pt-24 pb-20">
+        {/* ── Logo ──────────────────────────────────────────────────── */}
+        <div className="text-center mb-16">
+          <img
+            src={mncLogoBlack}
+            alt="MNC"
+            className="h-32 md:h-40 w-auto mx-auto mb-8"
           />
-          {/* Gradient overlays */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.97) 0%, hsl(222 47% 4% / 0.8) 50%, hsl(217 100% 10% / 0.7) 100%)' }} />
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent" />
-
-          {/* Subtle blue glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, hsl(217 100% 50% / 0.08) 0%, transparent 70%)' }} />
-
-          <div className="container mx-auto px-6 relative z-10 pt-28 pb-20">
-            <motion.div
-              className="max-w-4xl mx-auto text-center"
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-            >
-              <motion.div variants={fadeIn} className="mb-8 flex justify-center">
-                <img
-                  src={logoCream}
-                  alt="ModernNostalgia.club"
-                  className="h-16 md:h-20 w-auto"
-                />
-              </motion.div>
-
-              <motion.div variants={fadeIn} className="flex justify-center">
-                <SectionLabel className="mb-5">Creative Economy Lab</SectionLabel>
-              </motion.div>
-
-              <motion.h1
-                id="hero-heading"
-                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-[1.05] text-foreground"
-                variants={fadeIn}
-              >
-                Where Timeless Art<br />
-                Meets the{' '}
-                <span
-                  className="italic"
-                  style={{ color: 'hsl(217 100% 65%)' }}
-                >
-                  Modern Economy.
-                </span>
-              </motion.h1>
-
-              <motion.p
-                className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
-                variants={fadeIn}
-              >
-                Training, systems, and professional workflows for independent artists building sustainable music careers.
-              </motion.p>
-
-              <motion.div
-                className="flex flex-col sm:flex-row items-center justify-center gap-4"
-                variants={fadeIn}
-              >
-                <Button
-                  size="lg"
-                  className="text-base px-8 h-14 font-semibold"
-                  style={{ background: 'hsl(217 100% 50%)', color: '#fff', boxShadow: '0 0 24px hsl(217 100% 50% / 0.4)' }}
-                  asChild
-                >
-                  <a href="#pricing">
-                    Join the Lab <ArrowRight className="w-5 h-5 ml-2" />
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="text-base px-8 h-14"
-                  asChild
-                >
-                  <Link to="/artists">
-                    Explore Artists
-                  </Link>
-                </Button>
-              </motion.div>
-
-              <motion.p variants={fadeIn} className="mt-6 text-sm text-muted-foreground">
-                Already a member?{' '}
-                <Link to="/login" className="text-primary hover:underline underline-offset-2">
-                  Log in here
-                </Link>
-              </motion.p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ── The Feed ─────────────────────────────────────────────── */}
-        <TheFeed />
-
-        {/* ── MNC Player ───────────────────────────────────────────── */}
-        <MNCPlayer />
-        <PlaylistSubmit />
-
-        {/* ── Artist Grid ──────────────────────────────────────────── */}
-        <ArtistGrid />
-
-        {/* ── What's Inside ────────────────────────────────────────── */}
-        <WhatsInside />
+        </div>
 
         {/* ── Pricing ──────────────────────────────────────────────── */}
-        <PricingSection />
+        <section id="pricing" className="pb-20">
+          <div className="container mx-auto px-6">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-16">
+                <p className="text-xs uppercase tracking-widest text-gray-400 mb-4 font-medium">Join the Lab</p>
+                <h2 className="font-anton text-4xl md:text-6xl text-black uppercase tracking-tight leading-[1.05]">
+                  Choose Your<br />
+                  <span className="italic" style={{ color: 'hsl(210 100% 53%)' }}>Access Level.</span>
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {TIERS.map((tier, i) => (
+                  <motion.div
+                    key={tier.name}
+                    className={`rounded-xl p-7 flex flex-col relative overflow-hidden transition-all duration-300 ${
+                      tier.highlighted
+                        ? 'border-2 border-[hsl(210,100%,53%)] bg-[hsl(210,100%,97%)]'
+                        : 'border border-gray-200 bg-white'
+                    }`}
+                    style={tier.highlighted ? {
+                      boxShadow: '0 0 40px hsl(210 100% 53% / 0.12)',
+                    } : undefined}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    {tier.highlighted && (
+                      <div className="absolute top-4 right-4">
+                        <span className="text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full bg-[hsl(210,100%,53%)] text-white">
+                          Popular
+                        </span>
+                      </div>
+                    )}
+                    {'badge' in tier && tier.badge && (
+                      <div className="absolute top-4 right-4">
+                        <span className="text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full"
+                          style={{ background: 'hsl(142 70% 45% / 0.15)', color: 'hsl(142 50% 35%)', border: '1px solid hsl(142 70% 45% / 0.3)' }}>
+                          {tier.badge}
+                        </span>
+                      </div>
+                    )}
+                    <p className="text-xs uppercase tracking-widest text-gray-400 mb-2">{tier.name}</p>
+                    <p className="text-4xl font-anton text-black mb-2">{tier.price}</p>
+                    <p className="text-sm text-gray-500 mb-6 flex-shrink-0">{tier.desc}</p>
+                    <ul className="space-y-2 mb-8 flex-1">
+                      {tier.features.map(f => (
+                        <li key={f} className="flex items-start gap-2 text-sm text-gray-600">
+                          <CheckCircle className="w-4 h-4 text-[hsl(210,100%,53%)] shrink-0 mt-0.5" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      className={`w-full ${tier.highlighted ? 'bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white' : 'border border-gray-300 bg-white text-black hover:bg-gray-50'}`}
+                      asChild
+                    >
+                      {tier.external
+                        ? <a href={tier.href} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
+                        : <Link to={tier.href}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                      }
+                    </Button>
+                  </motion.div>
+                ))}
+              </div>
+
+              <p className="mt-8 text-center text-sm text-gray-400">
+                Already a member?{' '}
+                <Link to="/login" className="text-[hsl(210,100%,53%)] hover:underline underline-offset-2">
+                  Log in here
+                </Link>
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
