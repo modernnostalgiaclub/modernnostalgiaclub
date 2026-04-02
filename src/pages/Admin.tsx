@@ -34,6 +34,7 @@ import { AdminPatreonMigration } from '@/components/AdminPatreonMigration';
 import { AdminArtistTracks } from '@/components/AdminArtistTracks';
 import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
 import { AdminGrandfatheredMembers } from '@/components/AdminGrandfatheredMembers';
+import { AdminUserManagement } from '@/components/AdminUserManagement';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
