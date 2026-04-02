@@ -66,13 +66,13 @@ const App = () => (
           <CookieConsent />
           <CartDrawer />
           <Routes>
-            <Route path="/" element={<MusicBlogHome />} />
+            <Route path="/" element={<AuthAwareLayout><MusicBlogHome /></AuthAwareLayout>} />
             
             <Route path="/join" element={<LandingPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/blog" element={<BlogIndex />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/artists" element={<Artists />} />
+            <Route path="/about" element={<AuthAwareLayout><AboutPage /></AuthAwareLayout>} />
+            <Route path="/blog" element={<AuthAwareLayout><BlogIndex /></AuthAwareLayout>} />
+            <Route path="/blog/:slug" element={<AuthAwareLayout><BlogPost /></AuthAwareLayout>} />
+            <Route path="/artists" element={<AuthAwareLayout><Artists /></AuthAwareLayout>} />
             <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
             <Route path="/courses" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
             <Route path="/courses/:slug" element={<ProtectedRoute><LabLayout><CourseDetail /></LabLayout></ProtectedRoute>} />
