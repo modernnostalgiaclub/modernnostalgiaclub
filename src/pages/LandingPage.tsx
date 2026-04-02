@@ -170,8 +170,11 @@ function TheFeed() {
             <Button variant="outline" size="sm" asChild>
               <Link to="/artists">All Artists <ArrowRight className="w-3 h-3 ml-1" /></Link>
             </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/blog">Read More <ArrowRight className="w-3 h-3 ml-1" /></Link>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/blog">Read More <ArrowRight className="w-4 h-4 ml-2" /></Link>
             </Button>
           </div>
         </motion.div>
