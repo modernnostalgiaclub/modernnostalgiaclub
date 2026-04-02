@@ -153,6 +153,10 @@ export default function Admin() {
                 <Users2 className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Migration
               </TabsTrigger>
+              <TabsTrigger value="memberships" className="gap-2" aria-label="Manage memberships">
+                <Crown className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Memberships
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
