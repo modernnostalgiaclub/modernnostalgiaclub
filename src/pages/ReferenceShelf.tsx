@@ -191,10 +191,10 @@ export default function ReferenceShelf() {
             transition={{ duration: 0.5 }}
             className="max-w-4xl mx-auto mb-16 text-center"
           >
-            <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-foreground mb-4">
+            <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-gray-900 mb-4">
               Artist Resources
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
               Everything you need to build, manage, and monetize your music career — organized and ready to use.
             </p>
           </motion.div>
@@ -228,7 +228,7 @@ export default function ReferenceShelf() {
                       <div className="p-2 rounded-lg bg-primary/10">
                         <Icon className="w-5 h-5 text-primary" />
                       </div>
-                      <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-foreground">
+                      <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-gray-900">
                         {cat.label}
                       </h2>
                     </div>
@@ -255,16 +255,16 @@ export default function ReferenceShelf() {
                   <div className="p-2 rounded-lg bg-primary/10">
                     <Music className="w-5 h-5 text-primary" />
                   </div>
-                  <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-foreground">
+                  <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-gray-900">
                     DISCO Setup Guide
                   </h2>
                 </div>
 
-                <Card variant="elevated" className="overflow-hidden">
+                <Card className="overflow-hidden bg-gray-50 border-gray-200">
                   <CardContent className="p-6 md:p-8 space-y-8">
                     <div>
-                      <h3 className="font-anton text-xl uppercase tracking-tight text-foreground mb-2">Getting Started with DISCO</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-anton text-xl uppercase tracking-tight text-gray-900 mb-2">Getting Started with DISCO</h3>
+                      <p className="text-sm text-gray-500">
                         DISCO is the industry-standard platform for delivering music to sync supervisors, labels, and publishers. 
                         All Lab submissions require a DISCO link.
                       </p>
@@ -276,14 +276,14 @@ export default function ReferenceShelf() {
                         { step: '2', title: 'Upload Tracks', desc: 'Upload your music with complete metadata (title, artist, genre, mood, tempo).' },
                         { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit in the Studio Floor.' },
                       ].map(s => (
-                        <div key={s.step} className="p-4 bg-muted/50 rounded-lg">
+                        <div key={s.step} className="p-4 bg-white rounded-lg border border-gray-200">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                               <span className="font-anton text-primary text-sm">{s.step}</span>
                             </div>
-                            <h4 className="font-medium text-foreground">{s.title}</h4>
+                            <h4 className="font-medium text-gray-800">{s.title}</h4>
                           </div>
-                          <p className="text-sm text-muted-foreground">{s.desc}</p>
+                          <p className="text-sm text-gray-500">{s.desc}</p>
                         </div>
                       ))}
                     </div>
@@ -301,7 +301,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="what-is-disco">
                         <AccordionTrigger>What is DISCO?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-muted-foreground">
+                          <p className="text-gray-500">
                             DISCO is the music industry's leading platform for music delivery and catalog management. 
                             Used by major labels, sync agents, and music supervisors worldwide, it's the professional 
                             standard for sharing music.
@@ -311,7 +311,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="why-disco">
                         <AccordionTrigger>Why does the Lab use DISCO?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-muted-foreground">
+                          <p className="text-gray-500">
                             We use DISCO because it mirrors real-world sync licensing workflows. When you learn to 
                             organize and deliver music through DISCO, you're building skills that directly translate 
                             to professional opportunities.
@@ -321,7 +321,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="is-it-free">
                         <AccordionTrigger>Is DISCO free?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-muted-foreground">
+                          <p className="text-gray-500">
                             DISCO offers a free tier that's perfect for getting started. You can upload tracks, 
                             create playlists, and share links at no cost. Paid plans offer additional features 
                             like analytics and larger storage.
@@ -331,7 +331,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="how-to-share">
                         <AccordionTrigger>How do I get a share link?</AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-3 text-muted-foreground">
+                          <div className="space-y-3 text-gray-500">
                             <p>To get a shareable DISCO link:</p>
                             <ol className="list-decimal list-inside space-y-2 ml-2">
                               <li>Upload your track(s) to DISCO</li>
@@ -346,7 +346,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="metadata-tips">
                         <AccordionTrigger>What metadata should I include?</AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-3 text-muted-foreground">
+                          <div className="space-y-3 text-gray-500">
                             <p>Complete metadata increases your chances of sync placement:</p>
                             <ul className="space-y-2">
                               {['Title: Clear, descriptive name', 'Artist/Composer: Your professional name', 'Genre: Primary and secondary genres', 'Mood/Energy: Emotional descriptors', 'Tempo (BPM): Beats per minute', 'Instrumentation: Key instruments used'].map(item => (
@@ -433,17 +433,17 @@ function ResourceCard({ item, user, signInWithPatreon, onDownloadClick, tracks }
   };
 
   return (
-    <Card variant="feature" className="flex flex-col h-full">
+    <Card className="flex flex-col h-full bg-gray-50 border-gray-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200">
       <CardContent className="p-5 flex flex-col flex-1">
         {item.type && (
           <span className="text-xs text-primary uppercase tracking-wider font-medium mb-1">{item.type}</span>
         )}
-        <h3 className="font-bold text-foreground text-base mb-1.5">{item.title}</h3>
+        <h3 className="font-bold text-gray-900 text-base mb-1.5">{item.title}</h3>
         {item.description && (
-          <p className="text-sm text-muted-foreground flex-1 line-clamp-3">{item.description}</p>
+          <p className="text-sm text-gray-500 flex-1 line-clamp-3">{item.description}</p>
         )}
         {item.artist && (
-          <p className="text-xs text-muted-foreground mt-1">by {item.artist}</p>
+          <p className="text-xs text-gray-400 mt-1">by {item.artist}</p>
         )}
         {renderAction()}
       </CardContent>
