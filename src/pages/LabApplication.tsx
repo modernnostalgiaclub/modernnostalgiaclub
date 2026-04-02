@@ -12,10 +12,10 @@ const LabApplication = () => {
   return (
     <>
       <Helmet>
-        <title>Creative Economy Lab Application | Modern Nostalgia Club</title>
+        <title>Artist Incubator Application | Modern Nostalgia Club</title>
         <meta
           name="description"
-          content="Apply to join the Creative Economy Lab - an exclusive program for serious artists ready to build sustainable creative careers."
+          content="Apply to join the Artist Incubator - an exclusive program for serious artists ready to build sustainable creative careers."
         />
       </Helmet>
 
