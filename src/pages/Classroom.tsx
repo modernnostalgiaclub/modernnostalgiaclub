@@ -340,7 +340,7 @@ export default function Classroom() {
                               </Button>
                             ) : (
                               <Button variant="maroon" size="sm" asChild>
-                                <Link to={`/classroom/${course.slug}`}>
+                                <Link to={`/courses/${course.slug}`}>
                                   {course.completed_count > 0 ? 'Continue' : 'Start'}
                                   <ArrowRight className="ml-2 w-4 h-4" />
                                 </Link>

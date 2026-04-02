@@ -302,11 +302,11 @@ export default function CourseDetail() {
             {/* Header */}
             <motion.div variants={fadeIn} className="mb-8">
               <Link 
-                to="/classroom" 
+                to="/courses" 
                 className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Classroom
+                Back to Courses
               </Link>
               
               <div className="flex items-start justify-between gap-4 flex-wrap">
