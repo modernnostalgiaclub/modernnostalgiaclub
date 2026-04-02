@@ -219,7 +219,7 @@ export default function Store() {
                   </Button>
                 </div>
 
-                {/* Creator Accelerator */}
+                {/* Accelerator */}
                 <div className="bg-card border-2 border-maroon rounded-lg p-5 relative flex flex-col">
                   <div className="absolute -top-3 left-4">
                     <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
@@ -227,7 +227,7 @@ export default function Store() {
                     </span>
                   </div>
                   <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Creator Accelerator</h3>
+                    <h3 className="font-display text-xl mb-1">Accelerator</h3>
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-display text-maroon">$10</span>
                       <span className="text-muted-foreground text-sm">/month</span>
