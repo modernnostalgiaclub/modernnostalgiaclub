@@ -43,7 +43,7 @@ export function AdminUserManagement() {
   const [users, setUsers] = useState<EnrichedProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'legacy' | 'current' | 'no-plan'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'legacy' | 'current' | 'no-plan' | 'admins'>('all');
   const [editingUser, setEditingUser] = useState<EnrichedProfile | null>(null);
   const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
@@ -178,10 +178,12 @@ export function AdminUserManagement() {
       case 'legacy': return u.subscription?.is_grandfathered === true;
       case 'current': return u.subscription && !u.subscription.is_grandfathered;
       case 'no-plan': return !u.subscription;
+      case 'admins': return u.roles.includes('admin') || u.roles.includes('moderator');
       default: return true;
     }
   });
 
+  const adminCount = users.filter(u => u.roles.includes('admin') || u.roles.includes('moderator')).length;
   const legacyCount = users.filter(u => u.subscription?.is_grandfathered).length;
   const currentCount = users.filter(u => u.subscription && !u.subscription.is_grandfathered).length;
   const noPlanCount = users.filter(u => !u.subscription).length;
@@ -320,6 +322,7 @@ export function AdminUserManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Members ({users.length})</SelectItem>
+                  <SelectItem value="admins">Admins & Moderators ({adminCount})</SelectItem>
                   <SelectItem value="legacy">Legacy / Grandfathered ({legacyCount})</SelectItem>
                   <SelectItem value="current">Current Pricing ({currentCount})</SelectItem>
                   <SelectItem value="no-plan">No Active Plan ({noPlanCount})</SelectItem>
@@ -408,7 +411,15 @@ export function AdminUserManagement() {
                             </div>
                           )}
                           <div>
-                            <p className="font-medium text-foreground">{user.name || 'Unnamed'}</p>
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-medium text-foreground">{user.name || 'Unnamed'}</p>
+                              {user.roles.includes('admin') && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-red-500/20 text-red-400 border-red-500/30">Admin</Badge>
+                              )}
+                              {user.roles.includes('moderator') && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-500/20 text-blue-400 border-blue-500/30">Mod</Badge>
+                              )}
+                            </div>
                             {user.stage_name && <p className="text-xs text-muted-foreground">{user.stage_name}</p>}
                           </div>
                         </div>
