@@ -130,19 +130,21 @@ export function Header({ showNav = true }: HeaderProps) {
               <a href="https://x.com/geohworks" target="_blank" rel="noopener noreferrer" className="text-blue hover:text-blue-glow transition-colors" aria-label="Twitter/X (opens in new tab)">
                 <Twitter className="h-4 w-4" />
               </a>
-              <button
-                onClick={() => setCartOpen(true)}
-                className="relative text-white hover:text-white/80 transition-colors"
-                aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
-              <NotificationBell />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCartOpen(true)}
+                  className="relative text-white hover:text-white/80 transition-colors"
+                  aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+                <NotificationBell />
+              </div>
               
               {/* User Dropdown */}
               <DropdownMenu>
