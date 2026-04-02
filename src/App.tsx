@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SkipLink } from "@/components/SkipLink";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LabLayout } from "@/components/LabLayout";
+import { AuthAwareLayout } from "@/components/AuthAwareLayout";
 import MusicBlogHome from "./pages/MusicBlogHome";
 import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
@@ -65,13 +66,13 @@ const App = () => (
           <CookieConsent />
           <CartDrawer />
           <Routes>
-            <Route path="/" element={<MusicBlogHome />} />
+            <Route path="/" element={<AuthAwareLayout><MusicBlogHome /></AuthAwareLayout>} />
             
             <Route path="/join" element={<LandingPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/blog" element={<BlogIndex />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/artists" element={<Artists />} />
+            <Route path="/about" element={<AuthAwareLayout><AboutPage /></AuthAwareLayout>} />
+            <Route path="/blog" element={<AuthAwareLayout><BlogIndex /></AuthAwareLayout>} />
+            <Route path="/blog/:slug" element={<AuthAwareLayout><BlogPost /></AuthAwareLayout>} />
+            <Route path="/artists" element={<AuthAwareLayout><Artists /></AuthAwareLayout>} />
             <Route path="/dashboard" element={<ProtectedRoute><LabLayout><Dashboard /></LabLayout></ProtectedRoute>} />
             <Route path="/courses" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
             <Route path="/courses/:slug" element={<ProtectedRoute><LabLayout><CourseDetail /></LabLayout></ProtectedRoute>} />
@@ -98,18 +99,18 @@ const App = () => (
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             <Route path="/auth/diagnostics" element={<AuthDiagnostics />} />
             <Route path="/apply" element={<LabApplication />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/store" element={<Store />} />
-            <Route path="/store/success" element={<StoreSuccess />} />
-            <Route path="/catalog-audit" element={<CatalogAudit />} />
-            <Route path="/sync-quiz" element={<SyncQuiz />} />
-            <Route path="/connect" element={<Connect />} />
-            <Route path="/free-guide" element={<FreeGuide />} />
+            <Route path="/terms" element={<AuthAwareLayout><TermsOfService /></AuthAwareLayout>} />
+            <Route path="/privacy" element={<AuthAwareLayout><PrivacyPolicy /></AuthAwareLayout>} />
+            <Route path="/contact" element={<AuthAwareLayout><Contact /></AuthAwareLayout>} />
+            <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />
+            <Route path="/store/success" element={<AuthAwareLayout><StoreSuccess /></AuthAwareLayout>} />
+            <Route path="/catalog-audit" element={<AuthAwareLayout><CatalogAudit /></AuthAwareLayout>} />
+            <Route path="/sync-quiz" element={<AuthAwareLayout><SyncQuiz /></AuthAwareLayout>} />
+            <Route path="/connect" element={<AuthAwareLayout><Connect /></AuthAwareLayout>} />
+            <Route path="/free-guide" element={<AuthAwareLayout><FreeGuide /></AuthAwareLayout>} />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/artist/:username" element={<ArtistProfile />} />
+            <Route path="/artist/:username" element={<AuthAwareLayout><ArtistProfile /></AuthAwareLayout>} />
             <Route path="/migrate" element={<MigrateToGoogle />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
