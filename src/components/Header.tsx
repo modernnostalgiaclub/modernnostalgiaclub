@@ -58,78 +58,16 @@ export function Header({ showNav = true }: HeaderProps) {
   const linkClasses = "text-sm text-white hover:text-primary transition-colors";
   const mobileLinkClasses = "block py-3 text-lg text-foreground hover:text-primary transition-colors";
 
-  const DesktopNavLinks = () => {
-    if (isLoggedIn) {
-      return (
-        <>
-          <Link to="/dashboard" className={linkClasses}>
-            Dashboard
-          </Link>
-          <Link to="/courses" className={linkClasses}>
-            Courses
-          </Link>
-          <Link to="/feedback" className={linkClasses}>
-            Submit for Feedback
-          </Link>
-          <Link to="/artistresources" className={linkClasses}>
-            Artist Resources
-          </Link>
-          <Link to="/store" className={linkClasses}>
-            Store
-          </Link>
-          <Link to="/events" className={linkClasses}>
-            Events
-          </Link>
-          <Link to="/beatlibrary" className={linkClasses}>
-            Beat Store
-          </Link>
-          
-          {/* Community Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className={`${linkClasses} flex items-center gap-1`}>
-              Community
-              <ChevronDown className="h-3 w-3" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="bg-background border-border">
-              <DropdownMenuItem asChild>
-                <Link to="/community" className="cursor-pointer">
-                  Community Forum
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/members" className="cursor-pointer">
-                  Member Directory
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
-      );
-    }
-    
-    return (
-      <>
-        <Link to="/about" className={linkClasses}>
-          About
-        </Link>
-        <Link to="/blog" className={linkClasses}>
-          Blog
-        </Link>
-        <Link to="/join" className={linkClasses}>
-          Join the Club
-        </Link>
-        <Link to="/artistresources" className={linkClasses}>
-          Artist Resources
-        </Link>
-        <Link to="/store" className={linkClasses}>
-          Store
-        </Link>
-        <Link to="/contact" className={linkClasses}>
-          Contact
-        </Link>
-      </>
-    );
-  };
+  const DesktopNavLinks = () => (
+    <>
+      <Link to="/about" className={linkClasses}>About</Link>
+      <Link to="/blog" className={linkClasses}>Blog</Link>
+      <Link to="/join" className={linkClasses}>Join the Club</Link>
+      <Link to="/artistresources" className={linkClasses}>Artist Resources</Link>
+      <Link to="/store" className={linkClasses}>Store</Link>
+      <Link to="/contact" className={linkClasses}>Contact</Link>
+    </>
+  );
 
   const MobileNavLinks = () => {
     if (isLoggedIn) {
