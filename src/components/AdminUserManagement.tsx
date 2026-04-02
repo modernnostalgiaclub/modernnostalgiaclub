@@ -178,6 +178,7 @@ export function AdminUserManagement() {
       case 'legacy': return u.subscription?.is_grandfathered === true;
       case 'current': return u.subscription && !u.subscription.is_grandfathered;
       case 'no-plan': return !u.subscription;
+      case 'admins': return u.roles.includes('admin') || u.roles.includes('moderator');
       default: return true;
     }
   });
