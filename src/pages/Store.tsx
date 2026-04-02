@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import storeHero from '@/assets/store-hero.jpg';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
@@ -86,24 +86,36 @@ export default function Store() {
   const serviceProduct = STORE_PRODUCTS.find(p => p.isService);
 
   return (
-    <div className="min-h-screen !bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Header />
 
-      <main className="flex-1 pt-24 pb-16" id="main-content">
-        <div className="container mx-auto px-6">
+      <main className="flex-1" id="main-content">
+        {/* Hero */}
+        <section className="relative h-[50vh] overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${storeHero})` }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.85) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(217 100% 10% / 0.5) 100%)' }} />
+        </section>
+
+        {/* Title */}
+        <section>
+          <div className="container mx-auto px-6 pt-12 pb-8">
+            <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">Shop</p>
+            <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight leading-[1.05] mb-4 text-black">
+              The Store
+            </h1>
+            <p className="text-lg text-gray-500 max-w-xl leading-relaxed">
+              Professional templates, guides, and services for independent artists.
+            </p>
+          </div>
+        </section>
+
+        <div className="container mx-auto px-6 pb-16">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={stagger}
             className="max-w-5xl mx-auto"
           >
-            {/* Page Header */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <h1 className="text-5xl md:text-6xl font-display !text-gray-900 mb-3">Store</h1>
-              <p className="text-lg !text-gray-500 max-w-xl">
-                Professional templates, guides, and services for independent artists.
-              </p>
-            </motion.div>
 
             {/* Legal Disclaimer */}
             <motion.div variants={fadeIn} className="mb-10">
