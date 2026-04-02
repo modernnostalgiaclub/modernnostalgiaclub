@@ -501,8 +501,6 @@ export default function Dashboard() {
         </div>
       </main>
 
-      {/* AI Agent */}
-      <HelloSkipAgent />
     </div>
   );
 }
