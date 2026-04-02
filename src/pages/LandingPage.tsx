@@ -166,9 +166,12 @@ function TheFeed() {
             </div>
           )}
 
-          <div className="mt-10 text-center">
+          <div className="mt-10 text-center flex gap-4 justify-center">
             <Button variant="outline" size="sm" asChild>
               <Link to="/artists">All Artists <ArrowRight className="w-3 h-3 ml-1" /></Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/blog">Read More <ArrowRight className="w-3 h-3 ml-1" /></Link>
             </Button>
           </div>
         </motion.div>
