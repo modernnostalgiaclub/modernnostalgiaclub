@@ -9,6 +9,7 @@ import {
   Disc3,
   BookOpen,
   Users,
+  User,
   Music,
   Calendar,
   Settings,
