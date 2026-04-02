@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import storeHero from '@/assets/store-hero.jpg';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
