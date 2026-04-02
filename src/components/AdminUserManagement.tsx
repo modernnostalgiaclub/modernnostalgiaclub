@@ -322,6 +322,7 @@ export function AdminUserManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Members ({users.length})</SelectItem>
+                  <SelectItem value="admins">Admins & Moderators ({adminCount})</SelectItem>
                   <SelectItem value="legacy">Legacy / Grandfathered ({legacyCount})</SelectItem>
                   <SelectItem value="current">Current Pricing ({currentCount})</SelectItem>
                   <SelectItem value="no-plan">No Active Plan ({noPlanCount})</SelectItem>
