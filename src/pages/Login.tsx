@@ -54,35 +54,6 @@ export default function Login() {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      toast({ title: 'Passwords do not match', variant: 'destructive' });
-      return;
-    }
-    if (password.length < 6) {
-      toast({ title: 'Password must be at least 6 characters', variant: 'destructive' });
-      return;
-    }
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: { emailRedirectTo: window.location.origin },
-      });
-      if (error) throw error;
-      toast({
-        title: 'Check your email',
-        description: 'We sent you a confirmation link. Click it to activate your account.',
-      });
-      setTab('signin');
-    } catch (error: any) {
-      toast({ title: 'Sign up failed', description: error.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
