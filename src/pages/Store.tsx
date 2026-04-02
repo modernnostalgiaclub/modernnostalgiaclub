@@ -236,7 +236,7 @@ export default function Store() {
                   <p className="text-muted-foreground mb-4 text-xs">Professional workflows. Priority access. Real feedback.</p>
                   <ul className="space-y-2 mb-5 flex-1">
                     {[
-                      'Everything in Lab Pass',
+                      'Everything in Club Pass',
                       'Studio Floor access',
                       'Priority submissions',
                       'Professional feedback',
