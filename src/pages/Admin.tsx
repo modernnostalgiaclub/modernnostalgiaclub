@@ -242,6 +242,10 @@ export default function Admin() {
             <TabsContent value="memberships">
               <AdminMembershipPlans />
             </TabsContent>
+
+            <TabsContent value="roles">
+              <AdminRolesPermissions />
+            </TabsContent>
           </Tabs>
         </main>
       </div>
