@@ -12,7 +12,6 @@ import {
   Music,
   Calendar,
   Settings,
-  Settings,
   Bell,
   Shield,
 } from 'lucide-react';
