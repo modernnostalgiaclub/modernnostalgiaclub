@@ -273,7 +273,7 @@ export default function Store() {
                   <p className="text-muted-foreground mb-4 text-xs">Serious artists only. Deep work, real results.</p>
                   <ul className="space-y-2 mb-5 flex-1">
                     {[
-                      'Everything in Creator Accelerator',
+                      'Everything in Accelerator',
                       '1-on-1 strategy sessions',
                       'Sync catalog review',
                       'Priority feedback',
