@@ -126,7 +126,7 @@ export default function Login() {
       </Link>
 
       <Link to="/" className="mb-8">
-        <img src={logoBlack} alt="ModernNostalgia.club" className="h-16 w-auto" />
+        <img src={logoMnc} alt="ModernNostalgia.club" className="h-16 w-auto" />
       </Link>
 
       <div className="w-full max-w-sm space-y-5">
