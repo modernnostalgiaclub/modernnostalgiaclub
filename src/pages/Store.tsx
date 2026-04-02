@@ -256,7 +256,7 @@ export default function Store() {
                   </Button>
                 </div>
 
-                {/* Creative Economy Lab */}
+                {/* Artist Incubator */}
                 <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
                   <div className="absolute -top-3 left-4">
                     <span className="bg-amber/20 text-amber border border-amber/30 text-xs font-medium px-3 py-1 rounded-full">
@@ -264,7 +264,7 @@ export default function Store() {
                     </span>
                   </div>
                   <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Creative Economy Lab</h3>
+                    <h3 className="font-display text-xl mb-1">Artist Incubator</h3>
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-display text-amber">$150</span>
                       <span className="text-muted-foreground text-sm">one-time</span>
