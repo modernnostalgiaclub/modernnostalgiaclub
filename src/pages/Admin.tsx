@@ -1323,10 +1323,10 @@ function UsersManager() {
 
   const tierLabel = (tier: PatreonTier | null) => {
     switch (tier) {
-      case 'lab-pass': return 'Lab Pass';
-      case 'creator-accelerator': return 'Creator Accelerator';
-      case 'creative-economy-lab': return 'Creative Economy Lab';
-      default: return 'Lab Pass';
+      case 'lab-pass': return 'Club Pass';
+      case 'creator-accelerator': return 'Accelerator';
+      case 'creative-economy-lab': return 'Artist Incubator';
+      default: return 'Club Pass';
     }
   };
 
