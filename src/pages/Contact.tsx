@@ -72,11 +72,6 @@ export default function Contact() {
 
       <main id="main-content" className="flex-1 px-6 py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-gray-500 text-base md:text-lg">
-              Have a question or want to collaborate? We'd love to hear from you.
-            </p>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
             {/* Form — left side */}
