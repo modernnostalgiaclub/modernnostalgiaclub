@@ -259,7 +259,7 @@ export default function Classroom() {
                         </p>
                       </div>
                       <Button variant="maroon" size="sm" asChild>
-                        <Link to={`/classroom/${continueData.courseSlug}`}>
+                        <Link to={`/courses/${continueData.courseSlug}`}>
                           Continue
                           <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>
