@@ -21,8 +21,7 @@ export function LabLayout({ children }: LabLayoutProps) {
           {/* White content area */}
           <main
             id="main-content"
-            className="flex-1 min-w-0 overflow-auto bg-white text-gray-900"
-            style={{ colorScheme: 'light' }}
+            className="flex-1 min-w-0 overflow-auto lab-content"
           >
             {children}
           </main>
