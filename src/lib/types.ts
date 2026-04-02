@@ -54,7 +54,7 @@ export const TIER_INFO: Record<PatreonTier, {
     price: '$10',
     features: [
       'Dashboard access',
-      'Classroom access',
+      'Courses access',
       'Community access',
       'Submit audio',
       'Listen to approved audio',
