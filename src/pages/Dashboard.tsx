@@ -124,11 +124,11 @@ export default function Dashboard() {
   const getNextAction = () => {
     switch (tier) {
       case 'lab-pass':
-        return { text: 'Start with Foundations of Artist Income', link: '/classroom' };
+        return { text: 'Start with Foundations of Artist Income', link: '/courses' };
       case 'creator-accelerator':
-        return { text: 'Submit one track for professional review', link: '/studio' };
+        return { text: 'Submit one track for professional review', link: '/feedback' };
       case 'creative-economy-lab':
-        return { text: 'Review your strategy roadmap', link: '/classroom' };
+        return { text: 'Review your strategy roadmap', link: '/courses' };
     }
   };
   const nextAction = getNextAction();
@@ -145,8 +145,8 @@ export default function Dashboard() {
     {
       done: (progress?.completed || 0) > 0,
       icon: GraduationCap,
-      label: 'Start your first course in the Classroom',
-      href: '/classroom',
+      label: 'Start your first course',
+      href: '/courses',
       locked: false,
     },
     {
@@ -159,9 +159,9 @@ export default function Dashboard() {
     {
       done: hasSubmitted,
       icon: Music2,
-      label: 'Submit a track to the Studio Floor',
+      label: 'Submit a track for feedback',
       sublabel: tier === 'lab-pass' ? '(Accelerator+)' : undefined,
-      href: tier !== 'lab-pass' ? '/studio' : '#',
+      href: tier !== 'lab-pass' ? '/feedback' : '#',
       locked: tier === 'lab-pass',
     },
     {
@@ -181,10 +181,10 @@ export default function Dashboard() {
   ];
 
   const pillars = [
-    { icon: GraduationCap, title: 'Classroom', desc: 'Training tracks', link: '/classroom', available: true },
-    { icon: Music2, title: 'Studio Floor', desc: 'Submissions & reviews', link: '/studio', available: tier !== 'lab-pass' },
+    { icon: GraduationCap, title: 'Courses', desc: 'Training tracks', link: '/courses', available: true },
+    { icon: Music2, title: 'Submit for Feedback', desc: 'Submissions & reviews', link: '/feedback', available: tier !== 'lab-pass' },
     { icon: Users, title: 'Community', desc: 'Focused discussions', link: '/community', available: true },
-    { icon: BookOpen, title: 'Resources', desc: 'Case studies & tools', link: '/artistresources', available: true },
+    { icon: BookOpen, title: 'Artist Resources', desc: 'Case studies & tools', link: '/artistresources', available: true },
   ];
 
   return (

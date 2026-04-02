@@ -39,17 +39,16 @@ const navSections = [
   {
     label: '4 Pillars',
     items: [
-      { title: 'Workforce Dev', url: '/classroom', icon: GraduationCap },
-      { title: 'Distribution', url: '/studio', icon: Disc3 },
-      { title: 'Financial Literacy', url: '/artistresources', icon: BookOpen },
-      { title: 'Creative Tools', url: '/community', icon: Users },
+      { title: 'Courses', url: '/courses', icon: GraduationCap },
+      { title: 'Submit for Feedback', url: '/feedback', icon: Disc3 },
+      { title: 'Artist Resources', url: '/artistresources', icon: BookOpen },
+      { title: 'Community', url: '/community', icon: Users },
     ],
   },
   {
     label: 'Workspace',
     items: [
       { title: 'My Music', url: '/beats', icon: Music },
-      { title: 'Members', url: '/members', icon: UserCheck },
       { title: 'Events', url: '/events', icon: Calendar },
     ],
   },

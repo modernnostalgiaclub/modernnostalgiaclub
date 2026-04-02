@@ -256,8 +256,8 @@ function ArtistGrid() {
 
 // ── What's Inside ─────────────────────────────────────────────────────────────
 const PILLARS = [
-  { icon: GraduationCap, title: 'Classroom', desc: 'Structured training on sync, licensing, and the business of music.' },
-  { icon: Music2, title: 'Studio Floor', desc: 'Professional track submissions with actionable feedback.' },
+  { icon: GraduationCap, title: 'Courses', desc: 'Structured training on sync, licensing, and the business of music.' },
+  { icon: Music2, title: 'Submit for Feedback', desc: 'Professional track submissions with actionable feedback.' },
   { icon: Users, title: 'Community', desc: 'Focused discussions with artists building sustainable careers.' },
   { icon: TrendingUp, title: 'Artist Resources', desc: 'Real-world case studies, sync examples, and industry tools.' },
 ];
