@@ -232,37 +232,69 @@ export default function ReferenceShelf() {
               variants={stagger}
               className="max-w-5xl mx-auto space-y-16"
             >
-              {/* All categories in a 3-column grid */}
-              <motion.div variants={fadeIn} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {CATEGORIES.map(cat => {
-                  const items = sections[cat.key];
-                  if (!items || items.length === 0) return null;
-                  const Icon = cat.icon;
-                  return (
-                    <div key={cat.key}>
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 rounded-lg bg-primary/10">
-                          <Icon className="w-5 h-5 text-primary" />
-                        </div>
-                        <h2 className="font-anton text-xl md:text-2xl uppercase tracking-tight text-gray-900">
-                          {cat.label}
-                        </h2>
-                      </div>
-                      <div className="space-y-4">
-                        {items.map(item => (
-                          <ResourceCard
-                            key={item.id}
-                            item={item}
-                            user={user}
-                            signInWithPatreon={signInWithPatreon}
-                            onDownloadClick={handleDownloadClick}
-                            tracks={tracks}
-                          />
-                        ))}
-                      </div>
+              {/* Smart row-packed category grid */}
+              <motion.div variants={fadeIn} className="space-y-10">
+                {(() => {
+                  // Build active categories with their column span
+                  const activeCats = CATEGORIES
+                    .filter(cat => sections[cat.key]?.length > 0)
+                    .map(cat => {
+                      const count = sections[cat.key].length;
+                      // 1-2 items = 1 col, 3-4 items = 2 cols, 5+ = 3 cols
+                      const span = count >= 5 ? 3 : count >= 3 ? 2 : 1;
+                      return { ...cat, span, items: sections[cat.key] };
+                    });
+
+                  // Bin-pack into rows of 3 columns
+                  const rows: typeof activeCats[] = [];
+                  let currentRow: typeof activeCats = [];
+                  let currentWidth = 0;
+
+                  activeCats.forEach(cat => {
+                    if (currentWidth + cat.span > 3) {
+                      if (currentRow.length > 0) rows.push(currentRow);
+                      currentRow = [cat];
+                      currentWidth = cat.span;
+                    } else {
+                      currentRow.push(cat);
+                      currentWidth += cat.span;
+                    }
+                  });
+                  if (currentRow.length > 0) rows.push(currentRow);
+
+                  return rows.map((row, rowIdx) => (
+                    <div key={rowIdx} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {row.map(cat => {
+                        const Icon = cat.icon;
+                        const spanClass = cat.span === 3 ? 'lg:col-span-3 md:col-span-2' : cat.span === 2 ? 'lg:col-span-2 md:col-span-2' : '';
+                        return (
+                          <div key={cat.key} className={spanClass}>
+                            <div className="flex items-center gap-3 mb-6">
+                              <div className="p-2 rounded-lg bg-primary/10">
+                                <Icon className="w-5 h-5 text-primary" />
+                              </div>
+                              <h2 className="font-anton text-xl md:text-2xl uppercase tracking-tight text-foreground">
+                                {cat.label}
+                              </h2>
+                            </div>
+                            <div className={cat.span > 1 ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"}>
+                              {cat.items.map(item => (
+                                <ResourceCard
+                                  key={item.id}
+                                  item={item}
+                                  user={user}
+                                  signInWithPatreon={signInWithPatreon}
+                                  onDownloadClick={handleDownloadClick}
+                                  tracks={tracks}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  ));
+                })()}
               </motion.div>
 
               {/* DISCO Setup Guide */}
