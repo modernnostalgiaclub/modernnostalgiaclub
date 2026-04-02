@@ -213,6 +213,35 @@
     text-wrap: balance;
   }
 
+  .auth-input-clean {
+    background-color: hsl(0 0% 100%) !important;
+    border-color: hsl(214 32% 91%);
+    color: hsl(222 47% 11%) !important;
+    caret-color: hsl(222 47% 11%);
+  }
+
+  .auth-input-clean::placeholder {
+    color: hsl(215 16% 47%) !important;
+  }
+
+  .auth-input-clean:focus,
+  .auth-input-clean:focus-visible {
+    outline: none;
+    border-color: hsl(214 32% 91%);
+    box-shadow: none !important;
+  }
+
+  .auth-input-clean:-webkit-autofill,
+  .auth-input-clean:-webkit-autofill:hover,
+  .auth-input-clean:-webkit-autofill:focus,
+  .auth-input-clean:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px hsl(0 0% 100%) inset !important;
+    -webkit-text-fill-color: hsl(222 47% 11%) !important;
+    caret-color: hsl(222 47% 11%);
+    border-color: hsl(214 32% 91%);
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
   .studio-grain {
     position: relative;
   }

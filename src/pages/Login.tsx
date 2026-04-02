@@ -22,13 +22,7 @@ export default function Login() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
 
-  const loginInputClassName =
-    '!bg-white border-gray-200 !text-gray-900 placeholder:!text-gray-400 h-12 outline-none focus:outline-none focus:border-gray-300 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0';
-  const loginInputStyle = {
-    WebkitBoxShadow: '0 0 0 1000px white inset',
-    WebkitTextFillColor: '#111827',
-    caretColor: '#111827',
-  };
+  const loginInputClassName = 'auth-input-clean h-12';
 
   useEffect(() => {
     if (user) navigate('/dashboard', { replace: true });
@@ -60,7 +54,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
@@ -104,7 +97,6 @@ export default function Login() {
       </Link>
 
       <div className="w-full max-w-sm space-y-5">
-        {/* Google Sign-In — PRIMARY */}
         <Button
           variant="outline"
           className="w-full h-12 text-base font-medium border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-900 hover:text-gray-900 flex items-center gap-3"
@@ -124,7 +116,6 @@ export default function Login() {
           Continue with Google
         </Button>
 
-        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-200" />
@@ -134,12 +125,10 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Patreon Sign-In */}
         <Button variant="patreon" className="w-full h-12 text-base font-medium" onClick={handlePatreon}>
           Continue with Patreon
         </Button>
 
-        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-200" />
@@ -149,7 +138,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Email / Password Sign In */}
         <form onSubmit={handleSignIn} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="signin-email" className="text-gray-700">Email</Label>
@@ -162,7 +150,6 @@ export default function Login() {
               required
               autoComplete="email"
               className={loginInputClassName}
-              style={loginInputStyle}
             />
           </div>
           <div className="space-y-2">
@@ -176,7 +163,6 @@ export default function Login() {
               required
               autoComplete="current-password"
               className={loginInputClassName}
-              style={loginInputStyle}
             />
           </div>
           <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
