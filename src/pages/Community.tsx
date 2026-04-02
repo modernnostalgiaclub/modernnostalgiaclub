@@ -446,9 +446,14 @@ export default function Community() {
           >
             {/* Page Header */}
             <div className="mb-8">
-              <div className="flex items-center gap-3 mb-2">
-                <MessageSquare className="w-6 h-6 text-maroon" />
-                <h1 className="text-4xl md:text-5xl font-anton uppercase text-cream">Group Chat</h1>
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-4xl md:text-5xl font-anton uppercase text-cream">Community</h1>
+                <Button asChild variant="outline" size="sm" className="border-cream/20 text-cream hover:bg-cream/10">
+                  <Link to="/members" className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Member Directory
+                  </Link>
+                </Button>
               </div>
               <p className="text-cream/60">Connect with the community in real-time</p>
             </div>
