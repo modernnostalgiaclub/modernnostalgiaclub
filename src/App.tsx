@@ -53,6 +53,7 @@ import BlogPost from "./pages/BlogPost";
 import ArtistProfileSettings from "./pages/ArtistProfileSettings";
 import Ebooks from "./pages/Ebooks";
 import Checkout from "./pages/Checkout";
+import Signup from "./pages/Signup";
 const queryClient = new QueryClient();
 
 const App = () => (
