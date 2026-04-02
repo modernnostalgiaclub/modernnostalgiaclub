@@ -189,34 +189,29 @@ export default function Classroom() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-background studio-grain">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="mb-12">
-                <Skeleton className="h-6 w-32 mb-4" />
-                <Skeleton className="h-12 w-64 mb-4" />
-                <Skeleton className="h-6 w-96" />
-              </div>
-              <div className="space-y-6">
-                {[1, 2, 3].map(i => (
-                  <Card key={i} variant="feature">
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <Skeleton className="w-12 h-12 rounded-lg" />
-                        <div className="flex-1 space-y-2">
-                          <Skeleton className="h-6 w-48" />
-                          <Skeleton className="h-4 w-full" />
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            </div>
+      <div className="p-6 md:p-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-12">
+            <Skeleton className="h-6 w-32 mb-4" />
+            <Skeleton className="h-12 w-64 mb-4" />
+            <Skeleton className="h-6 w-96" />
           </div>
-        </main>
+          <div className="space-y-6">
+            {[1, 2, 3].map(i => (
+              <Card key={i} variant="feature">
+                <CardHeader>
+                  <div className="flex items-start gap-4">
+                    <Skeleton className="w-12 h-12 rounded-lg" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-6 w-48" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
