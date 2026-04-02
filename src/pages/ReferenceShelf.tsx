@@ -260,11 +260,11 @@ export default function ReferenceShelf() {
                   </h2>
                 </div>
 
-                <Card variant="elevated" className="overflow-hidden">
+                <Card className="overflow-hidden bg-gray-50 border-gray-200">
                   <CardContent className="p-6 md:p-8 space-y-8">
                     <div>
-                      <h3 className="font-anton text-xl uppercase tracking-tight text-foreground mb-2">Getting Started with DISCO</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-anton text-xl uppercase tracking-tight text-gray-900 mb-2">Getting Started with DISCO</h3>
+                      <p className="text-sm text-gray-500">
                         DISCO is the industry-standard platform for delivering music to sync supervisors, labels, and publishers. 
                         All Lab submissions require a DISCO link.
                       </p>
