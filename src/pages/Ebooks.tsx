@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Footer } from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 import { BookOpen, Download, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -114,7 +113,6 @@ export default function Ebooks() {
           ))}
         </div>
       )}
-    <Footer />
     </div>
   );
 }

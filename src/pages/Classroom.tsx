@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -358,7 +357,6 @@ export default function Classroom() {
               </p>
             </motion.div>
       </motion.div>
-    <Footer />
     </div>
   );
 }
