@@ -78,7 +78,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r-0 top-20 h-[calc(100vh-5rem)] [&>div]:bg-[#1a1a1a] [&>div]:text-white/80"
+      className="border-r-0 top-20 h-[calc(100vh-5rem)] [&>div]:bg-[#1a1a1a] [&>div]:text-white/80 [--sidebar-accent:210_100%_50%] [--sidebar-accent-foreground:0_0%_100%]"
     >
       <SidebarContent className="pt-4">
         <SidebarGroup>
