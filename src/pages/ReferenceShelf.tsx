@@ -311,7 +311,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="why-disco">
                         <AccordionTrigger>Why does the Lab use DISCO?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-muted-foreground">
+                          <p className="text-gray-500">
                             We use DISCO because it mirrors real-world sync licensing workflows. When you learn to 
                             organize and deliver music through DISCO, you're building skills that directly translate 
                             to professional opportunities.
