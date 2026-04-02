@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { VideoPlayer } from '@/components/VideoPlayer';
@@ -283,7 +282,6 @@ export default function CourseDetail() {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -500,7 +498,6 @@ export default function CourseDetail() {
         </div>
       </main>
       
-      <Footer />
     </div>
   );
 }

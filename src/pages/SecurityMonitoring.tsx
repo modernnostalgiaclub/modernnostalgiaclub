@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -231,7 +230,6 @@ export default function SecurityMonitoring() {
           <Skeleton className="h-8 w-64 mb-4" />
           <Skeleton className="h-64 w-full" />
         </main>
-        <Footer />
       </div>
     );
   }
@@ -435,7 +433,6 @@ export default function SecurityMonitoring() {
           </TabsContent>
         </Tabs>
       </main>
-      <Footer />
     </div>
   );
 }
