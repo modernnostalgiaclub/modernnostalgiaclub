@@ -276,14 +276,14 @@ export default function ReferenceShelf() {
                         { step: '2', title: 'Upload Tracks', desc: 'Upload your music with complete metadata (title, artist, genre, mood, tempo).' },
                         { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit in the Studio Floor.' },
                       ].map(s => (
-                        <div key={s.step} className="p-4 bg-muted/50 rounded-lg">
+                        <div key={s.step} className="p-4 bg-white rounded-lg border border-gray-200">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                               <span className="font-anton text-primary text-sm">{s.step}</span>
                             </div>
-                            <h4 className="font-medium text-foreground">{s.title}</h4>
+                            <h4 className="font-medium text-gray-800">{s.title}</h4>
                           </div>
-                          <p className="text-sm text-muted-foreground">{s.desc}</p>
+                          <p className="text-sm text-gray-500">{s.desc}</p>
                         </div>
                       ))}
                     </div>
