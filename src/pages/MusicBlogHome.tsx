@@ -19,6 +19,7 @@ import { PlaylistSubmit } from '@/components/PlaylistSubmit';
 import { ArtistResources } from '@/components/ArtistResources';
 import { SyncReadyCTA } from '@/components/SyncReadyCTA';
 import { EditorialArticles } from '@/components/EditorialArticles';
+import { useAuth } from '@/contexts/AuthContext';
 import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
 import mncHeroLogo from '@/assets/mnc-hero-logo.png';
@@ -410,6 +411,8 @@ function LabCTA() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function MusicBlogHome() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -421,7 +424,7 @@ export default function MusicBlogHome() {
             <Link to="/blog">Read More <ArrowRight className="w-4 h-4 ml-2" /></Link>
           </Button>
         </div>
-        <LatestTracks />
+        {!user && <LatestTracks />}
         <PlaylistsSection />
         <LabCTA />
       </main>
