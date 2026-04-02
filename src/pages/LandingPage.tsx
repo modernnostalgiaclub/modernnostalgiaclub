@@ -355,6 +355,7 @@ const TIERS = [
 ];
 
 function PricingSection() {
+  const { user } = useAuth();
   return (
     <section id="pricing" className="py-28 border-t border-border/30">
       <div className="container mx-auto px-6">
@@ -424,7 +425,7 @@ function PricingSection() {
                   className="w-full"
                   asChild
                 >
-                  <Link to={`/login?redirect=/checkout&plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                  <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                 </Button>
               </motion.div>
             ))}
@@ -437,11 +438,7 @@ function PricingSection() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function LandingPage() {
-  const { user, loading } = useAuth();
-
-  if (!loading && user) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-white">
@@ -517,7 +514,7 @@ export default function LandingPage() {
                       className={`w-full ${tier.highlighted ? 'bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white' : 'border border-gray-300 bg-white text-black hover:bg-gray-50'}`}
                       asChild
                     >
-                      <Link to={`/login?redirect=/checkout&plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                      <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                     </Button>
                   </motion.div>
                 ))}
