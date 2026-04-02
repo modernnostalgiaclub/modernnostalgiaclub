@@ -227,10 +227,16 @@ export function AdminGrandfatheredMembers() {
                         </div>
                       </td>
                       <td className="py-3 font-mono">
-                        ${sub.locked_price}
-                        <span className="text-muted-foreground text-xs ml-1">
-                          /{sub.locked_billing_period === 'one-time' ? 'once' : sub.locked_billing_period === 'monthly' ? 'mo' : 'yr'}
-                        </span>
+                        {Number(sub.locked_price) === 0 ? (
+                          <span className="text-green-500 font-semibold">Free</span>
+                        ) : (
+                          <>
+                            ${sub.locked_price}
+                            <span className="text-muted-foreground text-xs ml-1">
+                              /{sub.locked_billing_period === 'one-time' ? 'once' : sub.locked_billing_period === 'monthly' ? 'mo' : 'yr'}
+                            </span>
+                          </>
+                        )}
                       </td>
                       <td className="py-3 font-mono">
                         ${sub.current_plan_price}
