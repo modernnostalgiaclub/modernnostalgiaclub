@@ -287,7 +287,7 @@ export function Header({ showNav = true }: HeaderProps) {
                 variant="maroon"
                 size="sm"
                 className="w-24"
-                onClick={handleSignUp}
+                onClick={() => navigate('/join')}
               >
                 Join Now
               </Button>
@@ -357,7 +357,7 @@ export function Header({ showNav = true }: HeaderProps) {
                           variant="maroon"
                           className="w-full"
                           onClick={() => {
-                            handleSignUp();
+                            navigate('/join');
                             closeMobileMenu();
                           }}
                         >
