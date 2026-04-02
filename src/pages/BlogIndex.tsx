@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { SectionLabel } from '@/components/SectionLabel';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { Newspaper, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import blogHero from '@/assets/blog-hero.jpg';
 
 const POSTS_PER_PAGE = 9;
 
