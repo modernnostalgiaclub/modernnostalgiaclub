@@ -87,8 +87,8 @@ export default function AboutPage() {
                 <div className="rounded-xl overflow-hidden">
                   <img
                     src={founderImg}
-                    alt="Founder in the studio"
-                    className="w-full h-auto object-cover aspect-[4/3]"
+                    alt="Founder portrait"
+                    className="w-full h-auto object-cover aspect-[3/4]"
                   />
                 </div>
               </div>
