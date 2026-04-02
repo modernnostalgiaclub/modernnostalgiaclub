@@ -35,6 +35,7 @@ import { AdminArtistTracks } from '@/components/AdminArtistTracks';
 import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
 import { AdminUserManagement } from '@/components/AdminUserManagement';
 import { useAuditLog } from '@/hooks/useAuditLog';
+import { AdminRolesPermissions } from '@/components/AdminRolesPermissions';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -158,6 +159,10 @@ export default function Admin() {
                 <Crown className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Memberships
               </TabsTrigger>
+              <TabsTrigger value="roles" className="gap-2" aria-label="View roles and permissions">
+                <Shield className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Roles
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
@@ -237,6 +242,10 @@ export default function Admin() {
 
             <TabsContent value="memberships">
               <AdminMembershipPlans />
+            </TabsContent>
+
+            <TabsContent value="roles">
+              <AdminRolesPermissions />
             </TabsContent>
           </Tabs>
         </main>
