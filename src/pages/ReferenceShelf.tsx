@@ -417,7 +417,7 @@ function ResourceCard({ item, user, signInWithPatreon, onDownloadClick, tracks }
             </Link>
           </Button>
         ) : (
-          <Button variant="outline" size="sm" className="w-full mt-3" onClick={() => signInWithPatreon()}>
+          <Button variant="default" size="sm" className="w-full mt-3" onClick={() => signInWithPatreon()}>
             <Lock className="w-4 h-4 mr-2" /> Log in to access
           </Button>
         );
