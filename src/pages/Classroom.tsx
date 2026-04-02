@@ -217,26 +217,22 @@ export default function Classroom() {
   }
 
   return (
-    <div className="min-h-screen bg-background studio-grain">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="max-w-4xl mx-auto"
-          >
-            <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">Courses</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display mb-4">
-                Training Tracks
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Structured learning for professional music industry workflows. This is not content dumping—this is professional training.
-              </p>
-            </motion.div>
+    <div className="p-6 md:p-10">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={stagger}
+        className="max-w-4xl mx-auto"
+      >
+        <motion.div variants={fadeIn} className="mb-12">
+          <SectionLabel className="mb-4">Courses</SectionLabel>
+          <h1 className="text-4xl md:text-5xl font-display uppercase mb-4">
+            Courses
+          </h1>
+          <p className="text-lg font-sans text-muted-foreground max-w-2xl">
+            Structured learning for professional music industry workflows. This is not content dumping—this is professional training.
+          </p>
+        </motion.div>
             
             {/* Continue where you left off banner */}
             {continueData && (
