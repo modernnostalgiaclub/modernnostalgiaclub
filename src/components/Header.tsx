@@ -198,6 +198,7 @@ export function Header({ showNav = true }: HeaderProps) {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </div>
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-3 ml-4">
