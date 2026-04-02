@@ -80,8 +80,8 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/events" className={linkClasses}>
             Events
           </Link>
-          <Link to="/beats" className={linkClasses}>
-            Beat Library
+          <Link to="/beatlibrary" className={linkClasses}>
+            Beat Store
           </Link>
           
           {/* Community Dropdown */}
