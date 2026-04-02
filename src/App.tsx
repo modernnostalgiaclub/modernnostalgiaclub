@@ -10,6 +10,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SkipLink } from "@/components/SkipLink";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LabLayout } from "@/components/LabLayout";
+import { AuthAwareLayout } from "@/components/AuthAwareLayout";
 import MusicBlogHome from "./pages/MusicBlogHome";
 import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
