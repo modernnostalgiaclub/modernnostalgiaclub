@@ -73,54 +73,54 @@ export default function Contact() {
       <main id="main-content" className="flex-1 px-6 py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
-            {/* Form — left side */}
-            <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-6">
+          <div className="max-w-2xl mx-auto">
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
               <input {...honeypotProps} />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm font-semibold text-black">Name</Label>
+                  <Label htmlFor="name" className="text-sm font-semibold text-gray-900">Name</Label>
                   <Input
                     id="name"
                     placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="bg-gray-100 border-0 text-black placeholder:text-gray-400 h-12"
+                    className="bg-gray-100 border-0 text-gray-900 placeholder:text-gray-400 h-12"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-semibold text-black">Email</Label>
+                  <Label htmlFor="email" className="text-sm font-semibold text-gray-900">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-100 border-0 text-black placeholder:text-gray-400 h-12"
+                    className="bg-gray-100 border-0 text-gray-900 placeholder:text-gray-400 h-12"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="subject" className="text-sm font-semibold text-black">Subject</Label>
+                <Label htmlFor="subject" className="text-sm font-semibold text-gray-900">Subject</Label>
                 <Input
                   id="subject"
                   placeholder="What's this about?"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="bg-gray-100 border-0 text-black placeholder:text-gray-400 h-12"
+                  className="bg-gray-100 border-0 text-gray-900 placeholder:text-gray-400 h-12"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="message" className="text-sm font-semibold text-black">Message</Label>
+                <Label htmlFor="message" className="text-sm font-semibold text-gray-900">Message</Label>
                 <Textarea
                   id="message"
                   placeholder="Your message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="bg-gray-100 border-0 text-black placeholder:text-gray-400 min-h-[180px] resize-y"
+                  className="bg-gray-100 border-0 text-gray-900 placeholder:text-gray-400 min-h-[180px] resize-y"
                 />
               </div>
 
@@ -134,22 +134,22 @@ export default function Contact() {
               </Button>
             </form>
 
-            {/* Sidebar — right side */}
-            <div className="lg:col-span-2 space-y-5">
+            {/* Info cards — centered below form */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
               {/* Email card */}
               <div className="border border-gray-200 rounded-xl p-6 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
                   <Mail className="w-5 h-5 text-gray-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-black uppercase tracking-wide">Email</p>
+                  <p className="text-sm font-bold text-gray-900 uppercase tracking-wide">Email</p>
                   <p className="text-sm text-gray-500">Email us for inquiries</p>
                 </div>
               </div>
 
               {/* Follow Us card */}
               <div className="border border-gray-200 rounded-xl p-6">
-                <p className="text-sm font-bold text-black uppercase tracking-wide mb-4">Follow Us</p>
+                <p className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">Follow Us</p>
                 <div className="flex gap-3">
                   {[
                     { icon: <Instagram className="w-5 h-5" />, href: 'https://www.instagram.com/modernnostalgia.club/' },
@@ -161,14 +161,13 @@ export default function Contact() {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-11 h-11 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors"
+                      className="w-11 h-11 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors"
                     >
                       {s.icon}
                     </a>
                   ))}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
