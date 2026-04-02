@@ -188,7 +188,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'hsl(0 0% 100%)', color: 'hsl(222 47% 11%)' }}>
       <main className="pb-20">
         <div className="container mx-auto px-6 pt-8">
           <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-5xl mx-auto space-y-8">
