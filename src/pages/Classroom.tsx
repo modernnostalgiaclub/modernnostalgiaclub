@@ -357,9 +357,7 @@ export default function Classroom() {
                 </a> to unlock more content.
               </p>
             </motion.div>
-          </motion.div>
-        </div>
-      </main>
+      </motion.div>
     </div>
   );
 }
