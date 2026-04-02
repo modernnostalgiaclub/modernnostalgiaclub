@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -189,59 +188,50 @@ export default function Classroom() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-background studio-grain">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="mb-12">
-                <Skeleton className="h-6 w-32 mb-4" />
-                <Skeleton className="h-12 w-64 mb-4" />
-                <Skeleton className="h-6 w-96" />
-              </div>
-              <div className="space-y-6">
-                {[1, 2, 3].map(i => (
-                  <Card key={i} variant="feature">
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <Skeleton className="w-12 h-12 rounded-lg" />
-                        <div className="flex-1 space-y-2">
-                          <Skeleton className="h-6 w-48" />
-                          <Skeleton className="h-4 w-full" />
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            </div>
+      <div className="p-6 md:p-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-12">
+            <Skeleton className="h-6 w-32 mb-4" />
+            <Skeleton className="h-12 w-64 mb-4" />
+            <Skeleton className="h-6 w-96" />
           </div>
-        </main>
+          <div className="space-y-6">
+            {[1, 2, 3].map(i => (
+              <Card key={i} variant="feature">
+                <CardHeader>
+                  <div className="flex items-start gap-4">
+                    <Skeleton className="w-12 h-12 rounded-lg" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-6 w-48" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background studio-grain">
-      <Header />
-      
-      <main className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="max-w-4xl mx-auto"
-          >
-            <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">Courses</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display mb-4">
-                Training Tracks
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Structured learning for professional music industry workflows. This is not content dumping—this is professional training.
-              </p>
-            </motion.div>
+    <div className="p-6 md:p-10">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={stagger}
+        className="max-w-4xl mx-auto"
+      >
+        <motion.div variants={fadeIn} className="mb-12">
+          <SectionLabel className="mb-4">Courses</SectionLabel>
+          <h1 className="text-4xl md:text-5xl font-display uppercase mb-4">
+            Courses
+          </h1>
+          <p className="text-lg font-sans text-muted-foreground max-w-2xl">
+            Structured learning for professional music industry workflows. This is not content dumping—this is professional training.
+          </p>
+        </motion.div>
             
             {/* Continue where you left off banner */}
             {continueData && (
@@ -366,9 +356,7 @@ export default function Classroom() {
                 </a> to unlock more content.
               </p>
             </motion.div>
-          </motion.div>
-        </div>
-      </main>
+      </motion.div>
     </div>
   );
 }
