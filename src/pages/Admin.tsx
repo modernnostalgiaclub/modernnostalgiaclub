@@ -1124,23 +1124,8 @@ function SubmissionsReviewer() {
   );
 }
 
-type Profile = {
-  id: string;
-  user_id: string;
-  name: string | null;
-  patreon_tier: PatreonTier | null;
-  avatar_url: string | null;
-};
 
-type UserRole = {
-  id: string;
-  user_id: string;
-  role: 'admin' | 'moderator' | 'user';
-};
 
-type AppRole = 'admin' | 'moderator' | 'user';
-
-function UsersManager() {
   const { logAccess } = useAuditLog();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [userRoles, setUserRoles] = useState<Record<string, AppRole[]>>({});
