@@ -153,7 +153,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
+              className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
             />
           </div>
           <div className="space-y-2">
