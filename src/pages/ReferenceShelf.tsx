@@ -255,7 +255,7 @@ export default function ReferenceShelf() {
                   <div className="p-2 rounded-lg bg-primary/10">
                     <Music className="w-5 h-5 text-primary" />
                   </div>
-                  <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-foreground">
+                  <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-gray-900">
                     DISCO Setup Guide
                   </h2>
                 </div>
