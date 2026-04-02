@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { SectionLabel } from '@/components/SectionLabel';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { Newspaper, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import blogHero from '@/assets/blog-hero.jpg';
 
 const POSTS_PER_PAGE = 9;
 
@@ -40,16 +40,10 @@ export default function BlogIndex() {
       <Header />
       <main id="main-content" role="main">
         {/* Hero */}
-        <section className="border-b border-gray-200">
-          <div className="container mx-auto px-6 pt-32 pb-16">
-            <SectionLabel className="mb-4">Editorial</SectionLabel>
-            <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight leading-[1.05] mb-4 text-black">
-              The Blog
-            </h1>
-            <p className="text-lg text-gray-500 max-w-xl leading-relaxed">
-              Music stories, artist features, and industry perspective from ModernNostalgia.club.
-            </p>
-          </div>
+        <section className="relative h-[50vh] overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${blogHero})` }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(222 47% 4% / 0.85) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(217 100% 10% / 0.5) 100%)' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white to-transparent" />
         </section>
 
         {/* Posts Grid */}
