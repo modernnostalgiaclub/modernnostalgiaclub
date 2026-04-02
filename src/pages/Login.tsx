@@ -48,15 +48,25 @@ export default function Login() {
     }
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) throw error;
-      navigate(redirectTo || '/dashboard');
+      if (mode === 'signup') {
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: redirectTo ? `${window.location.origin}${redirectTo}${searchParams.get('plan') ? `?plan=${searchParams.get('plan')}` : ''}` : window.location.origin },
+        });
+        if (error) throw error;
+        toast({ title: 'Check your email', description: 'We sent you a confirmation link to verify your account.' });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+        if (error) throw error;
+        navigate(redirectTo || '/dashboard');
+      }
     } catch (error: any) {
-      toast({ title: 'Sign in failed', description: error.message, variant: 'destructive' });
+      toast({ title: mode === 'signup' ? 'Sign up failed' : 'Sign in failed', description: error.message, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
