@@ -32,6 +32,7 @@ import { AdminNetworkingLinks } from '@/components/AdminNetworkingLinks';
 import { AdminDatabaseBackup } from '@/components/AdminDatabaseBackup';
 import { AdminPatreonMigration } from '@/components/AdminPatreonMigration';
 import { AdminArtistTracks } from '@/components/AdminArtistTracks';
+import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
