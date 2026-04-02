@@ -322,7 +322,7 @@ export default function ReferenceShelf() {
                       {[
                         { step: '1', title: 'Create Account', desc: 'Sign up for a free DISCO account using our referral link below.' },
                         { step: '2', title: 'Upload Tracks', desc: 'Upload your music with complete metadata (title, artist, genre, mood, tempo).' },
-                        { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit in the Studio Floor.' },
+                        { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit for feedback.' },
                       ].map(s => (
                         <div key={s.step} className="p-4 bg-white rounded-lg border border-gray-200">
                           <div className="flex items-center gap-2 mb-2">
