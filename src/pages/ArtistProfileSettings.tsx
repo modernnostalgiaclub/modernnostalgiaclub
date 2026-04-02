@@ -416,7 +416,7 @@ export default function ArtistProfileSettings() {
           <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-4xl mx-auto">
             <motion.div variants={fadeIn} className="mb-8">
               <SectionLabel className="mb-4">Profile</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display mb-4">Artist Profile</h1>
+              <h1 className="text-4xl md:text-5xl font-display uppercase mb-4">Artist Profile</h1>
               <p className="text-muted-foreground">Manage your public artist identity, bio, social links, and publishing info.</p>
             </motion.div>
 
