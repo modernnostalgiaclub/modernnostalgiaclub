@@ -330,7 +330,9 @@ function ProfileSetupWizard({
 export default function ArtistProfileSettings() {
   const { user, profile, loading } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
-
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<ProfileFormData>({
     full_name: '', stage_name: '', username: '', bio: '',
     pro: '', has_publishing_account: false, publishing_company: '',
