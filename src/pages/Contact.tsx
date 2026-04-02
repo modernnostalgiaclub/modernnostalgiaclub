@@ -112,11 +112,11 @@ export default function Contact() {
 
               <Button
                 type="submit"
-                disabled={sending || !canSubmit}
+                disabled={sending || isInCooldown}
                 className="w-full h-14 text-base font-bold uppercase tracking-wider bg-[hsl(200,60%,70%)] hover:bg-[hsl(200,60%,60%)] text-black rounded-lg"
               >
                 <Send className="w-4 h-4 mr-2" />
-                {!canSubmit ? `Wait ${cooldownRemaining}s` : sending ? 'Sending...' : 'Send Message'}
+                {isInCooldown ? `Wait ${cooldownRemaining}s` : sending ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
 
