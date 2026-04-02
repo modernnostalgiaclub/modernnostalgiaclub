@@ -160,7 +160,7 @@ export default function Dashboard() {
       done: hasSubmitted,
       icon: Music2,
       label: 'Submit a track to the Studio Floor',
-      sublabel: tier === 'lab-pass' ? '(Creator Accelerator+)' : undefined,
+      sublabel: tier === 'lab-pass' ? '(Accelerator+)' : undefined,
       href: tier !== 'lab-pass' ? '/studio' : '#',
       locked: tier === 'lab-pass',
     },
