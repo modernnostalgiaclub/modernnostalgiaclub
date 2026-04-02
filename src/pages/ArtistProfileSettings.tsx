@@ -325,8 +325,7 @@ function ProfileSetupWizard({
       </CardContent>
     </Card>
   );
-      setAvatarUrl(p.avatar_url || null);
-    }
+}
 export default function ArtistProfileSettings() {
   const { user, profile, loading } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
