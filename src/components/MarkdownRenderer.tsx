@@ -93,10 +93,10 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
             <thead className="bg-muted">{children}</thead>
           ),
           th: ({ children }) => (
-            <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">{children}</th>
+            <th className="border border-gray-200 px-4 py-2 text-left font-semibold text-gray-800">{children}</th>
           ),
           td: ({ children }) => (
-            <td className="border border-border px-4 py-2 text-foreground/80">{children}</td>
+            <td className="border border-gray-200 px-4 py-2 text-gray-700">{children}</td>
           ),
           hr: () => (
             <hr className="my-8 border-border" />
