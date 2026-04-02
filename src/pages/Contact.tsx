@@ -59,7 +59,7 @@ export default function Contact() {
 
       {/* Title */}
       <section>
-        <div className="container mx-auto px-6 pt-12 pb-8">
+        <div className="container mx-auto px-6 pt-12 pb-8 text-center">
           <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">Get In Touch</p>
           <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight leading-[1.05] mb-4 text-gray-900">
             Contact
