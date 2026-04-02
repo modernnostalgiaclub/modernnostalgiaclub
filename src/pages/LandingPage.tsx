@@ -450,11 +450,12 @@ export default function LandingPage() {
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
-                <p className="text-xs uppercase tracking-widest text-gray-400 mb-4 font-medium">Join the Lab</p>
                 <h2 className="font-anton text-4xl md:text-6xl text-black uppercase tracking-tight leading-[1.05]">
-                  Choose Your<br />
-                  <span className="italic" style={{ color: 'hsl(210 100% 53%)' }}>Access Level.</span>
+                  Join the Club
                 </h2>
+                <p className="mt-4 text-base text-gray-500">
+                  Choose which membership is right for you.
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
