@@ -32,6 +32,7 @@ interface AuthContextType {
   signInWithPatreon: () => Promise<void>;
   signOut: () => Promise<void>;
   refreshMFAStatus: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -256,7 +257,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       hasAccessToTier, 
       signInWithPatreon, 
       signOut,
-      refreshMFAStatus 
+      refreshMFAStatus,
+      refreshProfile: async () => {
+        if (user) {
+          const profileData = await fetchProfile(user.id);
+          setProfile(profileData);
+        }
+      }
     }}>
       {children}
     </AuthContext.Provider>

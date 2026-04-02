@@ -327,7 +327,7 @@ function ProfileSetupWizard({
   );
 }
 export default function ArtistProfileSettings() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, refreshProfile } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -395,6 +395,7 @@ export default function ArtistProfileSettings() {
 
       setAvatarUrl(urlWithCache);
       toast.success('Profile picture updated!');
+      await refreshProfile();
     } catch (error) {
       console.error('Avatar upload error:', error);
       toast.error('Failed to upload profile picture');
