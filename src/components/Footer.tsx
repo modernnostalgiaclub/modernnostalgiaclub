@@ -43,7 +43,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/reference" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/artistresources" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Artist Resources
                 </Link>
               </li>

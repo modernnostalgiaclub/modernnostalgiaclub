@@ -73,10 +73,10 @@ const App = () => (
             <Route path="/studio" element={<ProtectedRoute><LabLayout><StudioFloor /></LabLayout></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><LabLayout><Community /></LabLayout></ProtectedRoute>} />
             <Route path="/members" element={<ProtectedRoute><LabLayout><MemberDirectory /></LabLayout></ProtectedRoute>} />
-            <Route path="/reference" element={<ArtistResources />} />
+            <Route path="/artistresources" element={<ArtistResources />} />
             <Route path="/events" element={<Events />} />
-            <Route path="/reference/30-day-tracker" element={<ProtectedRoute><LabLayout><ImplementationTracker /></LabLayout></ProtectedRoute>} />
-            <Route path="/reference/beat-license" element={<ProtectedRoute><LabLayout><BeatLicense /></LabLayout></ProtectedRoute>} />
+            <Route path="/artistresources/30-day-tracker" element={<ProtectedRoute><LabLayout><ImplementationTracker /></LabLayout></ProtectedRoute>} />
+            <Route path="/artistresources/beat-license" element={<ProtectedRoute><LabLayout><BeatLicense /></LabLayout></ProtectedRoute>} />
             <Route path="/beats" element={<ProtectedRoute><LabLayout><BeatLibrary /></LabLayout></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><LabLayout><Account /></LabLayout></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><LabLayout><Notifications /></LabLayout></ProtectedRoute>} />

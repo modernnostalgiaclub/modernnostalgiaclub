@@ -127,7 +127,7 @@ export default function BeatLibrary() {
                       Submit your license request and Ge Oh will reach out to finalize your order.
                     </p>
                     <Button variant="maroon" size="lg" asChild>
-                      <Link to="/reference/beat-license">
+                      <Link to="/artistresources/beat-license">
                         Submit License Request
                         <ExternalLink className="ml-2 w-4 h-4" />
                       </Link>

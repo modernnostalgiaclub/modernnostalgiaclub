@@ -295,7 +295,7 @@ export default function ImplementationTracker() {
         <div className="container mx-auto px-6 print:px-4">
           {/* Action buttons - hidden when printing */}
           <div className="print:hidden mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <Link to="/reference">
+            <Link to="/artistresources">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Artist Resources
