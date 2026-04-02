@@ -115,7 +115,7 @@ export default function Account() {
           <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-4xl mx-auto">
             <motion.div variants={fadeIn} className="mb-8">
               <SectionLabel className="mb-4">Settings</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display uppercase mb-4">Settings</h1>
+              <h1 className="text-4xl md:text-5xl font-anton uppercase mb-4">Settings</h1>
             </motion.div>
 
             <div className="space-y-8">
