@@ -268,7 +268,33 @@ export default function ReferenceShelf() {
                 </motion.div>
               )}
 
-              {/* Courses side by side with next category or standalone */}
+              {/* Business Management */}
+              {sections['business']?.length > 0 && (
+                <motion.section variants={fadeIn}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Briefcase className="w-5 h-5 text-primary" />
+                    </div>
+                    <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-gray-900">
+                      Business Management
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {sections['business'].map(item => (
+                      <ResourceCard
+                        key={item.id}
+                        item={item}
+                        user={user}
+                        signInWithPatreon={signInWithPatreon}
+                        onDownloadClick={handleDownloadClick}
+                        tracks={tracks}
+                      />
+                    ))}
+                  </div>
+                </motion.section>
+              )}
+
+              {/* Courses */}
               {sections['courses']?.length > 0 && (
                 <motion.section variants={fadeIn}>
                   <div className="flex items-center gap-3 mb-6">
@@ -295,7 +321,7 @@ export default function ReferenceShelf() {
               )}
 
               {/* Remaining categories */}
-              {CATEGORIES.filter(c => !['ebooks', 'sync', 'courses'].includes(c.key)).map(cat => {
+              {CATEGORIES.filter(c => !['ebooks', 'sync', 'courses', 'business'].includes(c.key)).map(cat => {
                 const items = sections[cat.key];
                 if (!items || items.length === 0) return null;
                 const Icon = cat.icon;
