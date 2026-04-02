@@ -19,6 +19,7 @@ import { PlaylistSubmit } from '@/components/PlaylistSubmit';
 import { ArtistResources } from '@/components/ArtistResources';
 import { SyncReadyCTA } from '@/components/SyncReadyCTA';
 import { EditorialArticles } from '@/components/EditorialArticles';
+import { useAuth } from '@/contexts/AuthContext';
 import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
 import mncHeroLogo from '@/assets/mnc-hero-logo.png';
