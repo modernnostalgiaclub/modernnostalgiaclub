@@ -1,4 +1,5 @@
 import { SectionLabel } from '@/components/SectionLabel';
+import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Calendar, ExternalLink, MapPin, Clock, Filter } from 'lucide-react';

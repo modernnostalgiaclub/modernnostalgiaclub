@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';

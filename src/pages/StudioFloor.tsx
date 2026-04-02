@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { TierGate } from '@/components/TierBadge';
