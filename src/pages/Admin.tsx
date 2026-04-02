@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon, Database as DatabaseIcon, Users2 } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon, Database as DatabaseIcon, Users2, Crown } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { AdminLessonProgress } from '@/components/AdminLessonProgress';
@@ -32,6 +32,7 @@ import { AdminNetworkingLinks } from '@/components/AdminNetworkingLinks';
 import { AdminDatabaseBackup } from '@/components/AdminDatabaseBackup';
 import { AdminPatreonMigration } from '@/components/AdminPatreonMigration';
 import { AdminArtistTracks } from '@/components/AdminArtistTracks';
+import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -152,6 +153,10 @@ export default function Admin() {
                 <Users2 className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Migration
               </TabsTrigger>
+              <TabsTrigger value="memberships" className="gap-2" aria-label="Manage memberships">
+                <Crown className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Memberships
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
@@ -227,6 +232,10 @@ export default function Admin() {
 
             <TabsContent value="migration">
               <AdminPatreonMigration />
+            </TabsContent>
+
+            <TabsContent value="memberships">
+              <AdminMembershipPlans />
             </TabsContent>
           </Tabs>
         </main>
