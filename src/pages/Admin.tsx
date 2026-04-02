@@ -529,9 +529,9 @@ function CoursesManager() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lab-pass">Lab Pass</SelectItem>
-                    <SelectItem value="creator-accelerator">Creator Accelerator</SelectItem>
-                    <SelectItem value="creative-economy-lab">Creative Economy Lab</SelectItem>
+                    <SelectItem value="lab-pass">Club Pass</SelectItem>
+                    <SelectItem value="creator-accelerator">Accelerator</SelectItem>
+                    <SelectItem value="creative-economy-lab">Artist Incubator</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
