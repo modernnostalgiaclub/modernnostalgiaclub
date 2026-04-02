@@ -319,7 +319,7 @@ export default function ImplementationTracker() {
           <div className="max-w-4xl mx-auto print:max-w-none">
             {/* Title Page */}
             <div className="text-center mb-12 print:mb-8 print:break-after-page">
-              <h1 className="text-4xl md:text-5xl font-display mb-4 print:text-3xl">
+              <h1 className="text-4xl md:text-5xl font-anton uppercase mb-4 print:text-3xl">
                 30-Day Implementation Tracker
               </h1>
               <p className="text-lg text-muted-foreground mb-2">

@@ -38,7 +38,7 @@ export default function Events() {
         {/* Page Header */}
         <motion.div variants={fadeIn} className="mb-12 text-center">
           <SectionLabel className="mb-4">Events</SectionLabel>
-          <h1 className="text-4xl md:text-5xl font-display mb-4">
+          <h1 className="text-4xl md:text-5xl font-anton uppercase mb-4">
             Upcoming Events
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
