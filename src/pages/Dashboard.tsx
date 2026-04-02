@@ -248,7 +248,7 @@ export default function Dashboard() {
                           Live
                         </span>
                       </div>
-                      <h1 className="text-3xl md:text-5xl font-serif font-bold leading-tight">
+                      <h1 className="text-4xl md:text-5xl font-display uppercase leading-tight">
                         Welcome back,<br />
                         <span style={{ color: 'hsl(217 100% 65%)' }}>{userName}.</span>
                       </h1>
