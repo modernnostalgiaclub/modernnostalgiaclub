@@ -69,73 +69,16 @@ export function Header({ showNav = true }: HeaderProps) {
     </>
   );
 
-  const MobileNavLinks = () => {
-    if (isLoggedIn) {
-      return (
-        <>
-          <Link to="/dashboard" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Dashboard
-          </Link>
-          <Link to="/courses" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Courses
-          </Link>
-          <Link to="/feedback" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Submit for Feedback
-          </Link>
-          <Link to="/artistresources" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Artist Resources
-          </Link>
-          <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Store
-          </Link>
-          <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Events
-          </Link>
-          <Link to="/beatlibrary" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Beat Store
-          </Link>
-          <Link to="/community" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Community
-          </Link>
-          <Link to="/members" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Members
-          </Link>
-          <Link to="/account" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Account
-          </Link>
-          {isAdminOrMod && (
-            <Link to="/admin" className={`${mobileLinkClasses} flex items-center gap-1`} onClick={closeMobileMenu}>
-              <Shield className="h-4 w-4" />
-              Admin
-            </Link>
-          )}
-        </>
-      );
-    }
-    
-    return (
-      <>
-        <Link to="/about" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          About
-        </Link>
-        <Link to="/blog" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Blog
-        </Link>
-        <Link to="/join" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Join the Club
-        </Link>
-        <Link to="/artistresources" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Artist Resources
-        </Link>
-        <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Store
-        </Link>
-        <Link to="/contact" className={mobileLinkClasses} onClick={closeMobileMenu}>
-          Contact
-        </Link>
-      </>
-    );
-  };
+  const MobileNavLinks = () => (
+    <>
+      <Link to="/about" className={mobileLinkClasses} onClick={closeMobileMenu}>About</Link>
+      <Link to="/blog" className={mobileLinkClasses} onClick={closeMobileMenu}>Blog</Link>
+      <Link to="/join" className={mobileLinkClasses} onClick={closeMobileMenu}>Join the Club</Link>
+      <Link to="/artistresources" className={mobileLinkClasses} onClick={closeMobileMenu}>Artist Resources</Link>
+      <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>Store</Link>
+      <Link to="/contact" className={mobileLinkClasses} onClick={closeMobileMenu}>Contact</Link>
+    </>
+  );
 
   return (
     <header
