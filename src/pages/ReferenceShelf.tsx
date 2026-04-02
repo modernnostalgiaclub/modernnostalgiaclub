@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { SectionLabel } from '@/components/SectionLabel';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -12,15 +11,21 @@ import { EmailCaptureDialog } from '@/components/EmailCaptureDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { 
-  Music, 
   ExternalLink,
   Play,
-  HelpCircle,
   CheckCircle,
   Download,
-  Wrench,
   Calendar,
   Lock,
+  BookOpen,
+  Music,
+  GraduationCap,
+  Briefcase,
+  FolderOpen,
+  Wrench,
+  Monitor,
+  Mic,
+  MoreHorizontal,
 } from 'lucide-react';
 
 const fadeIn = {
@@ -31,12 +36,12 @@ const fadeIn = {
 const stagger = {
   visible: {
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.08
     }
   }
 };
 
-// Fallback tracks used if database is empty
+// Fallback tracks
 const fallbackTracks = [
   {
     id: '1',
@@ -70,79 +75,40 @@ const fallbackTracks = [
   },
 ];
 
-// Fallback resources used if database is empty
+// Fallback resources
 const fallbackResources = [
-  {
-    id: '1',
-    title: 'NAV Business Credit',
-    description: 'Build business credit and access funding options for your music career.',
-    url: 'https://nav.nkwcmr.net/7a49Dy',
-    category: 'Business',
-  },
-  {
-    id: '2',
-    title: 'DISCO',
-    description: 'Industry-standard platform for music delivery and catalog management.',
-    url: 'https://disco.ac/signup?b=5076&u=23831',
-    category: 'Music Tools',
-  },
-  {
-    id: '3',
-    title: 'Swayzio',
-    description: 'Music management and sync licensing platform for independent artists.',
-    url: 'https://swayzio.com/?via=GeOh',
-    category: 'Music Tools',
-  },
-  {
-    id: '4',
-    title: 'Lovable',
-    description: 'Build websites and apps for your music brand without coding.',
-    url: 'https://lovable.dev/invite/VK4R8ZA',
-    category: 'Tech Tools',
-  },
-  {
-    id: '5',
-    title: 'Pro Tools Intro',
-    description: 'Free DAW to start recording and producing your music at home.',
-    url: 'https://www.avid.com/pro-tools',
-    category: 'Recording',
-  },
-  {
-    id: '6',
-    title: 'ASCAP',
-    description: 'Performance Rights Organization - register your songs to collect royalties.',
-    url: 'https://www.ascap.com',
-    category: 'Business',
-  },
-  {
-    id: '7',
-    title: 'BMI',
-    description: 'Performance Rights Organization - another option for royalty collection.',
-    url: 'https://www.bmi.com',
-    category: 'Business',
-  },
+  { id: '1', title: 'NAV Business Credit', description: 'Build business credit and access funding options for your music career.', url: 'https://nav.nkwcmr.net/7a49Dy', category: 'Business' },
+  { id: '2', title: 'DISCO', description: 'Industry-standard platform for music delivery and catalog management.', url: 'https://disco.ac/signup?b=5076&u=23831', category: 'Music Tools' },
+  { id: '3', title: 'Swayzio', description: 'Music management and sync licensing platform for independent artists.', url: 'https://swayzio.com/?via=GeOh', category: 'Music Tools' },
+  { id: '4', title: 'Lovable', description: 'Build websites and apps for your music brand without coding.', url: 'https://lovable.dev/invite/VK4R8ZA', category: 'Tech Tools' },
+  { id: '5', title: 'Pro Tools Intro', description: 'Free DAW to start recording and producing your music at home.', url: 'https://www.avid.com/pro-tools', category: 'Recording' },
+  { id: '6', title: 'ASCAP', description: 'Performance Rights Organization - register your songs to collect royalties.', url: 'https://www.ascap.com', category: 'Business' },
+  { id: '7', title: 'BMI', description: 'Performance Rights Organization - another option for royalty collection.', url: 'https://www.bmi.com', category: 'Business' },
 ];
 
-type Resource = {
-  id: string;
-  title: string;
-  description: string | null;
-  url: string;
-  category: string;
-};
+type Resource = { id: string; title: string; description: string | null; url: string; category: string };
+type Track = { id: string; title: string; artist: string; type: string; description: string | null; link: string; is_download: boolean | null; is_internal: boolean | null };
 
-type Track = {
-  id: string;
-  title: string;
-  artist: string;
-  type: string;
-  description: string | null;
-  link: string;
-  is_download: boolean | null;
-  is_internal: boolean | null;
-};
+// Category definitions with icons
+const CATEGORIES = [
+  { key: 'ebooks', label: 'eBooks', icon: BookOpen, matchCategories: ['ebook', 'ebooks', 'free download'] },
+  { key: 'sync', label: 'Sync Licensing', icon: Music, matchCategories: ['sync', 'sync licensing'] },
+  { key: 'courses', label: 'Courses', icon: GraduationCap, matchCategories: ['course', 'courses', 'members only'] },
+  { key: 'business', label: 'Business Management', icon: Briefcase, matchCategories: ['business', 'business management'] },
+  { key: 'music-mgmt', label: 'Music Management', icon: FolderOpen, matchCategories: ['music management'] },
+  { key: 'music-tools', label: 'Music Tools', icon: Wrench, matchCategories: ['music tools', 'music'] },
+  { key: 'tech', label: 'Tech Tools', icon: Monitor, matchCategories: ['tech tools', 'tech'] },
+  { key: 'recording', label: 'Recording Tools', icon: Mic, matchCategories: ['recording', 'recording tools'] },
+  { key: 'other', label: 'Other Tools', icon: MoreHorizontal, matchCategories: [] },
+];
 
-// Case studies removed - replaced with AI Money Coach
+function categorizeResource(category: string): string {
+  const lower = category.toLowerCase().trim();
+  for (const cat of CATEGORIES) {
+    if (cat.matchCategories.some(m => lower.includes(m))) return cat.key;
+  }
+  return 'other';
+}
 
 export default function ReferenceShelf() {
   const { user, signInWithPatreon } = useAuth();
@@ -150,8 +116,6 @@ export default function ReferenceShelf() {
   const [loadingResources, setLoadingResources] = useState(true);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loadingTracks, setLoadingTracks] = useState(true);
-  
-  // Email capture dialog state
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
@@ -167,363 +131,245 @@ export default function ReferenceShelf() {
         .select('id, title, description, url, category')
         .eq('is_published', true)
         .order('sort_order');
-
-      if (error || !data || data.length === 0) {
-        setResources(fallbackResources);
-      } else {
-        setResources(data);
-      }
+      setResources(!error && data?.length ? data : fallbackResources);
       setLoadingResources(false);
     }
-
     async function fetchTracks() {
       const { data, error } = await supabase
         .from('example_tracks')
         .select('id, title, artist, type, description, link, is_download, is_internal')
         .eq('is_published', true)
         .order('sort_order');
-
-      if (error || !data || data.length === 0) {
-        setTracks(fallbackTracks);
-      } else {
-        setTracks(data);
-      }
+      setTracks(!error && data?.length ? data : fallbackTracks);
       setLoadingTracks(false);
     }
-
     fetchResources();
     fetchTracks();
   }, []);
+
+  // Build categorized items: tracks become ebook/sync/course items, resources get categorized
+  const buildCategorizedItems = () => {
+    const sections: Record<string, Array<{ id: string; title: string; description: string | null; url: string; type?: string; artist?: string; isTrack?: boolean; isDownload?: boolean; isInternal?: boolean }>> = {};
+    CATEGORIES.forEach(c => { sections[c.key] = []; });
+
+    // Categorize tracks
+    tracks.forEach(t => {
+      const typeLower = (t.type || '').toLowerCase();
+      let catKey = 'other';
+      if (typeLower.includes('download') || typeLower.includes('ebook')) catKey = 'ebooks';
+      else if (typeLower.includes('sync') || typeLower.includes('approved') || typeLower.includes('example')) catKey = 'sync';
+      else if (typeLower.includes('member') || typeLower.includes('tracker')) catKey = 'courses';
+      
+      sections[catKey].push({
+        id: t.id, title: t.title, description: t.description, url: t.link,
+        type: t.type, artist: t.artist, isTrack: true, isDownload: !!t.is_download, isInternal: !!t.is_internal,
+      });
+    });
+
+    // Categorize resources
+    resources.forEach(r => {
+      const catKey = categorizeResource(r.category);
+      sections[catKey].push({ id: r.id, title: r.title, description: r.description, url: r.url });
+    });
+
+    return sections;
+  };
+
+  const sections = buildCategorizedItems();
+  const isLoading = loadingResources || loadingTracks;
+
   return (
-    <div className="min-h-screen bg-background studio-grain">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-24 pb-16">
+      <main className="pt-24 pb-20">
         <div className="container mx-auto px-6">
+          {/* Page Header */}
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto mb-16 text-center"
           >
-            <motion.div variants={fadeIn} className="mb-12">
-              <SectionLabel className="mb-4">Artist Resources</SectionLabel>
-              <h1 className="text-4xl md:text-5xl font-display mb-4">
-                Professional Archive
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Approved examples, case studies, and reference materials. Learn from what works.
-              </p>
-            </motion.div>
-            
-            {/* Example Tracks & Resources */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <Music className="w-6 h-6 text-maroon" />
-                Example Tracks & Downloads
-              </h2>
-              {loadingTracks ? (
-                <div className="space-y-4">
-                  {[1, 2, 3].map(i => (
-                    <Skeleton key={i} className="h-40 w-full" />
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {tracks.map((track) => (
-                    <Card key={track.id} variant="feature">
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <span className="text-xs text-maroon uppercase tracking-wider">{track.type}</span>
-                            <CardTitle className="mt-1">{track.title}</CardTitle>
-                            <CardDescription className="mt-2">{track.description}</CardDescription>
-                          </div>
-                          {track.is_internal ? (
-                            user ? (
-                              <Button variant="maroon" size="icon" asChild>
-                                <Link to={track.link}>
-                                  <Calendar className="w-4 h-4" />
-                                </Link>
-                              </Button>
-                            ) : (
-                              <Button variant="outline" size="icon" disabled>
-                                <Lock className="w-4 h-4" />
-                              </Button>
-                            )
-                          ) : track.is_download ? (
-                            <Button 
-                              variant="maroon" 
-                              size="icon" 
-                              onClick={() => handleDownloadClick(track)}
-                            >
-                              <Download className="w-4 h-4" />
-                            </Button>
-                          ) : (
-                            <Button variant="maroon" size="icon" asChild>
-                              <a 
-                                href={track.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                              >
-                                <Play className="w-4 h-4" />
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-muted-foreground">by {track.artist}</span>
-                          {track.is_internal ? (
-                            user ? (
-                              <Button variant="outline" size="sm" asChild>
-                                <Link to={track.link}>
-                                  Open Tracker
-                                  <ExternalLink className="ml-2 w-4 h-4" />
-                                </Link>
-                              </Button>
-                            ) : (
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => signInWithPatreon()}
-                              >
-                                <Lock className="w-4 h-4 mr-2" />
-                                Log in to access
-                              </Button>
-                            )
-                          ) : track.is_download ? (
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleDownloadClick(track)}
-                            >
-                              Download PDF
-                              <Download className="ml-2 w-4 h-4" />
-                            </Button>
-                          ) : (
-                            <Button variant="outline" size="sm" asChild>
-                              <a 
-                                href={track.link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                              >
-                                View on DISCO
-                                <ExternalLink className="ml-2 w-4 h-4" />
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-
-            {/* Resources */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <Wrench className="w-6 h-6 text-maroon" />
-                Artist Resources
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Essential tools and services mentioned in The Free Artist Survival Guide. Start building your sustainable music career.
-              </p>
-              {loadingResources ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4].map(i => (
-                    <Skeleton key={i} className="h-32 w-full" />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {resources.map((resource) => (
-                    <Card key={resource.id} variant="feature" className="hover:scale-[1.01] transition-transform">
-                      <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <span className="text-xs text-maroon uppercase tracking-wider">{resource.category}</span>
-                            <CardTitle className="text-lg mt-1">{resource.title}</CardTitle>
-                          </div>
-                          <Button variant="maroon" size="icon" asChild>
-                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-4 h-4" />
-                            </a>
-                          </Button>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-muted-foreground">{resource.description}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-            
-            {/* DISCO Setup Guide */}
-            <motion.div variants={fadeIn} className="mb-12">
-              <h2 className="font-display text-2xl mb-6 flex items-center gap-2">
-                <HelpCircle className="w-6 h-6 text-maroon" />
-                DISCO Setup Guide
-              </h2>
-              <Card variant="elevated">
-                <CardHeader>
-                  <CardTitle>Getting Started with DISCO</CardTitle>
-                  <CardDescription>
-                    DISCO is the industry-standard platform for delivering music to sync supervisors, labels, and publishers. 
-                    All Lab submissions require a DISCO link.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Quick Start Steps */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-maroon/20 flex items-center justify-center">
-                          <span className="font-display text-maroon">1</span>
-                        </div>
-                        <h4 className="font-medium">Create Account</h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Sign up for a free DISCO account using our referral link below.
-                      </p>
-                    </div>
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-maroon/20 flex items-center justify-center">
-                          <span className="font-display text-maroon">2</span>
-                        </div>
-                        <h4 className="font-medium">Upload Tracks</h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Upload your music with complete metadata (title, artist, genre, mood, tempo).
-                      </p>
-                    </div>
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-maroon/20 flex items-center justify-center">
-                          <span className="font-display text-maroon">3</span>
-                        </div>
-                        <h4 className="font-medium">Share Playlist</h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Create a playlist and copy the share link to submit in the Studio Floor.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-center">
-                    <Button variant="maroon" size="lg" asChild>
-                      <a href="https://disco.ac/signup?b=5076&u=23831" target="_blank" rel="noopener noreferrer">
-                        Create Free DISCO Account
-                        <ExternalLink className="ml-2 w-4 h-4" />
-                      </a>
-                    </Button>
-                  </div>
-
-                  {/* FAQ Accordion */}
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="what-is-disco">
-                      <AccordionTrigger>What is DISCO?</AccordionTrigger>
-                      <AccordionContent>
-                        <p className="text-muted-foreground">
-                          DISCO is the music industry's leading platform for music delivery and catalog management. 
-                          Used by major labels, sync agents, and music supervisors worldwide, it's the professional 
-                          standard for sharing music. When you use DISCO, you're speaking the same language as 
-                          industry professionals.
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="why-disco">
-                      <AccordionTrigger>Why does the Lab use DISCO?</AccordionTrigger>
-                      <AccordionContent>
-                        <p className="text-muted-foreground">
-                          We use DISCO because it mirrors real-world sync licensing workflows. When you learn to 
-                          organize and deliver music through DISCO, you're building skills that directly translate 
-                          to professional opportunities. It also ensures consistent, high-quality audio delivery 
-                          for all submissions.
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="is-it-free">
-                      <AccordionTrigger>Is DISCO free?</AccordionTrigger>
-                      <AccordionContent>
-                        <p className="text-muted-foreground">
-                          DISCO offers a free tier that's perfect for getting started. You can upload tracks, 
-                          create playlists, and share links at no cost. Paid plans offer additional features 
-                          like analytics and larger storage, but the free tier has everything you need for 
-                          Lab submissions.
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="how-to-share">
-                      <AccordionTrigger>How do I get a share link?</AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-3 text-muted-foreground">
-                          <p>To get a shareable DISCO link:</p>
-                          <ol className="list-decimal list-inside space-y-2 ml-2">
-                            <li>Upload your track(s) to DISCO</li>
-                            <li>Create a playlist and add your tracks</li>
-                            <li>Click the "Share" button on your playlist</li>
-                            <li>Copy the share link (starts with https://disco.ac/)</li>
-                            <li>Paste this link when submitting in the Studio Floor</li>
-                          </ol>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="metadata-tips">
-                      <AccordionTrigger>What metadata should I include?</AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-3 text-muted-foreground">
-                          <p>Complete metadata increases your chances of sync placement:</p>
-                          <ul className="space-y-2">
-                            <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-maroon mt-0.5 shrink-0" />
-                              <span><strong>Title:</strong> Clear, descriptive name</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-maroon mt-0.5 shrink-0" />
-                              <span><strong>Artist/Composer:</strong> Your professional name</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-maroon mt-0.5 shrink-0" />
-                              <span><strong>Genre:</strong> Primary and secondary genres</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-maroon mt-0.5 shrink-0" />
-                              <span><strong>Mood/Energy:</strong> Emotional descriptors</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-maroon mt-0.5 shrink-0" />
-                              <span><strong>Tempo (BPM):</strong> Beats per minute</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-maroon mt-0.5 shrink-0" />
-                              <span><strong>Instrumentation:</strong> Key instruments used</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </CardContent>
-              </Card>
-            </motion.div>
-            
+            <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-foreground mb-4">
+              Artist Resources
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Everything you need to build, manage, and monetize your music career — organized and ready to use.
+            </p>
           </motion.div>
+
+          {isLoading ? (
+            <div className="max-w-5xl mx-auto space-y-12">
+              {[1, 2, 3].map(i => (
+                <div key={i}>
+                  <Skeleton className="h-8 w-48 mb-6" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[1, 2, 3].map(j => <Skeleton key={j} className="h-36 w-full" />)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={stagger}
+              className="max-w-5xl mx-auto space-y-16"
+            >
+              {CATEGORIES.map(cat => {
+                const items = sections[cat.key];
+                if (!items || items.length === 0) return null;
+                const Icon = cat.icon;
+
+                return (
+                  <motion.section key={cat.key} variants={fadeIn}>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-foreground">
+                        {cat.label}
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {items.map(item => (
+                        <ResourceCard
+                          key={item.id}
+                          item={item}
+                          user={user}
+                          signInWithPatreon={signInWithPatreon}
+                          onDownloadClick={handleDownloadClick}
+                          tracks={tracks}
+                        />
+                      ))}
+                    </div>
+                  </motion.section>
+                );
+              })}
+
+              {/* DISCO Setup Guide */}
+              <motion.section variants={fadeIn}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Music className="w-5 h-5 text-primary" />
+                  </div>
+                  <h2 className="font-anton text-2xl md:text-3xl uppercase tracking-tight text-foreground">
+                    DISCO Setup Guide
+                  </h2>
+                </div>
+
+                <Card variant="elevated" className="overflow-hidden">
+                  <CardContent className="p-6 md:p-8 space-y-8">
+                    <div>
+                      <h3 className="font-anton text-xl uppercase tracking-tight text-foreground mb-2">Getting Started with DISCO</h3>
+                      <p className="text-sm text-muted-foreground">
+                        DISCO is the industry-standard platform for delivering music to sync supervisors, labels, and publishers. 
+                        All Lab submissions require a DISCO link.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {[
+                        { step: '1', title: 'Create Account', desc: 'Sign up for a free DISCO account using our referral link below.' },
+                        { step: '2', title: 'Upload Tracks', desc: 'Upload your music with complete metadata (title, artist, genre, mood, tempo).' },
+                        { step: '3', title: 'Share Playlist', desc: 'Create a playlist and copy the share link to submit in the Studio Floor.' },
+                      ].map(s => (
+                        <div key={s.step} className="p-4 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                              <span className="font-anton text-primary text-sm">{s.step}</span>
+                            </div>
+                            <h4 className="font-medium text-foreground">{s.title}</h4>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{s.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-center">
+                      <Button variant="default" size="lg" asChild>
+                        <a href="https://disco.ac/signup?b=5076&u=23831" target="_blank" rel="noopener noreferrer">
+                          Create Free DISCO Account
+                          <ExternalLink className="ml-2 w-4 h-4" />
+                        </a>
+                      </Button>
+                    </div>
+
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="what-is-disco">
+                        <AccordionTrigger>What is DISCO?</AccordionTrigger>
+                        <AccordionContent>
+                          <p className="text-muted-foreground">
+                            DISCO is the music industry's leading platform for music delivery and catalog management. 
+                            Used by major labels, sync agents, and music supervisors worldwide, it's the professional 
+                            standard for sharing music.
+                          </p>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="why-disco">
+                        <AccordionTrigger>Why does the Lab use DISCO?</AccordionTrigger>
+                        <AccordionContent>
+                          <p className="text-muted-foreground">
+                            We use DISCO because it mirrors real-world sync licensing workflows. When you learn to 
+                            organize and deliver music through DISCO, you're building skills that directly translate 
+                            to professional opportunities.
+                          </p>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="is-it-free">
+                        <AccordionTrigger>Is DISCO free?</AccordionTrigger>
+                        <AccordionContent>
+                          <p className="text-muted-foreground">
+                            DISCO offers a free tier that's perfect for getting started. You can upload tracks, 
+                            create playlists, and share links at no cost. Paid plans offer additional features 
+                            like analytics and larger storage.
+                          </p>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="how-to-share">
+                        <AccordionTrigger>How do I get a share link?</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-muted-foreground">
+                            <p>To get a shareable DISCO link:</p>
+                            <ol className="list-decimal list-inside space-y-2 ml-2">
+                              <li>Upload your track(s) to DISCO</li>
+                              <li>Create a playlist and add your tracks</li>
+                              <li>Click the "Share" button on your playlist</li>
+                              <li>Copy the share link (starts with https://disco.ac/)</li>
+                              <li>Paste this link when submitting in the Studio Floor</li>
+                            </ol>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="metadata-tips">
+                        <AccordionTrigger>What metadata should I include?</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 text-muted-foreground">
+                            <p>Complete metadata increases your chances of sync placement:</p>
+                            <ul className="space-y-2">
+                              {['Title: Clear, descriptive name', 'Artist/Composer: Your professional name', 'Genre: Primary and secondary genres', 'Mood/Energy: Emotional descriptors', 'Tempo (BPM): Beats per minute', 'Instrumentation: Key instruments used'].map(item => (
+                                <li key={item} className="flex items-start gap-2">
+                                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                                  <span><strong>{item.split(':')[0]}:</strong>{item.split(':').slice(1).join(':')}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              </motion.section>
+            </motion.div>
+          )}
         </div>
       </main>
       
       <Footer />
       
-      {/* Email Capture Dialog for Downloads */}
       {selectedTrack && (
         <EmailCaptureDialog
           open={emailDialogOpen}
@@ -534,5 +380,73 @@ export default function ReferenceShelf() {
         />
       )}
     </div>
+  );
+}
+
+// Individual resource card component
+function ResourceCard({ item, user, signInWithPatreon, onDownloadClick, tracks }: {
+  item: { id: string; title: string; description: string | null; url: string; type?: string; artist?: string; isTrack?: boolean; isDownload?: boolean; isInternal?: boolean };
+  user: any;
+  signInWithPatreon: () => void;
+  onDownloadClick: (track: Track) => void;
+  tracks: Track[];
+}) {
+  const renderAction = () => {
+    if (item.isTrack) {
+      const originalTrack = tracks.find(t => t.id === item.id);
+      if (item.isInternal) {
+        return user ? (
+          <Button variant="default" size="sm" className="w-full mt-3" asChild>
+            <Link to={item.url}>
+              <Calendar className="w-4 h-4 mr-2" /> Open Tracker
+            </Link>
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" className="w-full mt-3" onClick={() => signInWithPatreon()}>
+            <Lock className="w-4 h-4 mr-2" /> Log in to access
+          </Button>
+        );
+      }
+      if (item.isDownload && originalTrack) {
+        return (
+          <Button variant="default" size="sm" className="w-full mt-3" onClick={() => onDownloadClick(originalTrack)}>
+            <Download className="w-4 h-4 mr-2" /> Download
+          </Button>
+        );
+      }
+      return (
+        <Button variant="default" size="sm" className="w-full mt-3" asChild>
+          <a href={item.url} target="_blank" rel="noopener noreferrer">
+            <Play className="w-4 h-4 mr-2" /> Listen
+          </a>
+        </Button>
+      );
+    }
+
+    return (
+      <Button variant="outline" size="sm" className="w-full mt-3" asChild>
+        <a href={item.url} target="_blank" rel="noopener noreferrer">
+          Visit <ExternalLink className="w-3.5 h-3.5 ml-2" />
+        </a>
+      </Button>
+    );
+  };
+
+  return (
+    <Card variant="feature" className="flex flex-col h-full">
+      <CardContent className="p-5 flex flex-col flex-1">
+        {item.type && (
+          <span className="text-xs text-primary uppercase tracking-wider font-medium mb-1">{item.type}</span>
+        )}
+        <h3 className="font-bold text-foreground text-base mb-1.5">{item.title}</h3>
+        {item.description && (
+          <p className="text-sm text-muted-foreground flex-1 line-clamp-3">{item.description}</p>
+        )}
+        {item.artist && (
+          <p className="text-xs text-muted-foreground mt-1">by {item.artist}</p>
+        )}
+        {renderAction()}
+      </CardContent>
+    </Card>
   );
 }
