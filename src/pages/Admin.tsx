@@ -236,7 +236,10 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="memberships">
-              <AdminMembershipPlans />
+              <div className="space-y-8">
+                <AdminMembershipPlans />
+                <AdminGrandfatheredMembers />
+              </div>
             </TabsContent>
           </Tabs>
         </main>
