@@ -90,7 +90,7 @@ export default function BlogPost() {
           )}
 
           {/* Title */}
-          <h1 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase leading-[1.05] mb-6">
+          <h1 className="font-anton text-3xl md:text-5xl lg:text-6xl text-gray-800 uppercase leading-[1.05] mb-6">
             {post.title}
           </h1>
 
