@@ -50,7 +50,7 @@ import ArtistProfile from "./pages/ArtistProfile";
 import MigrateToGoogle from "./pages/MigrateToGoogle";
 import BlogPost from "./pages/BlogPost";
 import ArtistProfileSettings from "./pages/ArtistProfileSettings";
-
+import Ebooks from "./pages/Ebooks";
 const queryClient = new QueryClient();
 
 const App = () => (
