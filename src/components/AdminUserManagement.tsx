@@ -183,6 +183,7 @@ export function AdminUserManagement() {
     }
   });
 
+  const adminCount = users.filter(u => u.roles.includes('admin') || u.roles.includes('moderator')).length;
   const legacyCount = users.filter(u => u.subscription?.is_grandfathered).length;
   const currentCount = users.filter(u => u.subscription && !u.subscription.is_grandfathered).length;
   const noPlanCount = users.filter(u => !u.subscription).length;
