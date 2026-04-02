@@ -83,7 +83,7 @@ export function AppSidebar() {
       style={{ '--sidebar-accent': '210 100% 50% / 0.15', '--sidebar-accent-foreground': '210 100% 65%' } as React.CSSProperties}
     >
       <SidebarContent className="pt-2">
-        <div className="flex items-center px-3 py-2">
+        <div className="flex items-center justify-end px-3 py-2 group-data-[collapsible=icon]:group-data-[state=collapsed]:justify-center group-data-[collapsible=icon]:group-data-[state=collapsed]:px-0">
           <SidebarTrigger className="h-7 w-7 text-primary hover:text-primary" />
         </div>
         <SidebarGroup>
