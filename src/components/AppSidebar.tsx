@@ -51,8 +51,9 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const location = useLocation();
-  const { hasRole } = useAuth();
+  const { hasRole, profile, user } = useAuth();
   const isAdmin = hasRole('admin') || hasRole('moderator');
+  const memberName = profile?.name || profile?.stage_name || user?.email?.split('@')[0] || '';
 
   const isActive = (url: string) =>
     location.pathname === url || location.pathname.startsWith(url + '/');
