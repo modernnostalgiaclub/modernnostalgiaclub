@@ -133,7 +133,7 @@ export default function Login() {
         {/* Google Sign-In — PRIMARY */}
         <Button
           variant="outline"
-          className="w-full h-12 text-base font-medium border-border/80 hover:border-border flex items-center gap-3"
+          className="w-full h-12 text-base font-medium border-gray-300 hover:border-gray-400 bg-white text-gray-900 flex items-center gap-3"
           onClick={handleGoogleSignIn}
           disabled={googleLoading}
         >
@@ -153,10 +153,10 @@ export default function Login() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
+            <span className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-muted-foreground">or</span>
+            <span className="bg-white px-2 text-gray-400">or</span>
           </div>
         </div>
 
@@ -168,24 +168,24 @@ export default function Login() {
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
+            <span className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-muted-foreground">or sign in with email</span>
+            <span className="bg-white px-2 text-gray-400">or sign in with email</span>
           </div>
         </div>
 
         {/* Email / Password */}
         <Tabs value={tab} onValueChange={setTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-secondary">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+            <TabsTrigger value="signin" className="data-[state=active]:bg-white data-[state=active]:text-gray-900 text-gray-500">Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-gray-900 text-gray-500">Sign Up</TabsTrigger>
           </TabsList>
 
           <TabsContent value="signin">
             <form onSubmit={handleSignIn} className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="signin-email">Email</Label>
+                <Label htmlFor="signin-email" className="text-gray-700">Email</Label>
                 <Input
                   id="signin-email"
                   type="email"
@@ -194,10 +194,11 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
+                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signin-password">Password</Label>
+                <Label htmlFor="signin-password" className="text-gray-700">Password</Label>
                 <Input
                   id="signin-password"
                   type="password"
@@ -206,16 +207,17 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
+                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
                 />
               </div>
-              <Button type="submit" className="w-full" variant="maroon" disabled={loading}>
+              <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
               </Button>
               <button
                 type="button"
                 onClick={handleForgotPassword}
                 disabled={resetLoading}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors w-full text-center"
+                className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
               >
                 {resetLoading ? 'Sending…' : 'Forgot password?'}
               </button>
@@ -225,7 +227,7 @@ export default function Login() {
           <TabsContent value="signup">
             <form onSubmit={handleSignUp} className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
+                <Label htmlFor="signup-email" className="text-gray-700">Email</Label>
                 <Input
                   id="signup-email"
                   type="email"
@@ -234,10 +236,11 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
+                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-password">Password</Label>
+                <Label htmlFor="signup-password" className="text-gray-700">Password</Label>
                 <Input
                   id="signup-password"
                   type="password"
@@ -247,10 +250,11 @@ export default function Login() {
                   required
                   minLength={6}
                   autoComplete="new-password"
+                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-confirm">Confirm Password</Label>
+                <Label htmlFor="signup-confirm" className="text-gray-700">Confirm Password</Label>
                 <Input
                   id="signup-confirm"
                   type="password"
@@ -259,19 +263,20 @@ export default function Login() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   autoComplete="new-password"
+                  className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 h-12"
                 />
               </div>
-              <Button type="submit" className="w-full" variant="maroon" disabled={loading}>
+              <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
               </Button>
             </form>
           </TabsContent>
         </Tabs>
 
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-center text-xs text-gray-400">
           By signing up you agree to our{' '}
-          <Link to="/terms" className="underline hover:text-foreground">Terms</Link> &{' '}
-          <Link to="/privacy" className="underline hover:text-foreground">Privacy Policy</Link>.
+          <Link to="/terms" className="underline hover:text-gray-700">Terms</Link> &{' '}
+          <Link to="/privacy" className="underline hover:text-gray-700">Privacy Policy</Link>.
         </p>
       </div>
     </div>
