@@ -130,10 +130,10 @@ export function Header({ showNav = true }: HeaderProps) {
               <a href="https://x.com/geohworks" target="_blank" rel="noopener noreferrer" className="text-blue hover:text-blue-glow transition-colors" aria-label="Twitter/X (opens in new tab)">
                 <Twitter className="h-4 w-4" />
               </a>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => setCartOpen(true)}
-                  className="relative text-white hover:text-white/80 transition-colors"
+                  className="relative text-white hover:text-blue transition-colors"
                   aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
                 >
                   <ShoppingCart className="h-4 w-4" />
@@ -144,15 +144,16 @@ export function Header({ showNav = true }: HeaderProps) {
                   )}
                 </button>
                 <NotificationBell />
-              </div>
-              
-              {/* User Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 text-sm text-white hover:text-white/80 transition-colors">
-                  <User className="h-4 w-4" />
-                  {profile?.name || user?.email?.split('@')[0] || 'Account'}
-                  <ChevronDown className="h-3 w-3" />
-                </DropdownMenuTrigger>
+                {/* User Avatar Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center transition-colors">
+                    <Avatar className="h-8 w-8 border border-white/20">
+                      <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.name || 'Profile'} />
+                      <AvatarFallback className="bg-white/10 text-white text-xs">
+                        {(profile?.name || profile?.stage_name || user?.email?.charAt(0) || 'U').charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48" style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)' }}>
                   <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
                     <Link to="/profile" className="cursor-pointer flex items-center gap-2">
