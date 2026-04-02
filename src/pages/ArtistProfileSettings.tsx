@@ -28,7 +28,8 @@ import {
   Share2,
   Eye,
   Copy,
-  CheckCircle2
+  CheckCircle2,
+  Camera
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
