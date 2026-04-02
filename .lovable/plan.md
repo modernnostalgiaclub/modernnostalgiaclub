@@ -1,38 +1,44 @@
+## Membership Checkout Flow Implementation
 
+### Problem
+The /join page currently links Club Pass to a login page, Accelerator to Patreon, and Artist Incubator to JotForm. There's no unified checkout flow that takes users from tier selection → account creation → payment → membership provisioning.
 
-## Add Role Permissions Reference to Admin Panel
+### Solution
 
-**What**: Add a "Roles & Permissions" section in the Admin panel that clearly documents what each role (Admin, Moderator, User) can access and manage — so you don't have to remember or ask.
+#### 1. Update /join Page CTAs
+- All three tiers should use internal checkout flow (not external Patreon/JotForm links)
+- When an unauthenticated user clicks a tier, store the selected `plan` in URL params and redirect to `/login?redirect=/checkout&plan=club-pass`
+- When an authenticated user clicks, go directly to `/checkout?plan=club-pass`
 
-**Where**: New tab or section within the existing Admin page, alongside Users, Memberships, etc.
+#### 2. Create `/checkout` Page
+- Protected route that shows the selected plan summary
+- Calls `create-membership-checkout` edge function to generate a Stripe session
+- Redirects user to Stripe Checkout
+- Handles loading/error states
 
-### Permissions Matrix
+#### 3. Update Login Page
+- Support `redirect` query param so after login/signup, users are sent back to the checkout page with their plan selection preserved
 
-A readable table showing:
+#### 4. Create Stripe Products & Prices
+- Verify/create Stripe products for each tier:
+  - Club Pass: $10/mo (subscription)
+  - Accelerator: $50/mo (subscription)  
+  - Artist Incubator: $300 one-time (payment)
+- Store the Stripe price IDs in the `membership_plans` table
 
-```text
-Feature / Area              │ Admin │ Moderator │ User
-────────────────────────────┼───────┼───────────┼──────
-User Management             │  ✓    │           │
-Role Assignment             │  ✓    │           │
-Membership Plans / Pricing  │  ✓    │           │
-Site Settings               │  ✓    │           │
-Database Backup             │  ✓    │           │
-Notifications (send)        │  ✓    │           │
-Submission Review           │  ✓    │     ✓     │
-Community Moderation        │  ✓    │     ✓     │
-Content Flagging            │  ✓    │     ✓     │
-Own Profile / Settings      │  ✓    │     ✓     │  ✓
-Submit Audio / Projects     │  ✓    │     ✓     │  ✓
-Community Participation     │  ✓    │     ✓     │  ✓
-Courses & Dashboard         │  ✓    │     ✓     │  ✓
+#### 5. Handle Post-Payment Provisioning
+- After successful Stripe checkout, the user lands on `/dashboard?membership=success`
+- Create a `stripe-membership-webhook` edge function to handle `checkout.session.completed`:
+  - Update `member_subscriptions` status from "pending" → "active"
+  - Sync the `patreon_tier` on the `profiles` table to match the purchased plan
+  - This ensures the tier tag is visible in admin user management
+
+#### 6. Admin Visibility
+- The existing admin Users tab already shows tier info — ensure it pulls from `member_subscriptions` for accurate tier display
+
+### Flow Summary
+```
+/join → Select Tier → /login (if not auth'd) → /checkout → Stripe → /dashboard?membership=success
 ```
 
-### Implementation
-
-1. **Create `src/components/AdminRolesPermissions.tsx`** — A card-based or table view showing the permissions matrix above, styled consistently with the admin panel.
-
-2. **Add a "Roles" tab** in `src/pages/Admin.tsx` so it's accessible from the admin navigation alongside Users, Memberships, Settings, etc.
-
-No database changes needed — this is a static reference view built from the existing role logic in the codebase.
-
+No new database tables needed. Uses existing `membership_plans`, `member_subscriptions`, and `profiles` tables.
