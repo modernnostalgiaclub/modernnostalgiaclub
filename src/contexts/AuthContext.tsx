@@ -32,6 +32,7 @@ interface AuthContextType {
   signInWithPatreon: () => Promise<void>;
   signOut: () => Promise<void>;
   refreshMFAStatus: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
