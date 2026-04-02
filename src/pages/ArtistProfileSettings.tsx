@@ -403,7 +403,7 @@ export default function ArtistProfileSettings() {
     }
   };
 
-
+  const handleSaveProfile = async () => {
     if (!user) return;
     const result = profileFormSchema.safeParse(formData);
     if (!result.success) {
