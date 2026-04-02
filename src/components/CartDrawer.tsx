@@ -44,7 +44,7 @@ export function CartDrawer() {
           <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
             <ShoppingBag className="w-12 h-12 text-gray-300 mb-4" />
             <p className="text-gray-500 text-sm">Your cart is empty</p>
-            <Button variant="outline" size="sm" className="mt-4" onClick={() => setIsOpen(false)}>
+            <Button size="sm" className="mt-4 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsOpen(false)}>
               Continue Shopping
             </Button>
           </div>
