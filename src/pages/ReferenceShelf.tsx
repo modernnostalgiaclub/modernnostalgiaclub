@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import artistResourcesHero from '@/assets/artist-resources-hero.jpg';
 import { Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
