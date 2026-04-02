@@ -346,7 +346,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="metadata-tips">
                         <AccordionTrigger>What metadata should I include?</AccordionTrigger>
                         <AccordionContent>
-                          <div className="space-y-3 text-muted-foreground">
+                          <div className="space-y-3 text-gray-500">
                             <p>Complete metadata increases your chances of sync placement:</p>
                             <ul className="space-y-2">
                               {['Title: Clear, descriptive name', 'Artist/Composer: Your professional name', 'Genre: Primary and secondary genres', 'Mood/Energy: Emotional descriptors', 'Tempo (BPM): Beats per minute', 'Instrumentation: Key instruments used'].map(item => (
