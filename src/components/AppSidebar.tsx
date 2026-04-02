@@ -55,7 +55,6 @@ const navSections = [
     label: 'Account',
     items: [
       { title: 'Settings', url: '/account', icon: Settings },
-      { title: 'Notifications', url: '/notifications', icon: Bell },
     ],
   },
 ];
