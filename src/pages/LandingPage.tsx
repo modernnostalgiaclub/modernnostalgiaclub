@@ -542,6 +542,14 @@ export default function LandingPage() {
         {/* ── Artist Grid ──────────────────────────────────────────── */}
         <ArtistGrid />
 
+        {/* ── Editorial Articles ─────────────────────────────────── */}
+        <EditorialArticles />
+        <div className="bg-white py-4 pb-16 text-center">
+          <Button size="lg" asChild className="bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white">
+            <Link to="/blog">Read More <ArrowRight className="w-4 h-4 ml-2" /></Link>
+          </Button>
+        </div>
+
         {/* ── What's Inside ────────────────────────────────────────── */}
         <WhatsInside />
 
