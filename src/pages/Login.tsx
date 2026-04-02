@@ -3,12 +3,12 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
-import logoCream from '@/assets/logo-cream.png';
+import logoBlack from '@/assets/logo-black.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Login() {
@@ -116,9 +116,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative">
+      <Link
+        to="/"
+        className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+        aria-label="Close"
+      >
+        <X className="w-5 h-5 text-gray-600" />
+      </Link>
+
       <Link to="/" className="mb-8">
-        <img src={logoCream} alt="ModernNostalgia.club" className="h-16 w-auto" />
+        <img src={logoBlack} alt="ModernNostalgia.club" className="h-16 w-auto" />
       </Link>
 
       <div className="w-full max-w-sm space-y-5">
@@ -148,7 +156,7 @@ export default function Login() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">or</span>
+            <span className="bg-white px-2 text-muted-foreground">or</span>
           </div>
         </div>
 
@@ -163,7 +171,7 @@ export default function Login() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">or sign in with email</span>
+            <span className="bg-white px-2 text-muted-foreground">or sign in with email</span>
           </div>
         </div>
 
