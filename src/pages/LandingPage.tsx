@@ -308,20 +308,19 @@ function WhatsInside() {
 const TIERS = [
   {
     name: 'Club Pass',
+    slug: 'club-pass',
     price: '$10/mo',
     desc: 'Your entry into the ecosystem. Start building your foundation with access to the essentials.',
     cta: 'Join Now',
-    href: '/login?tab=signup',
     features: ['Artist profile', 'Core courses', 'Access to select free events', 'Community access'],
     highlighted: false,
-    external: false,
   },
   {
     name: 'Accelerator',
+    slug: 'accelerator',
     price: '$50/mo',
     desc: 'Build momentum. Monetize your craft. Everything in Club Pass, plus:',
     cta: 'Join the Club',
-    href: 'https://www.patreon.com/modernnostalgiaclub',
     features: [
       'Full access to all courses',
       'Member directory for networking & collaboration',
@@ -334,14 +333,13 @@ const TIERS = [
       'Private community chatroom',
     ],
     highlighted: true,
-    external: true,
   },
   {
     name: 'Artist Incubator',
+    slug: 'artist-incubator',
     price: '$300',
-    desc: 'High-level guidance. Real career acceleration. Application only. Everything in Accelerator, plus:',
-    cta: 'Apply Now',
-    href: 'https://pci.jotform.com/form/253309376850058',
+    desc: 'High-level guidance. Real career acceleration. Everything in Accelerator, plus:',
+    cta: 'Get Started',
     features: [
       'Bi-weekly 1-on-1 sessions with GeOh',
       'Direct submission opportunities for sync placements',
@@ -352,7 +350,6 @@ const TIERS = [
       'Monthly catalog audit & personalized feedback (valued at $250)',
     ],
     highlighted: false,
-    external: true,
     badge: 'One-Time',
   },
 ];

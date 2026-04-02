@@ -24,9 +24,11 @@ export default function Login() {
 
   const loginInputClassName = 'auth-input-clean h-12';
 
+  const redirectTo = searchParams.get('redirect');
+
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
-  }, [user, navigate]);
+    if (user) navigate(redirectTo || '/dashboard', { replace: true });
+  }, [user, navigate, redirectTo]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
