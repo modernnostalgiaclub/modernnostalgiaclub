@@ -191,10 +191,10 @@ export default function ReferenceShelf() {
             transition={{ duration: 0.5 }}
             className="max-w-4xl mx-auto mb-16 text-center"
           >
-            <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-foreground mb-4">
+            <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-gray-900 mb-4">
               Artist Resources
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
               Everything you need to build, manage, and monetize your music career — organized and ready to use.
             </p>
           </motion.div>
