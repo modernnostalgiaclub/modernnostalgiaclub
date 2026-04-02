@@ -222,22 +222,22 @@ export function Header({ showNav = true }: HeaderProps) {
         )}
         
         {/* Right side: social + auth buttons */}
-        <div className="flex items-center gap-4 shrink-0 ml-auto relative z-10">
-          <div className="hidden md:flex items-center gap-3">
-            <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors" aria-label="Instagram (opens in new tab)">
+        <div className="flex items-center gap-3 shrink-0 ml-auto relative z-10">
+          <div className="hidden md:flex items-center gap-2.5">
+            <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors" aria-label="Instagram (opens in new tab)">
               <Instagram className="h-4 w-4" />
             </a>
-            <a href="https://www.threads.net/@modernnostalgia.club" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors" aria-label="Threads (opens in new tab)">
+            <a href="https://www.threads.net/@modernnostalgia.club" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors" aria-label="Threads (opens in new tab)">
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.59 12c.025 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.96-.065-1.187.408-2.26 1.33-3.017.88-.724 2.104-1.126 3.59-1.179.943-.033 1.813.043 2.601.218-.068-1.299-.57-2.28-1.49-2.913-.59-.404-1.352-.614-2.266-.625l-.036-.003c-1.174 0-2.154.395-2.834 1.143l-1.482-1.348c1.065-1.171 2.534-1.794 4.317-1.794l.052.002c1.898.023 3.405.723 4.35 2.024.88 1.21 1.34 2.88 1.365 4.965l.002.096c.033.344.033.69 0 1.032-.13 2.94-1.15 5.04-3.036 6.25-1.674 1.076-3.78 1.625-6.264 1.633zM10.39 15.71c-.14.024-.28.043-.42.055-1.594.13-2.412.9-2.368 1.706.042.748.924 1.393 2.118 1.329 1.08-.058 1.928-.468 2.523-1.22.45-.567.769-1.322.943-2.243-.68-.18-1.446-.28-2.296-.275-.174.002-.34.01-.5.024v-.002z" clipRule="evenodd" fillRule="evenodd"/></svg>
             </a>
-            <a href="https://x.com/geohworks" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors" aria-label="Twitter/X (opens in new tab)">
+            <a href="https://x.com/geohworks" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors" aria-label="Twitter/X (opens in new tab)">
               <Twitter className="h-4 w-4" />
             </a>
           </div>
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
               {/* Cart */}
               <button
                 onClick={() => setCartOpen(true)}
