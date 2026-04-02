@@ -35,6 +35,7 @@ import { AdminArtistTracks } from '@/components/AdminArtistTracks';
 import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
 import { AdminUserManagement } from '@/components/AdminUserManagement';
 import { useAuditLog } from '@/hooks/useAuditLog';
+import { AdminRolesPermissions } from '@/components/AdminRolesPermissions';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
