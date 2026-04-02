@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import logoCream from '@/assets/logo-cream.png';
+import mncLogoBlack from '@/assets/mnc-logo-black.png';
 import {
   ArrowRight,
   ExternalLink,
