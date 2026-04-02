@@ -300,7 +300,7 @@ export default function Account() {
                             <p className="text-foreground">
                               {subscription
                                 ? new Date(subscription.started_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-                                : new Date(profile?.created_at || '').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                : '—'}
                             </p>
                           </div>
                           <div className="space-y-1">
