@@ -72,6 +72,9 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/artistresources" className={linkClasses}>
             Artist Resources
           </Link>
+          <Link to="/store" className={linkClasses}>
+            Store
+          </Link>
           <Link to="/events" className={linkClasses}>
             Events
           </Link>
