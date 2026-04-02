@@ -411,6 +411,8 @@ function LabCTA() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function MusicBlogHome() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -422,7 +424,7 @@ export default function MusicBlogHome() {
             <Link to="/blog">Read More <ArrowRight className="w-4 h-4 ml-2" /></Link>
           </Button>
         </div>
-        <LatestTracks />
+        {!user && <LatestTracks />}
         <PlaylistsSection />
         <LabCTA />
       </main>
