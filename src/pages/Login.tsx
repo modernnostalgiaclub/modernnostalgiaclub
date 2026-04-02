@@ -52,7 +52,7 @@ export default function Login() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
-      navigate('/dashboard');
+      navigate(redirectTo || '/dashboard');
     } catch (error: any) {
       toast({ title: 'Sign in failed', description: error.message, variant: 'destructive' });
     } finally {
