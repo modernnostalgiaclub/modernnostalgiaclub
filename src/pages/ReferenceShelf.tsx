@@ -433,17 +433,17 @@ function ResourceCard({ item, user, signInWithPatreon, onDownloadClick, tracks }
   };
 
   return (
-    <Card variant="feature" className="flex flex-col h-full">
+    <Card className="flex flex-col h-full bg-gray-50 border-gray-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200">
       <CardContent className="p-5 flex flex-col flex-1">
         {item.type && (
           <span className="text-xs text-primary uppercase tracking-wider font-medium mb-1">{item.type}</span>
         )}
-        <h3 className="font-bold text-foreground text-base mb-1.5">{item.title}</h3>
+        <h3 className="font-bold text-gray-900 text-base mb-1.5">{item.title}</h3>
         {item.description && (
-          <p className="text-sm text-muted-foreground flex-1 line-clamp-3">{item.description}</p>
+          <p className="text-sm text-gray-500 flex-1 line-clamp-3">{item.description}</p>
         )}
         {item.artist && (
-          <p className="text-xs text-muted-foreground mt-1">by {item.artist}</p>
+          <p className="text-xs text-gray-400 mt-1">by {item.artist}</p>
         )}
         {renderAction()}
       </CardContent>
