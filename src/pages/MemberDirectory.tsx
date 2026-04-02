@@ -79,7 +79,7 @@ export default function MemberDirectory() {
                 </h1>
               </div>
               <p className="text-muted-foreground">
-                Connect with fellow artists and creators in the Creative Economy Lab.
+                Connect with fellow artists and creators in the Club.
                 Members appear here once they've set their Stage Name in their profile.
               </p>
             </div>

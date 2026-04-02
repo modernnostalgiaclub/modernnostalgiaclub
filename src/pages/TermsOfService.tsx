@@ -24,7 +24,7 @@ export default function TermsOfService() {
           <section>
             <h2 className="font-display text-2xl mb-4">2. Description of Service</h2>
             <p className="text-muted-foreground leading-relaxed">
-              ModernNostalgia.club operates a Creative Economy Lab—an online educational platform providing training, resources, templates, professional workflows, and community features designed for independent artists and music creators seeking to build sustainable creative careers.
+              ModernNostalgia.club operates a Modern Nostalgia Club—an online educational platform providing training, resources, templates, professional workflows, and community features designed for independent artists and music creators seeking to build sustainable creative careers.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
               Access to certain features, content, and services requires an active paid membership through our authorized payment processor, Patreon, Inc. We reserve the right to modify, suspend, or discontinue any aspect of the Service at any time without prior notice.
