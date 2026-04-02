@@ -58,25 +58,28 @@ export function Header({ showNav = true }: HeaderProps) {
   const linkClasses = "text-sm text-white hover:text-primary transition-colors";
   const mobileLinkClasses = "block py-3 text-lg text-foreground hover:text-primary transition-colors";
 
+  const navLinks = [
+    { label: 'About', url: '/about' },
+    { label: 'Blog', url: '/blog' },
+    { label: isLoggedIn ? 'Dashboard' : 'Join the Club', url: isLoggedIn ? '/dashboard' : '/join' },
+    { label: 'Artist Resources', url: '/artistresources' },
+    { label: 'Store', url: '/store' },
+    { label: 'Contact', url: '/contact' },
+  ];
+
   const DesktopNavLinks = () => (
     <>
-      <Link to="/about" className={linkClasses}>About</Link>
-      <Link to="/blog" className={linkClasses}>Blog</Link>
-      <Link to="/join" className={linkClasses}>Join the Club</Link>
-      <Link to="/artistresources" className={linkClasses}>Artist Resources</Link>
-      <Link to="/store" className={linkClasses}>Store</Link>
-      <Link to="/contact" className={linkClasses}>Contact</Link>
+      {navLinks.map((link) => (
+        <Link key={link.url} to={link.url} className={linkClasses}>{link.label}</Link>
+      ))}
     </>
   );
 
   const MobileNavLinks = () => (
     <>
-      <Link to="/about" className={mobileLinkClasses} onClick={closeMobileMenu}>About</Link>
-      <Link to="/blog" className={mobileLinkClasses} onClick={closeMobileMenu}>Blog</Link>
-      <Link to="/join" className={mobileLinkClasses} onClick={closeMobileMenu}>Join the Club</Link>
-      <Link to="/artistresources" className={mobileLinkClasses} onClick={closeMobileMenu}>Artist Resources</Link>
-      <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>Store</Link>
-      <Link to="/contact" className={mobileLinkClasses} onClick={closeMobileMenu}>Contact</Link>
+      {navLinks.map((link) => (
+        <Link key={link.url} to={link.url} className={mobileLinkClasses} onClick={closeMobileMenu}>{link.label}</Link>
+      ))}
     </>
   );
 
