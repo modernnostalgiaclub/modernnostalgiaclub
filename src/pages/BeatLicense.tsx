@@ -81,7 +81,7 @@ export default function BeatLicense() {
                 Production for Artists
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl">
-                Exclusive beat licensing available only to Creative Economy Lab members at special member rates.
+                Exclusive beat licensing available only to Artist Incubator members at special member rates.
               </p>
             </motion.div>
 
