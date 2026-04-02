@@ -308,13 +308,11 @@ export default function Store() {
                         variant="maroon"
                         size="lg"
                         className="w-full md:w-auto"
-                        onClick={() => handlePurchase(serviceProduct.id)}
-                        disabled={!auditConfirmed || loadingProductId === serviceProduct.id}
+                        onClick={() => addItem(serviceProduct.id)}
+                        disabled={!auditConfirmed}
                       >
-                        {loadingProductId === serviceProduct.id ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : null}
-                        Purchase Catalog Audit — ${serviceProduct.price}
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Add to Cart — ${serviceProduct.price}
                       </Button>
                     </div>
                   </div>
