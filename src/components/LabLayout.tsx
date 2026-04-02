@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Footer } from '@/components/Footer';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Header } from '@/components/Header';
@@ -21,6 +22,7 @@ export function LabLayout({ children }: LabLayoutProps) {
             className="flex-1 min-w-0 overflow-auto lab-content"
           >
             {children}
+            <Footer />
           </main>
         </div>
       </div>
