@@ -126,7 +126,7 @@ export function NotificationBell() {
             </span>
           )}
           <span className="sr-only">Notifications</span>
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between p-4 border-b border-border">
