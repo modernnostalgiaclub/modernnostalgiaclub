@@ -168,19 +168,6 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Submit Music card */}
-              <div className="border border-gray-200 rounded-xl p-6 bg-gray-50">
-                <p className="text-sm font-bold text-black uppercase tracking-wide mb-2">Want to Submit Music?</p>
-                <p className="text-sm text-gray-500 mb-4">
-                  Create a free creator account to submit your mashups and edits for consideration.
-                </p>
-                <a
-                  href="/login"
-                  className="inline-block text-sm font-bold uppercase tracking-wider border border-black text-black px-5 py-2.5 rounded-lg hover:bg-black hover:text-white transition-colors"
-                >
-                  Submit Music
-                </a>
-              </div>
             </div>
           </div>
         </div>
