@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Header } from '@/components/Header';
+import { SectionLabel } from '@/components/SectionLabel';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
