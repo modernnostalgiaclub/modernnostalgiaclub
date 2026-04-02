@@ -92,7 +92,7 @@ export default function BlogIndex() {
                           )}
                         </div>
                         <div className="mt-4">
-                          <h2 className="font-anton text-sm md:text-base uppercase tracking-tight leading-snug text-gray-800 group-hover:text-gray-500 transition-colors">
+                          <h2 className="font-anton text-sm md:text-base uppercase tracking-tight leading-snug text-gray-800 group-hover:text-[#1194ff] transition-colors">
                             {post.title}
                           </h2>
                           <p className="text-xs text-gray-400 uppercase tracking-widest mt-1">
