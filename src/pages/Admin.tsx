@@ -233,6 +233,10 @@ export default function Admin() {
             <TabsContent value="migration">
               <AdminPatreonMigration />
             </TabsContent>
+
+            <TabsContent value="memberships">
+              <AdminMembershipPlans />
+            </TabsContent>
           </Tabs>
         </main>
         <Footer />
