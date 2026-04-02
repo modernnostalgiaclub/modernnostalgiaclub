@@ -437,11 +437,7 @@ function PricingSection() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function LandingPage() {
-  const { user, loading } = useAuth();
-
-  if (!loading && user) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-white">
