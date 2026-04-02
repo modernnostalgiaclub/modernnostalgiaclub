@@ -338,16 +338,16 @@ export default function Store() {
                 )}
               </div>
 
-              {/* JotForm Embed for Creative Economy Lab */}
+              {/* JotForm Embed for Artist Incubator */}
               {showJotForm && (
                 <div ref={jotformRef} className="mt-8 rounded-xl border border-border overflow-hidden">
                   <div className="p-4 bg-secondary/30 border-b border-border">
-                    <h3 className="font-display text-lg">Creative Economy Lab Application</h3>
-                    <p className="text-sm text-muted-foreground">Complete the form below to apply for the $150 one-time program.</p>
+                    <h3 className="font-display text-lg">Artist Incubator Application</h3>
+                    <p className="text-sm text-muted-foreground">Complete the form below to apply for the $300 one-time program.</p>
                   </div>
                   <iframe
                     src="https://pci.jotform.com/form/253309376850058"
-                    title="Creative Economy Lab Application"
+                    title="Artist Incubator Application"
                     width="100%"
                     height="700"
                     frameBorder="0"

@@ -1396,9 +1396,9 @@ function UsersManager() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="lab-pass">Lab Pass ($1)</SelectItem>
-                  <SelectItem value="creator-accelerator">Creator Accelerator ($10)</SelectItem>
-                  <SelectItem value="creative-economy-lab">Creative Economy Lab ($150)</SelectItem>
+                  <SelectItem value="lab-pass">Club Pass ($10)</SelectItem>
+                  <SelectItem value="creator-accelerator">Accelerator ($50)</SelectItem>
+                  <SelectItem value="creative-economy-lab">Artist Incubator ($300)</SelectItem>
                 </SelectContent>
               </Select>
               <Button onClick={() => tierReauth.requireReauth(handleUpdateTier)} size="sm" className="mt-2">

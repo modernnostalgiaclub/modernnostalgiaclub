@@ -203,7 +203,7 @@ export default function Dashboard() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <p className="font-serif font-semibold text-foreground">You're a founding Patreon member 🎉</p>
-                      <p className="text-sm text-muted-foreground mt-1">Upgrade to Creative Economy Lab — free, permanently. No credit card needed.</p>
+                      <p className="text-sm text-muted-foreground mt-1">Upgrade to Artist Incubator — free, permanently. No credit card needed.</p>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       <Button size="sm" className="whitespace-nowrap"

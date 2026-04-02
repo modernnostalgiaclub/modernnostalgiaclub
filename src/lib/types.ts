@@ -50,8 +50,8 @@ export const TIER_INFO: Record<PatreonTier, {
   color: string;
 }> = {
   'lab-pass': {
-    name: 'Lab Pass',
-    price: '$1',
+    name: 'Club Pass',
+    price: '$10',
     features: [
       'Dashboard access',
       'Classroom access',
@@ -62,10 +62,10 @@ export const TIER_INFO: Record<PatreonTier, {
     color: 'muted',
   },
   'creator-accelerator': {
-    name: 'Creator Accelerator',
-    price: '$10',
+    name: 'Accelerator',
+    price: '$50',
     features: [
-      'Everything in Lab Pass',
+      'Everything in Club Pass',
       'Priority submissions',
       'Feedback visibility',
       'Studio Floor access',
@@ -73,8 +73,8 @@ export const TIER_INFO: Record<PatreonTier, {
     color: 'amber',
   },
   'creative-economy-lab': {
-    name: 'Creative Economy Lab Access',
-    price: '$150',
+    name: 'Artist Incubator',
+    price: '$300',
     features: [
       'All features unlocked',
       'Priority review',
