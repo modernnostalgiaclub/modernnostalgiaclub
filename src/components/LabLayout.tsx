@@ -22,6 +22,7 @@ export function LabLayout({ children }: LabLayoutProps) {
             className="flex-1 min-w-0 overflow-auto lab-content"
           >
             {children}
+            <Footer />
           </main>
         </div>
       </div>
