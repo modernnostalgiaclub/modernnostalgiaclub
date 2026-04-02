@@ -33,6 +33,7 @@ import { AdminDatabaseBackup } from '@/components/AdminDatabaseBackup';
 import { AdminPatreonMigration } from '@/components/AdminPatreonMigration';
 import { AdminArtistTracks } from '@/components/AdminArtistTracks';
 import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
+import { AdminGrandfatheredMembers } from '@/components/AdminGrandfatheredMembers';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import type { Database } from '@/integrations/supabase/types';
 
