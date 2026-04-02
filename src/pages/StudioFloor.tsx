@@ -318,7 +318,7 @@ export default function StudioFloor() {
         currentTier={userTier}
         lockedContent={
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">Studio Floor access requires Creator Accelerator tier or higher.</p>
+            <p className="text-muted-foreground mb-4">Studio Floor access requires Accelerator tier or higher.</p>
             <Button variant="maroon" asChild>
               <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
                 Upgrade on Patreon

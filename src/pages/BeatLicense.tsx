@@ -38,20 +38,20 @@ export default function BeatLicense() {
             <div className="max-w-2xl mx-auto text-center">
               <SectionLabel className="mb-4">Exclusive Content</SectionLabel>
               <h1 className="text-4xl md:text-5xl font-display mb-6">
-                Creative Economy Lab Members Only
+                Artist Incubator Members Only
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Exclusive beat licensing at member rates is available only to Creative Economy Lab members.
+                Exclusive beat licensing at member rates is available only to Artist Incubator members.
               </p>
               <Card variant="elevated" className="p-8">
                 <AlertTriangle className="w-12 h-12 text-amber mx-auto mb-4" />
                 <h2 className="font-display text-2xl mb-4">Upgrade to Access</h2>
                 <p className="text-muted-foreground mb-6">
-                  Join the Creative Economy Lab to unlock exclusive beat licenses at $60 per beat 
+                  Join the Artist Incubator to unlock exclusive beat licenses at $60 per beat 
                   (50% off regular pricing) plus 50/50 master and writer splits.
                 </p>
                 <Button variant="maroon" size="lg" onClick={() => navigate('/apply')}>
-                  Apply for Creative Economy Lab
+                  Apply for Artist Incubator
                 </Button>
               </Card>
             </div>
@@ -81,7 +81,7 @@ export default function BeatLicense() {
                 Production for Artists
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl">
-                Exclusive beat licensing available only to Creative Economy Lab members at special member rates.
+                Exclusive beat licensing available only to Artist Incubator members at special member rates.
               </p>
             </motion.div>
 
@@ -147,7 +147,7 @@ export default function BeatLicense() {
                       <span className="text-muted-foreground"> (% Divided between Producers)</span>
                     </p>
                     <p className="text-sm text-maroon mt-2 font-medium">
-                      THIS PRICE IS ONLY FOR CREATIVE ECONOMY LAB MEMBERS
+                      THIS PRICE IS ONLY FOR ARTIST INCUBATOR MEMBERS
                     </p>
                   </div>
 

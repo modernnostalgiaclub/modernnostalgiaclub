@@ -17,14 +17,14 @@ export default function TermsOfService() {
               These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "you," or "your") and ModernNostalgia.club ("Company," "we," "us," or "our"), a business operating under the laws of the State of California, United States, with its principal place of business in San Diego, California.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              By accessing or using our website at modernnostalgia.club and any related services, including our Creative Economy Lab platform (collectively, the "Service"), you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree to these Terms, you must immediately discontinue use of the Service.
+              By accessing or using our website at modernnostalgia.club and any related services, including our Modern Nostalgia Club platform (collectively, the "Service"), you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree to these Terms, you must immediately discontinue use of the Service.
             </p>
           </section>
 
           <section>
             <h2 className="font-display text-2xl mb-4">2. Description of Service</h2>
             <p className="text-muted-foreground leading-relaxed">
-              ModernNostalgia.club operates a Creative Economy Lab—an online educational platform providing training, resources, templates, professional workflows, and community features designed for independent artists and music creators seeking to build sustainable creative careers.
+              ModernNostalgia.club operates a Modern Nostalgia Club—an online educational platform providing training, resources, templates, professional workflows, and community features designed for independent artists and music creators seeking to build sustainable creative careers.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
               Access to certain features, content, and services requires an active paid membership through our authorized payment processor, Patreon, Inc. We reserve the right to modify, suspend, or discontinue any aspect of the Service at any time without prior notice.

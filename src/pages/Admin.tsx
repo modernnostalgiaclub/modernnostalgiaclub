@@ -529,9 +529,9 @@ function CoursesManager() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lab-pass">Lab Pass</SelectItem>
-                    <SelectItem value="creator-accelerator">Creator Accelerator</SelectItem>
-                    <SelectItem value="creative-economy-lab">Creative Economy Lab</SelectItem>
+                    <SelectItem value="lab-pass">Club Pass</SelectItem>
+                    <SelectItem value="creator-accelerator">Accelerator</SelectItem>
+                    <SelectItem value="creative-economy-lab">Artist Incubator</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1323,10 +1323,10 @@ function UsersManager() {
 
   const tierLabel = (tier: PatreonTier | null) => {
     switch (tier) {
-      case 'lab-pass': return 'Lab Pass';
-      case 'creator-accelerator': return 'Creator Accelerator';
-      case 'creative-economy-lab': return 'Creative Economy Lab';
-      default: return 'Lab Pass';
+      case 'lab-pass': return 'Club Pass';
+      case 'creator-accelerator': return 'Accelerator';
+      case 'creative-economy-lab': return 'Artist Incubator';
+      default: return 'Club Pass';
     }
   };
 
@@ -1396,9 +1396,9 @@ function UsersManager() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="lab-pass">Lab Pass ($1)</SelectItem>
-                  <SelectItem value="creator-accelerator">Creator Accelerator ($10)</SelectItem>
-                  <SelectItem value="creative-economy-lab">Creative Economy Lab ($150)</SelectItem>
+                  <SelectItem value="lab-pass">Club Pass ($10)</SelectItem>
+                  <SelectItem value="creator-accelerator">Accelerator ($50)</SelectItem>
+                  <SelectItem value="creative-economy-lab">Artist Incubator ($300)</SelectItem>
                 </SelectContent>
               </Select>
               <Button onClick={() => tierReauth.requireReauth(handleUpdateTier)} size="sm" className="mt-2">
@@ -1935,7 +1935,7 @@ function TracksManager() {
                     <SelectItem value="Approved Example">Approved Example</SelectItem>
                     <SelectItem value="Free Download">Free Download</SelectItem>
                     <SelectItem value="Interactive Tool">Interactive Tool</SelectItem>
-                    <SelectItem value="CEL Members Only">CEL Members Only</SelectItem>
+                    <SelectItem value="Incubator Members Only">Incubator Members Only</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

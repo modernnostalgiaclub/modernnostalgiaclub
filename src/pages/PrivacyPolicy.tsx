@@ -14,7 +14,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="font-display text-2xl mb-4">1. Introduction</h2>
             <p className="text-muted-foreground leading-relaxed">
-              ModernNostalgia.club ("Company," "we," "us," or "our"), a business operating under the laws of the State of California, United States, with its principal place of business in San Diego, California, is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website modernnostalgia.club and use our Creative Economy Lab platform and related services (collectively, the "Service").
+              ModernNostalgia.club ("Company," "we," "us," or "our"), a business operating under the laws of the State of California, United States, with its principal place of business in San Diego, California, is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website modernnostalgia.club and use our Modern Nostalgia Club platform and related services (collectively, the "Service").
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
               By accessing or using the Service, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please do not access or use the Service.

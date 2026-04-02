@@ -12,10 +12,10 @@ const LabApplication = () => {
   return (
     <>
       <Helmet>
-        <title>Creative Economy Lab Application | Modern Nostalgia Club</title>
+        <title>Artist Incubator Application | Modern Nostalgia Club</title>
         <meta
           name="description"
-          content="Apply to join the Creative Economy Lab - an exclusive program for serious artists ready to build sustainable creative careers."
+          content="Apply to join the Artist Incubator - an exclusive program for serious artists ready to build sustainable creative careers."
         />
       </Helmet>
 
@@ -32,7 +32,7 @@ const LabApplication = () => {
               className="max-w-4xl mx-auto text-center mb-8"
             >
               <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Creative Economy Lab Application
+                Artist Incubator Application
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Ready to take your creative career to the next level? Fill out the application below. 
@@ -50,7 +50,7 @@ const LabApplication = () => {
               <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-lg">
                 <iframe
                   src="https://pci.jotform.com/form/253309376850058"
-                  title="Creative Economy Lab Application Form"
+                  title="Artist Incubator Application Form"
                   className="w-full border-0"
                   style={{ minHeight: "800px", height: "100vh", maxHeight: "1200px" }}
                   allowFullScreen

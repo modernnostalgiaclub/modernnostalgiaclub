@@ -44,7 +44,7 @@ export default function BeatLibrary() {
                 Exclusive Production Catalog
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Browse exclusive beats from Ge Oh & collaborators. Available for licensing to Creative Economy Lab members at special member rates.
+                Browse exclusive beats from Ge Oh & collaborators. Available for licensing to Artist Incubator members at special member rates.
               </p>
             </motion.div>
 
@@ -123,7 +123,7 @@ export default function BeatLibrary() {
                     <CheckCircle className="w-12 h-12 text-maroon mx-auto mb-4" />
                     <h2 className="font-display text-2xl mb-2">Ready to License?</h2>
                     <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                      As a Creative Economy Lab member, you have access to exclusive member rates. 
+                      As an Artist Incubator member, you have access to exclusive member rates. 
                       Submit your license request and Ge Oh will reach out to finalize your order.
                     </p>
                     <Button variant="maroon" size="lg" asChild>
@@ -138,14 +138,14 @@ export default function BeatLibrary() {
                 <Card className="border-2 border-amber/50 bg-gradient-to-br from-amber/10 to-amber/5">
                   <CardContent className="p-8 text-center">
                     <Lock className="w-12 h-12 text-amber mx-auto mb-4" />
-                    <h2 className="font-display text-2xl mb-2">CEL Members Only</h2>
+                    <h2 className="font-display text-2xl mb-2">Incubator Members Only</h2>
                     <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                      Exclusive beat licensing is available only to Creative Economy Lab members. 
+                      Exclusive beat licensing is available only to Artist Incubator members. 
                       Apply to join and unlock member pricing.
                     </p>
                     <Button variant="maroon" size="lg" asChild>
                       <Link to="/apply">
-                        Apply for Creative Economy Lab
+                        Apply for Artist Incubator
                       </Link>
                     </Button>
                   </CardContent>

@@ -165,7 +165,7 @@ const handler = async (req: Request): Promise<Response> => {
         ` : ''}
         
         <hr />
-        <p><em>This submission was made through the Creative Economy Lab Beat License form by authenticated user ${user.id}.</em></p>
+        <p><em>This submission was made through the Artist Incubator Beat License form by authenticated user ${user.id}.</em></p>
       `,
     });
 

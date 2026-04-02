@@ -131,7 +131,7 @@ serve(async (req) => {
     await supabase.from("notifications").insert({
       user_id: newUserId,
       title: "🎉 Upgrade Complete!",
-      message: "You've been upgraded to Creative Economy Lab — our highest tier. Welcome to the inner circle.",
+      message: "You've been upgraded to Artist Incubator — our highest tier. Welcome to the inner circle.",
       type: "upgrade",
       link: "/dashboard",
     });

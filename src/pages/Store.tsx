@@ -190,10 +190,10 @@ export default function Store() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                {/* Lab Pass */}
+                {/* Club Pass */}
                 <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
                   <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Lab Pass</h3>
+                    <h3 className="font-display text-xl mb-1">Club Pass</h3>
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-display text-foreground">$5</span>
                       <span className="text-muted-foreground text-sm">/month</span>
@@ -219,7 +219,7 @@ export default function Store() {
                   </Button>
                 </div>
 
-                {/* Creator Accelerator */}
+                {/* Accelerator */}
                 <div className="bg-card border-2 border-maroon rounded-lg p-5 relative flex flex-col">
                   <div className="absolute -top-3 left-4">
                     <span className="bg-maroon text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
@@ -227,7 +227,7 @@ export default function Store() {
                     </span>
                   </div>
                   <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Creator Accelerator</h3>
+                    <h3 className="font-display text-xl mb-1">Accelerator</h3>
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-display text-maroon">$10</span>
                       <span className="text-muted-foreground text-sm">/month</span>
@@ -236,7 +236,7 @@ export default function Store() {
                   <p className="text-muted-foreground mb-4 text-xs">Professional workflows. Priority access. Real feedback.</p>
                   <ul className="space-y-2 mb-5 flex-1">
                     {[
-                      'Everything in Lab Pass',
+                      'Everything in Club Pass',
                       'Studio Floor access',
                       'Priority submissions',
                       'Professional feedback',
@@ -256,7 +256,7 @@ export default function Store() {
                   </Button>
                 </div>
 
-                {/* Creative Economy Lab */}
+                {/* Artist Incubator */}
                 <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
                   <div className="absolute -top-3 left-4">
                     <span className="bg-amber/20 text-amber border border-amber/30 text-xs font-medium px-3 py-1 rounded-full">
@@ -264,7 +264,7 @@ export default function Store() {
                     </span>
                   </div>
                   <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Creative Economy Lab</h3>
+                    <h3 className="font-display text-xl mb-1">Artist Incubator</h3>
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-display text-amber">$150</span>
                       <span className="text-muted-foreground text-sm">one-time</span>
@@ -273,7 +273,7 @@ export default function Store() {
                   <p className="text-muted-foreground mb-4 text-xs">Serious artists only. Deep work, real results.</p>
                   <ul className="space-y-2 mb-5 flex-1">
                     {[
-                      'Everything in Creator Accelerator',
+                      'Everything in Accelerator',
                       '1-on-1 strategy sessions',
                       'Sync catalog review',
                       'Priority feedback',
@@ -338,16 +338,16 @@ export default function Store() {
                 )}
               </div>
 
-              {/* JotForm Embed for Creative Economy Lab */}
+              {/* JotForm Embed for Artist Incubator */}
               {showJotForm && (
                 <div ref={jotformRef} className="mt-8 rounded-xl border border-border overflow-hidden">
                   <div className="p-4 bg-secondary/30 border-b border-border">
-                    <h3 className="font-display text-lg">Creative Economy Lab Application</h3>
-                    <p className="text-sm text-muted-foreground">Complete the form below to apply for the $150 one-time program.</p>
+                    <h3 className="font-display text-lg">Artist Incubator Application</h3>
+                    <p className="text-sm text-muted-foreground">Complete the form below to apply for the $300 one-time program.</p>
                   </div>
                   <iframe
                     src="https://pci.jotform.com/form/253309376850058"
-                    title="Creative Economy Lab Application"
+                    title="Artist Incubator Application"
                     width="100%"
                     height="700"
                     frameBorder="0"

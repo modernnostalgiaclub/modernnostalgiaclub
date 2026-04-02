@@ -44,9 +44,9 @@ export default function MigrateToGoogle() {
         return;
       }
       if (data?.already_upgraded) {
-        toast.info("You're already at the Creative Economy Lab tier!");
+        toast.info("You're already at the Artist Incubator tier!");
       } else {
-        toast.success('🎉 Welcome to Creative Economy Lab! Your account has been upgraded.');
+        toast.success('🎉 Welcome to Artist Incubator! Your account has been upgraded.');
       }
       sessionStorage.removeItem('patreon_source_user_id');
       sessionStorage.removeItem('patreon_source_email');
@@ -190,8 +190,8 @@ export default function MigrateToGoogle() {
             className="text-muted-foreground text-sm leading-relaxed"
           >
             {prefillEmail
-              ? <>Claim your upgrade for <strong className="text-foreground">{prefillEmail}</strong> — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.</>
-              : <>Sign in or create a new account — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Creative Economy Lab</strong> — free, permanently.</>
+              ? <>Claim your upgrade for <strong className="text-foreground">{prefillEmail}</strong> — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Artist Incubator</strong> — free, permanently.</>
+              : <>Sign in or create a new account — we'll link it to your Patreon membership and upgrade you to <strong className="text-foreground">Artist Incubator</strong> — free, permanently.</>
             }
           </motion.p>
         </div>

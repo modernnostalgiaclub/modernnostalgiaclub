@@ -91,7 +91,7 @@ export function AdminPatreonMigration() {
       const { error: notifError } = await supabase.from('notifications').insert({
         user_id: userId,
         title: '🎉 You\'re Getting a Free Upgrade',
-        message: 'As a founding Patreon member, you\'re being upgraded to Creative Economy Lab — our highest tier — for free. Sign in with Google to claim your upgrade.',
+        message: 'As a founding Patreon member, you\'re being upgraded to Artist Incubator — our highest tier — for free. Sign in with Google to claim your upgrade.',
         type: 'upgrade',
         link: '/migrate',
       });
@@ -128,7 +128,7 @@ export function AdminPatreonMigration() {
       const notifications = pending.map(m => ({
         user_id: m.user_id,
         title: '🎉 You\'re Getting a Free Upgrade',
-        message: 'As a founding Patreon member, you\'re being upgraded to Creative Economy Lab — our highest tier — for free. Sign in with Google to claim your upgrade.',
+        message: 'As a founding Patreon member, you\'re being upgraded to Artist Incubator — our highest tier — for free. Sign in with Google to claim your upgrade.',
         type: 'upgrade',
         link: '/migrate',
       }));
@@ -176,7 +176,7 @@ export function AdminPatreonMigration() {
             Patreon Migration
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Notify founding Patreon members to claim their free Creative Economy Lab upgrade
+            Notify founding Patreon members to claim their free Artist Incubator upgrade
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={loadMembers} className="gap-2">

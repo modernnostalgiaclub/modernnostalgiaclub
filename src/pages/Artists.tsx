@@ -83,7 +83,7 @@ export default function Artists() {
                 </span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-                Creators from the Creative Economy Lab — browse their work, connect, and collaborate.
+                Creators from the Club — browse their work, connect, and collaborate.
               </p>
 
               {!isLoading && artists.length > 0 && (

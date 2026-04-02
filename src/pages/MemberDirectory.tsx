@@ -61,7 +61,7 @@ export default function MemberDirectory() {
         <title>Member Directory | ModernNostalgia.club</title>
         <meta
           name="description"
-          content="Browse the Creative Economy Lab member directory. Connect with fellow artists, producers, and creators."
+          content="Browse the Modern Nostalgia Club member directory. Connect with fellow artists, producers, and creators."
         />
       </Helmet>
 
@@ -79,7 +79,7 @@ export default function MemberDirectory() {
                 </h1>
               </div>
               <p className="text-muted-foreground">
-                Connect with fellow artists and creators in the Creative Economy Lab.
+                Connect with fellow artists and creators in the Club.
                 Members appear here once they've set their Stage Name in their profile.
               </p>
             </div>
