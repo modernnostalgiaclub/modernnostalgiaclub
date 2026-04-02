@@ -16,6 +16,8 @@ export default function Login() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
+  const isJoinFlow = !!searchParams.get('redirect');
+  const [mode, setMode] = useState<'signin' | 'signup'>(isJoinFlow ? 'signup' : 'signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,15 +26,20 @@ export default function Login() {
 
   const loginInputClassName = 'auth-input-clean h-12';
 
+  const redirectTo = searchParams.get('redirect');
+
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
-  }, [user, navigate]);
+    if (user) navigate(redirectTo || '/dashboard', { replace: true });
+  }, [user, navigate, redirectTo]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
+      const redirectUri = redirectTo 
+        ? `${window.location.origin}${redirectTo}${searchParams.get('plan') ? `?plan=${searchParams.get('plan')}` : ''}`
+        : window.location.origin;
       const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
+        redirect_uri: redirectUri,
       });
       if (error) throw error;
     } catch (error: any) {
@@ -41,15 +48,25 @@ export default function Login() {
     }
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) throw error;
-      navigate('/dashboard');
+      if (mode === 'signup') {
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: redirectTo ? `${window.location.origin}${redirectTo}${searchParams.get('plan') ? `?plan=${searchParams.get('plan')}` : ''}` : window.location.origin },
+        });
+        if (error) throw error;
+        toast({ title: 'Check your email', description: 'We sent you a confirmation link to verify your account.' });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+        if (error) throw error;
+        navigate(redirectTo || '/dashboard');
+      }
     } catch (error: any) {
-      toast({ title: 'Sign in failed', description: error.message, variant: 'destructive' });
+      toast({ title: mode === 'signup' ? 'Sign up failed' : 'Sign in failed', description: error.message, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -134,15 +151,15 @@ export default function Login() {
             <span className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-gray-400">or sign in with email</span>
+            <span className="bg-white px-2 text-gray-400">or {mode === 'signup' ? 'sign up' : 'sign in'} with email</span>
           </div>
         </div>
 
-        <form onSubmit={handleSignIn} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="signin-email" className="text-gray-700">Email</Label>
+            <Label htmlFor="auth-email" className="text-gray-700">Email</Label>
             <Input
-              id="signin-email"
+              id="auth-email"
               type="email"
               placeholder="you@example.com"
               value={email}
@@ -153,34 +170,39 @@ export default function Login() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="signin-password" className="text-gray-700">Password</Label>
+            <Label htmlFor="auth-password" className="text-gray-700">Password</Label>
             <Input
-              id="signin-password"
+              id="auth-password"
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              autoComplete="current-password"
+              autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
               className={loginInputClassName}
             />
           </div>
           <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === 'signup' ? 'Create Account' : 'Sign In'}
           </Button>
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            disabled={resetLoading}
-            className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
-          >
-            {resetLoading ? 'Sending…' : 'Forgot password?'}
-          </button>
+          {mode === 'signin' && (
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={resetLoading}
+              className="text-sm text-gray-400 hover:text-gray-700 transition-colors w-full text-center"
+            >
+              {resetLoading ? 'Sending…' : 'Forgot password?'}
+            </button>
+          )}
         </form>
 
         <p className="text-center text-xs text-gray-400">
-          Not a member?{' '}
-          <Link to="/join" className="underline hover:text-gray-700">Join the Club</Link>
+          {mode === 'signin' ? (
+            <>Not a member?{' '}<button onClick={() => setMode('signup')} className="underline hover:text-gray-700">Create an account</button></>
+          ) : (
+            <>Already have an account?{' '}<button onClick={() => setMode('signin')} className="underline hover:text-gray-700">Sign in</button></>
+          )}
         </p>
       </div>
     </div>
