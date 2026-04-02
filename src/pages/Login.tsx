@@ -171,7 +171,7 @@ export default function Login() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">or sign in with email</span>
+            <span className="bg-white px-2 text-muted-foreground">or sign in with email</span>
           </div>
         </div>
 
