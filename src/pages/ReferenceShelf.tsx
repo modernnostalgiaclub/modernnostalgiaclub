@@ -183,22 +183,36 @@ export default function ReferenceShelf() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      <main className="pt-24 pb-20">
-        <div className="container mx-auto px-6">
-          {/* Page Header */}
-          <motion.div
+      {/* Hero Section */}
+      <div className="relative w-full h-[340px] md:h-[420px] overflow-hidden">
+        <img
+          src={artistResourcesHero}
+          alt="Artist performing on stage"
+          className="w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-4xl mx-auto mb-16 text-center"
+            className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-white mb-4"
           >
-            <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight text-gray-900 mb-4">
-              Artist Resources
-            </h1>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Everything you need to build, manage, and monetize your music career — organized and ready to use.
-            </p>
-          </motion.div>
+            Artist Resources
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-lg text-white/80 max-w-2xl mx-auto"
+          >
+            Everything you need to build, manage, and monetize your music career — organized and ready to use.
+          </motion.p>
+        </div>
+      </div>
+
+      <main className="pb-20 pt-12">
+        <div className="container mx-auto px-6">
 
           {isLoading ? (
             <div className="max-w-5xl mx-auto space-y-12">
