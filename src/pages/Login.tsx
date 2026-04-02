@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
-import logoBlack from '@/assets/logo-black.png';
+import logoMnc from '@/assets/logo-mnc.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -126,7 +126,7 @@ export default function Login() {
       </Link>
 
       <Link to="/" className="mb-8">
-        <img src={logoBlack} alt="ModernNostalgia.club" className="h-16 w-auto" />
+        <img src={logoMnc} alt="ModernNostalgia.club" className="h-16 w-auto" />
       </Link>
 
       <div className="w-full max-w-sm space-y-5">
