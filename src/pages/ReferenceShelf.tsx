@@ -179,7 +179,7 @@ export default function ReferenceShelf() {
   const isLoading = loadingResources || loadingTracks;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Header />
       
       <main className="pt-24 pb-20">
