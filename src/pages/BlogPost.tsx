@@ -63,7 +63,7 @@ export default function BlogPost() {
       <Header />
       <main id="main-content" role="main">
         {/* Back link */}
-        <div className="container mx-auto px-6 pt-24 pb-4">
+        <div className="container mx-auto px-6 pt-32 pb-4">
           <Link
             to="/blog"
             className="inline-flex items-center text-sm text-gray-500 hover:text-black transition-colors uppercase tracking-widest"
