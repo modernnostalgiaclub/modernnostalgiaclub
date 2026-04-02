@@ -66,7 +66,7 @@ export default function BlogIndex() {
         <section className="border-b border-border/40">
           <div className="container mx-auto px-6 pt-32 pb-16">
             <SectionLabel className="mb-4">Editorial</SectionLabel>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[1.0] mb-4 text-foreground">
+            <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight leading-[1.05] mb-4 text-foreground">
               The Blog
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
