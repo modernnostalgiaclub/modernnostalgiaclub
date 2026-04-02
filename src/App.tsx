@@ -61,7 +61,7 @@ const App = () => (
           <CookieConsent />
           <Routes>
             <Route path="/" element={<MusicBlogHome />} />
-            <Route path="/lab" element={<LandingPage />} />
+            
             <Route path="/join" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/blog" element={<BlogIndex />} />
