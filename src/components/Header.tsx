@@ -28,6 +28,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const { user, profile, loading, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
+  const { totalItems, setIsOpen: setCartOpen } = useCart();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
