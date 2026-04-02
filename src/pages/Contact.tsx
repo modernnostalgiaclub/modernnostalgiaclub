@@ -57,11 +57,14 @@ export default function Contact() {
           alt="Studio session"
           className="w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight text-white">
-            Contact
-          </h1>
-        </div>
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
+
+      {/* Contact heading below hero */}
+      <div className="text-center py-10">
+        <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight text-gray-900">
+          Contact
+        </h1>
       </div>
 
       <main id="main-content" className="flex-1 px-6 py-16 md:py-24">
