@@ -70,6 +70,30 @@
     --sidebar-ring: 210 100% 54%;
   }
 
+  /* Light content area inside dark shell (sidebar layout) */
+  .lab-content {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 98%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --secondary: 210 20% 94%;
+    --secondary-foreground: 222 47% 12%;
+    --muted: 210 15% 93%;
+    --muted-foreground: 222 15% 42%;
+    --border: 210 15% 87%;
+    --input: 210 15% 93%;
+    --cream: 222 47% 11%;
+    --cream-muted: 222 20% 35%;
+    --studio-black: 0 0% 100%;
+    --studio-charcoal: 210 20% 96%;
+    --tape-label: 210 15% 90%;
+    --navy: 0 0% 100%;
+    color: hsl(222 47% 11%);
+    background: hsl(0 0% 100%);
+  }
+
   .light {
     --background: 210 40% 97%;
     --foreground: 222 47% 8%;
