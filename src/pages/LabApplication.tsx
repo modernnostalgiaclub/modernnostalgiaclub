@@ -32,7 +32,7 @@ const LabApplication = () => {
               className="max-w-4xl mx-auto text-center mb-8"
             >
               <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Creative Economy Lab Application
+                Artist Incubator Application
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Ready to take your creative career to the next level? Fill out the application below. 
