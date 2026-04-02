@@ -72,6 +72,9 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/artistresources" className={linkClasses}>
             Artist Resources
           </Link>
+          <Link to="/store" className={linkClasses}>
+            Store
+          </Link>
           <Link to="/events" className={linkClasses}>
             Events
           </Link>
@@ -116,6 +119,9 @@ export function Header({ showNav = true }: HeaderProps) {
         <Link to="/artistresources" className={linkClasses}>
           Artist Resources
         </Link>
+        <Link to="/store" className={linkClasses}>
+          Store
+        </Link>
         <Link to="/contact" className={linkClasses}>
           Contact
         </Link>
@@ -138,6 +144,9 @@ export function Header({ showNav = true }: HeaderProps) {
           </Link>
           <Link to="/artistresources" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Artist Resources
+          </Link>
+          <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Store
           </Link>
           <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Events
@@ -177,6 +186,9 @@ export function Header({ showNav = true }: HeaderProps) {
         </Link>
         <Link to="/artistresources" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Artist Resources
+        </Link>
+        <Link to="/store" className={mobileLinkClasses} onClick={closeMobileMenu}>
+          Store
         </Link>
         <Link to="/contact" className={mobileLinkClasses} onClick={closeMobileMenu}>
           Contact
