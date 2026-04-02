@@ -628,6 +628,74 @@ export type Database = {
           },
         ]
       }
+      membership_plans: {
+        Row: {
+          billing_period: string
+          created_at: string
+          description: string | null
+          features: string[] | null
+          grace_period_days: number
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          limit_one_per_email: boolean
+          name: string
+          parent_plan_id: string | null
+          price: number
+          promo_codes: Json | null
+          sort_order: number
+          stripe_price_id: string | null
+          stripe_product_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          billing_period?: string
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          grace_period_days?: number
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          limit_one_per_email?: boolean
+          name: string
+          parent_plan_id?: string | null
+          price?: number
+          promo_codes?: Json | null
+          sort_order?: number
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          billing_period?: string
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          grace_period_days?: number
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          limit_one_per_email?: boolean
+          name?: string
+          parent_plan_id?: string | null
+          price?: number
+          promo_codes?: Json | null
+          sort_order?: number
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_plans_parent_plan_id_fkey"
+            columns: ["parent_plan_id"]
+            isOneToOne: false
+            referencedRelation: "membership_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       networking_contacts: {
         Row: {
           company: string | null
