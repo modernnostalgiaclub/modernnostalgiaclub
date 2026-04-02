@@ -470,6 +470,53 @@ export default function ArtistProfileSettings() {
             </motion.div>
 
             <div className="space-y-6">
+              {/* Profile Picture Upload */}
+              <motion.div variants={fadeIn}>
+                <Card variant="elevated">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-6">
+                      <div className="relative group">
+                        <Avatar className="h-24 w-24 border-2 border-primary/20">
+                          <AvatarImage src={avatarUrl || undefined} alt="Profile picture" />
+                          <AvatarFallback className="bg-muted text-2xl">
+                            {(formData.stage_name || formData.full_name || 'U').charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadingAvatar}
+                          className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          {uploadingAvatar ? (
+                            <Loader2 className="h-6 w-6 text-white animate-spin" />
+                          ) : (
+                            <Camera className="h-6 w-6 text-white" />
+                          )}
+                        </button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarUpload}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground">Profile Picture</h3>
+                        <p className="text-sm text-muted-foreground mb-2">Click the photo to upload. Max 2MB.</p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadingAvatar}
+                        >
+                          {uploadingAvatar ? 'Uploading...' : 'Upload Photo'}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
               <motion.div variants={fadeIn}>
                 <ProfileSetupWizard
                   formData={formData}
