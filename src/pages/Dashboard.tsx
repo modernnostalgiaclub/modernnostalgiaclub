@@ -501,6 +501,7 @@ export default function Dashboard() {
           </motion.div>
         </div>
       </main>
+      <Footer />
 
     </div>
   );

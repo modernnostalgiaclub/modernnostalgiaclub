@@ -665,6 +665,7 @@ export default function Community() {
           </motion.div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

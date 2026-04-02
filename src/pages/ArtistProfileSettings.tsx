@@ -593,6 +593,7 @@ export default function ArtistProfileSettings() {
           </motion.div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

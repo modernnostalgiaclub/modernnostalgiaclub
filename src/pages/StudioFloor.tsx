@@ -662,6 +662,7 @@ export default function StudioFloor() {
           </motion.div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
