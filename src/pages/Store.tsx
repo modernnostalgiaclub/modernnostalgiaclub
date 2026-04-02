@@ -6,11 +6,12 @@ import storeHero from '@/assets/store-hero.jpg';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { STORE_PRODUCTS } from '@/lib/storeProducts';
-import { ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { ClipboardCheck, CheckCircle2, HelpCircle, CheckCircle, Loader2, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useCart } from '@/contexts/CartContext';
 
 const catalogAuditFAQ = [
   {
@@ -62,6 +63,7 @@ export default function Store() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const auditFullRef = useRef<HTMLDivElement>(null);
+  const { addItem } = useCart();
 
   const handlePurchase = async (productId: string) => {
     setLoadingProductId(productId);
@@ -171,13 +173,10 @@ export default function Store() {
                         variant="maroon"
                         size="sm"
                         className="w-full mt-auto text-xs"
-                        onClick={() => handlePurchase(product.id)}
-                        disabled={loadingProductId === product.id}
+                        onClick={() => addItem(product.id)}
                       >
-                        {loadingProductId === product.id ? (
-                          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                        ) : null}
-                        Purchase — ${product.price}
+                        <ShoppingCart className="w-3 h-3 mr-1" />
+                        Add to Cart — ${product.price}
                       </Button>
                     </div>
                   </div>
@@ -309,13 +308,11 @@ export default function Store() {
                         variant="maroon"
                         size="lg"
                         className="w-full md:w-auto"
-                        onClick={() => handlePurchase(serviceProduct.id)}
-                        disabled={!auditConfirmed || loadingProductId === serviceProduct.id}
+                        onClick={() => addItem(serviceProduct.id)}
+                        disabled={!auditConfirmed}
                       >
-                        {loadingProductId === serviceProduct.id ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : null}
-                        Purchase Catalog Audit — ${serviceProduct.price}
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Add to Cart — ${serviceProduct.price}
                       </Button>
                     </div>
                   </div>

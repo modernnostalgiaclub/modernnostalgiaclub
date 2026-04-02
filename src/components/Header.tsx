@@ -4,7 +4,8 @@ import logoBlack from '@/assets/logo-black.png';
 import mncTextLogo from '@/assets/mnc-text-logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram, Twitter } from 'lucide-react';
+import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram, Twitter, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
@@ -27,6 +28,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const { user, profile, loading, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
+  const { totalItems, setIsOpen: setCartOpen } = useCart();
   const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -231,6 +233,18 @@ export function Header({ showNav = true }: HeaderProps) {
             <a href="https://x.com/geohworks" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary transition-colors" aria-label="Twitter/X (opens in new tab)">
               <Twitter className="h-4 w-4" />
             </a>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative text-white hover:text-primary transition-colors"
+              aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
           </div>
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
