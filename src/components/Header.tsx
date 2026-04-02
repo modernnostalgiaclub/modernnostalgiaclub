@@ -357,7 +357,7 @@ export function Header({ showNav = true }: HeaderProps) {
                           variant="maroon"
                           className="w-full"
                           onClick={() => {
-                            handleSignUp();
+                            navigate('/join');
                             closeMobileMenu();
                           }}
                         >
