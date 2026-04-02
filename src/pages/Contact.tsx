@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAntiSpam } from '@/hooks/useAntiSpam';
+import contactHero from '@/assets/contact-hero.jpg';
 
 export default function Contact() {
   const [name, setName] = useState('');
@@ -48,12 +49,24 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
+
+      {/* Hero image */}
+      <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
+        <img
+          src={contactHero}
+          alt="Studio session"
+          className="w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <h1 className="font-anton text-5xl md:text-7xl uppercase tracking-tight text-white">
+            Contact
+          </h1>
+        </div>
+      </div>
+
       <main id="main-content" className="flex-1 px-6 py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <h1 className="font-anton text-5xl md:text-6xl uppercase tracking-tight text-black mb-4">
-              Contact
-            </h1>
             <p className="text-gray-500 text-base md:text-lg">
               Have a question or want to collaborate? We'd love to hear from you.
             </p>
@@ -113,7 +126,7 @@ export default function Contact() {
               <Button
                 type="submit"
                 disabled={sending || isInCooldown}
-                className="w-full h-14 text-base font-bold uppercase tracking-wider bg-[hsl(200,60%,70%)] hover:bg-[hsl(200,60%,60%)] text-black rounded-lg"
+                className="w-full h-14 text-base font-bold uppercase tracking-wider bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
               >
                 <Send className="w-4 h-4 mr-2" />
                 {isInCooldown ? `Wait ${cooldownRemaining}s` : sending ? 'Sending...' : 'Send Message'}
@@ -129,9 +142,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-black uppercase tracking-wide">Email</p>
-                  <a href="mailto:geohworks@gmail.com" className="text-sm text-gray-500 hover:text-black transition-colors">
-                    geohworks@gmail.com
-                  </a>
+                  <p className="text-sm text-gray-500">Email us for inquiries</p>
                 </div>
               </div>
 
@@ -140,9 +151,9 @@ export default function Contact() {
                 <p className="text-sm font-bold text-black uppercase tracking-wide mb-4">Follow Us</p>
                 <div className="flex gap-3">
                   {[
-                    { icon: <Instagram className="w-5 h-5" />, href: 'https://instagram.com/geohworks' },
-                    { icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.87a8.28 8.28 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.28z"/></svg>, href: 'https://tiktok.com/@geohworks' },
-                    { icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>, href: 'https://threads.net/@geohworks' },
+                    { icon: <Instagram className="w-5 h-5" />, href: 'https://www.instagram.com/modernnostalgia.club/' },
+                    { icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>, href: 'https://www.threads.net/@modernnostalgia.club' },
+                    { icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>, href: 'https://twitter.com/geohworks' },
                   ].map((s, i) => (
                     <a
                       key={i}
