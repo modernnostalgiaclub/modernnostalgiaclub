@@ -424,7 +424,7 @@ function PricingSection() {
                   className="w-full"
                   asChild
                 >
-                  <Link to={`/login?redirect=/checkout&plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                  <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                 </Button>
               </motion.div>
             ))}
