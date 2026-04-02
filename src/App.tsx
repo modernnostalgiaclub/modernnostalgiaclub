@@ -99,14 +99,14 @@ const App = () => (
             <Route path="/auth/patreon/callback" element={<AuthCallback />} />
             <Route path="/auth/diagnostics" element={<AuthDiagnostics />} />
             <Route path="/apply" element={<LabApplication />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/store" element={<Store />} />
-            <Route path="/store/success" element={<StoreSuccess />} />
-            <Route path="/catalog-audit" element={<CatalogAudit />} />
-            <Route path="/sync-quiz" element={<SyncQuiz />} />
-            <Route path="/connect" element={<Connect />} />
+            <Route path="/terms" element={<AuthAwareLayout><TermsOfService /></AuthAwareLayout>} />
+            <Route path="/privacy" element={<AuthAwareLayout><PrivacyPolicy /></AuthAwareLayout>} />
+            <Route path="/contact" element={<AuthAwareLayout><Contact /></AuthAwareLayout>} />
+            <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />
+            <Route path="/store/success" element={<AuthAwareLayout><StoreSuccess /></AuthAwareLayout>} />
+            <Route path="/catalog-audit" element={<AuthAwareLayout><CatalogAudit /></AuthAwareLayout>} />
+            <Route path="/sync-quiz" element={<AuthAwareLayout><SyncQuiz /></AuthAwareLayout>} />
+            <Route path="/connect" element={<AuthAwareLayout><Connect /></AuthAwareLayout>} />
             <Route path="/free-guide" element={<FreeGuide />} />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
