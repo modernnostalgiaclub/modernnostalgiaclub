@@ -116,8 +116,8 @@ export function Header({ showNav = true }: HeaderProps) {
         )}
         
         {/* Right side: social + auth buttons */}
-        <div className="flex items-center gap-3 shrink-0 ml-auto relative z-10">
-          <div className="hidden md:flex items-center gap-2.5">
+        <div className="flex items-center gap-4 shrink-0 ml-auto relative z-10">
+          <div className="hidden md:flex items-center gap-3">
             <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors" aria-label="Instagram (opens in new tab)">
               <Instagram className="h-4 w-4" />
             </a>
@@ -131,7 +131,7 @@ export function Header({ showNav = true }: HeaderProps) {
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-4">
               {/* Cart */}
               <button
                 onClick={() => setCartOpen(true)}
