@@ -206,7 +206,7 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="users">
-              <UsersManager />
+              <AdminUserManagement />
             </TabsContent>
 
             <TabsContent value="accessibility">
