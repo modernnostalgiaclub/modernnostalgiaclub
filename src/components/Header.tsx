@@ -80,8 +80,8 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/events" className={linkClasses}>
             Events
           </Link>
-          <Link to="/beats" className={linkClasses}>
-            Beat Library
+          <Link to="/beatlibrary" className={linkClasses}>
+            Beat Store
           </Link>
           
           {/* Community Dropdown */}
@@ -153,8 +153,8 @@ export function Header({ showNav = true }: HeaderProps) {
           <Link to="/events" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Events
           </Link>
-          <Link to="/beats" className={mobileLinkClasses} onClick={closeMobileMenu}>
-            Beat Library
+          <Link to="/beatlibrary" className={mobileLinkClasses} onClick={closeMobileMenu}>
+            Beat Store
           </Link>
           <Link to="/community" className={mobileLinkClasses} onClick={closeMobileMenu}>
             Community
