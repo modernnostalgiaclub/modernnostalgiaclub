@@ -57,10 +57,12 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
+          <CartProvider>
           <SkipLink />
           <Toaster />
           <Sonner />
           <CookieConsent />
+          <CartDrawer />
           <Routes>
             <Route path="/" element={<MusicBlogHome />} />
             
