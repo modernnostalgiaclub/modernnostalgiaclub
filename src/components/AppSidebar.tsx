@@ -23,6 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 
@@ -81,7 +82,10 @@ export function AppSidebar() {
       className="border-r-0 top-20 h-[calc(100vh-5rem)] [&>div]:bg-[#1a1a1a] [&>div]:text-white/80"
       style={{ '--sidebar-accent': '210 100% 50% / 0.15', '--sidebar-accent-foreground': '210 100% 65%' } as React.CSSProperties}
     >
-      <SidebarContent className="pt-4">
+      <SidebarContent className="pt-2">
+        <div className="flex items-center px-3 py-2">
+          <SidebarTrigger className="h-7 w-7 text-primary hover:text-primary" />
+        </div>
         <SidebarGroup>
           <SidebarGroupContent>{renderItems(topItems)}</SidebarGroupContent>
         </SidebarGroup>

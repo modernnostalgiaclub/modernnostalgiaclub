@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Header } from '@/components/Header';
 
@@ -20,9 +20,6 @@ export function LabLayout({ children }: LabLayoutProps) {
             id="main-content"
             className="flex-1 min-w-0 overflow-auto lab-content"
           >
-            <div className="sticky top-0 z-10 flex items-center h-10 px-2 border-b border-border/40 bg-background/80 backdrop-blur-sm">
-              <SidebarTrigger className="h-8 w-8" />
-            </div>
             {children}
           </main>
         </div>
