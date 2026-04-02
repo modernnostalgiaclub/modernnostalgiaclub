@@ -257,7 +257,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       hasAccessToTier, 
       signInWithPatreon, 
       signOut,
-      refreshMFAStatus 
+      refreshMFAStatus,
+      refreshProfile: async () => {
+        if (user) {
+          const profileData = await fetchProfile(user.id);
+          setProfile(profileData);
+        }
+      }
     }}>
       {children}
     </AuthContext.Provider>
