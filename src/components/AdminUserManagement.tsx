@@ -43,7 +43,7 @@ export function AdminUserManagement() {
   const [users, setUsers] = useState<EnrichedProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'legacy' | 'current' | 'no-plan'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'legacy' | 'current' | 'no-plan' | 'admins'>('all');
   const [editingUser, setEditingUser] = useState<EnrichedProfile | null>(null);
   const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
