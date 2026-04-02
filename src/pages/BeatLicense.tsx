@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,7 +56,6 @@ export default function BeatLicense() {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -265,7 +263,6 @@ export default function BeatLicense() {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }
