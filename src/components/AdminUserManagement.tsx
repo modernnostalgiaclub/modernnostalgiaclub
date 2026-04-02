@@ -411,7 +411,15 @@ export function AdminUserManagement() {
                             </div>
                           )}
                           <div>
-                            <p className="font-medium text-foreground">{user.name || 'Unnamed'}</p>
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-medium text-foreground">{user.name || 'Unnamed'}</p>
+                              {user.roles.includes('admin') && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-red-500/20 text-red-400 border-red-500/30">Admin</Badge>
+                              )}
+                              {user.roles.includes('moderator') && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-500/20 text-blue-400 border-blue-500/30">Mod</Badge>
+                              )}
+                            </div>
                             {user.stage_name && <p className="text-xs text-muted-foreground">{user.stage_name}</p>}
                           </div>
                         </div>
