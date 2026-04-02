@@ -63,6 +63,7 @@ export default function Store() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const auditFullRef = useRef<HTMLDivElement>(null);
+  const { addItem } = useCart();
 
   const handlePurchase = async (productId: string) => {
     setLoadingProductId(productId);
