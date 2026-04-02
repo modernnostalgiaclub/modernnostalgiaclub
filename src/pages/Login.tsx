@@ -16,6 +16,8 @@ export default function Login() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
+  const isJoinFlow = !!searchParams.get('redirect');
+  const [mode, setMode] = useState<'signin' | 'signup'>(isJoinFlow ? 'signup' : 'signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
