@@ -239,7 +239,6 @@ export default function Admin() {
             </TabsContent>
           </Tabs>
         </main>
-        <Footer />
       </div>
     
   );
