@@ -33,8 +33,11 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
+      const redirectUri = redirectTo 
+        ? `${window.location.origin}${redirectTo}${searchParams.get('plan') ? `?plan=${searchParams.get('plan')}` : ''}`
+        : window.location.origin;
       const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
+        redirect_uri: redirectUri,
       });
       if (error) throw error;
     } catch (error: any) {
