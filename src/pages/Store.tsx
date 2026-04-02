@@ -190,10 +190,10 @@ export default function Store() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                {/* Lab Pass */}
+                {/* Club Pass */}
                 <div className="bg-card border border-border rounded-lg p-5 relative flex flex-col">
                   <div className="mb-4">
-                    <h3 className="font-display text-xl mb-1">Lab Pass</h3>
+                    <h3 className="font-display text-xl mb-1">Club Pass</h3>
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-display text-foreground">$5</span>
                       <span className="text-muted-foreground text-sm">/month</span>
