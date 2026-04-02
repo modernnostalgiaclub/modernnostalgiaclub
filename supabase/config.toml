@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.create-store-checkout]
 verify_jwt = false
+
+[functions.stripe-membership-webhook]
+verify_jwt = false

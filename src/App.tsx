@@ -110,6 +110,7 @@ const App = () => (
             <Route path="/connect" element={<AuthAwareLayout><Connect /></AuthAwareLayout>} />
             <Route path="/free-guide" element={<AuthAwareLayout><FreeGuide /></AuthAwareLayout>} />
             <Route path="/login" element={<Login />} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/artist/:username" element={<AuthAwareLayout><ArtistProfile /></AuthAwareLayout>} />
             <Route path="/migrate" element={<MigrateToGoogle />} />
