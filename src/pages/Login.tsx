@@ -116,9 +116,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative">
+      <Link
+        to="/"
+        className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+        aria-label="Close"
+      >
+        <X className="w-5 h-5 text-gray-600" />
+      </Link>
+
       <Link to="/" className="mb-8">
-        <img src={logoCream} alt="ModernNostalgia.club" className="h-16 w-auto" />
+        <img src={logoBlack} alt="ModernNostalgia.club" className="h-16 w-auto" />
       </Link>
 
       <div className="w-full max-w-sm space-y-5">
