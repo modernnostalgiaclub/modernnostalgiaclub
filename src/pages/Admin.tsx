@@ -1935,7 +1935,7 @@ function TracksManager() {
                     <SelectItem value="Approved Example">Approved Example</SelectItem>
                     <SelectItem value="Free Download">Free Download</SelectItem>
                     <SelectItem value="Interactive Tool">Interactive Tool</SelectItem>
-                    <SelectItem value="CEL Members Only">CEL Members Only</SelectItem>
+                    <SelectItem value="Incubator Members Only">Incubator Members Only</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
