@@ -237,10 +237,7 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="memberships">
-              <div className="space-y-8">
-                <AdminMembershipPlans />
-                <AdminGrandfatheredMembers />
-              </div>
+              <AdminMembershipPlans />
             </TabsContent>
           </Tabs>
         </main>
