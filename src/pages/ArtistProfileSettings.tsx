@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
@@ -27,7 +28,8 @@ import {
   Share2,
   Eye,
   Copy,
-  CheckCircle2
+  CheckCircle2,
+  Camera
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -324,11 +326,12 @@ function ProfileSetupWizard({
     </Card>
   );
 }
-
 export default function ArtistProfileSettings() {
   const { user, profile, loading } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
-
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<ProfileFormData>({
     full_name: '', stage_name: '', username: '', bio: '',
     pro: '', has_publishing_account: false, publishing_company: '',
@@ -351,8 +354,54 @@ export default function ArtistProfileSettings() {
         spotify: p.spotify || '', soundcloud: p.soundcloud || '',
         discord: p.discord || '', linktree: p.linktree || ''
       });
+      setAvatarUrl(p.avatar_url || null);
     }
   }, [profile]);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Image must be under 2MB');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/avatar.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const urlWithCache = `${publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: urlWithCache } as any)
+        .eq('user_id', user.id);
+      if (updateError) throw updateError;
+
+      setAvatarUrl(urlWithCache);
+      toast.success('Profile picture updated!');
+    } catch (error) {
+      console.error('Avatar upload error:', error);
+      toast.error('Failed to upload profile picture');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleSaveProfile = async () => {
     if (!user) return;
@@ -421,6 +470,53 @@ export default function ArtistProfileSettings() {
             </motion.div>
 
             <div className="space-y-6">
+              {/* Profile Picture Upload */}
+              <motion.div variants={fadeIn}>
+                <Card variant="elevated">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-6">
+                      <div className="relative group">
+                        <Avatar className="h-24 w-24 border-2 border-primary/20">
+                          <AvatarImage src={avatarUrl || undefined} alt="Profile picture" />
+                          <AvatarFallback className="bg-muted text-2xl">
+                            {(formData.stage_name || formData.full_name || 'U').charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadingAvatar}
+                          className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          {uploadingAvatar ? (
+                            <Loader2 className="h-6 w-6 text-white animate-spin" />
+                          ) : (
+                            <Camera className="h-6 w-6 text-white" />
+                          )}
+                        </button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarUpload}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground">Profile Picture</h3>
+                        <p className="text-sm text-muted-foreground mb-2">Click the photo to upload. Max 2MB.</p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadingAvatar}
+                        >
+                          {uploadingAvatar ? 'Uploading...' : 'Upload Photo'}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
               <motion.div variants={fadeIn}>
                 <ProfileSetupWizard
                   formData={formData}
