@@ -49,6 +49,7 @@ import NotFound from "./pages/NotFound";
 import ArtistProfile from "./pages/ArtistProfile";
 import MigrateToGoogle from "./pages/MigrateToGoogle";
 import BlogPost from "./pages/BlogPost";
+import ArtistProfileSettings from "./pages/ArtistProfileSettings";
 
 const queryClient = new QueryClient();
 
