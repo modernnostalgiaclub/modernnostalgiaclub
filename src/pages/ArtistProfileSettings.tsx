@@ -354,6 +354,7 @@ export default function ArtistProfileSettings() {
         spotify: p.spotify || '', soundcloud: p.soundcloud || '',
         discord: p.discord || '', linktree: p.linktree || ''
       });
+      setAvatarUrl(p.avatar_url || null);
     }
   }, [profile]);
 
