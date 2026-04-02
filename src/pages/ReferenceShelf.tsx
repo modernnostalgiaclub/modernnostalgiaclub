@@ -321,7 +321,7 @@ export default function ReferenceShelf() {
                       <AccordionItem value="is-it-free">
                         <AccordionTrigger>Is DISCO free?</AccordionTrigger>
                         <AccordionContent>
-                          <p className="text-muted-foreground">
+                          <p className="text-gray-500">
                             DISCO offers a free tier that's perfect for getting started. You can upload tracks, 
                             create playlists, and share links at no cost. Paid plans offer additional features 
                             like analytics and larger storage.
