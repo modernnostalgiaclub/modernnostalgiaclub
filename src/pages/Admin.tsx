@@ -158,6 +158,10 @@ export default function Admin() {
                 <Crown className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Memberships
               </TabsTrigger>
+              <TabsTrigger value="roles" className="gap-2" aria-label="View roles and permissions">
+                <Shield className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Roles
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
