@@ -46,7 +46,7 @@ const navSections = [
   {
     label: 'Workspace',
     items: [
-      { title: 'Beat Store', url: '/beatlibrary', icon: Music },
+      { title: 'Beat Library', url: '/beatlibrary', icon: Music },
       { title: 'Events', url: '/events', icon: Calendar },
     ],
   },
