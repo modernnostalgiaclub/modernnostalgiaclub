@@ -69,6 +69,21 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "https://modernnostalgiaclub.lovable.app";
     const isSubscription = plan.billing_period === "monthly" || plan.billing_period === "yearly";
 
+    // Check if user already has a subscription (prevent duplicates)
+    const { data: existingSub } = await supabaseClient
+      .from("member_subscriptions")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (existingSub) {
+      return new Response(JSON.stringify({ error: "You already have an active membership" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -80,10 +95,23 @@ serve(async (req) => {
         plan_id: plan.id,
         plan_name: plan.name,
         user_id: user.id,
+        is_new_member: "true",
       },
     };
 
     const session = await stripe.checkout.sessions.create(sessionParams);
+
+    // Record the new subscription at current pricing (NOT grandfathered)
+    await supabaseClient.from("member_subscriptions").insert({
+      user_id: user.id,
+      plan_id: plan.id,
+      locked_price: plan.price,
+      locked_billing_period: plan.billing_period,
+      is_grandfathered: false,
+      status: "pending",
+      stripe_customer_id: customerId || null,
+      notes: `New signup at current pricing ($${plan.price})`,
+    });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
