@@ -123,7 +123,7 @@ export default function BeatLibrary() {
                     <CheckCircle className="w-12 h-12 text-maroon mx-auto mb-4" />
                     <h2 className="font-display text-2xl mb-2">Ready to License?</h2>
                     <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                      As a Creative Economy Lab member, you have access to exclusive member rates. 
+                      As an Artist Incubator member, you have access to exclusive member rates. 
                       Submit your license request and Ge Oh will reach out to finalize your order.
                     </p>
                     <Button variant="maroon" size="lg" asChild>
