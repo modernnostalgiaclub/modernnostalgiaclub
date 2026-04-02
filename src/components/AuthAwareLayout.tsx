@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { LabLayout } from '@/components/LabLayout';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
 
 interface AuthAwareLayoutProps {
   children: ReactNode;
@@ -9,16 +10,19 @@ interface AuthAwareLayoutProps {
 export function AuthAwareLayout({ children }: AuthAwareLayoutProps) {
   const { user, loading } = useAuth();
 
-  // While loading, render without layout to avoid flash
-  if (loading) {
+  if (loading || !user) {
     return <>{children}</>;
   }
 
-  // If signed in, wrap in LabLayout (sidebar + header)
-  if (user) {
-    return <LabLayout>{children}</LabLayout>;
-  }
-
-  // If signed out, render children directly (page handles its own header/footer)
-  return <>{children}</>;
+  // Signed in: show sidebar alongside the page content (page keeps its own header)
+  return (
+    <SidebarProvider defaultOpen={false}>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <div className="flex-1 min-w-0">
+          {children}
+        </div>
+      </div>
+    </SidebarProvider>
+  );
 }
