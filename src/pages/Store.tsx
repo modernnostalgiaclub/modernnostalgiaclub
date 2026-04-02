@@ -101,8 +101,7 @@ export default function Store() {
         {/* Title */}
         <section>
           <div className="container mx-auto px-6 pt-12 pb-8">
-            <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">Shop</p>
-            <h1 className="text-4xl md:text-5xl font-anton uppercase tracking-tight leading-[1.05] mb-4 text-foreground">
+            <h1 className="text-4xl md:text-5xl font-anton uppercase tracking-tight leading-[1.05] mb-4 text-gray-900">
               Store
             </h1>
             <p className="text-lg text-gray-500 max-w-xl leading-relaxed">
