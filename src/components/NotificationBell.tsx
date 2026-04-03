@@ -194,7 +194,7 @@ export function NotificationBell() {
                         {notification.message}
                       </p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-gray-400">
                           {formatDistanceToNow(new Date(notification.created_at), {
                             addSuffix: true,
                           })}
