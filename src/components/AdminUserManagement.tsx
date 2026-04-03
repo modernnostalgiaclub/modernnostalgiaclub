@@ -267,6 +267,87 @@ export function AdminUserManagement() {
     setSelectedRoles(prev => prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]);
   }
 
+  const tierToDefaultPrice: Record<PatreonTier, { price: number; period: string }> = {
+    'lab-pass': { price: 10, period: 'monthly' },
+    'creator-accelerator': { price: 50, period: 'monthly' },
+    'creative-economy-lab': { price: 300, period: 'one-time' },
+  };
+
+  function handleNewUserTierChange(tier: PatreonTier) {
+    const defaults = tierToDefaultPrice[tier];
+    setNewUser(prev => ({
+      ...prev,
+      tier,
+      locked_price: String(defaults.price),
+      locked_billing_period: defaults.period,
+    }));
+  }
+
+  function resetAddUserForm() {
+    setNewUser({
+      name: '',
+      email: '',
+      tier: 'lab-pass',
+      locked_price: '',
+      locked_billing_period: 'monthly',
+      is_grandfathered: false,
+      billing_status: 'active',
+      notes: '',
+    });
+  }
+
+  async function handleAddUser() {
+    if (!newUser.name.trim() || !newUser.email.trim()) {
+      toast.error('Name and email are required');
+      return;
+    }
+
+    setAddUserLoading(true);
+
+    // Find matching plan_id for the selected tier
+    const tierPlanMap: Record<string, string> = {
+      'lab-pass': 'Club Pass',
+      'creator-accelerator': 'Accelerator',
+      'creative-economy-lab': 'Artist Incubator',
+    };
+    const matchingPlan = plans.find(p => p.name === tierPlanMap[newUser.tier]);
+
+    const { data, error } = await supabase.functions.invoke('admin-create-user', {
+      body: {
+        name: newUser.name.trim(),
+        email: newUser.email.trim(),
+        tier: newUser.tier,
+        locked_price: newUser.locked_price ? parseFloat(newUser.locked_price) : 0,
+        locked_billing_period: newUser.locked_billing_period,
+        is_grandfathered: newUser.is_grandfathered,
+        billing_status: newUser.billing_status,
+        notes: newUser.notes.trim() || null,
+        plan_id: matchingPlan?.id || null,
+      },
+    });
+
+    setAddUserLoading(false);
+
+    if (error) {
+      toast.error('Failed to create user: ' + error.message);
+      return;
+    }
+
+    if (data?.error) {
+      toast.error(data.error);
+      return;
+    }
+
+    if (data?.warning) {
+      toast.warning(data.warning);
+    }
+
+    toast.success(`Successfully created ${newUser.name.trim()} as ${tierLabel(newUser.tier)}`);
+    setAddUserOpen(false);
+    resetAddUserForm();
+    fetchAllData();
+  }
+
   if (loading) {
     return (
       <div className="space-y-4">
