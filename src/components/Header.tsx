@@ -220,7 +220,7 @@ export function Header({ showNav = true }: HeaderProps) {
               <Button 
                 variant="outline"
                 size="sm"
-                className="w-24"
+                className="w-24 border-white text-white hover:bg-white hover:text-black"
                 onClick={handleLogin}
               >
                 Log In
@@ -287,7 +287,7 @@ export function Header({ showNav = true }: HeaderProps) {
                       <div className="space-y-3">
                         <Button 
                           variant="outline"
-                          className="w-full"
+                          className="w-full border-white text-white hover:bg-white hover:text-black"
                           onClick={() => {
                             handleLogin();
                             closeMobileMenu();
