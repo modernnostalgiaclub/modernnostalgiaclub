@@ -4,7 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
 
-import { MemberDownloads } from '@/components/MemberDownloads';
+
 import { SectionLabel } from '@/components/SectionLabel';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
