@@ -112,7 +112,10 @@ export function Header({ showNav = true }: HeaderProps) {
       role="banner"
     >
       <div className="w-full px-4 md:px-6 h-20 relative flex items-center justify-between">
-        {/* Sidebar trigger moved to sidebar header only */}
+        {/* Mobile sidebar trigger (logged-in only) */}
+        {isLoggedIn && (
+          <SafeSidebarTrigger />
+        )}
 
         {/* Logo - centered on mobile when logged in, left-aligned on desktop */}
         <Link
