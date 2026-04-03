@@ -124,21 +124,21 @@ export default function Signup() {
           <img src={logoMnc} alt="ModernNostalgia.club" className="h-14 w-auto" />
         </Link>
 
-        <h1 className="text-3xl font-black uppercase tracking-tight text-foreground mb-1" style={{ fontFamily: 'Anton, sans-serif' }}>
+        <h1 className="text-3xl font-black uppercase tracking-tight text-gray-900 mb-1" style={{ fontFamily: 'Anton, sans-serif' }}>
           Create Account
         </h1>
-        <p className="text-sm text-muted-foreground mb-8">
+        <p className="text-sm text-gray-600 mb-8">
           Sign up to access courses, community, and member-only resources.
         </p>
 
         <form onSubmit={handleSignUp} className="space-y-5">
           {/* Account Type */}
           <div className="space-y-2">
-            <Label htmlFor="account-type" className="text-sm font-semibold text-foreground">
+            <Label htmlFor="account-type" className="text-sm font-semibold text-gray-900">
               Account Type <span className="text-red-500">*</span>
             </Label>
             <Select value={accountType} onValueChange={setAccountType}>
-              <SelectTrigger id="account-type" className="h-12 bg-white border-border text-foreground">
+              <SelectTrigger id="account-type" className="h-12 bg-white border-border text-gray-900">
                 <SelectValue placeholder="Select a membership plan" />
               </SelectTrigger>
               <SelectContent>
@@ -154,7 +154,7 @@ export default function Signup() {
           {/* Name Row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="first-name" className="text-sm font-semibold text-foreground">
+              <Label htmlFor="first-name" className="text-sm font-semibold text-gray-900">
                 First Name <span className="text-red-500">*</span>
               </Label>
               <Input
@@ -168,7 +168,7 @@ export default function Signup() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="last-name" className="text-sm font-semibold text-foreground">
+              <Label htmlFor="last-name" className="text-sm font-semibold text-gray-900">
                 Last Name <span className="text-red-500">*</span>
               </Label>
               <Input
@@ -185,7 +185,7 @@ export default function Signup() {
 
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="signup-email" className="text-sm font-semibold text-foreground">
+            <Label htmlFor="signup-email" className="text-sm font-semibold text-gray-900">
               Email <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -202,7 +202,7 @@ export default function Signup() {
 
           {/* Password */}
           <div className="space-y-2">
-            <Label htmlFor="signup-password" className="text-sm font-semibold text-foreground">
+            <Label htmlFor="signup-password" className="text-sm font-semibold text-gray-900">
               Password <span className="text-red-500">*</span>
             </Label>
             <div className="relative">
@@ -227,7 +227,7 @@ export default function Signup() {
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground">Minimum 8 characters</p>
+            <p className="text-xs text-gray-500">Minimum 8 characters</p>
           </div>
 
           {/* Newsletter */}
@@ -238,7 +238,7 @@ export default function Signup() {
               onCheckedChange={(checked) => setSubscribe(checked === true)}
               className="mt-0.5"
             />
-            <Label htmlFor="subscribe" className="text-sm text-muted-foreground font-normal cursor-pointer leading-snug">
+            <Label htmlFor="subscribe" className="text-sm text-gray-700 font-normal cursor-pointer leading-snug">
               Subscribe for updates, drops, and announcements.
             </Label>
           </div>
@@ -251,7 +251,7 @@ export default function Signup() {
               onCheckedChange={(checked) => setAgreeTerms(checked === true)}
               className="mt-0.5"
             />
-            <Label htmlFor="agree-terms" className="text-sm text-muted-foreground font-normal cursor-pointer leading-snug">
+            <Label htmlFor="agree-terms" className="text-sm text-gray-700 font-normal cursor-pointer leading-snug">
               I agree to the{' '}
               <Link to="/terms" className="text-primary hover:underline" target="_blank">Terms of Service</Link>
               {' '}and{' '}
