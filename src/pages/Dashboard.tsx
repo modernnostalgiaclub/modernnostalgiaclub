@@ -358,12 +358,12 @@ export default function Dashboard() {
 
             {/* ── Getting Started Checklist ─────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <div className="rounded-2xl border border-border/30 overflow-hidden"
-                style={{ background: 'hsl(222 40% 7%)' }}>
-                <div className="px-6 py-5 border-b border-border/30 flex items-center justify-between">
+              <div className="rounded-2xl border overflow-hidden"
+                style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
+                <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: 'hsl(0 0% 90%)' }}>
                   <div>
                     <SectionLabel className="mb-1">Onboarding</SectionLabel>
-                    <h2 className="font-serif font-bold text-xl">Getting Started Checklist</h2>
+                    <h2 className="font-serif font-bold text-xl text-gray-900">Getting Started Checklist</h2>
                   </div>
                   {!checklistLoading && (
                     <div className="text-right">
