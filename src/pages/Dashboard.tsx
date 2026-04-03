@@ -327,7 +327,7 @@ export default function Dashboard() {
 
             {/* ── Four Pillars ─────────────────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <SectionLabel className="mb-4">Enter the Lab</SectionLabel>
+              <SectionLabel className="mb-4">Quick Links</SectionLabel>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {pillars.map((item, i) => (
                   <Link key={item.title} to={item.available ? item.link : '#'}
@@ -335,22 +335,19 @@ export default function Dashboard() {
                     <motion.div
                       className={`rounded-xl p-5 border h-full flex flex-col transition-all duration-200 ${
                         item.available
-                          ? 'hover:border-primary/40 cursor-pointer'
+                          ? 'hover:border-blue-300 cursor-pointer'
                           : 'opacity-50 cursor-not-allowed'
                       }`}
                       style={{
-                        background: item.available
-                          ? 'hsl(222 40% 7% / 0.8)'
-                          : 'hsl(222 30% 6%)',
-                        borderColor: 'hsl(222 25% 16%)',
-                        backdropFilter: 'blur(12px)',
+                        background: item.available ? '#fff' : 'hsl(0 0% 96%)',
+                        borderColor: 'hsl(0 0% 88%)',
                       }}
                       whileHover={item.available ? { y: -2 } : {}}
                       transition={{ duration: 0.15 }}
                     >
-                      <item.icon className={`w-7 h-7 mb-3 ${item.available ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <p className="font-serif font-semibold text-sm">{item.title}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <item.icon className={`w-7 h-7 mb-3 ${item.available ? 'text-blue-500' : 'text-gray-400'}`} />
+                      <p className="font-serif font-semibold text-sm text-gray-900">{item.title}</p>
+                      <p className="text-xs text-gray-500 mt-1">
                         {item.available ? item.desc : 'Higher tier required'}
                       </p>
                     </motion.div>
