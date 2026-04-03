@@ -236,8 +236,8 @@ export function Header({ showNav = true }: HeaderProps) {
           {/* Mobile Menu */}
           {showNav && (
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon">
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="ghost" size="icon" className="text-blue hover:text-blue-glow">
                   <Menu className="w-6 h-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
