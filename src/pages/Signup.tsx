@@ -238,7 +238,7 @@ export default function Signup() {
               onCheckedChange={(checked) => setSubscribe(checked === true)}
               className="mt-0.5"
             />
-            <Label htmlFor="subscribe" className="text-sm text-muted-foreground font-normal cursor-pointer leading-snug">
+            <Label htmlFor="subscribe" className="text-sm text-gray-700 font-normal cursor-pointer leading-snug">
               Subscribe for updates, drops, and announcements.
             </Label>
           </div>
