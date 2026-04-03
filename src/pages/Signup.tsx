@@ -134,7 +134,7 @@ export default function Signup() {
         <form onSubmit={handleSignUp} className="space-y-5">
           {/* Account Type */}
           <div className="space-y-2">
-            <Label htmlFor="account-type" className="text-sm font-semibold text-foreground">
+            <Label htmlFor="account-type" className="text-sm font-semibold text-gray-900">
               Account Type <span className="text-red-500">*</span>
             </Label>
             <Select value={accountType} onValueChange={setAccountType}>
