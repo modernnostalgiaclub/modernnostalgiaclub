@@ -215,7 +215,7 @@ export default function Signup() {
                 required
                 minLength={8}
                 autoComplete="new-password"
-                className="h-12 bg-white border-border pr-12"
+                className="h-12 bg-white border-border text-gray-900 pr-12"
               />
               <button
                 type="button"
