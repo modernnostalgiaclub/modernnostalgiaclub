@@ -202,7 +202,7 @@ export default function Signup() {
 
           {/* Password */}
           <div className="space-y-2">
-            <Label htmlFor="signup-password" className="text-sm font-semibold text-foreground">
+            <Label htmlFor="signup-password" className="text-sm font-semibold text-gray-900">
               Password <span className="text-red-500">*</span>
             </Label>
             <div className="relative">
