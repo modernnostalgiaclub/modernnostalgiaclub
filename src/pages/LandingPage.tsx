@@ -339,7 +339,8 @@ const TIERS = [
     slug: 'artist-incubator',
     price: '$300',
     desc: 'High-level guidance. Real career acceleration. Everything in Accelerator, plus:',
-    cta: 'Get Started',
+    cta: 'Apply Now',
+    externalLink: 'https://pci.jotform.com/form/253309376850058',
     features: [
       'Bi-weekly 1-on-1 sessions with GeOh',
       'Direct submission opportunities for sync placements',
