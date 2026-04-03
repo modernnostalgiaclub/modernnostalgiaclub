@@ -251,7 +251,7 @@ export default function Signup() {
               onCheckedChange={(checked) => setAgreeTerms(checked === true)}
               className="mt-0.5"
             />
-            <Label htmlFor="agree-terms" className="text-sm text-muted-foreground font-normal cursor-pointer leading-snug">
+            <Label htmlFor="agree-terms" className="text-sm text-gray-700 font-normal cursor-pointer leading-snug">
               I agree to the{' '}
               <Link to="/terms" className="text-primary hover:underline" target="_blank">Terms of Service</Link>
               {' '}and{' '}
