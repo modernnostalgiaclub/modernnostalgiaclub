@@ -111,13 +111,13 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12 relative">
-      <Link
-        to={selectedPlan ? `/join` : '/'}
+      <button
+        onClick={() => navigate(-1)}
         className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
         aria-label="Close"
       >
-        <X className="w-5 h-5 text-muted-foreground" />
-      </Link>
+        <X className="w-5 h-5 text-gray-500" />
+      </button>
 
       <div className="w-full max-w-md">
         <Link to="/" className="flex justify-center mb-6">
