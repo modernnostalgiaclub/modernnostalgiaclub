@@ -24,6 +24,16 @@ import {
 
 const Header_PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub'; // kept for reference
 
+function SafeSidebarTrigger() {
+  const ctx = React.useContext(SidebarContext);
+  if (!ctx) return null;
+  return (
+    <div className="lg:hidden">
+      <SidebarTrigger className="text-blue hover:text-blue-glow h-6 w-6" />
+    </div>
+  );
+}
+
 interface HeaderProps {
   showNav?: boolean;
 }
