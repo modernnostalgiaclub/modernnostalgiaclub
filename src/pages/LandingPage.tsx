@@ -339,7 +339,8 @@ const TIERS = [
     slug: 'artist-incubator',
     price: '$300',
     desc: 'High-level guidance. Real career acceleration. Everything in Accelerator, plus:',
-    cta: 'Get Started',
+    cta: 'Apply Now',
+    externalLink: 'https://pci.jotform.com/form/253309376850058',
     features: [
       'Bi-weekly 1-on-1 sessions with GeOh',
       'Direct submission opportunities for sync placements',
@@ -420,13 +421,19 @@ function PricingSection() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  variant={tier.highlighted ? 'default' : 'outline'}
-                  className="w-full"
-                  asChild
-                >
-                  <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
-                </Button>
+                {'externalLink' in tier && tier.externalLink ? (
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href={tier.externalLink} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
+                  </Button>
+                ) : (
+                  <Button
+                    variant={tier.highlighted ? 'default' : 'outline'}
+                    className="w-full"
+                    asChild
+                  >
+                    <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                  </Button>
+                )}
               </motion.div>
             ))}
           </div>
