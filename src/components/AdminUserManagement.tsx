@@ -422,6 +422,121 @@ export function AdminUserManagement() {
                   <SelectItem value="no-plan">No Active Plan ({noPlanCount})</SelectItem>
                 </SelectContent>
               </Select>
+              <Dialog open={addUserOpen} onOpenChange={(open) => { setAddUserOpen(open); if (!open) resetAddUserForm(); }}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Add User
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Add New Member</DialogTitle>
+                    <DialogDescription>Manually create a new member account with membership details.</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-2">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="add-name">Full Name *</Label>
+                        <Input
+                          id="add-name"
+                          placeholder="e.g. John Doe"
+                          value={newUser.name}
+                          onChange={e => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="add-email">Email *</Label>
+                        <Input
+                          id="add-email"
+                          type="email"
+                          placeholder="john@example.com"
+                          value={newUser.email}
+                          onChange={e => setNewUser(prev => ({ ...prev, email: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Membership Tier</Label>
+                      <Select value={newUser.tier} onValueChange={(v: PatreonTier) => handleNewUserTierChange(v)}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="lab-pass">Club Pass ($10/mo)</SelectItem>
+                          <SelectItem value="creator-accelerator">Accelerator ($50/mo)</SelectItem>
+                          <SelectItem value="creative-economy-lab">Artist Incubator ($300 one-time)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="add-price">Locked Price ($)</Label>
+                        <Input
+                          id="add-price"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={newUser.locked_price}
+                          onChange={e => setNewUser(prev => ({ ...prev, locked_price: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Billing Period</Label>
+                        <Select value={newUser.locked_billing_period} onValueChange={v => setNewUser(prev => ({ ...prev, locked_billing_period: v }))}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="yearly">Yearly</SelectItem>
+                            <SelectItem value="one-time">One-Time</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Billing Status</Label>
+                      <Select value={newUser.billing_status} onValueChange={v => setNewUser(prev => ({ ...prev, billing_status: v }))}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="comped">Comped (Free)</SelectItem>
+                          <SelectItem value="manual">Manual Payment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        id="add-grandfathered"
+                        checked={newUser.is_grandfathered}
+                        onCheckedChange={v => setNewUser(prev => ({ ...prev, is_grandfathered: v }))}
+                      />
+                      <Label htmlFor="add-grandfathered">Grandfathered (Legacy Rate)</Label>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="add-notes">Internal Notes</Label>
+                      <Textarea
+                        id="add-notes"
+                        placeholder="Any internal notes about this member..."
+                        value={newUser.notes}
+                        onChange={e => setNewUser(prev => ({ ...prev, notes: e.target.value }))}
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-2">
+                      <Button variant="outline" onClick={() => setAddUserOpen(false)}>Cancel</Button>
+                      <Button onClick={handleAddUser} disabled={addUserLoading}>
+                        {addUserLoading ? 'Creating...' : 'Create Member'}
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </CardContent>
         </Card>
