@@ -94,7 +94,7 @@ export const CookieConsent = () => {
       aria-describedby="cookie-consent-description"
       className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 animate-slide-up"
     >
-      <div className="mx-auto max-w-4xl rounded-lg border border-border bg-card/95 backdrop-blur-md p-4 md:p-6 shadow-xl">
+      <div className="mx-auto max-w-4xl rounded-lg border border-border bg-black backdrop-blur-md p-4 md:p-6 shadow-xl">
         <div className="flex items-start gap-4">
           <Cookie className="h-6 w-6 text-primary flex-shrink-0 mt-1" aria-hidden="true" />
           
