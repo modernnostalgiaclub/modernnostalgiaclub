@@ -178,7 +178,7 @@ export default function Signup() {
                 onChange={(e) => setLastName(e.target.value)}
                 required
                 autoComplete="family-name"
-                className="h-12 bg-white border-border"
+                className="h-12 bg-white border-border text-gray-900"
               />
             </div>
           </div>
