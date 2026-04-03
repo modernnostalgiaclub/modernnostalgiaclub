@@ -384,7 +384,7 @@ export default function Dashboard() {
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-150 group ${
                             item.locked
                               ? 'opacity-50 pointer-events-none'
-                              : 'hover:bg-white/5'
+                              : 'hover:bg-gray-50'
                           }`}
                         >
                           {item.done
