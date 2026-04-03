@@ -231,34 +231,34 @@ export default function Dashboard() {
               <div className="relative rounded-2xl overflow-hidden border"
                 style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
                 <div className="relative p-8">
-                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <SectionLabel>Backstage</SectionLabel>
-                        <span className="flex items-center gap-1.5 text-xs font-medium"
-                          style={{ color: 'hsl(142 71% 45%)' }}>
-                          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'hsl(142 71% 45%)' }} />
-                          Live
-                        </span>
-                      </div>
-                      <h1 className="text-4xl md:text-5xl font-anton uppercase leading-tight text-gray-900">
-                        Welcome back,<br />
-                        <span style={{ color: 'hsl(217 100% 50%)' }}>{userName}.</span>
-                      </h1>
-                      <p className="text-gray-500 max-w-md">
-                        You're here to turn creative work into sustainable income. Everything you need is in the sidebar.
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
-                      <TierBadge tier={tier} />
-                      {profile?.username && (
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Radio className="w-3 h-3 text-blue-500" />
-                          <span className="font-mono">modernnostalgia.club/artist/{profile.username}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                     <div className="space-y-3 min-w-0">
+                       <div className="flex items-center gap-3">
+                         <SectionLabel>Backstage</SectionLabel>
+                         <span className="flex items-center gap-1.5 text-xs font-medium"
+                           style={{ color: 'hsl(142 71% 45%)' }}>
+                           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'hsl(142 71% 45%)' }} />
+                           Live
+                         </span>
+                       </div>
+                       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-anton uppercase leading-tight text-gray-900">
+                         Welcome back,<br />
+                         <span style={{ color: 'hsl(217 100% 50%)' }}>{userName}.</span>
+                       </h1>
+                       <p className="text-gray-500 max-w-md">
+                         You're here to turn creative work into sustainable income. Everything you need is in the sidebar.
+                       </p>
+                     </div>
+                     <div className="flex flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0 flex-wrap">
+                       <TierBadge tier={tier} />
+                       {profile?.username && (
+                         <div className="flex items-center gap-2 text-xs text-gray-500">
+                           <Radio className="w-3 h-3 text-blue-500" />
+                           <span className="font-mono truncate max-w-[250px] sm:max-w-none">modernnostalgia.club/artist/{profile.username}</span>
+                         </div>
+                       )}
+                     </div>
+                   </div>
                 </div>
               </div>
             </motion.div>
