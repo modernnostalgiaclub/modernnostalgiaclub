@@ -160,7 +160,7 @@ export function NotificationBell() {
               <p className="text-sm">No notifications yet</p>
             </div>
           ) : (
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-[#333]">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
