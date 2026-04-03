@@ -109,7 +109,7 @@ export function Header({ showNav = true }: HeaderProps) {
         
         {/* Desktop Navigation - truly centered */}
         {showNav && (
-          <nav className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 pointer-events-none" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 pointer-events-none" aria-label="Main navigation">
             <div className="flex items-center gap-6 pointer-events-auto">
               <DesktopNavLinks />
             </div>
@@ -121,7 +121,7 @@ export function Header({ showNav = true }: HeaderProps) {
           {loading ? (
             <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-6">
               <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-blue hover:text-blue-glow transition-colors" aria-label="Instagram (opens in new tab)">
                 <Instagram className="h-4 w-4" />
               </a>
@@ -201,7 +201,7 @@ export function Header({ showNav = true }: HeaderProps) {
               </div>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-3 ml-4">
+            <div className="hidden lg:flex items-center gap-3 ml-4">
               <button
                 onClick={() => setCartOpen(true)}
                 className="relative text-white hover:text-primary transition-colors"
@@ -236,8 +236,8 @@ export function Header({ showNav = true }: HeaderProps) {
           {/* Mobile Menu */}
           {showNav && (
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon">
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="ghost" size="icon" className="text-blue hover:text-blue-glow">
                   <Menu className="w-6 h-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
