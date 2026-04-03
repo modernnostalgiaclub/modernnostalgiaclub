@@ -124,10 +124,10 @@ export default function Signup() {
           <img src={logoMnc} alt="ModernNostalgia.club" className="h-14 w-auto" />
         </Link>
 
-        <h1 className="text-3xl font-black uppercase tracking-tight text-foreground mb-1" style={{ fontFamily: 'Anton, sans-serif' }}>
+        <h1 className="text-3xl font-black uppercase tracking-tight text-gray-900 mb-1" style={{ fontFamily: 'Anton, sans-serif' }}>
           Create Account
         </h1>
-        <p className="text-sm text-muted-foreground mb-8">
+        <p className="text-sm text-gray-600 mb-8">
           Sign up to access courses, community, and member-only resources.
         </p>
 
