@@ -103,6 +103,13 @@ export function Header({ showNav = true }: HeaderProps) {
     >
       <div className="w-full px-4 md:px-6 h-20 relative flex items-center justify-between">
         {/* Logo - far left */}
+        {/* Mobile sidebar trigger (logged-in only) */}
+        {isLoggedIn && (
+          <div className="lg:hidden mr-2">
+            <SidebarTrigger className="text-blue hover:text-blue-glow h-6 w-6" />
+          </div>
+        )}
+
         <Link to="/" className="flex items-center shrink-0" aria-label="ModernNostalgia.club home">
           <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
           <span className="hidden sm:inline font-anton text-sm uppercase tracking-tight text-white -ml-1">Modern Nostalgia<span className="text-primary">.Club</span></span>
