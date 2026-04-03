@@ -416,15 +416,15 @@ export default function Dashboard() {
             {/* ── Learning Progress + Next Action (side by side) ────────── */}
             <motion.div variants={fadeIn} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Learning Progress */}
-              <div className="rounded-xl border border-border/30 p-6"
-                style={{ background: 'hsl(222 40% 7%)' }}>
+              <div className="rounded-xl border p-6"
+                style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
                 <div className="flex items-center gap-3 mb-5">
                   <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
-                    <TrendingUp className="w-5 h-5 text-primary" />
+                    <TrendingUp className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-serif font-semibold">Learning Progress</h3>
-                    <p className="text-xs text-muted-foreground">Overall course completion</p>
+                    <h3 className="font-serif font-semibold text-gray-900">Learning Progress</h3>
+                    <p className="text-xs text-gray-500">Overall course completion</p>
                   </div>
                   {!progressLoading && progress && (
                     <span className="ml-auto text-2xl font-serif font-bold" style={{ color: 'hsl(217 100% 65%)' }}>
