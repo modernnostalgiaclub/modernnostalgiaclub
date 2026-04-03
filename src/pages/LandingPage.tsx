@@ -421,13 +421,19 @@ function PricingSection() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  variant={tier.highlighted ? 'default' : 'outline'}
-                  className="w-full"
-                  asChild
-                >
-                  <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
-                </Button>
+                {'externalLink' in tier && tier.externalLink ? (
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href={tier.externalLink} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
+                  </Button>
+                ) : (
+                  <Button
+                    variant={tier.highlighted ? 'default' : 'outline'}
+                    className="w-full"
+                    asChild
+                  >
+                    <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                  </Button>
+                )}
               </motion.div>
             ))}
           </div>
