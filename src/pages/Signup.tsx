@@ -185,7 +185,7 @@ export default function Signup() {
 
           {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="signup-email" className="text-sm font-semibold text-foreground">
+            <Label htmlFor="signup-email" className="text-sm font-semibold text-gray-900">
               Email <span className="text-red-500">*</span>
             </Label>
             <Input
