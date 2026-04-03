@@ -201,7 +201,7 @@ export function Header({ showNav = true }: HeaderProps) {
               </div>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-3 ml-4">
+            <div className="hidden lg:flex items-center gap-3 ml-4">
               <button
                 onClick={() => setCartOpen(true)}
                 className="relative text-white hover:text-primary transition-colors"
