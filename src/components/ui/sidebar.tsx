@@ -617,6 +617,7 @@ export {
   SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarContext,
   SidebarHeader,
   SidebarInput,
   SidebarInset,

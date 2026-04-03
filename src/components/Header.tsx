@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
 import mncTextLogo from '@/assets/mnc-text-logo.png';
@@ -8,7 +8,7 @@ import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram,
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, SidebarContext } from '@/components/ui/sidebar';
 import { useTheme } from 'next-themes';
 import { NotificationBell } from '@/components/NotificationBell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -21,6 +21,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const Header_PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub'; // kept for reference
+
+function SafeSidebarTrigger() {
+  const ctx = React.useContext(SidebarContext);
+  if (!ctx) return null;
+  return (
+    <div className="lg:hidden">
+      <SidebarTrigger className="text-blue hover:text-blue-glow h-6 w-6" />
+    </div>
+  );
+}
 
 interface HeaderProps {
   showNav?: boolean;
@@ -104,9 +114,7 @@ export function Header({ showNav = true }: HeaderProps) {
       <div className="w-full px-4 md:px-6 h-20 relative flex items-center justify-between">
         {/* Mobile sidebar trigger (logged-in only) */}
         {isLoggedIn && (
-          <div className="lg:hidden">
-            <SidebarTrigger className="text-blue hover:text-blue-glow h-6 w-6" />
-          </div>
+          <SafeSidebarTrigger />
         )}
 
         {/* Logo - centered on mobile when logged in, left-aligned on desktop */}
