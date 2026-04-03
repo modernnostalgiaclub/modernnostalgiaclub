@@ -104,9 +104,7 @@ export function Header({ showNav = true }: HeaderProps) {
       <div className="w-full px-4 md:px-6 h-20 relative flex items-center justify-between">
         {/* Mobile sidebar trigger (logged-in only) */}
         {isLoggedIn && (
-          <div className="lg:hidden">
-            <SidebarTrigger className="text-blue hover:text-blue-glow h-6 w-6" />
-          </div>
+          <SafeSidebarTrigger />
         )}
 
         {/* Logo - centered on mobile when logged in, left-aligned on desktop */}
