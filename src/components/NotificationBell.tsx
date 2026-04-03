@@ -151,7 +151,7 @@ export function NotificationBell() {
         </div>
         <ScrollArea className="h-80">
           {loading ? (
-            <div className="p-4 text-center text-muted-foreground text-sm">
+            <div className="p-4 text-center text-gray-400 text-sm">
               Loading...
             </div>
           ) : notifications.length === 0 ? (
