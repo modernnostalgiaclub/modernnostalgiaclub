@@ -196,7 +196,7 @@ export default function Signup() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="h-12 bg-white border-border"
+              className="h-12 bg-white border-border text-gray-900"
             />
           </div>
 
