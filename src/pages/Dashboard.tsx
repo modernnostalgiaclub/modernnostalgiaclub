@@ -461,7 +461,7 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-500">Recommended action</p>
                   </div>
                 </div>
-                <p className="text-sm text-foreground mb-5 leading-relaxed">{nextAction.text}</p>
+                <p className="text-sm text-gray-700 mb-5 leading-relaxed">{nextAction.text}</p>
                 <Button asChild style={{ background: 'hsl(217 100% 50%)', color: '#fff' }}>
                   <Link to={nextAction.link}>
                     Go <ArrowRight className="ml-2 w-4 h-4" />
