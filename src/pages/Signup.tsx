@@ -113,7 +113,7 @@ export default function Signup() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12 relative">
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+        className="absolute top-5 right-5"
         aria-label="Close"
       >
         <X className="w-5 h-5 text-gray-500" />
