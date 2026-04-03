@@ -220,7 +220,7 @@ export function Header({ showNav = true }: HeaderProps) {
               <Button 
                 variant="outline"
                 size="sm"
-                className="w-24"
+                className="w-24 border-white text-white hover:bg-white hover:text-black"
                 onClick={handleLogin}
               >
                 Log In
