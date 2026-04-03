@@ -129,7 +129,7 @@ export function NotificationBell() {
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 bg-[#1a1a1a] border-[#333] text-white" align="end">
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center justify-between p-4 border-b border-[#333]">
           <Link 
             to="/notifications" 
             onClick={() => setOpen(false)}
