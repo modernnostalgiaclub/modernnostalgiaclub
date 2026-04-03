@@ -449,16 +449,16 @@ export default function Dashboard() {
               {/* Next Recommended Action */}
               <div className="rounded-xl border p-6 flex flex-col justify-between"
                 style={{
-                  background: 'linear-gradient(135deg, hsl(217 100% 50% / 0.1) 0%, hsl(222 40% 7%) 100%)',
-                  borderColor: 'hsl(217 100% 50% / 0.25)',
+                  background: '#fff',
+                  borderColor: 'hsl(0 0% 88%)',
                 }}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.15)' }}>
-                    <Zap className="w-5 h-5 text-primary" />
+                  <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
+                    <Zap className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-serif font-semibold">Next Up</h3>
-                    <p className="text-xs text-muted-foreground">Recommended action</p>
+                    <h3 className="font-serif font-semibold text-gray-900">Next Up</h3>
+                    <p className="text-xs text-gray-500">Recommended action</p>
                   </div>
                 </div>
                 <p className="text-sm text-foreground mb-5 leading-relaxed">{nextAction.text}</p>
