@@ -121,7 +121,7 @@ export function Header({ showNav = true }: HeaderProps) {
           {loading ? (
             <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
           ) : isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-6">
               <a href="https://www.instagram.com/modernnostalgia.club/" target="_blank" rel="noopener noreferrer" className="text-blue hover:text-blue-glow transition-colors" aria-label="Instagram (opens in new tab)">
                 <Instagram className="h-4 w-4" />
               </a>
