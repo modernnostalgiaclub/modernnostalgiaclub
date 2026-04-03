@@ -111,6 +111,7 @@ export function AdminUserManagement() {
 
     const planMap: Record<string, string> = {};
     (plansRes.data || []).forEach((p: any) => { planMap[p.id] = p.name; });
+    setPlans((plansRes.data || []).map((p: any) => ({ id: p.id, name: p.name })));
 
     const subsMap: Record<string, any> = {};
     (subsRes.data || []).forEach((s: any) => {
