@@ -72,6 +72,8 @@ export default function Ebooks() {
         </p>
       </div>
 
+      <MemberDownloads />
+
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (

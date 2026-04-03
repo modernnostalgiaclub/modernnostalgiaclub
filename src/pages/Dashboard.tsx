@@ -472,11 +472,11 @@ export default function Dashboard() {
 
             {/* ── Tier Features ─────────────────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <div className="rounded-2xl border border-border/30 p-6" style={{ background: 'hsl(222 40% 7%)' }}>
+              <div className="rounded-2xl border p-6" style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <SectionLabel className="mb-1">Access Level</SectionLabel>
-                    <h2 className="font-serif font-bold text-xl">Your {tierInfo.name} Features</h2>
+                    <h2 className="font-serif font-bold text-xl text-gray-900">Your {tierInfo.name} Features</h2>
                   </div>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/account">Upgrade <ArrowRight className="ml-1.5 w-3.5 h-3.5" /></Link>
@@ -484,10 +484,9 @@ export default function Dashboard() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {tierInfo.features.map((feature) => (
-                    <div key={feature} className="flex items-center gap-3 p-3 rounded-lg"
-                      style={{ background: 'hsl(222 30% 10%)' }}>
+                    <div key={feature} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
                       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'hsl(217 100% 50%)' }} />
-                      <span className="text-sm text-muted-foreground">{feature}</span>
+                      <span className="text-sm text-gray-700">{feature}</span>
                     </div>
                   ))}
                 </div>

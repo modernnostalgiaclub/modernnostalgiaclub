@@ -72,7 +72,7 @@ export function MemberDownloads() {
                     href={item.externalLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-3"
+                    className="inline-flex items-center gap-1 text-xs text-blue-500 hover:underline mb-3"
                   >
                     <ExternalLink className="w-3 h-3" />
                     {item.externalLink.label}
