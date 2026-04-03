@@ -80,13 +80,7 @@ export default function Ebooks() {
             <Skeleton key={i} className="h-40 rounded-xl" />
           ))}
         </div>
-      ) : ebooks.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            No ebooks available yet. Check back soon!
-          </CardContent>
-        </Card>
-      ) : (
+      ) : ebooks.length === 0 ? null : (
         <div className="grid gap-4 sm:grid-cols-2">
           {ebooks.map((ebook) => (
             <Card key={ebook.id} className="hover:shadow-md transition-shadow">
