@@ -7,8 +7,15 @@ import logoMnc from '@/assets/logo-mnc.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, X } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, X, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+const PLAN_OPTIONS = [
+  { value: 'club-pass', label: 'Club Pass ($10/mo)' },
+  { value: 'accelerator', label: 'Accelerator ($50/mo)' },
+];
 
 const PLAN_LABELS: Record<string, string> = {
   'club-pass': 'Club Pass',
@@ -22,28 +29,35 @@ export default function Signup() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
-  const plan = searchParams.get('plan');
-  const planLabel = plan ? PLAN_LABELS[plan] : null;
+  const planParam = searchParams.get('plan');
 
+  const [accountType, setAccountType] = useState(planParam && PLAN_OPTIONS.some(p => p.value === planParam) ? planParam : '');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [subscribe, setSubscribe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const inputClassName = 'auth-input-clean h-12';
+  const selectedPlan = accountType || planParam || '';
 
   useEffect(() => {
     if (user) {
-      navigate(plan ? `/checkout?plan=${plan}` : '/dashboard', { replace: true });
+      navigate(selectedPlan ? `/checkout?plan=${selectedPlan}` : '/dashboard', { replace: true });
     }
-  }, [user, navigate, plan]);
+  }, [user, navigate, selectedPlan]);
 
   const handleGoogleSignUp = async () => {
+    if (!accountType) {
+      toast({ title: 'Select an account type', description: 'Please choose a membership plan before continuing.', variant: 'destructive' });
+      return;
+    }
     setGoogleLoading(true);
     try {
-      const redirectUri = plan
-        ? `${window.location.origin}/checkout?plan=${plan}`
-        : window.location.origin;
+      const redirectUri = `${window.location.origin}/checkout?plan=${accountType}`;
       const { error } = await lovable.auth.signInWithOAuth('google', {
         redirect_uri: redirectUri,
       });
@@ -56,15 +70,31 @@ export default function Signup() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!accountType) {
+      toast({ title: 'Select an account type', description: 'Please choose a membership plan.', variant: 'destructive' });
+      return;
+    }
+    if (!agreeTerms) {
+      toast({ title: 'Terms required', description: 'You must agree to the Terms of Service and Privacy Policy.', variant: 'destructive' });
+      return;
+    }
+    if (password.length < 8) {
+      toast({ title: 'Password too short', description: 'Password must be at least 8 characters.', variant: 'destructive' });
+      return;
+    }
     setLoading(true);
     try {
       const { error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: plan
-            ? `${window.location.origin}/checkout?plan=${plan}`
-            : window.location.origin,
+          data: {
+            name: `${firstName.trim()} ${lastName.trim()}`.trim(),
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            subscribe_newsletter: subscribe,
+          },
+          emailRedirectTo: `${window.location.origin}/checkout?plan=${accountType}`,
         },
       });
       if (error) throw error;
@@ -80,29 +110,179 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12 relative">
       <Link
-        to={plan ? `/join` : '/'}
-        className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+        to={selectedPlan ? `/join` : '/'}
+        className="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
         aria-label="Close"
       >
-        <X className="w-5 h-5 text-gray-600" />
+        <X className="w-5 h-5 text-muted-foreground" />
       </Link>
 
-      <Link to="/" className="mb-6">
-        <img src={logoMnc} alt="ModernNostalgia.club" className="h-16 w-auto" />
-      </Link>
+      <div className="w-full max-w-md">
+        <Link to="/" className="flex justify-center mb-6">
+          <img src={logoMnc} alt="ModernNostalgia.club" className="h-14 w-auto" />
+        </Link>
 
-      {planLabel && (
-        <p className="text-sm text-muted-foreground mb-6">
-          Create an account to join <span className="font-semibold text-foreground">{planLabel}</span>
+        <h1 className="text-3xl font-black uppercase tracking-tight text-foreground mb-1" style={{ fontFamily: 'Anton, sans-serif' }}>
+          Create Account
+        </h1>
+        <p className="text-sm text-muted-foreground mb-8">
+          Sign up to access courses, community, and member-only resources.
         </p>
-      )}
 
-      <div className="w-full max-w-sm space-y-5">
+        <form onSubmit={handleSignUp} className="space-y-5">
+          {/* Account Type */}
+          <div className="space-y-2">
+            <Label htmlFor="account-type" className="text-sm font-semibold text-foreground">
+              Account Type <span className="text-red-500">*</span>
+            </Label>
+            <Select value={accountType} onValueChange={setAccountType}>
+              <SelectTrigger id="account-type" className="h-12 bg-white border-border text-foreground">
+                <SelectValue placeholder="Select a membership plan" />
+              </SelectTrigger>
+              <SelectContent>
+                {PLAN_OPTIONS.map((p) => (
+                  <SelectItem key={p.value} value={p.value}>
+                    {p.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Name Row */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="first-name" className="text-sm font-semibold text-foreground">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="first-name"
+                placeholder="John"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                autoComplete="given-name"
+                className="h-12 bg-white border-border"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="last-name" className="text-sm font-semibold text-foreground">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="last-name"
+                placeholder="Doe"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                autoComplete="family-name"
+                className="h-12 bg-white border-border"
+              />
+            </div>
+          </div>
+
+          {/* Email */}
+          <div className="space-y-2">
+            <Label htmlFor="signup-email" className="text-sm font-semibold text-foreground">
+              Email <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="signup-email"
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              className="h-12 bg-white border-border"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="space-y-2">
+            <Label htmlFor="signup-password" className="text-sm font-semibold text-foreground">
+              Password <span className="text-red-500">*</span>
+            </Label>
+            <div className="relative">
+              <Input
+                id="signup-password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+                className="h-12 bg-white border-border pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                tabIndex={-1}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">Minimum 8 characters</p>
+          </div>
+
+          {/* Newsletter */}
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="subscribe"
+              checked={subscribe}
+              onCheckedChange={(checked) => setSubscribe(checked === true)}
+              className="mt-0.5"
+            />
+            <Label htmlFor="subscribe" className="text-sm text-muted-foreground font-normal cursor-pointer leading-snug">
+              Subscribe for updates, drops, and announcements.
+            </Label>
+          </div>
+
+          {/* Terms */}
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="agree-terms"
+              checked={agreeTerms}
+              onCheckedChange={(checked) => setAgreeTerms(checked === true)}
+              className="mt-0.5"
+            />
+            <Label htmlFor="agree-terms" className="text-sm text-muted-foreground font-normal cursor-pointer leading-snug">
+              I agree to the{' '}
+              <Link to="/terms" className="text-primary hover:underline" target="_blank">Terms of Service</Link>
+              {' '}and{' '}
+              <Link to="/privacy" className="text-primary hover:underline" target="_blank">Privacy Policy</Link>
+              {' '}<span className="text-red-500">*</span>
+            </Label>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full h-12 text-base font-bold uppercase tracking-wide bg-primary hover:bg-primary/90 text-primary-foreground"
+            disabled={loading}
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
+          </Button>
+        </form>
+
+        {/* Divider */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-3 text-muted-foreground">or</span>
+          </div>
+        </div>
+
+        {/* Google */}
         <Button
           variant="outline"
-          className="w-full h-12 text-base font-medium border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-900 hover:text-gray-900 flex items-center gap-3"
+          className="w-full h-12 text-base font-medium border-border hover:border-foreground/30 bg-white hover:bg-muted text-foreground flex items-center gap-3"
           onClick={handleGoogleSignUp}
           disabled={googleLoading}
         >
@@ -119,52 +299,13 @@ export default function Signup() {
           Continue with Google
         </Button>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-gray-200" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-gray-400">or sign up with email</span>
-          </div>
-        </div>
-
-        <form onSubmit={handleSignUp} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="signup-email" className="text-gray-700">Email</Label>
-            <Input
-              id="signup-email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              className={inputClassName}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="signup-password" className="text-gray-700">Password</Label>
-            <Input
-              id="signup-password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              autoComplete="new-password"
-              className={inputClassName}
-            />
-          </div>
-          <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground" disabled={loading}>
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
-          </Button>
-        </form>
-
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-sm text-muted-foreground mt-6">
           Already have an account?{' '}
-          <Link to={plan ? `/login?redirect=/checkout&plan=${plan}` : '/login'} className="underline hover:text-gray-700">
-            Sign in
+          <Link
+            to={selectedPlan ? `/login?redirect=/checkout&plan=${selectedPlan}` : '/login'}
+            className="font-semibold text-foreground hover:underline"
+          >
+            Log in
           </Link>
         </p>
       </div>
