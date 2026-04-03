@@ -128,8 +128,8 @@ export function NotificationBell() {
           <span className="sr-only">Notifications</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="end">
-        <div className="flex items-center justify-between p-4 border-b border-border">
+      <PopoverContent className="w-80 p-0 bg-[#1a1a1a] border-[#333] text-white" align="end">
+        <div className="flex items-center justify-between p-4 border-b border-[#333]">
           <Link 
             to="/notifications" 
             onClick={() => setOpen(false)}
@@ -151,22 +151,22 @@ export function NotificationBell() {
         </div>
         <ScrollArea className="h-80">
           {loading ? (
-            <div className="p-4 text-center text-muted-foreground text-sm">
+            <div className="p-4 text-center text-gray-400 text-sm">
               Loading...
             </div>
           ) : notifications.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground">
+            <div className="p-8 text-center text-gray-400">
               <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No notifications yet</p>
             </div>
           ) : (
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-[#333]">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
                   className={cn(
-                    'p-4 hover:bg-muted/50 transition-colors relative group',
-                    !notification.is_read && 'bg-primary/5'
+                    'p-4 hover:bg-white/10 transition-colors relative group',
+                    !notification.is_read && 'bg-white/5'
                   )}
                 >
                   <div className="flex gap-3">
@@ -190,11 +190,11 @@ export function NotificationBell() {
                           <X className="h-3 w-3" />
                         </Button>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="text-sm text-gray-400 line-clamp-2">
                         {notification.message}
                       </p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-gray-400">
                           {formatDistanceToNow(new Date(notification.created_at), {
                             addSuffix: true,
                           })}
