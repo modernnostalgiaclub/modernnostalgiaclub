@@ -165,8 +165,8 @@ export function NotificationBell() {
                 <div
                   key={notification.id}
                   className={cn(
-                    'p-4 hover:bg-muted/50 transition-colors relative group',
-                    !notification.is_read && 'bg-primary/5'
+                    'p-4 hover:bg-white/10 transition-colors relative group',
+                    !notification.is_read && 'bg-white/5'
                   )}
                 >
                   <div className="flex gap-3">
