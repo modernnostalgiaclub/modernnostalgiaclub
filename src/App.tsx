@@ -85,7 +85,7 @@ const App = () => (
             <Route path="/classroom" element={<ProtectedRoute><LabLayout><Classroom /></LabLayout></ProtectedRoute>} />
             <Route path="/classroom/:slug" element={<ProtectedRoute><LabLayout><CourseDetail /></LabLayout></ProtectedRoute>} />
             <Route path="/studio" element={<ProtectedRoute><LabLayout><StudioFloor /></LabLayout></ProtectedRoute>} />
-            <Route path="/artistresources" element={<ProtectedRoute><LabLayout><ArtistResources /></LabLayout></ProtectedRoute>} />
+            <Route path="/artistresources" element={<ArtistResources />} />
             <Route path="/events" element={<ProtectedRoute><LabLayout><Events /></LabLayout></ProtectedRoute>} />
             <Route path="/artistresources/30-day-tracker" element={<ProtectedRoute><LabLayout><ImplementationTracker /></LabLayout></ProtectedRoute>} />
             <Route path="/artistresources/beat-license" element={<ProtectedRoute><LabLayout><BeatLicense /></LabLayout></ProtectedRoute>} />
