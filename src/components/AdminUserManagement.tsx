@@ -7,8 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Search, Users, Shield, Crown, Pencil, Check, X } from 'lucide-react';
+import { Search, Users, Shield, Crown, Pencil, Check, X, UserPlus } from 'lucide-react';
 import { ReauthDialog } from '@/components/ReauthDialog';
 import { useReauth } from '@/hooks/useReauth';
 import { useAuditLog } from '@/hooks/useAuditLog';
@@ -47,7 +50,19 @@ export function AdminUserManagement() {
   const [editingUser, setEditingUser] = useState<EnrichedProfile | null>(null);
   const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
-
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [addUserLoading, setAddUserLoading] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    tier: 'lab-pass' as PatreonTier,
+    locked_price: '',
+    locked_billing_period: 'monthly',
+    is_grandfathered: false,
+    billing_status: 'active',
+    notes: '',
+  });
+  const [plans, setPlans] = useState<{ id: string; name: string }[]>([]);
   const tierReauth = useReauth({
     title: 'Confirm Tier Update',
     description: "Changing a user's membership tier is a sensitive action. Please verify with your 2FA code.",
@@ -96,6 +111,7 @@ export function AdminUserManagement() {
 
     const planMap: Record<string, string> = {};
     (plansRes.data || []).forEach((p: any) => { planMap[p.id] = p.name; });
+    setPlans((plansRes.data || []).map((p: any) => ({ id: p.id, name: p.name })));
 
     const subsMap: Record<string, any> = {};
     (subsRes.data || []).forEach((s: any) => {
@@ -251,6 +267,87 @@ export function AdminUserManagement() {
     setSelectedRoles(prev => prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]);
   }
 
+  const tierToDefaultPrice: Record<PatreonTier, { price: number; period: string }> = {
+    'lab-pass': { price: 10, period: 'monthly' },
+    'creator-accelerator': { price: 50, period: 'monthly' },
+    'creative-economy-lab': { price: 300, period: 'one-time' },
+  };
+
+  function handleNewUserTierChange(tier: PatreonTier) {
+    const defaults = tierToDefaultPrice[tier];
+    setNewUser(prev => ({
+      ...prev,
+      tier,
+      locked_price: String(defaults.price),
+      locked_billing_period: defaults.period,
+    }));
+  }
+
+  function resetAddUserForm() {
+    setNewUser({
+      name: '',
+      email: '',
+      tier: 'lab-pass',
+      locked_price: '',
+      locked_billing_period: 'monthly',
+      is_grandfathered: false,
+      billing_status: 'active',
+      notes: '',
+    });
+  }
+
+  async function handleAddUser() {
+    if (!newUser.name.trim() || !newUser.email.trim()) {
+      toast.error('Name and email are required');
+      return;
+    }
+
+    setAddUserLoading(true);
+
+    // Find matching plan_id for the selected tier
+    const tierPlanMap: Record<string, string> = {
+      'lab-pass': 'Club Pass',
+      'creator-accelerator': 'Accelerator',
+      'creative-economy-lab': 'Artist Incubator',
+    };
+    const matchingPlan = plans.find(p => p.name === tierPlanMap[newUser.tier]);
+
+    const { data, error } = await supabase.functions.invoke('admin-create-user', {
+      body: {
+        name: newUser.name.trim(),
+        email: newUser.email.trim(),
+        tier: newUser.tier,
+        locked_price: newUser.locked_price ? parseFloat(newUser.locked_price) : 0,
+        locked_billing_period: newUser.locked_billing_period,
+        is_grandfathered: newUser.is_grandfathered,
+        billing_status: newUser.billing_status,
+        notes: newUser.notes.trim() || null,
+        plan_id: matchingPlan?.id || null,
+      },
+    });
+
+    setAddUserLoading(false);
+
+    if (error) {
+      toast.error('Failed to create user: ' + error.message);
+      return;
+    }
+
+    if (data?.error) {
+      toast.error(data.error);
+      return;
+    }
+
+    if (data?.warning) {
+      toast.warning(data.warning);
+    }
+
+    toast.success(`Successfully created ${newUser.name.trim()} as ${tierLabel(newUser.tier)}`);
+    setAddUserOpen(false);
+    resetAddUserForm();
+    fetchAllData();
+  }
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -325,6 +422,121 @@ export function AdminUserManagement() {
                   <SelectItem value="no-plan">No Active Plan ({noPlanCount})</SelectItem>
                 </SelectContent>
               </Select>
+              <Dialog open={addUserOpen} onOpenChange={(open) => { setAddUserOpen(open); if (!open) resetAddUserForm(); }}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Add User
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Add New Member</DialogTitle>
+                    <DialogDescription>Manually create a new member account with membership details.</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 pt-2">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="add-name">Full Name *</Label>
+                        <Input
+                          id="add-name"
+                          placeholder="e.g. John Doe"
+                          value={newUser.name}
+                          onChange={e => setNewUser(prev => ({ ...prev, name: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="add-email">Email *</Label>
+                        <Input
+                          id="add-email"
+                          type="email"
+                          placeholder="john@example.com"
+                          value={newUser.email}
+                          onChange={e => setNewUser(prev => ({ ...prev, email: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Membership Tier</Label>
+                      <Select value={newUser.tier} onValueChange={(v: PatreonTier) => handleNewUserTierChange(v)}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="lab-pass">Club Pass ($10/mo)</SelectItem>
+                          <SelectItem value="creator-accelerator">Accelerator ($50/mo)</SelectItem>
+                          <SelectItem value="creative-economy-lab">Artist Incubator ($300 one-time)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="add-price">Locked Price ($)</Label>
+                        <Input
+                          id="add-price"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={newUser.locked_price}
+                          onChange={e => setNewUser(prev => ({ ...prev, locked_price: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Billing Period</Label>
+                        <Select value={newUser.locked_billing_period} onValueChange={v => setNewUser(prev => ({ ...prev, locked_billing_period: v }))}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="yearly">Yearly</SelectItem>
+                            <SelectItem value="one-time">One-Time</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Billing Status</Label>
+                      <Select value={newUser.billing_status} onValueChange={v => setNewUser(prev => ({ ...prev, billing_status: v }))}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="comped">Comped (Free)</SelectItem>
+                          <SelectItem value="manual">Manual Payment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Switch
+                        id="add-grandfathered"
+                        checked={newUser.is_grandfathered}
+                        onCheckedChange={v => setNewUser(prev => ({ ...prev, is_grandfathered: v }))}
+                      />
+                      <Label htmlFor="add-grandfathered">Grandfathered (Legacy Rate)</Label>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="add-notes">Internal Notes</Label>
+                      <Textarea
+                        id="add-notes"
+                        placeholder="Any internal notes about this member..."
+                        value={newUser.notes}
+                        onChange={e => setNewUser(prev => ({ ...prev, notes: e.target.value }))}
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-2">
+                      <Button variant="outline" onClick={() => setAddUserOpen(false)}>Cancel</Button>
+                      <Button onClick={handleAddUser} disabled={addUserLoading}>
+                        {addUserLoading ? 'Creating...' : 'Create Member'}
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </CardContent>
         </Card>
