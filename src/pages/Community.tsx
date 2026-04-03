@@ -211,11 +211,8 @@ export default function Community() {
           // Fetch profile for new message
           const newMsg = payload.new as { id: string; content: string; mentions: string[]; created_at: string; user_id: string };
           
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('stage_name, name, avatar_url')
-            .eq('user_id', newMsg.user_id)
-            .single();
+          const { data: profiles } = await supabase.rpc('get_chat_profiles', { p_user_ids: [newMsg.user_id] });
+          const profile = profiles?.[0] || null;
 
           const messageWithProfile: ChatMessage = {
             id: newMsg.id,
