@@ -395,7 +395,7 @@ function LabCTA() {
               Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
             </p>
             <Button size="lg" asChild>
-              <Link to="/lab">
+              <Link to="/join">
                 Join the Club <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>

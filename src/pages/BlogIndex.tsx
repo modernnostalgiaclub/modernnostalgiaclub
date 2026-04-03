@@ -163,7 +163,7 @@ export default function BlogIndex() {
               Independent artist? Learn how to monetize your music beyond streaming.
             </p>
             <Button size="lg" asChild>
-              <Link to="/lab">
+              <Link to="/join">
                 Join the Club <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
