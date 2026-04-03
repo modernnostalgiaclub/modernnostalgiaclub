@@ -4,6 +4,7 @@ import { BookOpen, Download, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MemberDownloads } from '@/components/MemberDownloads';
 
 interface EbookItem {
   id: string;
@@ -70,6 +71,8 @@ export default function Ebooks() {
           Free guides, eBooks, and resources to level up your music career.
         </p>
       </div>
+
+      <MemberDownloads />
 
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2">

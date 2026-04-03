@@ -4,7 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TierBadge } from '@/components/TierBadge';
 
-import { MemberDownloads } from '@/components/MemberDownloads';
+
 import { SectionLabel } from '@/components/SectionLabel';
 import { useAuth, PatreonTier } from '@/contexts/AuthContext';
 import { TIER_INFO } from '@/lib/types';
@@ -327,7 +327,7 @@ export default function Dashboard() {
 
             {/* ── Four Pillars ─────────────────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <SectionLabel className="mb-4">Enter the Lab</SectionLabel>
+              <SectionLabel className="mb-4">Quick Links</SectionLabel>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {pillars.map((item, i) => (
                   <Link key={item.title} to={item.available ? item.link : '#'}
@@ -335,22 +335,19 @@ export default function Dashboard() {
                     <motion.div
                       className={`rounded-xl p-5 border h-full flex flex-col transition-all duration-200 ${
                         item.available
-                          ? 'hover:border-primary/40 cursor-pointer'
+                          ? 'hover:border-blue-300 cursor-pointer'
                           : 'opacity-50 cursor-not-allowed'
                       }`}
                       style={{
-                        background: item.available
-                          ? 'hsl(222 40% 7% / 0.8)'
-                          : 'hsl(222 30% 6%)',
-                        borderColor: 'hsl(222 25% 16%)',
-                        backdropFilter: 'blur(12px)',
+                        background: item.available ? '#fff' : 'hsl(0 0% 96%)',
+                        borderColor: 'hsl(0 0% 88%)',
                       }}
                       whileHover={item.available ? { y: -2 } : {}}
                       transition={{ duration: 0.15 }}
                     >
-                      <item.icon className={`w-7 h-7 mb-3 ${item.available ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <p className="font-serif font-semibold text-sm">{item.title}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <item.icon className={`w-7 h-7 mb-3 ${item.available ? 'text-blue-500' : 'text-gray-400'}`} />
+                      <p className="font-serif font-semibold text-sm text-gray-900">{item.title}</p>
+                      <p className="text-xs text-gray-500 mt-1">
                         {item.available ? item.desc : 'Higher tier required'}
                       </p>
                     </motion.div>
@@ -361,12 +358,12 @@ export default function Dashboard() {
 
             {/* ── Getting Started Checklist ─────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <div className="rounded-2xl border border-border/30 overflow-hidden"
-                style={{ background: 'hsl(222 40% 7%)' }}>
-                <div className="px-6 py-5 border-b border-border/30 flex items-center justify-between">
+              <div className="rounded-2xl border overflow-hidden"
+                style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
+                <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: 'hsl(0 0% 90%)' }}>
                   <div>
                     <SectionLabel className="mb-1">Onboarding</SectionLabel>
-                    <h2 className="font-serif font-bold text-xl">Getting Started Checklist</h2>
+                    <h2 className="font-serif font-bold text-xl text-gray-900">Getting Started Checklist</h2>
                   </div>
                   {!checklistLoading && (
                     <div className="text-right">
@@ -387,7 +384,7 @@ export default function Dashboard() {
                           className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-150 group ${
                             item.locked
                               ? 'opacity-50 pointer-events-none'
-                              : 'hover:bg-white/5'
+                              : 'hover:bg-gray-50'
                           }`}
                         >
                           {item.done
@@ -413,21 +410,21 @@ export default function Dashboard() {
               </div>
             </motion.div>
 
-            {/* ── Member Downloads ──────────────────────────────────────── */}
-            <MemberDownloads />
+
+
 
             {/* ── Learning Progress + Next Action (side by side) ────────── */}
             <motion.div variants={fadeIn} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Learning Progress */}
-              <div className="rounded-xl border border-border/30 p-6"
-                style={{ background: 'hsl(222 40% 7%)' }}>
+              <div className="rounded-xl border p-6"
+                style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
                 <div className="flex items-center gap-3 mb-5">
                   <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
-                    <TrendingUp className="w-5 h-5 text-primary" />
+                    <TrendingUp className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-serif font-semibold">Learning Progress</h3>
-                    <p className="text-xs text-muted-foreground">Overall course completion</p>
+                    <h3 className="font-serif font-semibold text-gray-900">Learning Progress</h3>
+                    <p className="text-xs text-gray-500">Overall course completion</p>
                   </div>
                   {!progressLoading && progress && (
                     <span className="ml-auto text-2xl font-serif font-bold" style={{ color: 'hsl(217 100% 65%)' }}>
@@ -452,19 +449,19 @@ export default function Dashboard() {
               {/* Next Recommended Action */}
               <div className="rounded-xl border p-6 flex flex-col justify-between"
                 style={{
-                  background: 'linear-gradient(135deg, hsl(217 100% 50% / 0.1) 0%, hsl(222 40% 7%) 100%)',
-                  borderColor: 'hsl(217 100% 50% / 0.25)',
+                  background: '#fff',
+                  borderColor: 'hsl(0 0% 88%)',
                 }}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.15)' }}>
-                    <Zap className="w-5 h-5 text-primary" />
+                  <div className="p-2.5 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
+                    <Zap className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-serif font-semibold">Next Up</h3>
-                    <p className="text-xs text-muted-foreground">Recommended action</p>
+                    <h3 className="font-serif font-semibold text-gray-900">Next Up</h3>
+                    <p className="text-xs text-gray-500">Recommended action</p>
                   </div>
                 </div>
-                <p className="text-sm text-foreground mb-5 leading-relaxed">{nextAction.text}</p>
+                <p className="text-sm text-gray-700 mb-5 leading-relaxed">{nextAction.text}</p>
                 <Button asChild style={{ background: 'hsl(217 100% 50%)', color: '#fff' }}>
                   <Link to={nextAction.link}>
                     Go <ArrowRight className="ml-2 w-4 h-4" />
@@ -475,11 +472,11 @@ export default function Dashboard() {
 
             {/* ── Tier Features ─────────────────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <div className="rounded-2xl border border-border/30 p-6" style={{ background: 'hsl(222 40% 7%)' }}>
+              <div className="rounded-2xl border p-6" style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <SectionLabel className="mb-1">Access Level</SectionLabel>
-                    <h2 className="font-serif font-bold text-xl">Your {tierInfo.name} Features</h2>
+                    <h2 className="font-serif font-bold text-xl text-gray-900">Your {tierInfo.name} Features</h2>
                   </div>
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/account">Upgrade <ArrowRight className="ml-1.5 w-3.5 h-3.5" /></Link>
@@ -487,10 +484,9 @@ export default function Dashboard() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {tierInfo.features.map((feature) => (
-                    <div key={feature} className="flex items-center gap-3 p-3 rounded-lg"
-                      style={{ background: 'hsl(222 30% 10%)' }}>
+                    <div key={feature} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
                       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'hsl(217 100% 50%)' }} />
-                      <span className="text-sm text-muted-foreground">{feature}</span>
+                      <span className="text-sm text-gray-700">{feature}</span>
                     </div>
                   ))}
                 </div>

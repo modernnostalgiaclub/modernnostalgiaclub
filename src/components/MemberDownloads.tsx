@@ -48,10 +48,10 @@ export function MemberDownloads() {
 
   return (
     <motion.div variants={fadeIn} className="mb-12">
-      <Card variant="elevated" className="p-6 border-maroon/20">
+      <Card variant="elevated" className="p-6 border-gray-200">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 bg-maroon/20 rounded-lg">
-            <Package className="w-6 h-6 text-maroon" />
+          <div className="p-3 rounded-lg" style={{ background: 'hsl(217 100% 50% / 0.12)' }}>
+            <Package className="w-6 h-6 text-blue-500" />
           </div>
           <div>
             <h2 className="font-display text-xl">Member Downloads</h2>
@@ -72,7 +72,7 @@ export function MemberDownloads() {
                     href={item.externalLink.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-maroon hover:underline mb-3"
+                    className="inline-flex items-center gap-1 text-xs text-blue-500 hover:underline mb-3"
                   >
                     <ExternalLink className="w-3 h-3" />
                     {item.externalLink.label}
