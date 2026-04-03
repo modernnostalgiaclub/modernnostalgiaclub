@@ -154,7 +154,7 @@ export default function Signup() {
           {/* Name Row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="first-name" className="text-sm font-semibold text-foreground">
+              <Label htmlFor="first-name" className="text-sm font-semibold text-gray-900">
                 First Name <span className="text-red-500">*</span>
               </Label>
               <Input
