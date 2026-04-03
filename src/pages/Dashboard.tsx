@@ -228,39 +228,32 @@ export default function Dashboard() {
 
             {/* ── Backstage Header ─────────────────────────────────────── */}
             <motion.div variants={fadeIn}>
-              <div className="relative rounded-2xl overflow-hidden border border-border/30"
-                style={{ background: 'linear-gradient(135deg, hsl(222 40% 7%) 0%, hsl(222 47% 5%) 60%, hsl(217 60% 8%) 100%)' }}>
-                {/* Blue glow accent */}
-                <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none"
-                  style={{ background: 'radial-gradient(circle, hsl(217 100% 50% / 0.1) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
-                {/* Stage light line */}
-                <div className="absolute top-0 left-0 right-0 h-px"
-                  style={{ background: 'linear-gradient(90deg, transparent, hsl(217 100% 50% / 0.6), transparent)' }} />
-
+              <div className="relative rounded-2xl overflow-hidden border"
+                style={{ background: '#fff', borderColor: 'hsl(0 0% 88%)' }}>
                 <div className="relative p-8">
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <SectionLabel>Backstage</SectionLabel>
                         <span className="flex items-center gap-1.5 text-xs font-medium"
-                          style={{ color: 'hsl(142 71% 55%)' }}>
-                          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'hsl(142 71% 55%)' }} />
+                          style={{ color: 'hsl(142 71% 45%)' }}>
+                          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'hsl(142 71% 45%)' }} />
                           Live
                         </span>
                       </div>
-                      <h1 className="text-4xl md:text-5xl font-anton uppercase leading-tight">
+                      <h1 className="text-4xl md:text-5xl font-anton uppercase leading-tight text-gray-900">
                         Welcome back,<br />
-                        <span style={{ color: 'hsl(217 100% 65%)' }}>{userName}.</span>
+                        <span style={{ color: 'hsl(217 100% 50%)' }}>{userName}.</span>
                       </h1>
-                      <p className="text-muted-foreground max-w-md">
+                      <p className="text-gray-500 max-w-md">
                         You're here to turn creative work into sustainable income. Everything you need is in the sidebar.
                       </p>
                     </div>
                     <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
                       <TierBadge tier={tier} />
                       {profile?.username && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Radio className="w-3 h-3 text-primary" />
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <Radio className="w-3 h-3 text-blue-500" />
                           <span className="font-mono">modernnostalgia.club/artist/{profile.username}</span>
                         </div>
                       )}
