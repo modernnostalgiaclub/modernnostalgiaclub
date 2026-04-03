@@ -23,6 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 
@@ -83,12 +84,15 @@ export function AppSidebar() {
       style={{ '--sidebar-accent': '210 100% 50% / 0.15', '--sidebar-accent-foreground': '210 100% 65%' } as React.CSSProperties}
     >
       <SidebarContent className="pt-2">
-        {!collapsed && memberName && (
-          <div className="flex flex-col min-w-0 px-3 py-3">
-            <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold">Welcome back</span>
-            <span className="text-sm font-semibold text-white truncate">{memberName}</span>
-          </div>
-        )}
+        <div className="flex items-center justify-between px-3 py-3 group-data-[collapsible=icon]:group-data-[state=collapsed]:justify-center group-data-[collapsible=icon]:group-data-[state=collapsed]:px-0">
+          {!collapsed && memberName && (
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold">Welcome back</span>
+              <span className="text-sm font-semibold text-white truncate">{memberName}</span>
+            </div>
+          )}
+          <SidebarTrigger className="h-7 w-7 text-primary hover:text-primary shrink-0" />
+        </div>
         <SidebarGroup>
           <SidebarGroupContent>{renderItems(topItems)}</SidebarGroupContent>
         </SidebarGroup>
