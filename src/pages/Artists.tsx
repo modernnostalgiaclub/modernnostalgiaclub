@@ -29,12 +29,7 @@ export default function Artists() {
   const { data: artists = [], isLoading } = useQuery({
     queryKey: ['public-artists'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('user_id, stage_name, name, username, bio, avatar_url, instagram, spotify, soundcloud')
-        .eq('profile_visibility', 'public')
-        .not('username', 'is', null)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.rpc('get_public_profiles');
       if (error) throw error;
       return (data || []) as PublicProfile[];
     },

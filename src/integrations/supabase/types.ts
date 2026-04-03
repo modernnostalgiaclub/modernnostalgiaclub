@@ -1367,6 +1367,15 @@ export type Database = {
           youtube: string
         }[]
       }
+      get_chat_profiles: {
+        Args: { p_user_ids: string[] }
+        Returns: {
+          avatar_url: string
+          name: string
+          stage_name: string
+          user_id: string
+        }[]
+      }
       get_landing_player_tracks: {
         Args: never
         Returns: {
@@ -1417,11 +1426,17 @@ export type Database = {
         Args: never
         Returns: {
           avatar_url: string
+          bio: string
           id: string
+          instagram: string
+          name: string
           patreon_tier: Database["public"]["Enums"]["patreon_tier"]
           pro: string
+          soundcloud: string
+          spotify: string
           stage_name: string
           user_id: string
+          username: string
         }[]
       }
       get_site_setting: { Args: { setting_key: string }; Returns: Json }

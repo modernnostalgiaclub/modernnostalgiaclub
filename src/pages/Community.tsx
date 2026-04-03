@@ -165,10 +165,7 @@ export default function Community() {
       let profilesMap: Record<string, { stage_name: string | null; name: string | null; avatar_url: string | null }> = {};
       
       if (userIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('user_id, stage_name, name, avatar_url')
-          .in('user_id', userIds);
+        const { data: profiles } = await supabase.rpc('get_chat_profiles', { p_user_ids: userIds });
         
         if (profiles) {
           profiles.forEach((p: { user_id: string; stage_name: string | null; name: string | null; avatar_url: string | null }) => {
@@ -214,11 +211,8 @@ export default function Community() {
           // Fetch profile for new message
           const newMsg = payload.new as { id: string; content: string; mentions: string[]; created_at: string; user_id: string };
           
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('stage_name, name, avatar_url')
-            .eq('user_id', newMsg.user_id)
-            .single();
+          const { data: profiles } = await supabase.rpc('get_chat_profiles', { p_user_ids: [newMsg.user_id] });
+          const profile = profiles?.[0] || null;
 
           const messageWithProfile: ChatMessage = {
             id: newMsg.id,

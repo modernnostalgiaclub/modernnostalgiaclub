@@ -6,10 +6,23 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const SITE_URL = Deno.env.get("SITE_URL") || "https://modernnostalgiaclub.lovable.app";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = [
+  'https://modernnostalgiaclub.lovable.app',
+  'https://modernnostalgia.club',
+  'https://www.modernnostalgia.club',
+  'http://localhost:5173',
+  'http://localhost:8080',
+];
+
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  const isAllowed = origin && ALLOWED_ORIGINS.some(allowed =>
+    origin === allowed || origin.endsWith('.lovable.app') || origin.endsWith('.lovableproject.com')
+  );
+  return {
+    'Access-Control-Allow-Origin': isAllowed ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
+}
 
 // Email templates for the rights-clarity education sequence
 const emailTemplates = {
@@ -189,6 +202,7 @@ interface EmailQueueEntry {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  const corsHeaders = getCorsHeaders(req.headers.get('origin'));
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
