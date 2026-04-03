@@ -138,7 +138,7 @@ export default function Signup() {
               Account Type <span className="text-red-500">*</span>
             </Label>
             <Select value={accountType} onValueChange={setAccountType}>
-              <SelectTrigger id="account-type" className="h-12 bg-white border-border text-gray-900">
+              <SelectTrigger id="account-type" className={`h-12 bg-white border-border font-semibold ${accountType ? 'text-primary' : 'text-gray-900'}`}>
                 <SelectValue placeholder="Select a membership plan" />
               </SelectTrigger>
               <SelectContent>
