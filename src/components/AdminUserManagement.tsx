@@ -50,7 +50,19 @@ export function AdminUserManagement() {
   const [editingUser, setEditingUser] = useState<EnrichedProfile | null>(null);
   const [selectedTier, setSelectedTier] = useState<PatreonTier>('lab-pass');
   const [selectedRoles, setSelectedRoles] = useState<AppRole[]>([]);
-
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [addUserLoading, setAddUserLoading] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    tier: 'lab-pass' as PatreonTier,
+    locked_price: '',
+    locked_billing_period: 'monthly',
+    is_grandfathered: false,
+    billing_status: 'active',
+    notes: '',
+  });
+  const [plans, setPlans] = useState<{ id: string; name: string }[]>([]);
   const tierReauth = useReauth({
     title: 'Confirm Tier Update',
     description: "Changing a user's membership tier is a sensitive action. Please verify with your 2FA code.",
