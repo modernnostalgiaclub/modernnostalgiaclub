@@ -410,8 +410,8 @@ export default function Dashboard() {
               </div>
             </motion.div>
 
-            {/* ── Member Downloads ──────────────────────────────────────── */}
-            <MemberDownloads />
+
+
 
             {/* ── Learning Progress + Next Action (side by side) ────────── */}
             <motion.div variants={fadeIn} className="grid grid-cols-1 md:grid-cols-2 gap-4">
