@@ -287,7 +287,7 @@ export function Header({ showNav = true }: HeaderProps) {
                       <div className="space-y-3">
                         <Button 
                           variant="outline"
-                          className="w-full"
+                          className="w-full border-white text-white hover:bg-white hover:text-black"
                           onClick={() => {
                             handleLogin();
                             closeMobileMenu();
