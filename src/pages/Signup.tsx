@@ -138,7 +138,7 @@ export default function Signup() {
               Account Type <span className="text-red-500">*</span>
             </Label>
             <Select value={accountType} onValueChange={setAccountType}>
-              <SelectTrigger id="account-type" className="h-12 bg-white border-border text-gray-900">
+              <SelectTrigger id="account-type" className={`h-12 bg-white border-border font-semibold ${accountType ? 'text-primary' : 'text-gray-900'}`}>
                 <SelectValue placeholder="Select a membership plan" />
               </SelectTrigger>
               <SelectContent>
@@ -164,7 +164,7 @@ export default function Signup() {
                 onChange={(e) => setFirstName(e.target.value)}
                 required
                 autoComplete="given-name"
-                className="h-12 bg-white border-border"
+                className="h-12 bg-white border-border text-gray-900"
               />
             </div>
             <div className="space-y-2">
@@ -178,7 +178,7 @@ export default function Signup() {
                 onChange={(e) => setLastName(e.target.value)}
                 required
                 autoComplete="family-name"
-                className="h-12 bg-white border-border"
+                className="h-12 bg-white border-border text-gray-900"
               />
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function Signup() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="h-12 bg-white border-border"
+              className="h-12 bg-white border-border text-gray-900"
             />
           </div>
 
@@ -215,7 +215,7 @@ export default function Signup() {
                 required
                 minLength={8}
                 autoComplete="new-password"
-                className="h-12 bg-white border-border pr-12"
+                className="h-12 bg-white border-border text-gray-900 pr-12"
               />
               <button
                 type="button"
