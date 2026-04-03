@@ -8,6 +8,7 @@ import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram,
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useTheme } from 'next-themes';
 import { NotificationBell } from '@/components/NotificationBell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
