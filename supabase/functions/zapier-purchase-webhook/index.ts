@@ -45,7 +45,7 @@ const PRODUCT_DOWNLOADS: Record<string, { title: string; files: string[]; isServ
     title: 'Catalog Audit for Sync',
     files: [],
     isService: true,
-    bookingFormUrl: 'https://form.jotform.com/253334227361048',
+    bookingFormUrl: '/contact',
   },
 };
 

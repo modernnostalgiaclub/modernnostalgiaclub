@@ -468,7 +468,7 @@ export function SyncReadinessQuiz() {
                 </p>
 
                 <Button asChild variant="maroon" size="lg">
-                  <a href="https://form.jotform.com/253334227361048">
+                  <a href="/contact">
                     {resultConfigs[resultType].auditCta}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </a>
@@ -485,14 +485,14 @@ export function SyncReadinessQuiz() {
                 </p>
               </div>
 
-              {/* Embedded Jotform */}
-              <div className="w-full max-w-2xl mx-auto bg-background border border-border rounded-lg overflow-hidden mb-10">
-                <iframe
-                  src="https://form.jotform.com/253334227361048"
-                  title="Discovery Call Booking"
-                  className="w-full min-h-[500px] border-0"
-                  allow="geolocation; microphone; camera; fullscreen"
-                />
+              {/* Discovery Call CTA Button */}
+              <div className="w-full max-w-2xl mx-auto mb-10">
+                <Button asChild variant="maroon" size="lg" className="w-full">
+                  <a href="/contact">
+                    Book a Discovery Call
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </a>
+                </Button>
               </div>
 
               <p className="text-sm text-muted-foreground">
