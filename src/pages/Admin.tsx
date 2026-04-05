@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon, Database as DatabaseIcon, Users2, Crown } from 'lucide-react';
+import { BookOpen, FileText, Users, Plus, Pencil, Trash2, Eye, Check, X, Clock, AlertCircle, Shield, Search, Wrench, Music, BarChart3, DollarSign, GraduationCap, Accessibility, Bell, Settings, Mail, Target, Link as LinkIcon, Database as DatabaseIcon, Users2, Crown, ClipboardList } from 'lucide-react';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { BeatLicenseManager } from '@/components/BeatLicenseManager';
 import { AdminLessonProgress } from '@/components/AdminLessonProgress';
@@ -36,6 +36,7 @@ import { AdminMembershipPlans } from '@/components/AdminMembershipPlans';
 import { AdminUserManagement } from '@/components/AdminUserManagement';
 import { useAuditLog } from '@/hooks/useAuditLog';
 import { AdminRolesPermissions } from '@/components/AdminRolesPermissions';
+import { AdminIncubatorApplications } from '@/components/AdminIncubatorApplications';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -163,6 +164,10 @@ export default function Admin() {
                 <Shield className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Roles
               </TabsTrigger>
+              <TabsTrigger value="applications" className="gap-2" aria-label="View incubator applications">
+                <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Applications
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
@@ -246,6 +251,10 @@ export default function Admin() {
 
             <TabsContent value="roles">
               <AdminRolesPermissions />
+            </TabsContent>
+
+            <TabsContent value="applications">
+              <AdminIncubatorApplications />
             </TabsContent>
           </Tabs>
         </main>
