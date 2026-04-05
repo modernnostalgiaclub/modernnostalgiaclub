@@ -421,9 +421,9 @@ function PricingSection() {
                     </li>
                   ))}
                 </ul>
-                {'externalLink' in tier && tier.externalLink ? (
+                {'link' in tier && tier.link ? (
                   <Button variant="outline" className="w-full" asChild>
-                    <a href={tier.externalLink} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
+                    <Link to={tier.link as string}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                   </Button>
                 ) : (
                   <Button
