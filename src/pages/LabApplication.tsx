@@ -235,12 +235,12 @@ const LabApplication = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="portfolio_url">Portfolio / Music Link</Label>
+                      <Label htmlFor="portfolio_url">Music Link (DISCO or Untitled only — no Spotify)</Label>
                       <Input
                         id="portfolio_url"
                         value={form.portfolio_url}
                         onChange={(e) => handleChange("portfolio_url", e.target.value)}
-                        placeholder="https://open.spotify.com/artist/..."
+                        placeholder="e.g. https://yourname.disco.ac or Untitled link"
                         maxLength={500}
                       />
                     </div>

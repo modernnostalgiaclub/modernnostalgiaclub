@@ -340,7 +340,7 @@ const TIERS = [
     price: '$300',
     desc: 'High-level guidance. Real career acceleration. Everything in Accelerator, plus:',
     cta: 'Apply Now',
-    externalLink: 'https://pci.jotform.com/form/253309376850058',
+    link: '/apply',
     features: [
       'Bi-weekly 1-on-1 sessions with GeOh',
       'Direct submission opportunities for sync placements',
@@ -421,9 +421,9 @@ function PricingSection() {
                     </li>
                   ))}
                 </ul>
-                {'externalLink' in tier && tier.externalLink ? (
+                {'link' in tier && tier.link ? (
                   <Button variant="outline" className="w-full" asChild>
-                    <a href={tier.externalLink} target="_blank" rel="noopener noreferrer">{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></a>
+                    <Link to={tier.link as string}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
                   </Button>
                 ) : (
                   <Button
@@ -517,23 +517,12 @@ export default function LandingPage() {
                         </li>
                       ))}
                     </ul>
-                    {tier.externalLink ? (
-                      <a
-                        href={tier.externalLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`w-full inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium ${tier.highlighted ? 'bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white' : 'border border-gray-300 bg-white text-black hover:bg-gray-50'}`}
-                      >
-                        {tier.cta} <ArrowRight className="w-4 h-4 ml-1" />
-                      </a>
-                    ) : (
-                      <Button
-                        className={`w-full ${tier.highlighted ? 'bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white' : 'border border-gray-300 bg-white text-black hover:bg-gray-50'}`}
-                        asChild
-                      >
-                        <Link to={user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
-                      </Button>
-                    )}
+                    <Button
+                      className={`w-full ${tier.highlighted ? 'bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white' : 'border border-gray-300 bg-white text-black hover:bg-gray-50'}`}
+                      asChild
+                    >
+                      <Link to={tier.link || (user ? `/checkout?plan=${tier.slug}` : `/signup?plan=${tier.slug}`)}>{tier.cta} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                    </Button>
                   </motion.div>
                 ))}
               </div>
