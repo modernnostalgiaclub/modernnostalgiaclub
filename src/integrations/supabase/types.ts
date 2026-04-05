@@ -534,6 +534,57 @@ export type Database = {
         }
         Relationships: []
       }
+      incubator_applications: {
+        Row: {
+          admin_notes: string | null
+          artist_name: string | null
+          created_at: string
+          email: string
+          full_name: string
+          genre: string | null
+          goals: string
+          id: string
+          portfolio_url: string | null
+          referral_source: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+          years_active: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          artist_name?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          genre?: string | null
+          goals: string
+          id?: string
+          portfolio_url?: string | null
+          referral_source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          years_active?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          artist_name?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          genre?: string | null
+          goals?: string
+          id?: string
+          portfolio_url?: string | null
+          referral_source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          years_active?: string | null
+        }
+        Relationships: []
+      }
       lessons: {
         Row: {
           content: string | null
