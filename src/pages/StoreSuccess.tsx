@@ -90,9 +90,7 @@ export default function StoreSuccess() {
                 <div className="mt-6 pt-6 border-t border-border/50">
                   <Button asChild className="gap-2" variant="maroon">
                     <a
-                      href="https://form.jotform.com/253334227361048"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/contact"
                     >
                       <Calendar className="w-4 h-4" />
                       Book Your Audit Session

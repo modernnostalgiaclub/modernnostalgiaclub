@@ -1,11 +1,18 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { Music, FileText, AlertTriangle, CheckCircle, ExternalLink } from 'lucide-react';
+import { Music, FileText, AlertTriangle, CheckCircle, ExternalLink, Send } from 'lucide-react';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -20,14 +27,79 @@ const stagger = {
   }
 };
 
-export default function BeatLicense() {
-  const { hasAccessToTier } = useAuth();
-  const navigate = useNavigate();
+const LICENSE_OPTIONS = [
+  { value: 'exclusive-lease', label: 'Exclusive Lease — $60 + 50% Master & Writer Splits' },
+  { value: 'buyout', label: 'Buyout — Contact for pricing' },
+];
 
-  // Check if user has CEL tier access
+const PAYMENT_OPTIONS = [
+  { value: 'cashapp', label: 'Cash App' },
+  { value: 'zelle', label: 'Zelle' },
+  { value: 'paypal', label: 'PayPal' },
+  { value: 'stripe', label: 'Credit/Debit Card (Stripe)' },
+  { value: 'other', label: 'Other — Specify in notes' },
+];
+
+export default function BeatLicense() {
+  const { hasAccessToTier, user } = useAuth();
+  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({
+    full_name: '',
+    artist_name: '',
+    email: '',
+    beats_interested: '',
+    license_option: '',
+    payment_method: '',
+    special_requests: '',
+  });
+
   const hasCELAccess = hasAccessToTier('creative-economy-lab');
 
-  // If not CEL tier, show upgrade prompt
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user) {
+      toast.error('You must be logged in to submit a license request');
+      return;
+    }
+    if (!form.full_name || !form.email || !form.beats_interested || !form.license_option || !form.payment_method) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    setSubmitting(true);
+
+    const totalAmount = form.license_option === 'exclusive-lease' ? 60 : 0;
+    const paymentNote = `Payment method: ${PAYMENT_OPTIONS.find(p => p.value === form.payment_method)?.label || form.payment_method}`;
+    const specialRequests = [paymentNote, form.special_requests].filter(Boolean).join('\n\n');
+
+    const { error } = await supabase
+      .from('beat_license_submissions')
+      .insert({
+        user_id: user.id,
+        full_name: form.full_name.trim(),
+        artist_name: form.artist_name.trim() || null,
+        email: form.email.trim(),
+        beats_interested: form.beats_interested.trim(),
+        license_option: LICENSE_OPTIONS.find(o => o.value === form.license_option)?.label || form.license_option,
+        total_amount: totalAmount,
+        special_requests: specialRequests.trim() || null,
+        payment_status: 'pending',
+      });
+
+    setSubmitting(false);
+
+    if (error) {
+      console.error('Error submitting beat license request:', error);
+      toast.error('Failed to submit request. Please try again.');
+      return;
+    }
+
+    setSubmitted(true);
+    toast.success('License request submitted successfully!');
+  }
+
   if (!hasCELAccess) {
     return (
       <div className="min-h-screen bg-background studio-grain">
@@ -137,7 +209,6 @@ export default function BeatLicense() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Pricing */}
                   <div className="p-4 bg-maroon/10 rounded-lg border border-maroon/20">
                     <h3 className="font-display text-xl mb-2">Pricing</h3>
                     <p className="text-lg">
@@ -149,7 +220,6 @@ export default function BeatLicense() {
                     </p>
                   </div>
 
-                  {/* Important Notes */}
                   <div className="space-y-4">
                     <div className="flex gap-3">
                       <AlertTriangle className="w-5 h-5 text-amber shrink-0 mt-0.5" />
@@ -228,41 +298,138 @@ export default function BeatLicense() {
               </Card>
             </motion.div>
 
-            {/* JotForm Embed */}
+            {/* Native License Request Form */}
             <motion.div variants={fadeIn}>
               <Card variant="elevated">
                 <CardHeader>
-                  <CardTitle>Submit License Request</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Send className="w-5 h-5 text-maroon" />
+                    <CardTitle>Submit License Request</CardTitle>
+                  </div>
                   <CardDescription>
                     Fill out the form below and Ge Oh will reach out to finalize your order
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="w-full min-h-[600px]">
-                    <iframe
-                      id="JotFormIFrame-253335641415150"
-                      title="Beat License Request Form"
-                      src="https://pci.jotform.com/form/253335641415150"
-                      style={{ 
-                        width: '100%', 
-                        minHeight: '600px', 
-                        border: 'none',
-                        backgroundColor: 'transparent'
-                      }}
-                      allowFullScreen
-                      allow="geolocation; microphone; camera; fullscreen"
-                    />
-                  </div>
-                  <p className="text-sm text-center text-muted-foreground mt-4">
-                    Payment will be processed after Ge Oh confirms beat availability and reaches out.
-                  </p>
+                  {submitted ? (
+                    <div className="text-center py-12">
+                      <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                      <h3 className="text-2xl font-display mb-2">Request Submitted!</h3>
+                      <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                        Your beat license request has been received. Ge Oh will review it and reach out to finalize your order.
+                      </p>
+                      <Button variant="maroon" onClick={() => { setSubmitted(false); setForm({ full_name: '', artist_name: '', email: '', beats_interested: '', license_option: '', payment_method: '', special_requests: '' }); }}>
+                        Submit Another Request
+                      </Button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="full_name">Full Name *</Label>
+                          <Input
+                            id="full_name"
+                            value={form.full_name}
+                            onChange={(e) => setForm(prev => ({ ...prev, full_name: e.target.value }))}
+                            placeholder="Your full name"
+                            required
+                            maxLength={100}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="artist_name">Artist / Stage Name</Label>
+                          <Input
+                            id="artist_name"
+                            value={form.artist_name}
+                            onChange={(e) => setForm(prev => ({ ...prev, artist_name: e.target.value }))}
+                            placeholder="Optional"
+                            maxLength={100}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={form.email}
+                          onChange={(e) => setForm(prev => ({ ...prev, email: e.target.value }))}
+                          placeholder="your@email.com"
+                          required
+                          maxLength={255}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="beats_interested">Which Beat(s) Are You Interested In? *</Label>
+                        <Textarea
+                          id="beats_interested"
+                          value={form.beats_interested}
+                          onChange={(e) => setForm(prev => ({ ...prev, beats_interested: e.target.value }))}
+                          placeholder="List the beat name(s) from the catalog above"
+                          required
+                          rows={3}
+                          maxLength={1000}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="license_option">License Type *</Label>
+                          <Select value={form.license_option} onValueChange={(v) => setForm(prev => ({ ...prev, license_option: v }))}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select license type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {LICENSE_OPTIONS.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="payment_method">Preferred Payment Method *</Label>
+                          <Select value={form.payment_method} onValueChange={(v) => setForm(prev => ({ ...prev, payment_method: v }))}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select payment method" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {PAYMENT_OPTIONS.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="special_requests">Special Requests / Notes</Label>
+                        <Textarea
+                          id="special_requests"
+                          value={form.special_requests}
+                          onChange={(e) => setForm(prev => ({ ...prev, special_requests: e.target.value }))}
+                          placeholder="Any questions about samples, co-productions, buyout pricing, etc."
+                          rows={3}
+                          maxLength={1000}
+                        />
+                      </div>
+
+                      <Button type="submit" variant="maroon" size="lg" className="w-full" disabled={submitting}>
+                        {submitting ? 'Submitting...' : 'Submit License Request'}
+                      </Button>
+
+                      <p className="text-sm text-center text-muted-foreground">
+                        Payment will be processed after Ge Oh confirms beat availability and reaches out.
+                      </p>
+                    </form>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
           </motion.div>
         </div>
       </main>
-
     </div>
   );
 }
