@@ -164,6 +164,10 @@ export default function Admin() {
                 <Shield className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Roles
               </TabsTrigger>
+              <TabsTrigger value="applications" className="gap-2" aria-label="View incubator applications">
+                <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Applications
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="analytics">
@@ -247,6 +251,10 @@ export default function Admin() {
 
             <TabsContent value="roles">
               <AdminRolesPermissions />
+            </TabsContent>
+
+            <TabsContent value="applications">
+              <AdminIncubatorApplications />
             </TabsContent>
           </Tabs>
         </main>
