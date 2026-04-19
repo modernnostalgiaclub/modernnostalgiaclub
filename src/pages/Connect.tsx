@@ -28,13 +28,6 @@ const SOCIAL_LINKS = [
 
 const FUNNEL_LINKS = [
   {
-    label: 'Free Artist Survival Guide',
-    sublabel: 'Resources for independent artists',
-    icon: Download,
-    to: '/free-guide',
-    external: false,
-  },
-  {
     label: 'Are You Sync Ready?',
     sublabel: 'Take the 5-min quiz',
     icon: Target,
@@ -55,13 +48,15 @@ const FUNNEL_LINKS = [
     to: '/artistresources',
     external: false,
   },
-  {
-    label: 'Listen on DISCO',
-    sublabel: 'Full catalog — streaming & licensing',
-    icon: Music,
-    to: 'https://geohworks.disco.ac',
-    external: true,
-  },
+] as const;
+
+const PLAYLIST_LINKS = [
+  { label: 'R&Baboy', sublabel: 'Filipino R&B Music', url: 'https://app.magicnothing.xyz/playlists/2652' },
+  { label: 'Tip You Creatives', sublabel: 'Rising Indie Stars', url: 'https://app.magicnothing.xyz/playlists/2653' },
+  { label: "Street's Choice", sublabel: 'Rising Hiphop/R&B Artists', url: 'https://app.magicnothing.xyz/playlists/2655' },
+  { label: 'Sample Our Childhood', sublabel: 'Sampled Based Hits', url: 'https://app.magicnothing.xyz/playlists/2690' },
+  { label: 'Sa(RAP)', sublabel: 'Filipino Hiphop Music', url: 'https://app.magicnothing.xyz/playlists/2654' },
+  { label: 'Top 26 Songs', sublabel: 'R&B — Updated Monthly', url: 'https://app.magicnothing.xyz/playlists/2656' },
 ] as const;
 
 const roleOptions = [
@@ -286,24 +281,43 @@ export default function Connect() {
             </button>
           </motion.div>
 
-          {/* ── Saipan Typhoon Relief ── */}
-          <motion.a
-            href="https://www.paypal.com/donate?campaign_id=5FYWX2RRXDULA"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3.5 bg-cream/5 hover:bg-cream/10 border border-maroon/40 hover:border-maroon rounded-xl transition-all duration-200 w-full"
+          {/* ── Spotify Playlist Network ── */}
+          <motion.section
+            className="bg-cream/5 border border-cream/10 rounded-2xl p-5 space-y-3"
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.35 }}
           >
-            <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/15">
-              <Heart className="w-4 h-4 text-maroon" />
+            <div className="flex items-center gap-2">
+              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
+              <p className="text-cream font-semibold text-sm">Submit to Our Spotify Playlist Network</p>
             </div>
-            <div className="flex-1 text-left">
-              <p className="text-cream text-sm font-semibold leading-tight">Donate to Saipan Typhoon Relief</p>
-              <p className="text-cream/50 text-xs leading-tight mt-0.5">Support recovery efforts via PayPal</p>
+            <p className="text-cream/50 text-xs leading-relaxed">
+              Playlists currently accepting submissions. Read each description carefully on MagicNothing before submitting to make sure your music fits.
+            </p>
+            <div className="space-y-2 pt-1">
+              {PLAYLIST_LINKS.map(({ label, sublabel, url }, i) => (
+                <motion.a
+                  key={label}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-3 py-2.5 bg-dark/40 hover:bg-dark/70 border border-cream/10 hover:border-maroon/60 rounded-lg transition-all duration-200"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.03 }}
+                >
+                  <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-md bg-maroon/15">
+                    <Music className="w-3.5 h-3.5 text-maroon" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-cream text-sm font-semibold leading-tight truncate">{label}</p>
+                    <p className="text-cream/50 text-xs leading-tight mt-0.5 truncate">{sublabel}</p>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
+                </motion.a>
+              ))}
             </div>
-            <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
-          </motion.a>
+          </motion.section>
 
           {/* ── Newsletter ── */}
           <motion.div
