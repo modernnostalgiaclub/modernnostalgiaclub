@@ -28,13 +28,6 @@ const SOCIAL_LINKS = [
 
 const FUNNEL_LINKS = [
   {
-    label: 'Free Artist Survival Guide',
-    sublabel: 'Resources for independent artists',
-    icon: Download,
-    to: '/free-guide',
-    external: false,
-  },
-  {
     label: 'Are You Sync Ready?',
     sublabel: 'Take the 5-min quiz',
     icon: Target,
@@ -55,13 +48,15 @@ const FUNNEL_LINKS = [
     to: '/artistresources',
     external: false,
   },
-  {
-    label: 'Listen on DISCO',
-    sublabel: 'Full catalog — streaming & licensing',
-    icon: Music,
-    to: 'https://geohworks.disco.ac',
-    external: true,
-  },
+] as const;
+
+const PLAYLIST_LINKS = [
+  { label: 'R&Baboy', sublabel: 'Filipino R&B Music', url: 'https://app.magicnothing.xyz/playlists/2652' },
+  { label: 'Tip You Creatives', sublabel: 'Rising Indie Stars', url: 'https://app.magicnothing.xyz/playlists/2653' },
+  { label: "Street's Choice", sublabel: 'Rising Hiphop/R&B Artists', url: 'https://app.magicnothing.xyz/playlists/2655' },
+  { label: 'Sample Our Childhood', sublabel: 'Sampled Based Hits', url: 'https://app.magicnothing.xyz/playlists/2690' },
+  { label: 'Sa(RAP)', sublabel: 'Filipino Hiphop Music', url: 'https://app.magicnothing.xyz/playlists/2654' },
+  { label: 'Top 26 Songs', sublabel: 'R&B — Updated Monthly', url: 'https://app.magicnothing.xyz/playlists/2656' },
 ] as const;
 
 const roleOptions = [
