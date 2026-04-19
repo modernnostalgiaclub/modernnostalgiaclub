@@ -12,7 +12,7 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter
+  Youtube, Twitter, Heart
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -285,6 +285,25 @@ export default function Connect() {
               Already a member? Log in
             </button>
           </motion.div>
+
+          {/* ── Saipan Typhoon Relief ── */}
+          <motion.a
+            href="https://www.paypal.com/donate?campaign_id=5FYWX2RRXDULA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3.5 bg-cream/5 hover:bg-cream/10 border border-maroon/40 hover:border-maroon rounded-xl transition-all duration-200 w-full"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.35 }}
+          >
+            <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/15">
+              <Heart className="w-4 h-4 text-maroon" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-cream text-sm font-semibold leading-tight">Donate to Saipan Typhoon Relief</p>
+              <p className="text-cream/50 text-xs leading-tight mt-0.5">Support recovery efforts via PayPal</p>
+            </div>
+            <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
+          </motion.a>
 
           {/* ── Newsletter ── */}
           <motion.div
