@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
-import logoCream from '@/assets/logo-cream.png';
+import logoCream from '@/assets/mnc-logo-social.png';
 
 const SOCIAL_LINKS = [
   { label: 'Instagram', icon: Instagram, url: 'https://instagram.com/modernnostalgia.club' },
