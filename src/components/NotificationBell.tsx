@@ -52,7 +52,7 @@ export function NotificationBell() {
 
     // Subscribe to realtime updates
     const channel = supabase
-      .channel('notifications-changes')
+      .channel(`notifications:${user.id}`)
       .on(
         'postgres_changes',
         {
