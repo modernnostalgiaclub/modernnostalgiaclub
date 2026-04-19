@@ -211,6 +211,28 @@ export default function Connect() {
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.14 }}
           >
+            {/* Saipan Typhoon Relief — pinned at top */}
+            <motion.a
+              href="https://www.paypal.com/donate?campaign_id=5FYWX2RRXDULA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center px-4 py-3.5 bg-maroon/10 hover:bg-maroon/20 border border-maroon/40 hover:border-maroon rounded-xl transition-all duration-200 w-full"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16 }}
+            >
+              <div className="flex items-center gap-3 w-full">
+                <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/25">
+                  <Heart className="w-4 h-4 text-maroon" />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-cream text-sm font-semibold leading-tight">Donate to Saipan Typhoon Relief</p>
+                  <p className="text-cream/60 text-xs leading-tight mt-0.5">Support recovery efforts via PayPal</p>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-cream/40 flex-shrink-0" />
+              </div>
+            </motion.a>
+
             {FUNNEL_LINKS.map(({ label, sublabel, icon: Icon, to, external }, i) => {
               const inner = (
                 <div className="flex items-center gap-3 w-full">
