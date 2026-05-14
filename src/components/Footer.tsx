@@ -68,6 +68,17 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <a
+                  href="/rss.xml"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-white/70 hover:text-primary transition-colors"
+                  aria-label="Blog RSS feed (opens in new tab)"
+                >
+                  RSS Feed
+                </a>
+              </li>
             </ul>
           </nav>
 
