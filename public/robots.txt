@@ -12,3 +12,14 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /account
+Disallow: /profile
+Disallow: /notifications
+Disallow: /checkout
+Disallow: /auth/
+Disallow: /reset-password
+Disallow: /migrate
+
+Sitemap: https://www.modernnostalgia.club/sitemap.xml
