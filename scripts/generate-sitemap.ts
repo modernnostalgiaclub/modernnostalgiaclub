@@ -104,8 +104,8 @@ function generateSitemap(entries: SitemapEntry[]) {
 }
 
 (async () => {
-  const blog = await fetchBlogEntries();
-  const entries = [...staticEntries, ...blog];
+  const [blog, courses] = await Promise.all([fetchBlogEntries(), fetchCourseEntries()]);
+  const entries = [...staticEntries, ...blog, ...courses];
   writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries));
   console.log(`sitemap.xml written (${entries.length} entries)`);
 })();
