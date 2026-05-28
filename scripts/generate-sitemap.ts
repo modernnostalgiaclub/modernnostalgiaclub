@@ -30,7 +30,30 @@ const staticEntries: SitemapEntry[] = [
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
   { path: "/login", changefreq: "yearly", priority: "0.3" },
   { path: "/signup", changefreq: "yearly", priority: "0.4" },
+  { path: "/dashboard", changefreq: "monthly", priority: "0.4" },
+  { path: "/courses", changefreq: "weekly", priority: "0.6" },
+  { path: "/feedback", changefreq: "monthly", priority: "0.4" },
+  { path: "/community", changefreq: "weekly", priority: "0.5" },
 ];
+
+async function fetchCourseEntries(): Promise<SitemapEntry[]> {
+  const url = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) return [];
+  try {
+    const supabase = createClient(url, key);
+    const { data, error } = await supabase.from("courses").select("slug, updated_at");
+    if (error || !data) return [];
+    return data.map((c: any) => ({
+      path: `/courses/${c.slug}`,
+      lastmod: (c.updated_at || "").split("T")[0] || undefined,
+      changefreq: "monthly" as const,
+      priority: "0.5",
+    }));
+  } catch {
+    return [];
+  }
+}
 
 async function fetchBlogEntries(): Promise<SitemapEntry[]> {
   const url = process.env.VITE_SUPABASE_URL;
