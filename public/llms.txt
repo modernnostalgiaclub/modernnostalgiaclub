@@ -1,0 +1,26 @@
+# Modern Nostalgia Club
+
+> A music platform and creative community for independent R&B and hip-hop artists. We help artists build careers through education, sync licensing, beat libraries, and a paid membership.
+
+ModernNostalgia.club is a Human-First creation studio based in San Diego, California. We work with rising R&B and hip-hop artists on rights clarity, catalog audits, sync readiness, and direct-to-fan growth.
+
+## Pages
+
+- [Home](/): Editorial homepage with the latest stories and artist features.
+- [Join](/join): Membership tiers, pricing, and what's included.
+- [About](/about): Mission, philosophy, and the team behind the club.
+- [Blog](/blog): Music stories, artist features, and industry perspective.
+- [Artists](/artists): Featured roster of artists in the community.
+- [Artist Resources](/artistresources): Free tools, guides, and templates for artists.
+- [Store](/store): Digital products including ebooks, courses, and templates.
+- [Catalog Audit](/catalog-audit): Paid audit service for artists preparing catalog for sync.
+- [Sync Quiz](/sync-quiz): Free sync readiness assessment for independent artists.
+- [Free Guide](/free-guide): Free downloadable resources for new visitors.
+- [Apply to the Lab](/apply): Application form for the $300 Incubator program.
+- [Connect](/connect): Submit music to our Spotify playlist network.
+- [Contact](/contact): Get in touch with the team.
+
+## Optional
+
+- [Terms of Service](/terms)
+- [Privacy Policy](/privacy)
