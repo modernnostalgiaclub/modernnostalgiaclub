@@ -86,6 +86,26 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://www.modernnostalgia.club/dashboard</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.modernnostalgia.club/courses</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.modernnostalgia.club/feedback</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.modernnostalgia.club/community</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.modernnostalgia.club/blog/alternative-diaspora-dsps-future</loc>
     <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
