@@ -28,9 +28,16 @@ const SOCIAL_LINKS = [
 
 const FUNNEL_LINKS = [
   {
+    label: 'Book a Catalog Audit',
+    sublabel: 'Get your music reviewed for sync',
+    icon: Target,
+    to: '/catalog-audit',
+    external: false,
+  },
+  {
     label: 'Are You Sync Ready?',
     sublabel: 'Take the 5-min quiz',
-    icon: Target,
+    icon: CheckCircle,
     to: '/sync-quiz',
     external: false,
   },
