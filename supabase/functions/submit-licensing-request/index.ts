@@ -35,9 +35,36 @@ Deno.serve(async (req) => {
     );
 
     const body = await req.json();
-    const { artist_user_id, supervisor_name, supervisor_email, company, project_description, track_id, budget_range } = body;
+    const {
+      artist_user_id,
+      supervisor_name,
+      supervisor_email,
+      company,
+      project_description,
+      track_id,
+      budget_range,
+      // Anti-spam fields
+      website,        // honeypot — must be empty
+      form_loaded_at, // client timestamp — must be >=2s old
+    } = body;
 
-    // Validate required fields
+    // Honeypot: silently accept to avoid revealing the trap
+    if (typeof website === 'string' && website.trim().length > 0) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Submission delay
+    if (form_loaded_at) {
+      const loadedAt = new Date(form_loaded_at).getTime();
+      if (!Number.isNaN(loadedAt) && Date.now() - loadedAt < 2000) {
+        return new Response(JSON.stringify({ error: 'Submission too fast' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     if (!artist_user_id || !supervisor_name || !supervisor_email || !project_description) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -50,7 +77,35 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Rate limit: 3 requests per email per hour
+    // Verify the artist_user_id refers to a real public artist profile.
+    // Prevents attaching licensing requests to arbitrary user IDs.
+    const { data: artistProfile, error: profileError } = await supabase
+      .from('profiles')
+      .select('user_id, profile_visibility, username')
+      .eq('user_id', artist_user_id)
+      .maybeSingle();
+
+    if (profileError || !artistProfile || artistProfile.profile_visibility !== 'public' || !artistProfile.username) {
+      return new Response(JSON.stringify({ error: 'Invalid artist' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Rate limit by IP (3/hour). Supervisor email rotation is cheap, IP is harder.
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    const { data: ipOk } = await supabase.rpc('check_rate_limit', {
+      p_identifier: ip,
+      p_endpoint: 'submit-licensing-request',
+      p_max_requests: 3,
+      p_window_minutes: 60,
+    });
+    if (ipOk === false) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Please wait before submitting again.' }), {
+        status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Per-email rate limit
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const { count } = await supabase
       .from('licensing_requests')
