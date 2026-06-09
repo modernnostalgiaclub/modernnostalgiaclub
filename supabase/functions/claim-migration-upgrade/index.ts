@@ -96,6 +96,44 @@ serve(async (req) => {
       });
     }
 
+    // SECURITY: When claiming an upgrade for a DIFFERENT source user, the
+    // caller must prove ownership of that account. We verify the caller's
+    // verified auth email matches the source user's auth email (the migration
+    // model: same person, new auth method).
+    if (sourceProfile.user_id !== newUserId) {
+      const callerEmail = (userData.user.email || "").toLowerCase().trim();
+      const emailVerified =
+        userData.user.email_confirmed_at != null ||
+        userData.user.user_metadata?.email_verified === true;
+
+      if (!callerEmail || !emailVerified) {
+        return new Response(JSON.stringify({ error: "Verified email required" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { data: sourceAuth, error: sourceAuthError } =
+        await supabase.auth.admin.getUserById(sourceProfile.user_id);
+
+      if (sourceAuthError || !sourceAuth?.user) {
+        return new Response(JSON.stringify({ error: "Source account not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const sourceEmail = (sourceAuth.user.email || "").toLowerCase().trim();
+      if (!sourceEmail || sourceEmail !== callerEmail) {
+        return new Response(JSON.stringify({
+          error: "You can only claim a migration upgrade for an account you own.",
+        }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     // Check if the NEW user is already at the top tier (idempotent)
     const { data: newProfile } = await supabase
       .from("profiles")
