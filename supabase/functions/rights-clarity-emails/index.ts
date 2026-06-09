@@ -201,9 +201,15 @@ interface EmailQueueEntry {
   quiz_result_id: string;
 }
 
+function isServiceRoleAuthorized(req: Request): boolean {
+  const auth = req.headers.get("Authorization") || "";
+  if (!auth.startsWith("Bearer ")) return false;
+  const token = auth.slice(7).trim();
+  return !!SUPABASE_SERVICE_ROLE_KEY && token === SUPABASE_SERVICE_ROLE_KEY;
+}
+
 const handler = async (req: Request): Promise<Response> => {
   const corsHeaders = getCorsHeaders(req.headers.get('origin'));
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -211,23 +217,55 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
-    // Two modes: 
-    // 1. POST with quiz_result_id - Queue new sequence
-    // 2. GET - Process pending emails (called by cron)
-    
     if (req.method === "POST") {
-      const { email, quiz_result_id } = await req.json();
-      
-      if (!email) {
+      // Require service-role auth: this endpoint sends emails on the site's
+      // verified domain and must not be callable by anonymous users. The
+      // intended caller is the sync-quiz-submit edge function or cron.
+      if (!isServiceRoleAuthorized(req)) {
         return new Response(
-          JSON.stringify({ error: "Missing email" }),
+          JSON.stringify({ error: "Unauthorized" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const { email, quiz_result_id } = await req.json();
+
+      if (!email || typeof email !== "string" || !email.includes("@")) {
+        return new Response(
+          JSON.stringify({ error: "Missing or invalid email" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
-      console.log("Queueing rights-clarity email sequence for:", email);
-      
-      // Send first email immediately
+      // Only send the sequence to addresses that actually took the quiz.
+      const { data: quizMatch } = await supabase
+        .from("sync_quiz_results")
+        .select("id")
+        .eq("email", email.toLowerCase())
+        .limit(1)
+        .maybeSingle();
+
+      if (!quizMatch) {
+        return new Response(
+          JSON.stringify({ error: "Email is not associated with a quiz result" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Per-email rate limit (max 1 sequence per 24h).
+      const { data: limitOk } = await supabase.rpc("check_rate_limit", {
+        p_identifier: email.toLowerCase(),
+        p_endpoint: "rights-clarity-emails",
+        p_max_requests: 1,
+        p_window_minutes: 60 * 24,
+      });
+      if (limitOk === false) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded" }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       const emailResponse = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -243,45 +281,60 @@ const handler = async (req: Request): Promise<Response> => {
       });
 
       if (!emailResponse.ok) {
-        const error = await emailResponse.json();
+        const error = await emailResponse.json().catch(() => ({}));
         console.error("Failed to send day 1 email:", error);
-        throw new Error(error.message || "Failed to send email");
+        return new Response(
+          JSON.stringify({ error: "Failed to send email" }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
 
-      console.log("Day 1 email sent successfully");
-
-      // Schedule remaining emails using Supabase
-      // We'll store in a simple queue table and process via cron
-      // For now, we'll just log the schedule
-      const schedule = [
-        { day: 3, template: "day3" },
-        { day: 5, template: "day5" },
-      ];
-
-      console.log("Scheduled follow-up emails:", schedule);
-
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: "Email sequence started",
-          scheduled: schedule 
-        }),
+        JSON.stringify({ success: true, message: "Email sequence started" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // GET request - manual trigger for sending specific email
-    const url = new URL(req.url);
-    const emailParam = url.searchParams.get("email");
-    const dayParam = url.searchParams.get("day");
+    if (req.method === "GET") {
+      // Cron-only path. Require service-role bearer token.
+      if (!isServiceRoleAuthorized(req)) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
 
-    if (emailParam && dayParam) {
+      const url = new URL(req.url);
+      const emailParam = url.searchParams.get("email");
+      const dayParam = url.searchParams.get("day");
+
+      if (!emailParam || !dayParam) {
+        return new Response(
+          JSON.stringify({ error: "Invalid request" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       const template = emailTemplates[`day${dayParam}` as keyof typeof emailTemplates];
-      
       if (!template) {
         return new Response(
           JSON.stringify({ error: "Invalid day parameter" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Only send to addresses that have a quiz result on file.
+      const { data: quizMatch } = await supabase
+        .from("sync_quiz_results")
+        .select("id")
+        .eq("email", emailParam.toLowerCase())
+        .limit(1)
+        .maybeSingle();
+
+      if (!quizMatch) {
+        return new Response(
+          JSON.stringify({ error: "Email is not associated with a quiz result" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
@@ -299,23 +352,21 @@ const handler = async (req: Request): Promise<Response> => {
         }),
       });
 
-      const result = await emailResponse.json();
-      
       return new Response(
-        JSON.stringify({ success: emailResponse.ok, result }),
-        { status: emailResponse.ok ? 200 : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ success: emailResponse.ok }),
+        { status: emailResponse.ok ? 200 : 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     return new Response(
-      JSON.stringify({ error: "Invalid request" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: "Method not allowed" }),
+      { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error: any) {
     console.error("Error in rights-clarity-emails:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
