@@ -115,18 +115,25 @@ serve(async (req) => {
     const postsData = await postsResponse.json();
     console.log("Fetched posts count:", postsData.data?.length || 0);
 
-    // Map the posts to a simpler format
-    const posts = postsData.data?.map((post: any) => ({
-      id: post.id,
-      title: post.attributes.title,
-      teaser: post.attributes.content?.substring(0, 200) || "",
-      content: post.attributes.content,
-      publishedAt: post.attributes.published_at,
-      url: post.attributes.url,
-      isPublic: post.attributes.is_public,
-      // Show full content only to logged-in users with a tier
-      isFullAccess: userTier !== "public",
-    })) || [];
+    // Server-side gate: only authenticated users with a tier get full content
+    // for member-only (non-public) posts. Public posts remain accessible.
+    const hasFullAccess = userTier !== "public";
+    const posts = postsData.data?.map((post: any) => {
+      const isPublic = post.attributes.is_public;
+      const fullContent = post.attributes.content;
+      const teaser = fullContent?.substring(0, 200) || "";
+      const canSeeFull = isPublic || hasFullAccess;
+      return {
+        id: post.id,
+        title: post.attributes.title,
+        teaser,
+        content: canSeeFull ? fullContent : null,
+        publishedAt: post.attributes.published_at,
+        url: post.attributes.url,
+        isPublic,
+        isFullAccess: canSeeFull,
+      };
+    }) || [];
 
     // Get next cursor for pagination
     const nextCursor = postsData.meta?.pagination?.cursors?.next || null;
