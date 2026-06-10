@@ -453,11 +453,11 @@ export default function LandingPage() {
 
       <main id="main-content" role="main" className="pt-24 pb-20">
         {/* ── Logo ──────────────────────────────────────────────────── */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <img
             src={mncLogoBlack}
             alt="MNC"
-            className="h-32 md:h-40 w-auto mx-auto mb-8"
+            className="h-20 md:h-28 w-auto mx-auto mb-4"
           />
         </div>
 
