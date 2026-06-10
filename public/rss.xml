@@ -6,7 +6,51 @@
     <atom:link href="https://www.modernnostalgia.club/rss.xml" rel="self" type="application/rss+xml" />
     <description>Music stories, artist features, and industry perspective from ModernNostalgia.club.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Jun 2026 23:50:18 GMT</lastBuildDate>
-
+    <lastBuildDate>Wed, 10 Jun 2026 19:29:39 GMT</lastBuildDate>
+    <item>
+      <title>Spotify Playlists for Music Submission: Get Heard, Get Clear, Get Paid</title>
+      <link>https://www.modernnostalgia.club/blog/spotify-playlists-for-music-submission-get-heard-get-clear-get-paid</link>
+      <guid isPermaLink="true">https://www.modernnostalgia.club/blog/spotify-playlists-for-music-submission-get-heard-get-clear-get-paid</guid>
+      <pubDate>Sat, 18 Apr 2026 21:16:48 GMT</pubDate>
+      <dc:creator>ModernNostalgia.club</dc:creator>
+      <description>How Modernnostalgiaclub LLC streams, judges, and curates music for profitability and licensing readiness.</description>
+      <enclosure url="/blog/spotify-playlists-cover.jpg" type="image/jpeg" />
+    </item>
+    <item>
+      <title>The &quot;Human-First&quot; Premium: Why 97% of Music Supervisors Demand AI Transparency</title>
+      <link>https://www.modernnostalgia.club/blog/human-first-premium-ai-transparency</link>
+      <guid isPermaLink="true">https://www.modernnostalgia.club/blog/human-first-premium-ai-transparency</guid>
+      <pubDate>Thu, 02 Apr 2026 00:41:41 GMT</pubDate>
+      <dc:creator>ModernNostalgia.club</dc:creator>
+      <description>In early 2026, 97% of music supervisors now require disclosure of AI involvement in music creation. Here is why human created music is now a market asset.</description>
+      <enclosure url="https://gpcpovoikxgkgnabumlx.supabase.co/storage/v1/object/public/blog-images/blog-ai-transparency.jpg" type="image/jpeg" />
+    </item>
+    <item>
+      <title>Responsible Active Listening in 2025</title>
+      <link>https://www.modernnostalgia.club/blog/responsible-active-listening-2025</link>
+      <guid isPermaLink="true">https://www.modernnostalgia.club/blog/responsible-active-listening-2025</guid>
+      <pubDate>Wed, 01 Apr 2026 17:32:31 GMT</pubDate>
+      <dc:creator>ModernNostalgia.club</dc:creator>
+      <description>Why listeners have to lead, not just press play. Music is everywhere now — but when something is this easy to get, we stop noticing how rare it is.</description>
+      <enclosure url="/images/blog-active-listening.jpg" type="image/jpeg" />
+    </item>
+    <item>
+      <title>What LaRussell Really Teaches Us About Creative Business</title>
+      <link>https://www.modernnostalgia.club/blog/what-larussell-teaches-creative-business</link>
+      <guid isPermaLink="true">https://www.modernnostalgia.club/blog/what-larussell-teaches-creative-business</guid>
+      <pubDate>Tue, 31 Mar 2026 17:28:30 GMT</pubDate>
+      <dc:creator>ModernNostalgia.club</dc:creator>
+      <description>Beyond the music, LaRussell has built a blueprint for how independent artists can create sustainable creative businesses without compromising their vision.</description>
+      <enclosure url="/images/blog-larussell.jpg" type="image/jpeg" />
+    </item>
+    <item>
+      <title>Why Alternative and Diaspora DSPs Are the Future, and Why Independent Labels Should Work With Them Directly</title>
+      <link>https://www.modernnostalgia.club/blog/alternative-diaspora-dsps-future</link>
+      <guid isPermaLink="true">https://www.modernnostalgia.club/blog/alternative-diaspora-dsps-future</guid>
+      <pubDate>Mon, 30 Mar 2026 17:28:30 GMT</pubDate>
+      <dc:creator>ModernNostalgia.club</dc:creator>
+      <description>The streaming landscape is shifting. Alternative and diaspora-focused DSPs are creating new opportunities for independent artists and labels willing to think beyond the mainstream platforms.</description>
+      <enclosure url="/images/blog-dsps-future.jpg" type="image/jpeg" />
+    </item>
   </channel>
 </rss>
