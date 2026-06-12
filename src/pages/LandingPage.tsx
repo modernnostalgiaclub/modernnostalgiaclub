@@ -47,12 +47,7 @@ function TheFeed() {
   const { data: tracks = [], isLoading: tracksLoading } = useQuery({
     queryKey: ['feed-tracks'],
     queryFn: async () => {
-      const { data } = await supabase
-        .from('artist_tracks')
-        .select('id, title, artist_name, disco_url, cover_art_url, created_at')
-        .eq('is_published', true)
-        .order('created_at', { ascending: false })
-        .limit(4);
+      const { data } = await supabase.rpc('get_public_track_previews', { p_limit: 4 });
       return (data || []).map(t => ({ ...t, kind: 'track' as const }));
     },
   });
