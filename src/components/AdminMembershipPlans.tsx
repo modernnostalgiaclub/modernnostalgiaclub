@@ -388,11 +388,9 @@ export function AdminMembershipPlans() {
             {/* Stripe Price ID — read-only info */}
             <div className="space-y-1">
               <Label className="text-sm">Stripe Price ID</Label>
-              {form.stripe_price_id ? (
-                <p className="text-xs text-muted-foreground font-mono bg-muted/50 rounded px-3 py-2">{form.stripe_price_id}</p>
-              ) : (
-                <p className="text-xs text-muted-foreground">Will be auto-generated when you save this paid plan.</p>
-              )}
+              <p className="text-xs text-muted-foreground bg-muted/50 rounded px-3 py-2">
+                Managed securely by the checkout backend and hidden from browser-readable plan data.
+              </p>
             </div>
 
             {/* Free Trial — toggle section */}
