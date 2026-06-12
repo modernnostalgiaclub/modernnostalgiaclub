@@ -1609,6 +1609,17 @@ export type Database = {
           username: string
         }[]
       }
+      get_public_track_previews: {
+        Args: { p_limit?: number }
+        Returns: {
+          artist_name: string
+          cover_art_url: string
+          created_at: string
+          disco_url: string
+          id: string
+          title: string
+        }[]
+      }
       get_site_setting: { Args: { setting_key: string }; Returns: Json }
       get_user_submissions:
         | {
