@@ -68,7 +68,7 @@ export function AdminMembershipPlans() {
     setLoading(true);
     const { data, error } = await supabase
       .from('membership_plans')
-      .select('*')
+      .select('id, name, description, features, billing_period, price, promo_codes, grace_period_days, is_active, is_popular, limit_one_per_email, sort_order, parent_plan_id, created_at, updated_at')
       .order('sort_order', { ascending: true });
     if (error) {
       toast.error('Failed to load membership plans');
@@ -92,8 +92,8 @@ export function AdminMembershipPlans() {
       features: plan.features || [],
       billing_period: plan.billing_period,
       price: plan.price,
-      stripe_price_id: plan.stripe_price_id,
-      stripe_product_id: plan.stripe_product_id,
+      stripe_price_id: null,
+      stripe_product_id: null,
       promo_codes: plan.promo_codes || [],
       grace_period_days: plan.grace_period_days,
       is_active: plan.is_active,
@@ -117,8 +117,6 @@ export function AdminMembershipPlans() {
       features: form.features,
       billing_period: form.billing_period,
       price: form.price,
-      stripe_price_id: form.stripe_price_id,
-      stripe_product_id: form.stripe_product_id,
       promo_codes: form.promo_codes,
       grace_period_days: form.grace_period_days,
       is_active: form.is_active,
