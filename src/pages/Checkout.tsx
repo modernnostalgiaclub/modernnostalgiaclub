@@ -30,7 +30,7 @@ export default function Checkout() {
       if (!planName) return null;
       const { data, error } = await supabase
         .from('membership_plans')
-        .select('*')
+        .select('id, name, description, features, billing_period, price, grace_period_days, is_active, is_popular, limit_one_per_email')
         .eq('name', planName)
         .eq('is_active', true)
         .single();
