@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { PlayerProvider } from "@/contexts/PlayerContext";
+import { PersistentPlayer } from "@/components/PersistentPlayer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SkipLink } from "@/components/SkipLink";
@@ -62,11 +64,13 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
+          <PlayerProvider>
           <SkipLink />
           <Toaster />
           <Sonner />
           <CookieConsent />
           <CartDrawer />
+          <PersistentPlayer />
           <Routes>
             <Route path="/" element={<AuthAwareLayout><MusicBlogHome /></AuthAwareLayout>} />
             
@@ -119,7 +123,8 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </CartProvider>
+          </PlayerProvider>
+          </CartProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
