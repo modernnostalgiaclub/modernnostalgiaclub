@@ -257,11 +257,38 @@ function LatestPostsGrid() {
 }
 
 // ── Latest Tracks ──────────────────────────────────────────────────────────────
-// Embedded DISCO playlist — universal player with built-in queue list.
-// Main versions only; downloads are not surfaced by the embed.
-const DISCO_PLAYLIST_URL = 'https://s.disco.ac/irqnegjjvrtb';
+// Card grid backed by published artist_tracks. Clicking a card hands the queue
+// to the global persistent player.
+import { usePlayer, type PlayerTrack } from '@/contexts/PlayerContext';
 
 function LatestTracks() {
+  const { playQueue, current, isPlaying, togglePlay } = usePlayer();
+
+  const { data: tracks = [], isLoading } = useQuery({
+    queryKey: ['public-playable-tracks'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_public_playable_tracks', { p_limit: 12 });
+      if (error) throw error;
+      return (data ?? []) as Array<{
+        id: string;
+        title: string;
+        artist_name: string | null;
+        cover_art_url: string | null;
+        duration: string | null;
+        audio_path: string | null;
+      }>;
+    },
+  });
+
+  if (!isLoading && tracks.length === 0) return null;
+
+  const queueTracks: PlayerTrack[] = tracks.map((t) => ({
+    id: t.id,
+    title: t.title,
+    artist_name: t.artist_name,
+    cover_art_url: t.cover_art_url,
+  }));
+
   return (
     <section className="border-b border-border/40">
       <div className="container mx-auto px-6 py-16">
@@ -270,38 +297,74 @@ function LatestTracks() {
             <SectionLabel className="mb-2">New Music</SectionLabel>
             <h2 className="text-3xl md:text-4xl font-serif font-bold">Latest Tracks</h2>
           </div>
-          <a
-            href={DISCO_PLAYLIST_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:flex items-center gap-1"
-          >
-            Open in DISCO <ExternalLink className="w-3 h-3" />
-          </a>
         </div>
 
-        <motion.div
-          className="relative rounded-2xl overflow-hidden border border-border/40 bg-card/40"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            aria-hidden="true"
-          >
-            <img src={mncLogo} alt="" className="h-16 opacity-20" />
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-square rounded-xl bg-muted" />
+                <div className="h-3 bg-muted rounded w-3/4 mt-3" />
+                <div className="h-3 bg-muted rounded w-1/2 mt-2" />
+              </div>
+            ))}
           </div>
-          <iframe
-            src={DISCO_PLAYLIST_URL}
-            title="Modern Nostalgia Club — Latest Tracks"
-            className="relative w-full"
-            style={{ height: '720px', border: 0, background: 'transparent' }}
-            loading="lazy"
-            allow="autoplay; clipboard-write; encrypted-media"
-          />
-        </motion.div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {tracks.map((t, i) => {
+              const isCurrent = current?.id === t.id;
+              const showPause = isCurrent && isPlaying;
+              return (
+                <motion.button
+                  key={t.id}
+                  type="button"
+                  onClick={() => {
+                    if (isCurrent) {
+                      togglePlay();
+                    } else {
+                      playQueue(queueTracks, i);
+                    }
+                  }}
+                  className="group text-left"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <div className="relative aspect-square rounded-xl overflow-hidden bg-muted border border-border/40">
+                    <img
+                      src={t.cover_art_url || mncLogo}
+                      alt={t.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = mncLogo;
+                      }}
+                    />
+                    <div
+                      className={`absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity ${
+                        isCurrent ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                      }`}
+                    >
+                      <span className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+                        {showPause ? (
+                          <Music className="w-5 h-5" />
+                        ) : (
+                          <Play className="w-5 h-5 ml-0.5" />
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="mt-3 font-medium text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                    {t.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground line-clamp-1">
+                    {t.artist_name || 'Modern Nostalgia Club'}
+                  </p>
+                </motion.button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
