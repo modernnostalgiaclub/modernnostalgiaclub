@@ -1581,6 +1581,17 @@ export type Database = {
           versions: Json
         }[]
       }
+      get_public_playable_tracks: {
+        Args: { p_limit?: number }
+        Returns: {
+          artist_name: string
+          audio_path: string
+          cover_art_url: string
+          duration: string
+          id: string
+          title: string
+        }[]
+      }
       get_public_profile: {
         Args: { target_user_id: string }
         Returns: {
