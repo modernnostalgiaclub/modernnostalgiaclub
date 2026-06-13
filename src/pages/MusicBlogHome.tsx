@@ -257,17 +257,11 @@ function LatestPostsGrid() {
 }
 
 // ── Latest Tracks ──────────────────────────────────────────────────────────────
+// Embedded DISCO playlist — universal player with built-in queue list.
+// Main versions only; downloads are not surfaced by the embed.
+const DISCO_PLAYLIST_URL = 'https://s.disco.ac/irqnegjjvrtb';
+
 function LatestTracks() {
-  const { data: tracks = [], isLoading } = useQuery({
-    queryKey: ['home-tracks'],
-    queryFn: async () => {
-      const { data } = await supabase.rpc('get_public_track_previews', { p_limit: 8 });
-      return data || [];
-    },
-  });
-
-  if (!isLoading && tracks.length === 0) return null;
-
   return (
     <section className="border-b border-border/40">
       <div className="container mx-auto px-6 py-16">
@@ -276,78 +270,38 @@ function LatestTracks() {
             <SectionLabel className="mb-2">New Music</SectionLabel>
             <h2 className="text-3xl md:text-4xl font-serif font-bold">Latest Tracks</h2>
           </div>
-          <Link
-            to="/artists"
+          <a
+            href={DISCO_PLAYLIST_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:flex items-center gap-1"
           >
-            All Artists <ArrowRight className="w-3 h-3" />
-          </Link>
+            Open in DISCO <ExternalLink className="w-3 h-3" />
+          </a>
         </div>
 
-        {isLoading ? (
-          <div className="flex gap-4 overflow-hidden">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="w-44 shrink-0 rounded-xl overflow-hidden animate-pulse bg-card/50">
-                <div className="aspect-square bg-muted" />
-                <div className="p-3 space-y-2">
-                  <div className="h-3 bg-muted rounded w-3/4" />
-                  <div className="h-2.5 bg-muted rounded w-1/2" />
-                </div>
-              </div>
-            ))}
+        <motion.div
+          className="relative rounded-2xl overflow-hidden border border-border/40 bg-card/40"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            aria-hidden="true"
+          >
+            <img src={mncLogo} alt="" className="h-16 opacity-20" />
           </div>
-        ) : (
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin">
-            {tracks.map((track, i) => (
-              <motion.div
-                key={track.id}
-                className="w-44 shrink-0 group"
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <div className="relative aspect-square rounded-xl overflow-hidden bg-muted mb-3">
-                  {track.cover_art_url ? (
-                    <img
-                      src={track.cover_art_url}
-                      alt={track.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Music className="w-8 h-8 text-primary/20" />
-                    </div>
-                  )}
-                  {/* Play overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                    style={{ background: 'hsl(var(--background)/0.7)' }}>
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center"
-                      style={{ background: 'hsl(var(--primary))' }}>
-                      <Play className="w-4 h-4 text-primary-foreground ml-0.5" />
-                    </div>
-                  </div>
-                </div>
-                <p className="font-serif text-sm font-semibold leading-tight line-clamp-1 mb-0.5">
-                  {track.title}
-                </p>
-                <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
-                  {track.artist_name}
-                </p>
-                {track.disco_url && (
-                  <a
-                    href={track.disco_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-primary hover:underline"
-                  >
-                    DISCO <ExternalLink className="w-2.5 h-2.5" />
-                  </a>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        )}
+          <iframe
+            src={DISCO_PLAYLIST_URL}
+            title="Modern Nostalgia Club — Latest Tracks"
+            className="relative w-full"
+            style={{ height: '720px', border: 0, background: 'transparent' }}
+            loading="lazy"
+            allow="autoplay; clipboard-write; encrypted-media"
+          />
+        </motion.div>
       </div>
     </section>
   );
