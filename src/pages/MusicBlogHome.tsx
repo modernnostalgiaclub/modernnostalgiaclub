@@ -19,6 +19,7 @@ import { ArtistResources } from '@/components/ArtistResources';
 import { SyncReadyCTA } from '@/components/SyncReadyCTA';
 import { EditorialArticles } from '@/components/EditorialArticles';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlayer, type PlayerTrack } from '@/contexts/PlayerContext';
 import heroBg from '@/assets/hero-bg.jpg';
 import mncLogo from '@/assets/mnc-logo.png';
 import mncHeroLogo from '@/assets/mnc-hero-logo.png';
@@ -258,8 +259,6 @@ function LatestPostsGrid() {
 // ── Latest Tracks ──────────────────────────────────────────────────────────────
 // Card grid backed by published artist_tracks. Clicking a card hands the queue
 // to the global persistent player.
-import { usePlayer, type PlayerTrack } from '@/contexts/PlayerContext';
-
 function LatestTracks() {
   const { playQueue, current, isPlaying, togglePlay } = usePlayer();
 
