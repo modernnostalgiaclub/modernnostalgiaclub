@@ -331,12 +331,9 @@ function LatestTracks() {
                 >
                   <div className="relative aspect-square rounded-xl overflow-hidden bg-muted border border-border/40">
                     <img
-                      src={t.cover_art_url || mncLogo}
+                      src={mncLogo}
                       alt={t.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = mncLogo;
-                      }}
                     />
                     <div
                       className={`absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity ${
