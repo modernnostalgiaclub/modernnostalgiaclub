@@ -287,6 +287,22 @@ function LatestTracks() {
     cover_art_url: t.cover_art_url,
   }));
 
+  const descriptions: Record<string, string> = {
+    'Broke Baby Daddy (Clean)': 'A defiant anthem flipping the broke-dad trope into a hustler\'s declaration of devotion.',
+    'West Side': 'A sun-soaked west-coast ride drenched in cruising-hour nostalgia.',
+    'Constantine': 'Moody, cinematic bars with a noir bounce and a chip on its shoulder.',
+    'Wash Your Front (Skandal Riddim)': 'A dancehall-driven warning shot riding a scorching Skandal riddim.',
+    'Peach Mango Pie (prod by ELEV8 x Ge Oh)': 'A sweet, late-summer groove as warm and sticky as its namesake.',
+    'You Said': 'A bruised love letter to broken promises set over hazy R&B chords.',
+    'Sick ft Chozin': 'Trunk-rattling braggadocio with razor-sharp chemistry between two coasts.',
+    'Live it Up Tonight': 'A neon-lit party starter built for the last hour before sunrise.',
+    'Trophies': 'A victory-lap record honoring the receipts and the grind behind them.',
+    'Speed of Light ft. Eunice Janine': 'A weightless, future-funk duet about chasing love faster than logic.',
+    'So Connected ft. Maya La Maya': 'A silky slow burn about the kind of bond that doesn\'t need words.',
+    'D.I.L (Drop It Low)': 'A bass-heavy club command engineered for the floor.',
+    'Crossroads (Lord Knows I Ain\'t Done Yet) Prod Ge Oh': 'A soulful self-pep talk standing at the intersection of doubt and purpose.',
+  };
+
   return (
     <section className="border-b border-border/40">
       <div className="container mx-auto px-6 py-16">
@@ -298,67 +314,75 @@ function LatestTracks() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-square rounded-xl bg-muted" />
-                <div className="h-3 bg-muted rounded w-3/4 mt-3" />
-                <div className="h-3 bg-muted rounded w-1/2 mt-2" />
-              </div>
+          <ul className="divide-y divide-border/40 border-y border-border/40">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <li key={i} className="flex items-center gap-4 py-4 animate-pulse">
+                <div className="w-14 h-14 rounded-md bg-muted" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-muted rounded w-1/3" />
+                  <div className="h-3 bg-muted rounded w-2/3" />
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <ul className="divide-y divide-border/40 border-y border-border/40">
             {tracks.map((t, i) => {
               const isCurrent = current?.id === t.id;
               const showPause = isCurrent && isPlaying;
               return (
-                <motion.button
+                <motion.li
                   key={t.id}
-                  type="button"
-                  onClick={() => {
-                    if (isCurrent) {
-                      togglePlay();
-                    } else {
-                      playQueue(queueTracks, i);
-                    }
-                  }}
-                  className="group text-left"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.03 }}
                 >
-                  <div className="relative aspect-square rounded-xl overflow-hidden bg-muted border border-border/40">
-                    <img
-                      src={mncLogo}
-                      alt={t.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity ${
-                        isCurrent ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                      }`}
-                    >
-                      <span className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isCurrent) togglePlay();
+                      else playQueue(queueTracks, i);
+                    }}
+                    className="w-full flex items-center gap-4 py-4 text-left group"
+                  >
+                    <span className="text-xs text-muted-foreground tabular-nums w-6 text-right">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <div className="relative w-14 h-14 rounded-md overflow-hidden bg-muted border border-border/40 flex-shrink-0">
+                      <img src={mncLogo} alt={t.title} className="w-full h-full object-cover" />
+                      <div
+                        className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
+                          isCurrent ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                      >
                         {showPause ? (
-                          <Music className="w-5 h-5" />
+                          <Music className="w-4 h-4 text-white" />
                         ) : (
-                          <Play className="w-5 h-5 ml-0.5" />
+                          <Play className="w-4 h-4 text-white ml-0.5" />
                         )}
-                      </span>
+                      </div>
                     </div>
-                  </div>
-                  <h3 className="mt-3 font-medium text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                    {t.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1">
-                    {t.artist_name || 'Modern Nostalgia Club'}
-                  </p>
-                </motion.button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <h3 className="font-medium text-sm md:text-base leading-snug group-hover:text-primary transition-colors">
+                          {t.title}
+                        </h3>
+                        <span className="text-xs text-muted-foreground">
+                          {t.artist_name || 'Modern Nostalgia Club'}
+                        </span>
+                      </div>
+                      {descriptions[t.title] && (
+                        <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                          {descriptions[t.title]}
+                        </p>
+                      )}
+                    </div>
+                  </button>
+                </motion.li>
               );
             })}
-          </div>
+          </ul>
         )}
       </div>
     </section>
