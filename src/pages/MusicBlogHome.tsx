@@ -365,11 +365,11 @@ function LatestTracks() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2 flex-wrap">
-                        <h3 className="font-medium text-sm md:text-base leading-snug group-hover:text-primary transition-colors">
-                          {t.title}
-                        </h3>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="font-bold text-sm md:text-base leading-snug group-hover:text-primary transition-colors">
                           {t.artist_name || 'Modern Nostalgia Club'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {t.title}
                         </span>
                       </div>
                       {descriptions[t.title] && (
