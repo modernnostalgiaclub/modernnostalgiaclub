@@ -344,6 +344,7 @@ function LatestTracks() {
                       if (isCurrent) togglePlay();
                       else playQueue(queueTracks, i);
                     }}
+                    aria-label={`${isCurrent && showPause ? 'Pause' : 'Play'} ${t.title} by ${t.artist_name || 'Modern Nostalgia Club'}`}
                     className="w-full flex items-center gap-4 py-4 text-left group"
                   >
                     <span className="text-xs text-muted-foreground tabular-nums w-6 text-right">
