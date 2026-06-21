@@ -136,9 +136,9 @@ function FeaturedPost() {
               </p>
             )}
             <Button variant="outline" asChild>
-              <span className="cursor-pointer">
-                Read More <ArrowRight className="w-4 h-4 ml-2" />
-              </span>
+              <Link to={`/blog/${post.slug}`} aria-label={`Read the full article: ${post.title}`}>
+                Read the full article <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
             </Button>
           </div>
         </motion.div>
