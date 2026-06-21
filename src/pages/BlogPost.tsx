@@ -59,8 +59,37 @@ export default function BlogPost() {
     );
   }
 
+  const canonical = `https://www.modernnostalgia.club/blog/${post.slug}`;
+  const description = (post.excerpt || `${post.title} — read this article from Modern Nostalgia Club.`).slice(0, 158);
+  const ogImage = post.cover_image_url || 'https://www.modernnostalgia.club/favicon.png';
+
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>{`${post.title} | Modern Nostalgia Club`}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={ogImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description,
+          image: ogImage,
+          datePublished: post.published_at || undefined,
+          author: post.author_name ? { "@type": "Person", name: post.author_name } : undefined,
+          publisher: { "@type": "Organization", name: "Modern Nostalgia Club", logo: { "@type": "ImageObject", url: "https://www.modernnostalgia.club/favicon.png" } },
+          mainEntityOfPage: canonical,
+        })}</script>
+      </Helmet>
       <Header />
       <main id="main-content" role="main">
         {/* Back link */}
