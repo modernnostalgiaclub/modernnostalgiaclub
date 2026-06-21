@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
