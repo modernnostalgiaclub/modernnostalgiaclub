@@ -451,7 +451,7 @@ export default function LandingPage() {
         <div className="text-center mb-10">
           <img
             src={mncLogoBlack}
-            alt="MNC"
+            alt="Modern Nostalgia Club logo"
             className="h-20 md:h-28 w-auto mx-auto mb-4"
           />
         </div>
@@ -461,9 +461,9 @@ export default function LandingPage() {
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="font-anton text-4xl md:text-6xl text-black uppercase tracking-tight leading-[1.05]">
+                <h1 className="font-anton text-4xl md:text-6xl text-black uppercase tracking-tight leading-[1.05]">
                   Join the Club
-                </h2>
+                </h1>
                 <p className="mt-4 text-base text-gray-500">
                   Choose which membership is right for you.
                 </p>
