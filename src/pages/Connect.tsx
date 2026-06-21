@@ -12,7 +12,8 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart
+  Youtube, Twitter, Heart, Building2
+
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -27,6 +28,13 @@ const SOCIAL_LINKS = [
 ] as const;
 
 const FUNNEL_LINKS = [
+  {
+    label: 'Book our Event Space in San Diego',
+    sublabel: 'Host your next event at Third Space',
+    icon: Building2,
+    to: 'https://www.thirdspacevenue.com/',
+    external: true,
+  },
   {
     label: 'Book a Catalog Audit',
     sublabel: 'Get your music reviewed for sync',
@@ -56,6 +64,7 @@ const FUNNEL_LINKS = [
     external: false,
   },
 ] as const;
+
 
 const PLAYLIST_LINKS = [
   { label: 'R&Baboy', sublabel: 'Filipino R&B Music', url: 'https://app.magicnothing.xyz/playlists/2652' },
