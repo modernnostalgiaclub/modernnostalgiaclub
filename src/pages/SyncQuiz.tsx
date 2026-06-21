@@ -8,15 +8,16 @@ const SyncQuiz = () => {
   return (
     <>
       <Helmet>
-        <title>Are You Sync Ready? | Free Music Licensing Quiz | Modern Nostalgia Club</title>
+        <title>Sync Ready Quiz — Music Licensing Readiness | MNC</title>
         <meta 
           name="description" 
-          content="Take our free 2-minute quiz to discover if your music catalog is ready for sync licensing opportunities in TV, film, and advertising." 
+          content="Free 2-minute quiz: discover if your music catalog is ready for sync licensing in TV, film, and advertising." 
         />
-        <meta property="og:title" content="Are You Sync Ready? | Free Music Licensing Quiz" />
-        <meta property="og:description" content="Discover if your music is ready for TV, film, and advertising placements. Take our free 2-minute assessment." />
+        <meta property="og:title" content="Sync Ready Quiz — Music Licensing Readiness" />
+        <meta property="og:description" content="Free 2-minute quiz: discover if your music is ready for TV, film, and advertising placements." />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://modernnostalgiaclub.lovable.app/sync-quiz" />
+        <meta property="og:url" content="https://www.modernnostalgia.club/sync-quiz" />
+        <link rel="canonical" href="https://www.modernnostalgia.club/sync-quiz" />
       </Helmet>
 
       <div className="min-h-screen bg-background flex flex-col">

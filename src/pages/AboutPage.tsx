@@ -35,12 +35,12 @@ export default function AboutPage() {
               viewport={{ once: true }}
               variants={stagger}
             >
-              <motion.h2
+              <motion.h1
                 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05]"
                 variants={fadeIn}
               >
                 Who We Are
-              </motion.h2>
+              </motion.h1>
               <motion.p
                 className="mt-4 text-sm md:text-base text-gray-500 uppercase tracking-[0.2em]"
                 variants={fadeIn}

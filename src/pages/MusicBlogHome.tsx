@@ -136,9 +136,9 @@ function FeaturedPost() {
               </p>
             )}
             <Button variant="outline" asChild>
-              <span className="cursor-pointer">
-                Read More <ArrowRight className="w-4 h-4 ml-2" />
-              </span>
+              <Link to={`/blog/${post.slug}`} aria-label={`Read the full article: ${post.title}`}>
+                Read the full article <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
             </Button>
           </div>
         </motion.div>
@@ -344,6 +344,7 @@ function LatestTracks() {
                       if (isCurrent) togglePlay();
                       else playQueue(queueTracks, i);
                     }}
+                    aria-label={`${isCurrent && showPause ? 'Pause' : 'Play'} ${t.title} by ${t.artist_name || 'Modern Nostalgia Club'}`}
                     className="w-full flex items-center gap-4 py-4 text-left group"
                   >
                     <span className="text-xs text-muted-foreground tabular-nums w-6 text-right">
@@ -452,7 +453,7 @@ export default function MusicBlogHome() {
         <EditorialArticles />
         <div className="bg-white py-4 pb-16 text-center">
           <Button size="lg" asChild className="bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white">
-            <Link to="/blog">Read More <ArrowRight className="w-4 h-4 ml-2" /></Link>
+            <Link to="/blog">Explore the blog <ArrowRight className="w-4 h-4 ml-2" /></Link>
           </Button>
         </div>
         {!user && <LatestTracks />}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -275,8 +276,37 @@ export default function ArtistProfile() {
     { icon: <ExternalLink className="w-5 h-5" />, label: 'Linktree', value: artist.linktree, href: artist.linktree },
   ].filter(s => s.value);
 
+  const canonical = `https://www.modernnostalgia.club/artist/${username}`;
+  const artistDesc = (artist.bio || `Listen to ${artist.stage_name} on Modern Nostalgia Club — music, tracks, and ways to support.`).slice(0, 158);
+  const artistImage = artist.avatar_url || artist.hero_image_url || 'https://www.modernnostalgia.club/favicon.png';
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{`${artist.stage_name} | Modern Nostalgia Club`}</title>
+        <meta name="description" content={artistDesc} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={`${artist.stage_name} | Modern Nostalgia Club`} />
+        <meta property="og:description" content={artistDesc} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={artistImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${artist.stage_name} | Modern Nostalgia Club`} />
+        <meta name="twitter:description" content={artistDesc} />
+        <meta name="twitter:image" content={artistImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          mainEntity: {
+            "@type": "MusicGroup",
+            name: artist.stage_name,
+            description: artistDesc,
+            image: artistImage,
+            url: canonical,
+          },
+        })}</script>
+      </Helmet>
       {/* Hero Banner */}
       <div className="relative h-56 md:h-72 overflow-hidden">
         {artist.hero_image_url ? (

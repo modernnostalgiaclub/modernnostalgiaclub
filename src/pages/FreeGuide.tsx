@@ -124,16 +124,15 @@ export default function FreeGuide() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Free Artist Survival Guide | Modern Nostalgia Club</title>
-        <meta name="description" content="Download our free 25+ page guide to building sustainable income as an independent artist. Learn revenue strategies, protect your rights, and define your artist identity." />
+        <meta name="description" content="Download the free 25+ page Artist Survival Guide — revenue strategies, rights protection, and identity-building for independent artists." />
         <meta property="og:title" content="Free Artist Survival Guide | Modern Nostalgia Club" />
-        <meta property="og:description" content="Stop leaving money on the table. Get the free guide that reveals the business fundamentals every independent artist needs." />
+        <meta property="og:description" content="Stop leaving money on the table. The free guide with business fundamentals every independent artist needs." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <meta property="og:url" content="https://www.modernnostalgia.club/free-guide" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Free Artist Survival Guide | Modern Nostalgia Club" />
-        <meta name="twitter:description" content="Stop leaving money on the table. Get the free guide that reveals the business fundamentals every independent artist needs." />
-        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-        <link rel="canonical" href="https://modernnostalgiaclub.lovable.app/free-guide" />
+        <meta name="twitter:description" content="Stop leaving money on the table. The free guide with business fundamentals every independent artist needs." />
+        <link rel="canonical" href="https://www.modernnostalgia.club/free-guide" />
       </Helmet>
       {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-sm">

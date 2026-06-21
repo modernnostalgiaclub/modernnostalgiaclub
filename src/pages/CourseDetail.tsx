@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Header } from '@/components/Header';
 import { SectionLabel } from '@/components/SectionLabel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -286,8 +287,28 @@ export default function CourseDetail() {
     );
   }
 
+  const courseCanonical = `https://www.modernnostalgia.club/courses/${course.slug}`;
+  const courseDesc = (course.description || `${course.title} — a course inside the Modern Nostalgia Club Creator Economy Lab.`).slice(0, 158);
+
   return (
     <div className="min-h-screen bg-background studio-grain flex flex-col">
+      <Helmet>
+        <title>{`${course.title} — Course | Modern Nostalgia Club`}</title>
+        <meta name="description" content={courseDesc} />
+        <link rel="canonical" href={courseCanonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={`${course.title} — Course | Modern Nostalgia Club`} />
+        <meta property="og:description" content={courseDesc} />
+        <meta property="og:url" content={courseCanonical} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: course.title,
+          description: courseDesc,
+          url: courseCanonical,
+          provider: { "@type": "Organization", name: "Modern Nostalgia Club", sameAs: "https://www.modernnostalgia.club" },
+        })}</script>
+      </Helmet>
       <Header />
       
       <main className="flex-1 pt-24 pb-16">
