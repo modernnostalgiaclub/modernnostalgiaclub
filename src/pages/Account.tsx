@@ -58,7 +58,6 @@ interface MemberSubscription {
   is_grandfathered: boolean;
   status: string;
   started_at: string;
-  stripe_subscription_id: string | null;
 }
 
 const tierLabel = (tier: PatreonTier | null): string => {
