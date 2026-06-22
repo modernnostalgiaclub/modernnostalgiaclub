@@ -40,7 +40,7 @@ export function AdminGrandfatheredMembers() {
     // Fetch subscriptions with profile name
     const { data: subs, error: subErr } = await supabase
       .from('member_subscriptions')
-      .select('*')
+      .select('id, user_id, plan_id, locked_price, locked_billing_period, is_grandfathered, status, started_at, notes')
       .order('started_at', { ascending: true });
 
     if (subErr) {
