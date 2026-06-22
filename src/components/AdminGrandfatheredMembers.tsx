@@ -17,7 +17,6 @@ interface MemberSubscription {
   locked_billing_period: string;
   is_grandfathered: boolean;
   status: string;
-  stripe_subscription_id: string | null;
   started_at: string;
   notes: string | null;
   member_name?: string;
