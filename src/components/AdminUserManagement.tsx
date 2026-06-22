@@ -91,7 +91,7 @@ export function AdminUserManagement() {
     const [profilesRes, rolesRes, subsRes, plansRes, emailsRes] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('user_roles').select('*'),
-      supabase.from('member_subscriptions').select('*'),
+      supabase.from('member_subscriptions').select('user_id, plan_id, locked_price, locked_billing_period, is_grandfathered, status, started_at'),
       supabase.from('membership_plans').select('id, name'),
       supabase.functions.invoke('admin-list-users'),
     ]);
