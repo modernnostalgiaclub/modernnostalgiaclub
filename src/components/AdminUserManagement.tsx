@@ -122,7 +122,6 @@ export function AdminUserManagement() {
           is_grandfathered: s.is_grandfathered,
           status: s.status,
           started_at: s.started_at,
-          stripe_subscription_id: s.stripe_subscription_id,
         };
       }
     });
