@@ -37,7 +37,6 @@ interface EnrichedProfile {
     is_grandfathered: boolean;
     status: string;
     started_at: string;
-    stripe_subscription_id: string | null;
   } | null;
 }
 
@@ -92,7 +91,7 @@ export function AdminUserManagement() {
     const [profilesRes, rolesRes, subsRes, plansRes, emailsRes] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
       supabase.from('user_roles').select('*'),
-      supabase.from('member_subscriptions').select('*'),
+      supabase.from('member_subscriptions').select('user_id, plan_id, locked_price, locked_billing_period, is_grandfathered, status, started_at'),
       supabase.from('membership_plans').select('id, name'),
       supabase.functions.invoke('admin-list-users'),
     ]);
@@ -123,7 +122,6 @@ export function AdminUserManagement() {
           is_grandfathered: s.is_grandfathered,
           status: s.status,
           started_at: s.started_at,
-          stripe_subscription_id: s.stripe_subscription_id,
         };
       }
     });
