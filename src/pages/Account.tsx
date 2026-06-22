@@ -89,7 +89,7 @@ export default function Account() {
     try {
       const { data: subs } = await supabase
         .from('member_subscriptions')
-        .select('*, membership_plans(name)')
+        .select('locked_price, locked_billing_period, is_grandfathered, status, started_at, membership_plans(name)')
         .eq('user_id', user!.id)
         .order('created_at', { ascending: false })
         .limit(1);
@@ -103,7 +103,6 @@ export default function Account() {
           is_grandfathered: s.is_grandfathered,
           status: s.status,
           started_at: s.started_at,
-          stripe_subscription_id: s.stripe_subscription_id,
         });
       }
     } catch (err) {
