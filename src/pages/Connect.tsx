@@ -35,6 +35,13 @@ const FUNNEL_LINKS = [
     external: true,
   },
   {
+    label: 'Support for Philippines Charity Show Vol. 1',
+    sublabel: 'Get tickets on Eventbrite',
+    icon: Calendar,
+    to: 'https://www.eventbrite.com/e/support-for-philippines-charity-show-vol-1-tickets-1992942317119',
+    external: true,
+  },
+  {
     label: 'Book a Catalog Audit',
     sublabel: 'Get your music reviewed for sync',
     icon: Target,
