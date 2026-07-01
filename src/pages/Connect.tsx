@@ -12,8 +12,7 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart, Building2
-
+  Youtube, Twitter, Heart, Building2, Calendar
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -33,6 +32,13 @@ const FUNNEL_LINKS = [
     sublabel: 'Host your next event at Third Space',
     icon: Building2,
     to: 'https://www.thirdspacevenue.com/',
+    external: true,
+  },
+  {
+    label: 'Support for Philippines Charity Show Vol. 1',
+    sublabel: 'Get tickets on Eventbrite',
+    icon: Calendar,
+    to: 'https://www.eventbrite.com/e/support-for-philippines-charity-show-vol-1-tickets-1992942317119',
     external: true,
   },
   {
