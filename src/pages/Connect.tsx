@@ -35,10 +35,10 @@ const FUNNEL_LINKS = [
     external: true,
   },
   {
-    label: 'Support for Philippines Charity Show Vol. 1',
+    label: 'San Diego Musician AI Community Discussion',
     sublabel: 'Get tickets on Eventbrite',
     icon: Calendar,
-    to: 'https://www.eventbrite.com/e/support-for-philippines-charity-show-vol-1-tickets-1992942317119',
+    to: 'https://www.eventbrite.com/e/san-diego-musician-ai-community-discussion-tickets-1992831491637?aff=ctntntshareoninstagram',
     external: true,
   },
   {
