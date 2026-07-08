@@ -542,7 +542,6 @@ function PlaylistsSection() {
     <>
       <MNCPlayer />
       <PlaylistSubmit />
-      <ArtistResources />
       <SyncReadyCTA />
       <section className="w-full relative">
         <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#1a1a1a] to-transparent z-10" />
@@ -597,6 +596,7 @@ export default function MusicBlogHome() {
       <main id="main-content" role="main">
         <Masthead />
         <UpcomingEvents />
+        <ArtistResources />
         <EditorialArticles />
         <div className="bg-white py-4 pb-16 text-center">
           <Button size="lg" asChild className="bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white">
