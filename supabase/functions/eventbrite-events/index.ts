@@ -108,10 +108,13 @@ async function fetchEventsForOrg(
     throw new Error(`Eventbrite API returned ${response.status}`);
   }
 
-  const data: EventbriteResponse = await response.json();
-  const events = (data.events || []).map(mapEvent);
-  console.log("Fetched Eventbrite events:", events.length);
-  return events;
+    const data: EventbriteResponse = await response.json();
+    const now = new Date().toISOString();
+    const events = (data.events || [])
+      .map(mapEvent)
+      .filter((event) => event.endUtc && event.endUtc > now);
+    console.log("Fetched Eventbrite events:", events.length);
+    return events;
 }
 
 async function resolveOrganizationId(
