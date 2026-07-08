@@ -542,7 +542,6 @@ function PlaylistsSection() {
     <>
       <MNCPlayer />
       <PlaylistSubmit />
-      <ArtistResources />
       <SyncReadyCTA />
       <section className="w-full relative">
         <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#1a1a1a] to-transparent z-10" />
