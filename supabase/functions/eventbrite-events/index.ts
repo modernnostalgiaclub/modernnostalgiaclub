@@ -81,6 +81,79 @@ function mapEvent(event: EventbriteEvent): MappedEvent {
   };
 }
 
+async function fetchEventsForOrg(
+  privateToken: string,
+  organizationId: string
+): Promise<MappedEvent[]> {
+  const now = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const apiUrl = new URL(`https://www.eventbriteapi.com/v3/organizations/${organizationId}/events/`);
+  apiUrl.searchParams.set('status', 'live');
+  apiUrl.searchParams.set('start_date.range_start', now);
+  apiUrl.searchParams.set('order_by', 'start_asc');
+  apiUrl.searchParams.set('expand', 'venue');
+  apiUrl.searchParams.set('page_size', '12');
+
+  console.log("Fetching Eventbrite events:", apiUrl.toString());
+
+  const response = await fetch(apiUrl.toString(), {
+    headers: {
+      'Authorization': `Bearer ${privateToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Eventbrite API error:", response.status, errorText);
+    throw new Error(`Eventbrite API returned ${response.status}`);
+  }
+
+  const data: EventbriteResponse = await response.json();
+  const events = (data.events || []).map(mapEvent);
+  console.log("Fetched Eventbrite events:", events.length);
+  return events;
+}
+
+async function resolveOrganizationId(
+  privateToken: string,
+  configuredOrgId: string
+): Promise<string> {
+  // First, try the configured organization ID.
+  try {
+    await fetchEventsForOrg(privateToken, configuredOrgId);
+    return configuredOrgId;
+  } catch {
+    console.log("Configured org ID failed; looking up user organizations...");
+  }
+
+  // Fallback: list organizations accessible to this token and use the first one.
+  const orgsUrl = 'https://www.eventbriteapi.com/v3/users/me/organizations/?page_size=10';
+  const orgsResponse = await fetch(orgsUrl, {
+    headers: {
+      'Authorization': `Bearer ${privateToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!orgsResponse.ok) {
+    const errorText = await orgsResponse.text();
+    console.error("Eventbrite organizations lookup error:", orgsResponse.status, errorText);
+    throw new Error(`Could not resolve organization ID. Eventbrite API returned ${orgsResponse.status}`);
+  }
+
+  const orgsData = await orgsResponse.json();
+  const organizations = orgsData.organizations || [];
+
+  if (organizations.length === 0) {
+    throw new Error("No Eventbrite organizations found for this token.");
+  }
+
+  const firstOrg = organizations[0];
+  const resolvedId = firstOrg.id;
+  console.log("Resolved organization ID:", resolvedId, "from", organizations.length, "organizations");
+  return resolvedId;
+}
+
 serve(async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
@@ -101,36 +174,10 @@ serve(async (req) => {
       throw new Error("EVENTBRITE_ORGANIZATION_ID is not configured");
     }
 
-    // Only fetch live or started events from now onward, sorted soonest first.
-    const now = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
-    const apiUrl = new URL(`https://www.eventbriteapi.com/v3/organizations/${ORGANIZATION_ID}/events/`);
-    apiUrl.searchParams.set('status', 'live');
-    apiUrl.searchParams.set('start_date.range_start', now);
-    apiUrl.searchParams.set('order_by', 'start_asc');
-    apiUrl.searchParams.set('expand', 'venue');
-    apiUrl.searchParams.set('page_size', '12');
+    const resolvedOrgId = await resolveOrganizationId(PRIVATE_TOKEN, ORGANIZATION_ID);
+    const events = await fetchEventsForOrg(PRIVATE_TOKEN, resolvedOrgId);
 
-    console.log("Fetching Eventbrite events:", apiUrl.toString());
-
-    const response = await fetch(apiUrl.toString(), {
-      headers: {
-        'Authorization': `Bearer ${PRIVATE_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Eventbrite API error:", response.status, errorText);
-      throw new Error(`Eventbrite API returned ${response.status}`);
-    }
-
-    const data: EventbriteResponse = await response.json();
-    const events = (data.events || []).map(mapEvent);
-
-    console.log("Fetched Eventbrite events:", events.length);
-
-    return new Response(JSON.stringify({ events }), {
+    return new Response(JSON.stringify({ events, organizationId: resolvedOrgId }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
