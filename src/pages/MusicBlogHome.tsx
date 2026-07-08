@@ -12,6 +12,9 @@ import {
   Newspaper,
   Calendar,
   Music,
+  CalendarDays,
+  MapPin,
+  ExternalLink,
 } from 'lucide-react';
 import { MNCPlayer } from '@/components/MNCPlayer';
 import { PlaylistSubmit } from '@/components/PlaylistSubmit';
@@ -49,6 +52,149 @@ function Masthead() {
             <img src={mncHeroLogo} alt="Modern Nostalgia Club" className="h-20 md:h-32 lg:h-40 mx-auto" />
           </motion.h1>
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ── Upcoming Events ────────────────────────────────────────────────────────────
+function UpcomingEvents() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['eventbrite-upcoming-events'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('eventbrite-events', {
+        body: {},
+      });
+      if (error) throw error;
+      return data?.events as Array<{
+        id: string;
+        title: string;
+        description: string;
+        url: string;
+        startUtc: string;
+        startLocal: string;
+        endUtc: string;
+        endLocal: string;
+        imageUrl: string | null;
+        venueName: string | null;
+        venueAddress: string | null;
+        status: string;
+      }>;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const events = data || [];
+
+  if (!isLoading && events.length === 0) return null;
+
+  return (
+    <section className="border-b border-gray-200 bg-white">
+      <div className="container mx-auto px-6 py-16">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <SectionLabel className="mb-2">Community</SectionLabel>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-black">Upcoming Events</h2>
+          </div>
+          <a
+            href="https://modernnostalgiaclub.eventbrite.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-500 hover:text-black transition-colors hidden md:flex items-center gap-1"
+          >
+            View all <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="rounded-xl overflow-hidden animate-pulse bg-gray-100 border border-gray-200">
+                <div className="aspect-[16/9] bg-gray-200" />
+                <div className="p-5 space-y-3">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event, i) => {
+              const startDate = event.startLocal
+                ? new Date(event.startLocal)
+                : new Date(event.startUtc);
+              const dateString = startDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              });
+              const timeString = startDate.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short',
+              });
+              const location = [event.venueName, event.venueAddress]
+                .filter(Boolean)
+                .join(' · ');
+
+              return (
+                <motion.article
+                  key={event.id}
+                  className="group rounded-xl overflow-hidden flex flex-col bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.07 }}
+                >
+                  <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
+                    {event.imageUrl ? (
+                      <img
+                        src={event.imageUrl}
+                        alt={event.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <CalendarDays className="w-10 h-10 text-gray-300" />
+                      </div>
+                    )}
+                    <span className="absolute top-3 left-3 text-[10px] uppercase tracking-widest font-medium px-2 py-0.5 rounded-full bg-[#1194ff]/10 text-[#1194ff] border border-[#1194ff]/20">
+                      Event
+                    </span>
+                  </div>
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="font-serif text-base font-semibold leading-snug mb-2 line-clamp-2 text-black group-hover:text-[#1194ff] transition-colors">
+                      {event.title}
+                    </h3>
+                    <div className="space-y-1.5 mb-4">
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <Calendar className="w-3 h-3 flex-shrink-0" />
+                        <span>{dateString} · {timeString}</span>
+                      </div>
+                      {location && (
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <MapPin className="w-3 h-3 flex-shrink-0" />
+                          <span className="line-clamp-1">{location}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-auto pt-3 border-t border-gray-100">
+                      <a
+                        href={event.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#1194ff] hover:underline"
+                      >
+                        Get tickets <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -450,6 +596,7 @@ export default function MusicBlogHome() {
       <Header />
       <main id="main-content" role="main">
         <Masthead />
+        <UpcomingEvents />
         <EditorialArticles />
         <div className="bg-white py-4 pb-16 text-center">
           <Button size="lg" asChild className="bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white">
