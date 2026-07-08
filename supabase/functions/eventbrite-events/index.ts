@@ -85,10 +85,10 @@ async function fetchEventsForOrg(
   privateToken: string,
   organizationId: string
 ): Promise<MappedEvent[]> {
-  const now = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const nowIso = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
   const apiUrl = new URL(`https://www.eventbriteapi.com/v3/organizations/${organizationId}/events/`);
   apiUrl.searchParams.set('status', 'live');
-  apiUrl.searchParams.set('start_date.range_start', now);
+  apiUrl.searchParams.set('start_date.range_start', nowIso);
   apiUrl.searchParams.set('order_by', 'start_asc');
   apiUrl.searchParams.set('expand', 'venue');
   apiUrl.searchParams.set('page_size', '12');
@@ -108,20 +108,19 @@ async function fetchEventsForOrg(
     throw new Error(`Eventbrite API returned ${response.status}`);
   }
 
-    const data: EventbriteResponse = await response.json();
-    const now = new Date().toISOString();
-    const events = (data.events || [])
-      .map(mapEvent)
-      .filter((event) => event.endUtc && event.endUtc > now);
-    console.log("Fetched Eventbrite events:", events.length);
-    return events;
+  const data: EventbriteResponse = await response.json();
+  const now = new Date().toISOString();
+  const events = (data.events || [])
+    .map(mapEvent)
+    .filter((event) => event.endUtc && event.endUtc > now);
+  console.log("Fetched Eventbrite events:", events.length);
+  return events;
 }
 
 async function resolveOrganizationId(
   privateToken: string,
   configuredOrgId: string
 ): Promise<string> {
-  // First, try the configured organization ID.
   try {
     await fetchEventsForOrg(privateToken, configuredOrgId);
     return configuredOrgId;
@@ -129,7 +128,6 @@ async function resolveOrganizationId(
     console.log("Configured org ID failed; looking up user organizations...");
   }
 
-  // Fallback: list organizations accessible to this token and use the first one.
   const orgsUrl = 'https://www.eventbriteapi.com/v3/users/me/organizations/?page_size=10';
   const orgsResponse = await fetch(orgsUrl, {
     headers: {
