@@ -49,7 +49,7 @@ function Masthead() {
           className="flex flex-col items-center"
         >
           <motion.h1 variants={fadeIn}>
-            <img src={mncHeroLogo} alt="Modern Nostalgia Club" className="h-20 md:h-32 lg:h-40 mx-auto" />
+            <img src={mncHeroLogo} alt="Modern Nostalgia Club" width={640} height={320} fetchPriority="high" decoding="async" className="h-20 md:h-32 lg:h-40 w-auto mx-auto" />
           </motion.h1>
         </motion.div>
       </div>

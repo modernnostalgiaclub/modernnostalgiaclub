@@ -125,17 +125,17 @@ export function Footer() {
         </div>
         
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-white/50">
+          <p className="text-xs text-white/80">
             © {new Date().getFullYear()} ModernNostalgia.club. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link to="/contact" className="text-xs text-white/50 hover:text-primary transition-colors">
+            <Link to="/contact" className="text-xs text-white/80 hover:text-primary transition-colors">
               Contact
             </Link>
-            <Link to="/terms" className="text-xs text-white/50 hover:text-primary transition-colors">
+            <Link to="/terms" className="text-xs text-white/80 hover:text-primary transition-colors">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="text-xs text-white/50 hover:text-primary transition-colors">
+            <Link to="/privacy" className="text-xs text-white/80 hover:text-primary transition-colors">
               Privacy Policy
             </Link>
           </div>
