@@ -78,24 +78,24 @@ export default function Events() {
           </Button>
         </motion.div>
 
-        {/* Events Display - Link to Eventbrite */}
+        {/* Events Display - Featured Eventbrite Event */}
         <motion.div variants={fadeIn} className="mb-12">
           <div className="bg-card border border-border rounded-lg p-8 text-center">
             <Calendar className="w-16 h-16 text-maroon mx-auto mb-6" />
-            <h2 className="font-display text-2xl mb-4">Browse Our Events</h2>
+            <h2 className="font-display text-2xl mb-4">San Diego Musician + AI Community Discussion</h2>
             <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-              View all upcoming workshops, networking sessions, and member events on our Eventbrite page.
+              Join us tomorrow at 5:00 PM PST for a community discussion in San Diego about musicians and AI.
               <span className="block mt-2 text-sm font-medium text-maroon">
                 Members receive exclusive discounts on all events!
               </span>
             </p>
             <Button variant="maroon" size="lg" asChild>
               <a 
-                href="https://modernnostalgiaclub.eventbrite.com" 
+                href="https://www.eventbrite.com/e/san-diego-musician-ai-community-discussion-tickets-1992831491637?aff=ctntntshareoninstagram" 
                 target="_blank" 
                 rel="noopener noreferrer"
               >
-                View All Events
+                Get Tickets
                 <ExternalLink className="w-4 h-4 ml-2" />
               </a>
             </Button>
