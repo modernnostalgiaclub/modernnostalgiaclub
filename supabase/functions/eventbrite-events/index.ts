@@ -104,7 +104,7 @@ serve(async (req) => {
     // Only fetch live or started events from now onward, sorted soonest first.
     const now = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
     const apiUrl = new URL(`https://www.eventbriteapi.com/v3/organizations/${ORGANIZATION_ID}/events/`);
-    apiUrl.searchParams.set('status', 'live,started');
+    apiUrl.searchParams.set('status', 'live');
     apiUrl.searchParams.set('start_date.range_start', now);
     apiUrl.searchParams.set('order_by', 'start_asc');
     apiUrl.searchParams.set('expand', 'venue');
