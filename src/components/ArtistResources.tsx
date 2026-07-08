@@ -75,9 +75,20 @@ export function ArtistResources() {
                     <resource.icon className="w-5 h-5 text-primary-foreground/80" />
                   </div>
                   <div>
-                    <h3 className="font-anton text-sm uppercase tracking-wide text-primary-foreground font-bold">
-                      {resource.title}
-                    </h3>
+                    {resource.url ? (
+                      <a
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-anton text-sm uppercase tracking-wide text-primary-foreground font-bold hover:underline inline-flex items-center gap-1"
+                      >
+                        {resource.title} <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <h3 className="font-anton text-sm uppercase tracking-wide text-primary-foreground font-bold">
+                        {resource.title}
+                      </h3>
+                    )}
                     <p className="text-primary-foreground/70 text-sm mt-1">
                       {resource.description}
                     </p>
