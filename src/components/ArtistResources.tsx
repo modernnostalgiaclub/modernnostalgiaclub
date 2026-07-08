@@ -1,4 +1,4 @@
-import { Briefcase, Music, Mic, Monitor, ArrowRight } from 'lucide-react';
+import { Briefcase, Music, Mic, Monitor, ArrowRight, ExternalLink } from 'lucide-react';
 import artistResourcesImg from '@/assets/artist-resources.jpg';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -24,6 +24,12 @@ const resources = [
     icon: Monitor,
     title: 'Tech Tools',
     description: 'Platforms built to help you organize your music, collaboration spaces, toolkit.',
+  },
+  {
+    icon: ExternalLink,
+    title: 'Thirdspace',
+    description: 'San Diego venue and community space for artists and creators.',
+    url: 'https://www.thirdspacevenue.com',
   },
 ];
 
