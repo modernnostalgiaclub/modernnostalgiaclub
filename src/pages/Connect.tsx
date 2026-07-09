@@ -12,7 +12,7 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart, Building2, Calendar
+  Youtube, Twitter, Heart, Building2
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -35,10 +35,24 @@ const FUNNEL_LINKS = [
     external: true,
   },
   {
-    label: 'San Diego Musician AI Community Discussion',
-    sublabel: 'Get tickets on Eventbrite',
-    icon: Calendar,
-    to: 'https://www.eventbrite.com/e/san-diego-musician-ai-community-discussion-tickets-1992831491637?aff=ctntntshareoninstagram',
+    label: 'Tunegoody',
+    sublabel: 'Music promotion tools',
+    icon: ExternalLink,
+    to: 'https://www.tunegoody.com/landing?ref=modern-nostalgia-e2b60f',
+    external: true,
+  },
+  {
+    label: 'Mogul',
+    sublabel: 'Referral rewards for creators',
+    icon: ExternalLink,
+    to: 'https://mogul.cello.so/DeNDbXrPdn7',
+    external: true,
+  },
+  {
+    label: 'Loveable',
+    sublabel: 'Build apps with AI',
+    icon: ExternalLink,
+    to: 'https://lovable.dev/invite/VK4R8ZA',
     external: true,
   },
   {
