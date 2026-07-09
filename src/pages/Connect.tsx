@@ -12,7 +12,7 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart, Building2, Calendar
+  Youtube, Twitter, Heart, Building2
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
