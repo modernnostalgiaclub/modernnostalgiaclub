@@ -85,6 +85,8 @@ const fallbackResources = [
   { id: '5', title: 'Pro Tools Intro', description: 'Free DAW to start recording and producing your music at home.', url: 'https://www.avid.com/pro-tools', category: 'Recording' },
   { id: '6', title: 'ASCAP', description: 'Performance Rights Organization - register your songs to collect royalties.', url: 'https://www.ascap.com', category: 'Business' },
   { id: '7', title: 'BMI', description: 'Performance Rights Organization - another option for royalty collection.', url: 'https://www.bmi.com', category: 'Business' },
+  { id: '8', title: 'Tunegoody', description: 'Music marketing and career growth platform for independent artists.', url: 'https://www.tunegoody.com/landing?ref=modern-nostalgia-e2b60f', category: 'Music Tools' },
+  { id: '9', title: 'Thirdspace', description: 'San Diego venue and community space for artists and creators.', url: 'https://www.thirdspacevenue.com', category: 'Other Tools' },
 ];
 
 type Resource = { id: string; title: string; description: string | null; url: string; category: string };
