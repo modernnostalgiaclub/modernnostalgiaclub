@@ -35,6 +35,13 @@ const FUNNEL_LINKS = [
     external: true,
   },
   {
+    label: 'Patreon',
+    sublabel: 'Support the club on Patreon',
+    icon: Heart,
+    to: 'https://www.patreon.com/modernnostalgiaclub?utm_campaign=creatorshare_creator',
+    external: true,
+  },
+  {
     label: 'Tunegoody',
     sublabel: 'Music promotion tools',
     icon: ExternalLink,
