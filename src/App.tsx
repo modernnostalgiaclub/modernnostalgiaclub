@@ -56,6 +56,8 @@ import ArtistProfileSettings from "./pages/ArtistProfileSettings";
 import Ebooks from "./pages/Ebooks";
 import Checkout from "./pages/Checkout";
 import Signup from "./pages/Signup";
+import OAuthConsent from "./pages/OAuthConsent";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -120,6 +122,8 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/artist/:username" element={<AuthAwareLayout><ArtistProfile /></AuthAwareLayout>} />
             <Route path="/migrate" element={<MigrateToGoogle />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
