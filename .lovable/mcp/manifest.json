@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://gpcpovoikxgkgnabumlx.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "creative-economy-lab",
+      "version": "0.1.0",
+      "title": "Creative Economy Lab"
+    },
+    "tools": [
+      {
+        "name": "search_blog_posts",
+        "title": "Search blog posts",
+        "description": "Search published Modern Nostalgia Club blog posts by title, excerpt, or tag.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "default": "",
+              "description": "Optional keyword to match against title and excerpt.",
+              "type": "string"
+            },
+            "limit": {
+              "default": 10,
+              "description": "Maximum number of posts to return.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_courses",
+        "title": "List courses",
+        "description": "List published Modern Nostalgia Club courses and the membership tier each one requires.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 25,
+              "description": "Maximum number of courses to return.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_my_profile",
+        "title": "Get my profile",
+        "description": "Get the signed-in member's Modern Nostalgia Club profile, including their membership tier.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_submissions",
+        "title": "List my submissions",
+        "description": "List the signed-in member's Studio Floor submissions, their status, and any reviewer notes.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 20,
+              "description": "Maximum number of submissions to return.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_submission",
+        "title": "Create a submission",
+        "description": "Create a Studio Floor submission for the signed-in member (sync review, catalog audit, branding, project proposal, audio mission, or producer mission).",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Title of the track or project being submitted."
+            },
+            "submission_type": {
+              "type": "string",
+              "enum": [
+                "sync-review",
+                "catalog-audit",
+                "branding",
+                "project-proposal",
+                "audio-mission",
+                "producer-mission"
+              ],
+              "description": "The kind of review being requested."
+            },
+            "disco_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Link to the music (DISCO or other private share link)."
+            },
+            "notes": {
+              "description": "Optional context for the reviewer.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "submission_type",
+            "disco_url"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
