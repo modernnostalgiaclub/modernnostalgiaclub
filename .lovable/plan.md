@@ -1,48 +1,37 @@
+# Purchase alerts to ge@modernnostalgia.club
 
-## Goal
-Add an admin-only "Newsletter" section to the Admin panel that lets you send a newsletter to your Mailchimp audience using a saved template from your Mailchimp account.
+Send an admin email every time someone completes a purchase, including the buyer's email address.
 
-## Setup (one-time)
-1. You generate a Mailchimp API key (Mailchimp → Account → Extras → API keys). The key includes a server prefix like `-us21`.
-2. I request three secrets via the secure form:
-   - `MAILCHIMP_API_KEY`
-   - `MAILCHIMP_SERVER_PREFIX` (e.g. `us21`)
-   - `MAILCHIMP_AUDIENCE_ID` (your list ID — Audience → Settings → Audience name and defaults)
+## What you'll get
 
-## Backend: 2 edge functions (admin-only, JWT verified + `has_role('admin')` check)
+An email to ge@modernnostalgia.club within seconds of any completed payment, showing:
+- What was bought (store products, membership plan, or tip)
+- Buyer email address
+- Amount paid and currency
+- Time of purchase and the payment reference
 
-**`mailchimp-list-templates`** — GET
-- Calls `GET https://{dc}.api.mailchimp.com/3.0/templates?type=user&count=100&fields=templates.id,templates.name,templates.thumbnail`
-- Returns the list of your saved templates so the UI can render a dropdown with thumbnails.
+## Coverage
 
-**`mailchimp-send-campaign`** — POST
-Input (validated with Zod): `{ templateId: number, subject: string, previewText?: string, fromName: string, replyTo: string, sendTest?: boolean, testEmail?: string }`
+Three payment paths exist today and all three will be covered:
+- Store checkout (split sheet, templates, bundles, catalog audit)
+- Membership checkout (Club Pass, Accelerator, Artist Incubator)
+- Artist tips
 
-Flow:
-1. `POST /campaigns` with `type: "regular"`, `recipients.list_id = MAILCHIMP_AUDIENCE_ID`, `settings: { subject_line, preview_text, from_name, reply_to, template: { id: templateId } }`.
-2. If `sendTest` → `POST /campaigns/{id}/actions/test` with `{ test_emails: [testEmail], send_type: "html" }` and return.
-3. Otherwise → `POST /campaigns/{id}/actions/send` and return `{ campaignId, webId }`.
+Today only membership payments are received back from Stripe; store and tip payments complete without the site being told. That gap gets closed as part of this work.
 
-Auth to Mailchimp: `Authorization: Basic base64("anystring:" + MAILCHIMP_API_KEY)`.
+## How it works
 
-## Frontend: `src/components/AdminNewsletter.tsx`
-Added as a new tab/section in `src/pages/Admin.tsx` (behind the existing admin gate + MFA gate you already use).
+1. Turn on the built-in email system for the project. The sender domain (notify.www.modernnostalgia.club) is already verified, so no DNS work is needed.
+2. Add a branded purchase-alert email template with the buyer email, items, and total.
+3. Extend the existing Stripe webhook so it also handles store and tip payments instead of rejecting them, and have every completed payment queue one alert email.
+4. Tag store and tip checkout sessions with purchase type and item details, and ask Stripe to collect the buyer's email at checkout so it is always available.
 
-UI:
-- Template picker: grid of your Mailchimp templates (thumbnail + name), loaded from `mailchimp-list-templates`.
-- Fields: Subject line, Preview text, From name (default "Modern Nostalgia Club"), Reply-to email (default your contact address).
-- Buttons: **Send test to me** (uses signed-in user's email) and **Send to audience** (with a confirmation dialog showing audience name).
-- Success toast links to the campaign report in Mailchimp (`https://{dc}.admin.mailchimp.com/campaigns/show?id={webId}`).
-
-No new database tables. No member sync. No scheduling. Rich-text composing is done inside Mailchimp when you design the template — the dashboard just picks it and sends.
-
-## Out of scope (say the word if you want any of these later)
-- Scheduling sends
-- Campaign history / open + click stats view
-- Syncing your site members into a Mailchimp audience
-- Editing template content from the dashboard (Mailchimp templates with `*|MERGE|*` variables can be filled from our side — happy to add if useful)
+Alerts are queued and retried automatically, so a temporary email failure never blocks or breaks a purchase.
 
 ## Technical notes
-- Base URL: `https://{MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0`
-- All Mailchimp calls happen server-side in edge functions — the API key never touches the browser.
-- Both functions return CORS headers and 4xx on validation failure.
+
+- `email_domain--setup_email_infra` + `scaffold_transactional_email`, then a new template `purchase-alert` in `supabase/functions/_shared/transactional-email-templates/` registered in `registry.ts`.
+- `supabase/functions/stripe-membership-webhook/index.ts`: stop returning 400 when membership metadata is absent; branch on `metadata.purchase_type` (`membership` | `store` | `tip`) and always invoke `send-transactional-email` with an idempotency key of the Stripe session id.
+- `supabase/functions/create-store-checkout/index.ts`: add `metadata: { purchase_type: "store", items }` and `customer_creation`/email collection; same for `create-tip-payment` with `purchase_type: "tip"`.
+- Buyer email read from `session.customer_details.email` with fallback to `customer_email`.
+- Requires the store/tip checkout sessions to be delivered to the same Stripe webhook endpoint already configured for memberships.
