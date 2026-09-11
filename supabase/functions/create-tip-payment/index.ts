@@ -85,6 +85,11 @@ serve(async (req) => {
           tip: "true",
         },
       },
+      metadata: {
+        purchase_type: "tip",
+        artist_name: artistName,
+        items: `Tip for ${artistName}`,
+      },
       success_url: `${origin}${artistPath}?tip=success`,
       cancel_url: `${origin}${artistPath}`,
     };

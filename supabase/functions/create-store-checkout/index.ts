@@ -66,12 +66,24 @@ serve(async (req) => {
       return entry ? entry[0] : "";
     }).filter(Boolean).join(",");
 
+    const itemsSummary = lineItems
+      .map((li) => {
+        const entry = Object.entries(PRICE_MAP).find(([, v]) => v === li.price);
+        return `${entry ? entry[0] : li.price} x${li.quantity}`;
+      })
+      .join(", ");
+
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: "payment",
       success_url: `${origin}/store/success?session_id={CHECKOUT_SESSION_ID}&product=${productIds}`,
       cancel_url: `${origin}/store`,
       billing_address_collection: "auto",
+      customer_creation: "always",
+      metadata: {
+        purchase_type: "store",
+        items: itemsSummary.slice(0, 480),
+      },
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
