@@ -38,6 +38,8 @@ import LabApplication from "./pages/LabApplication";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Contact from "./pages/Contact";
+import Sponsors from "./pages/Sponsors";
+import PlaylistSubmission from "./pages/PlaylistSubmission";
 import MemberDirectory from "./pages/MemberDirectory";
 import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
@@ -111,6 +113,8 @@ const App = () => (
             <Route path="/terms" element={<AuthAwareLayout><TermsOfService /></AuthAwareLayout>} />
             <Route path="/privacy" element={<AuthAwareLayout><PrivacyPolicy /></AuthAwareLayout>} />
             <Route path="/contact" element={<AuthAwareLayout><Contact /></AuthAwareLayout>} />
+            <Route path="/sponsors" element={<Sponsors />} />
+            <Route path="/playlist-submit" element={<PlaylistSubmission />} />
             <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />
             <Route path="/store/success" element={<AuthAwareLayout><StoreSuccess /></AuthAwareLayout>} />
             <Route path="/catalog-audit" element={<AuthAwareLayout><CatalogAudit /></AuthAwareLayout>} />

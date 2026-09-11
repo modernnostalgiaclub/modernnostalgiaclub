@@ -1031,6 +1031,60 @@ export type Database = {
         }
         Relationships: []
       }
+      playlist_submissions: {
+        Row: {
+          artist_name: string
+          clearance: string | null
+          consent: boolean
+          created_at: string
+          email: string
+          genre: string | null
+          id: string
+          name: string
+          notes: string | null
+          release_status: string | null
+          song_title: string
+          song_url: string
+          status: string
+          updated_at: string
+          vocal_type: string | null
+        }
+        Insert: {
+          artist_name: string
+          clearance?: string | null
+          consent?: boolean
+          created_at?: string
+          email: string
+          genre?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          release_status?: string | null
+          song_title: string
+          song_url: string
+          status?: string
+          updated_at?: string
+          vocal_type?: string | null
+        }
+        Update: {
+          artist_name?: string
+          clearance?: string | null
+          consent?: boolean
+          created_at?: string
+          email?: string
+          genre?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          release_status?: string | null
+          song_title?: string
+          song_url?: string
+          status?: string
+          updated_at?: string
+          vocal_type?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1214,6 +1268,57 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: Json
+        }
+        Relationships: []
+      }
+      sponsor_inquiries: {
+        Row: {
+          budget_range: string | null
+          company: string
+          created_at: string
+          email: string
+          goals: string
+          id: string
+          name: string
+          partnership_type: string | null
+          referral_source: string | null
+          role: string | null
+          status: string
+          timeline: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          company: string
+          created_at?: string
+          email: string
+          goals: string
+          id?: string
+          name: string
+          partnership_type?: string | null
+          referral_source?: string | null
+          role?: string | null
+          status?: string
+          timeline?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          company?: string
+          created_at?: string
+          email?: string
+          goals?: string
+          id?: string
+          name?: string
+          partnership_type?: string | null
+          referral_source?: string | null
+          role?: string | null
+          status?: string
+          timeline?: string | null
+          updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }

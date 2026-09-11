@@ -53,15 +53,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a 
-                  href="https://docs.google.com/forms/d/e/1FAIpQLScQm7rwO_R-O1Fg_0LR1_A3dyq_aPPB4JRJs6UvN63hBuprMQ/viewform" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-white/70 hover:text-primary transition-colors"
-                  aria-label="Submit Music (opens in new tab)"
-                >
+                <Link to="/playlist-submit" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Submit Music
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-sm text-white/70 hover:text-primary transition-colors">

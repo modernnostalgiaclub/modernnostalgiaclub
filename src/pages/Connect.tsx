@@ -90,6 +90,20 @@ const FUNNEL_LINKS = [
     to: '/artistresources',
     external: false,
   },
+  {
+    label: 'Submit to Our Playlists',
+    sublabel: 'Send us your song',
+    icon: Send,
+    to: '/playlist-submit',
+    external: false,
+  },
+  {
+    label: 'Sponsors',
+    sublabel: 'Partner with the club',
+    icon: Building2,
+    to: '/sponsors',
+    external: false,
+  },
 ] as const;
 
 
