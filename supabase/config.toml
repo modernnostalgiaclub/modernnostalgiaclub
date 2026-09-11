@@ -71,3 +71,6 @@ verify_jwt = false
 
 [functions.playlist-submission-submit]
 verify_jwt = false
+
+[functions.discovery-call-book]
+verify_jwt = false

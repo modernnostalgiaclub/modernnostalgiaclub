@@ -40,6 +40,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Contact from "./pages/Contact";
 import Sponsors from "./pages/Sponsors";
 import PlaylistSubmission from "./pages/PlaylistSubmission";
+import BookCall from "./pages/BookCall";
 import MemberDirectory from "./pages/MemberDirectory";
 import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
@@ -115,6 +116,7 @@ const App = () => (
             <Route path="/contact" element={<AuthAwareLayout><Contact /></AuthAwareLayout>} />
             <Route path="/sponsors" element={<Sponsors />} />
             <Route path="/playlist-submit" element={<PlaylistSubmission />} />
+            <Route path="/book-call" element={<BookCall />} />
             <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />
             <Route path="/store/success" element={<AuthAwareLayout><StoreSuccess /></AuthAwareLayout>} />
             <Route path="/catalog-audit" element={<AuthAwareLayout><CatalogAudit /></AuthAwareLayout>} />
