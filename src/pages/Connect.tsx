@@ -13,6 +13,7 @@ import {
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
   Youtube, Twitter, Heart, Building2
+  , CalendarCheck
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -27,6 +28,13 @@ const SOCIAL_LINKS = [
 ] as const;
 
 const FUNNEL_LINKS = [
+  {
+    label: 'Book a Discovery Call',
+    sublabel: 'Choose a time to discuss your next step',
+    icon: CalendarCheck,
+    to: '/book-call',
+    external: false,
+  },
   {
     label: 'Free Daily Artist Tips and Articles',
     sublabel: 'Support the club on Patreon',

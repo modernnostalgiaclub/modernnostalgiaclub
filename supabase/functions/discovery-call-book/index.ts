@@ -120,32 +120,55 @@ const handler = async (req: Request): Promise<Response> => {
       return json({ error: "Failed to save booking" }, 500);
     }
 
+    const bookingFields = [
+      { label: "Name", value: row.full_name },
+      { label: "Email", value: row.email },
+      { label: "Artist name", value: row.artist_name || "—" },
+      { label: "Phone", value: row.phone || "—" },
+      { label: "Topic", value: row.topic || "—" },
+      { label: "Preferred time", value: `${row.preferred_date} at ${row.preferred_time}` },
+      { label: "Alternate time", value: row.alt_date ? `${row.alt_date} at ${row.alt_time || "—"}` : "—" },
+      { label: "Timezone", value: row.timezone || "—" },
+      { label: "Notes", value: row.notes || "—" },
+    ];
+
     try {
-      await supabase.functions.invoke("send-transactional-email", {
+      const [ownerAlert, customerConfirmation] = await Promise.all([
+        supabase.functions.invoke("send-transactional-email", {
         body: {
           templateName: "form-submission-alert",
           recipientEmail: "ge@modernnostalgia.club",
-          idempotencyKey: `discovery-call-${inserted.id}`,
+          idempotencyKey: `discovery-call-owner-${inserted.id}`,
           templateData: {
             formName: "Discovery call booking",
             senderEmail: row.email,
             submittedAt: new Date().toISOString(),
-            fields: [
-              { label: "Name", value: row.full_name },
-              { label: "Email", value: row.email },
-              { label: "Artist name", value: row.artist_name || "—" },
-              { label: "Phone", value: row.phone || "—" },
-              { label: "Topic", value: row.topic || "—" },
-              { label: "Preferred time", value: `${row.preferred_date} at ${row.preferred_time}` },
-              { label: "Alternate time", value: row.alt_date ? `${row.alt_date} at ${row.alt_time || "—"}` : "—" },
-              { label: "Timezone", value: row.timezone || "—" },
-              { label: "Notes", value: row.notes || "—" },
-            ],
+            fields: bookingFields,
           },
         },
-      });
+        }),
+        supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "discovery-call-confirmation",
+            recipientEmail: row.email,
+            idempotencyKey: `discovery-call-confirmation-${inserted.id}`,
+            templateData: {
+              name: row.full_name,
+              preferredDate: row.preferred_date,
+              preferredTime: row.preferred_time,
+              alternateDate: row.alt_date,
+              alternateTime: row.alt_time,
+              timezone: row.timezone || "Local timezone",
+              topic: row.topic || "Discovery call",
+            },
+          },
+        }),
+      ]);
+
+      if (ownerAlert.error) console.error("Owner booking alert failed:", ownerAlert.error);
+      if (customerConfirmation.error) console.error("Booking confirmation failed:", customerConfirmation.error);
     } catch (mailError) {
-      console.error("Alert email failed:", mailError);
+      console.error("Booking emails failed:", mailError);
     }
 
     return json({ success: true });
