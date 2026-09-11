@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function PlaylistSubmit() {
   return (
@@ -12,10 +13,10 @@ export function PlaylistSubmit() {
           Submit your music for consideration in our curated playlists, which are frequently reviewed by screenwriters, directors, music supervisors, and editors.
         </p>
         <Button asChild size="lg" className="mt-8">
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLScQm7rwO_R-O1Fg_0LR1_A3dyq_aPPB4JRJs6UvN63hBuprMQ/viewform" target="_blank" rel="noopener noreferrer">
+          <Link to="/playlist-submit">
             <Send className="mr-2 h-4 w-4" />
             Submit
-          </a>
+          </Link>
         </Button>
       </div>
     </section>
