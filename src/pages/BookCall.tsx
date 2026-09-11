@@ -102,7 +102,7 @@ export default function BookCall() {
       <Header />
 
       <main className="flex-1">
-        <section className="container mx-auto px-6 py-16 max-w-2xl">
+        <section className="container mx-auto max-w-2xl px-6 pb-16 pt-28 md:pt-32">
           <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight leading-[1.05] text-gray-900">
             Book a Discovery Call
           </h1>
