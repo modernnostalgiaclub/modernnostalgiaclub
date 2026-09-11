@@ -40,6 +40,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Contact from "./pages/Contact";
 import Sponsors from "./pages/Sponsors";
 import PlaylistSubmission from "./pages/PlaylistSubmission";
+import BookCall from "./pages/BookCall";
 import MemberDirectory from "./pages/MemberDirectory";
 import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
