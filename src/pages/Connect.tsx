@@ -28,14 +28,7 @@ const SOCIAL_LINKS = [
 
 const FUNNEL_LINKS = [
   {
-    label: 'Book our Event Space in San Diego',
-    sublabel: 'Host your next event at Third Space',
-    icon: Building2,
-    to: 'https://www.thirdspacevenue.com/',
-    external: true,
-  },
-  {
-    label: 'Patreon',
+    label: 'Free Daily Artist Tips and Articles',
     sublabel: 'Support the club on Patreon',
     icon: Heart,
     to: 'https://www.patreon.com/modernnostalgiaclub?utm_campaign=creatorshare_creator',
