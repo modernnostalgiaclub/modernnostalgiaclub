@@ -488,7 +488,7 @@ export function SyncReadinessQuiz() {
               {/* Discovery Call CTA Button */}
               <div className="w-full max-w-2xl mx-auto mb-10">
                 <Button asChild variant="maroon" size="lg" className="w-full">
-                  <a href="/contact">
+                  <a href="/book-call">
                     Book a Discovery Call
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </a>
