@@ -465,6 +465,63 @@ export type Database = {
         }
         Relationships: []
       }
+      discovery_call_bookings: {
+        Row: {
+          admin_notes: string | null
+          alt_date: string | null
+          alt_time: string | null
+          artist_name: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          preferred_date: string
+          preferred_time: string
+          status: string
+          timezone: string | null
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          alt_date?: string | null
+          alt_time?: string | null
+          artist_name?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          preferred_date: string
+          preferred_time: string
+          status?: string
+          timezone?: string | null
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          alt_date?: string | null
+          alt_time?: string | null
+          artist_name?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          preferred_date?: string
+          preferred_time?: string
+          status?: string
+          timezone?: string | null
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       download_email_captures: {
         Row: {
           created_at: string
