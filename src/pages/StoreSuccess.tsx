@@ -40,8 +40,24 @@ const PRODUCT_DOWNLOADS: Record<string, { title: string; files: { name: string; 
 
 export default function StoreSuccess() {
   const [searchParams] = useSearchParams();
-  const productId = searchParams.get('product') || '';
-  const product = PRODUCT_DOWNLOADS[productId];
+  const productIds = (searchParams.get('product') || '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+  const purchased = productIds
+    .map((id) => PRODUCT_DOWNLOADS[id])
+    .filter(Boolean);
+
+  const title = purchased.map((p) => p.title).join(', ');
+  const isService = purchased.length > 0 && purchased.every((p) => p.isService);
+  const files = purchased.flatMap((p) => p.files);
+  const uniqueFiles = files.filter(
+    (file, index) => files.findIndex((f) => f.path === file.path) === index
+  );
+  const product = purchased.length
+    ? { title, isService, files: uniqueFiles }
+    : undefined;
+
 
   return (
     <div className="min-h-screen bg-background studio-grain flex flex-col">
