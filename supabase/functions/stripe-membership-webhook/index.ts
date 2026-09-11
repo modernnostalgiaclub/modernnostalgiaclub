@@ -51,39 +51,43 @@ serve(async (req) => {
     const planName = metadata.plan_name;
     const planId = metadata.plan_id;
 
-    if (!userId || !planId) {
-      console.error("Missing metadata in checkout session", metadata);
-      return new Response("Missing metadata", { status: 400 });
-    }
+    const purchaseType =
+      metadata.purchase_type || (userId && planId ? "membership" : "store");
 
-    console.log(`[stripe-membership-webhook] Activating membership for user ${userId}, plan: ${planName}`);
+    if (purchaseType === "membership") {
+      if (!userId || !planId) {
+        console.error("Missing metadata in membership checkout session", metadata);
+      } else {
+        console.log(`[stripe-membership-webhook] Activating membership for user ${userId}, plan: ${planName}`);
 
-    // Update member_subscriptions to active
-    const { error: subError } = await supabase
-      .from("member_subscriptions")
-      .update({
-        status: "active",
-        stripe_customer_id: session.customer as string || null,
-        stripe_subscription_id: session.subscription as string || null,
-      })
-      .eq("user_id", userId)
-      .eq("plan_id", planId)
-      .eq("status", "pending");
+        // Update member_subscriptions to active
+        const { error: subError } = await supabase
+          .from("member_subscriptions")
+          .update({
+            status: "active",
+            stripe_customer_id: session.customer as string || null,
+            stripe_subscription_id: session.subscription as string || null,
+          })
+          .eq("user_id", userId)
+          .eq("plan_id", planId)
+          .eq("status", "pending");
 
-    if (subError) {
-      console.error("Failed to update member_subscriptions:", subError);
-    }
+        if (subError) {
+          console.error("Failed to update member_subscriptions:", subError);
+        }
 
-    // Sync patreon_tier on profiles
-    const tier = PLAN_TIER_MAP[planName || ""];
-    if (tier) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ patreon_tier: tier })
-        .eq("user_id", userId);
+        // Sync patreon_tier on profiles
+        const tier = PLAN_TIER_MAP[planName || ""];
+        if (tier) {
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({ patreon_tier: tier })
+            .eq("user_id", userId);
 
-      if (profileError) {
-        console.error("Failed to update profile tier:", profileError);
+          if (profileError) {
+            console.error("Failed to update profile tier:", profileError);
+          }
+        }
       }
     }
 
@@ -93,7 +97,46 @@ serve(async (req) => {
       source: "stripe-membership",
     });
 
-    console.log(`[stripe-membership-webhook] Successfully activated membership for user ${userId}`);
+    // Admin purchase alert (never blocks the webhook)
+    try {
+      const buyerEmail =
+        session.customer_details?.email || session.customer_email || "unknown";
+      const items =
+        metadata.items ||
+        (purchaseType === "membership" ? planName || "Membership" : null) ||
+        (purchaseType === "tip"
+          ? `Tip for ${metadata.artist_name || "an artist"}`
+          : "Purchase");
+      const amount =
+        session.amount_total != null
+          ? (session.amount_total / 100).toFixed(2)
+          : "";
+
+      const { error: alertError } = await supabase.functions.invoke(
+        "send-transactional-email",
+        {
+          body: {
+            templateName: "purchase-alert",
+            recipientEmail: "ge@modernnostalgia.club",
+            idempotencyKey: `purchase-alert-${session.id}`,
+            templateData: {
+              purchaseType,
+              buyerEmail,
+              items,
+              amount,
+              currency: session.currency || "usd",
+              reference: session.id,
+              purchasedAt: new Date().toISOString(),
+            },
+          },
+        }
+      );
+      if (alertError) {
+        console.error("Failed to send purchase alert:", alertError);
+      }
+    } catch (err) {
+      console.error("Purchase alert error:", err);
+    }
   }
 
   return new Response(JSON.stringify({ received: true }), {
