@@ -116,6 +116,7 @@ const App = () => (
             <Route path="/contact" element={<AuthAwareLayout><Contact /></AuthAwareLayout>} />
             <Route path="/sponsors" element={<Sponsors />} />
             <Route path="/playlist-submit" element={<PlaylistSubmission />} />
+            <Route path="/book-call" element={<BookCall />} />
             <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />
             <Route path="/store/success" element={<AuthAwareLayout><StoreSuccess /></AuthAwareLayout>} />
             <Route path="/catalog-audit" element={<AuthAwareLayout><CatalogAudit /></AuthAwareLayout>} />
