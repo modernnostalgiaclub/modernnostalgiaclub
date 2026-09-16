@@ -1,4 +1,4 @@
-import { Briefcase, Music, Mic, Monitor, ArrowRight, ExternalLink } from 'lucide-react';
+import { Briefcase, Music, Mic, Monitor, ArrowRight, ExternalLink, Headphones } from 'lucide-react';
 import artistResourcesImg from '@/assets/artist-resources.jpg';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -30,6 +30,12 @@ const resources = [
     title: 'Tunegoody',
     description: 'Music marketing and career growth platform for independent artists.',
     url: 'https://www.tunegoody.com/landing?ref=modern-nostalgia-e2b60f',
+  },
+  {
+    icon: Headphones,
+    title: 'Build Better Crates',
+    description: 'Exclusive mashups, remixes, and DJ tools for building unique, professional-sounding crates.',
+    url: 'https://buildbettercrates.com',
   },
 ];
 
