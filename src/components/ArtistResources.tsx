@@ -27,12 +27,6 @@ const resources = [
   },
   {
     icon: ExternalLink,
-    title: 'Thirdspace',
-    description: 'San Diego venue and community space for artists and creators.',
-    url: 'https://www.thirdspacevenue.com',
-  },
-  {
-    icon: ExternalLink,
     title: 'Tunegoody',
     description: 'Music marketing and career growth platform for independent artists.',
     url: 'https://www.tunegoody.com/landing?ref=modern-nostalgia-e2b60f',
