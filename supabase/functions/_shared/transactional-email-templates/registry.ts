@@ -16,4 +16,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'purchase-alert': purchaseAlert,
   'form-submission-alert': formSubmissionAlert,
   'discovery-call-confirmation': discoveryCallConfirmation,
+  'catalog-audit-confirmation': catalogAuditConfirmation,
 }
