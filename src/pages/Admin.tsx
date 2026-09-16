@@ -38,6 +38,7 @@ import { useAuditLog } from '@/hooks/useAuditLog';
 import { AdminRolesPermissions } from '@/components/AdminRolesPermissions';
 import { AdminIncubatorApplications } from '@/components/AdminIncubatorApplications';
 import { AdminSponsorInquiries } from '@/components/AdminSponsorInquiries';
+import { AdminFormActivity } from '@/components/AdminFormActivity';
 import { AdminPlaylistSubmissions } from '@/components/AdminPlaylistSubmissions';
 import type { Database } from '@/integrations/supabase/types';
 
