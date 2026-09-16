@@ -94,6 +94,8 @@ export function useAntiSpam(config: AntiSpamConfig = {}): AntiSpamResult {
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   
   // Generate fingerprint once on mount
+  const mountedAt = useMemo(() => Date.now(), []);
+
   const fingerprint = useMemo(() => {
     if (typeof window === 'undefined') return 'ssr';
     return generateFingerprint();
