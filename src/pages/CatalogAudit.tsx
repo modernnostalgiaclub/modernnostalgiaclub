@@ -420,8 +420,9 @@ export default function CatalogAudit() {
                 <p className="text-4xl font-display text-maroon mb-6">$249</p>
                 
                 <p className="text-muted-foreground mb-8">
-                  After purchase, you'll receive a booking form via email to schedule your audit session.
+                  Send us your catalog details below, then finish checkout. We'll email you a confirmation and follow up to schedule your review session.
                 </p>
+
 
                 <div className="flex items-start gap-3 mb-6 p-4 bg-secondary/20 rounded-lg text-left">
                   <Checkbox 
