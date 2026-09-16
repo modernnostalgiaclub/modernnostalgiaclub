@@ -35,39 +35,18 @@ const FUNNEL_LINKS = [
     external: false,
   },
   {
-    label: 'Free Daily Artist Tips and Articles',
-    sublabel: 'Support the club on Patreon',
-    icon: Heart,
-    to: 'https://www.patreon.com/modernnostalgiaclub?utm_campaign=creatorshare_creator',
-    external: true,
-  },
-  {
-    label: 'Tunegoody',
-    sublabel: 'Music promotion tools',
-    icon: ExternalLink,
-    to: 'https://www.tunegoody.com/landing?ref=modern-nostalgia-e2b60f',
-    external: true,
-  },
-  {
-    label: 'Mogul',
-    sublabel: 'Referral rewards for creators',
-    icon: ExternalLink,
-    to: 'https://mogul.cello.so/DeNDbXrPdn7',
-    external: true,
-  },
-  {
-    label: 'Loveable',
-    sublabel: 'Build apps with AI',
-    icon: ExternalLink,
-    to: 'https://lovable.dev/invite/VK4R8ZA',
-    external: true,
-  },
-  {
     label: 'Book a Catalog Audit',
     sublabel: 'Get your music reviewed for sync',
     icon: Target,
     to: '/catalog-audit',
     external: false,
+  },
+  {
+    label: 'Free Daily Artist Tips and Articles',
+    sublabel: 'Support the club on Patreon',
+    icon: Heart,
+    to: 'https://www.patreon.com/modernnostalgiaclub?utm_campaign=creatorshare_creator',
+    external: true,
   },
   {
     label: 'Are You Sync Ready?',
@@ -103,6 +82,27 @@ const FUNNEL_LINKS = [
     icon: Building2,
     to: '/sponsors',
     external: false,
+  },
+  {
+    label: 'Tunegoody',
+    sublabel: 'Music promotion tools',
+    icon: ExternalLink,
+    to: 'https://www.tunegoody.com/landing?ref=modern-nostalgia-e2b60f',
+    external: true,
+  },
+  {
+    label: 'Mogul',
+    sublabel: 'Referral rewards for creators',
+    icon: ExternalLink,
+    to: 'https://mogul.cello.so/DeNDbXrPdn7',
+    external: true,
+  },
+  {
+    label: 'Loveable',
+    sublabel: 'Build apps with AI',
+    icon: ExternalLink,
+    to: 'https://lovable.dev/invite/VK4R8ZA',
+    external: true,
   },
 ] as const;
 
@@ -284,7 +284,7 @@ export default function Connect() {
                 </div>
                 <div className="flex-1 text-left">
                   <p className="text-cream text-sm font-semibold leading-tight">2026 Fil Am Creator Con</p>
-                  <p className="text-cream/60 text-xs leading-tight mt-0.5">Get tickets on Eventbrite</p>
+                  <p className="text-cream/60 text-xs leading-tight mt-0.5">Sept 19 · Get tickets on Eventbrite</p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-cream/40 flex-shrink-0" />
               </div>
