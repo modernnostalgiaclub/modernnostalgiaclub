@@ -265,6 +265,60 @@ export type Database = {
         }
         Relationships: []
       }
+      catalog_audit_submissions: {
+        Row: {
+          artist_name: string | null
+          catalog_link: string | null
+          catalog_size: string | null
+          created_at: string
+          email: string
+          full_name: string
+          goals: string
+          id: string
+          notes: string | null
+          ownership_status: string | null
+          payment_status: string
+          pro_affiliation: string | null
+          splits_documented: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          artist_name?: string | null
+          catalog_link?: string | null
+          catalog_size?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          goals: string
+          id?: string
+          notes?: string | null
+          ownership_status?: string | null
+          payment_status?: string
+          pro_affiliation?: string | null
+          splits_documented?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          artist_name?: string | null
+          catalog_link?: string | null
+          catalog_size?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          goals?: string
+          id?: string
+          notes?: string | null
+          ownership_status?: string | null
+          payment_status?: string
+          pro_affiliation?: string | null
+          splits_documented?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           channel_id: string

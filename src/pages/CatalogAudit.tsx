@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { CatalogAuditForm } from '@/components/CatalogAuditForm';
 import { 
   ClipboardCheck, 
   CheckCircle2, 
@@ -420,8 +421,9 @@ export default function CatalogAudit() {
                 <p className="text-4xl font-display text-maroon mb-6">$249</p>
                 
                 <p className="text-muted-foreground mb-8">
-                  After purchase, you'll receive a booking form via email to schedule your audit session.
+                  Send us your catalog details below, then finish checkout. We'll email you a confirmation and follow up to schedule your review session.
                 </p>
+
 
                 <div className="flex items-start gap-3 mb-6 p-4 bg-secondary/20 rounded-lg text-left">
                   <Checkbox 
@@ -438,16 +440,13 @@ export default function CatalogAudit() {
                   </label>
                 </div>
 
-                <Button 
-                  variant="maroon" 
-                  size="lg"
-                  className="w-full"
-                  onClick={handlePurchase}
-                  disabled={!auditConfirmed}
-                >
-                  Purchase Catalog Audit - $249
-                  <ExternalLink className="w-5 h-5 ml-2" />
-                </Button>
+                <CatalogAuditForm onContinueToPayment={handlePurchase} disabled={!auditConfirmed} />
+
+                {!auditConfirmed && (
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Tick the box above to send your details.
+                  </p>
+                )}
 
                 <p className="text-xs text-muted-foreground mt-4">
                   Secure checkout powered by Intuit.

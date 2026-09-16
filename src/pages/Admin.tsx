@@ -38,6 +38,7 @@ import { useAuditLog } from '@/hooks/useAuditLog';
 import { AdminRolesPermissions } from '@/components/AdminRolesPermissions';
 import { AdminIncubatorApplications } from '@/components/AdminIncubatorApplications';
 import { AdminSponsorInquiries } from '@/components/AdminSponsorInquiries';
+import { AdminFormActivity } from '@/components/AdminFormActivity';
 import { AdminPlaylistSubmissions } from '@/components/AdminPlaylistSubmissions';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -178,7 +179,15 @@ export default function Admin() {
                 <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Playlist
               </TabsTrigger>
+              <TabsTrigger value="inbox" className="gap-2" aria-label="View all form submissions">
+                <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Inbox
+              </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="inbox">
+              <AdminFormActivity />
+            </TabsContent>
 
             <TabsContent value="sponsors">
               <AdminSponsorInquiries />
