@@ -12,7 +12,7 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart, Building2, CalendarCheck
+  Youtube, Twitter, Heart, Building2, CalendarCheck, Ticket
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -268,9 +268,9 @@ export default function Connect() {
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.14 }}
           >
-            {/* Mindinao Donation — pinned at top */}
+            {/* Featured Event — pinned at top */}
             <motion.a
-              href="https://www.paypal.com/donate?campaign_id=X4D6XDZL4LXK2"
+              href="https://www.eventbrite.com/e/filam-creatorcon-2026-tickets-1992067718170?aff=ebdsshcopyurl&utm-campaign=social&utm-content=attendeeshare&utm-medium=discovery&utm-source=cp&utm-term=listing"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-4 py-3.5 bg-maroon/10 hover:bg-maroon/20 border border-maroon/40 hover:border-maroon rounded-xl transition-all duration-200 w-full"
@@ -280,11 +280,11 @@ export default function Connect() {
             >
               <div className="flex items-center gap-3 w-full">
                 <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/25">
-                  <Heart className="w-4 h-4 text-maroon" />
+                  <Ticket className="w-4 h-4 text-maroon" />
                 </div>
                 <div className="flex-1 text-left">
-                  <p className="text-cream text-sm font-semibold leading-tight">Donate to Mindinao</p>
-                  <p className="text-cream/60 text-xs leading-tight mt-0.5">Support recovery efforts via PayPal</p>
+                  <p className="text-cream text-sm font-semibold leading-tight">2026 Fil Am Creator Con</p>
+                  <p className="text-cream/60 text-xs leading-tight mt-0.5">Get tickets on Eventbrite</p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-cream/40 flex-shrink-0" />
               </div>
