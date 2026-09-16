@@ -439,16 +439,13 @@ export default function CatalogAudit() {
                   </label>
                 </div>
 
-                <Button 
-                  variant="maroon" 
-                  size="lg"
-                  className="w-full"
-                  onClick={handlePurchase}
-                  disabled={!auditConfirmed}
-                >
-                  Purchase Catalog Audit - $249
-                  <ExternalLink className="w-5 h-5 ml-2" />
-                </Button>
+                <CatalogAuditForm onContinueToPayment={handlePurchase} disabled={!auditConfirmed} />
+
+                {!auditConfirmed && (
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Tick the box above to send your details.
+                  </p>
+                )}
 
                 <p className="text-xs text-muted-foreground mt-4">
                   Secure checkout powered by Intuit.
