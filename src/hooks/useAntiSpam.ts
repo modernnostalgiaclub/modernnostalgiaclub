@@ -94,6 +94,8 @@ export function useAntiSpam(config: AntiSpamConfig = {}): AntiSpamResult {
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   
   // Generate fingerprint once on mount
+  const mountedAt = useMemo(() => Date.now(), []);
+
   const fingerprint = useMemo(() => {
     if (typeof window === 'undefined') return 'ssr';
     return generateFingerprint();
@@ -181,8 +183,10 @@ export function useAntiSpam(config: AntiSpamConfig = {}): AntiSpamResult {
   const getSubmissionData = useCallback(() => ({
     _hp: honeypotValue,
     _fp: fingerprint,
-    _ts: Date.now(),
-  }), [honeypotValue, fingerprint]);
+    // Time the form was mounted, so the server can measure how long the
+    // visitor spent on the form (bots submit almost instantly).
+    _ts: mountedAt,
+  }), [honeypotValue, fingerprint, mountedAt]);
 
   return {
     honeypotValue,
