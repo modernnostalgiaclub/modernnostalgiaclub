@@ -45,7 +45,6 @@ import MemberDirectory from "./pages/MemberDirectory";
 import Notifications from "./pages/Notifications";
 import Store from "./pages/Store";
 import StoreSuccess from "./pages/StoreSuccess";
-import Unsubscribe from "./pages/Unsubscribe";
 import SyncQuiz from "./pages/SyncQuiz";
 import CatalogAudit from "./pages/CatalogAudit";
 import Connect from "./pages/Connect";
@@ -130,7 +129,6 @@ const App = () => (
             <Route path="/artist/:username" element={<AuthAwareLayout><ArtistProfile /></AuthAwareLayout>} />
             <Route path="/migrate" element={<MigrateToGoogle />} />
             <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
-            <Route path="/unsubscribe" element={<Unsubscribe />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
 
 const ALLOWED_ORIGINS = [
   "https://modernnostalgia.club",
@@ -133,11 +134,8 @@ const handler = async (req: Request): Promise<Response> => {
     ];
 
     try {
-      const [ownerAlert, customerConfirmation] = await Promise.all([
-        supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "form-submission-alert",
-          recipientEmail: "ge@modernnostalgia.club",
+      const results = await Promise.allSettled([
+        sendAndLogEmail(supabase, "form-submission-alert", "ge@modernnostalgia.club", {
           idempotencyKey: `discovery-call-owner-${inserted.id}`,
           templateData: {
             formName: "Discovery call booking",
@@ -145,28 +143,23 @@ const handler = async (req: Request): Promise<Response> => {
             submittedAt: new Date().toISOString(),
             fields: bookingFields,
           },
-        },
         }),
-        supabase.functions.invoke("send-transactional-email", {
-          body: {
-            templateName: "discovery-call-confirmation",
-            recipientEmail: row.email,
-            idempotencyKey: `discovery-call-confirmation-${inserted.id}`,
-            templateData: {
-              name: row.full_name,
-              preferredDate: row.preferred_date,
-              preferredTime: row.preferred_time,
-              alternateDate: row.alt_date,
-              alternateTime: row.alt_time,
-              timezone: row.timezone || "Local timezone",
-              topic: row.topic || "Discovery call",
-            },
+        sendAndLogEmail(supabase, "discovery-call-confirmation", row.email, {
+          idempotencyKey: `discovery-call-confirmation-${inserted.id}`,
+          templateData: {
+            name: row.full_name,
+            preferredDate: row.preferred_date,
+            preferredTime: row.preferred_time,
+            alternateDate: row.alt_date,
+            alternateTime: row.alt_time,
+            timezone: row.timezone || "Local timezone",
+            topic: row.topic || "Discovery call",
           },
         }),
       ]);
 
-      if (ownerAlert.error) console.error("Owner booking alert failed:", ownerAlert.error);
-      if (customerConfirmation.error) console.error("Booking confirmation failed:", customerConfirmation.error);
+      if (results[0].status === "rejected") console.error("Owner booking alert failed:", results[0].reason);
+      if (results[1].status === "rejected") console.error("Booking confirmation failed:", results[1].reason);
     } catch (mailError) {
       console.error("Booking emails failed:", mailError);
     }

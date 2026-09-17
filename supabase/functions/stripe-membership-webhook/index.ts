@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   apiVersion: "2025-08-27.basil",
@@ -112,28 +113,18 @@ serve(async (req) => {
           ? (session.amount_total / 100).toFixed(2)
           : "";
 
-      const { error: alertError } = await supabase.functions.invoke(
-        "send-transactional-email",
-        {
-          body: {
-            templateName: "purchase-alert",
-            recipientEmail: "ge@modernnostalgia.club",
-            idempotencyKey: `purchase-alert-${session.id}`,
-            templateData: {
-              purchaseType,
-              buyerEmail,
-              items,
-              amount,
-              currency: session.currency || "usd",
-              reference: session.id,
-              purchasedAt: new Date().toISOString(),
-            },
-          },
-        }
-      );
-      if (alertError) {
-        console.error("Failed to send purchase alert:", alertError);
-      }
+      await sendAndLogEmail(supabase, "purchase-alert", "ge@modernnostalgia.club", {
+        idempotencyKey: `purchase-alert-${session.id}`,
+        templateData: {
+          purchaseType,
+          buyerEmail,
+          items,
+          amount,
+          currency: session.currency || "usd",
+          reference: session.id,
+          purchasedAt: new Date().toISOString(),
+        },
+      });
     } catch (err) {
       console.error("Purchase alert error:", err);
     }

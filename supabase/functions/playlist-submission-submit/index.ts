@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
 
 const ALLOWED_ORIGINS = [
   "https://modernnostalgia.club",
@@ -107,28 +108,24 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "form-submission-alert",
-          recipientEmail: "ge@modernnostalgia.club",
-          idempotencyKey: `playlist-submission-${inserted.id}`,
-          templateData: {
-            formName: "Playlist submission",
-            senderEmail: row.email,
-            submittedAt: new Date().toISOString(),
-            fields: [
-              { label: "Name", value: row.name },
-              { label: "Email", value: row.email },
-              { label: "Artist name", value: row.artist_name },
-              { label: "Song title", value: row.song_title },
-              { label: "Song link", value: row.song_url },
-              { label: "Genre / mood", value: row.genre || "—" },
-              { label: "Cleared and owned", value: row.clearance || "—" },
-              { label: "Instrumental or vocal", value: row.vocal_type || "—" },
-              { label: "Release status", value: row.release_status || "—" },
-              { label: "Notes", value: row.notes || "—" },
-            ],
-          },
+      await sendAndLogEmail(supabase, "form-submission-alert", "ge@modernnostalgia.club", {
+        idempotencyKey: `playlist-submission-${inserted.id}`,
+        templateData: {
+          formName: "Playlist submission",
+          senderEmail: row.email,
+          submittedAt: new Date().toISOString(),
+          fields: [
+            { label: "Name", value: row.name },
+            { label: "Email", value: row.email },
+            { label: "Artist name", value: row.artist_name },
+            { label: "Song title", value: row.song_title },
+            { label: "Song link", value: row.song_url },
+            { label: "Genre / mood", value: row.genre || "—" },
+            { label: "Cleared and owned", value: row.clearance || "—" },
+            { label: "Instrumental or vocal", value: row.vocal_type || "—" },
+            { label: "Release status", value: row.release_status || "—" },
+            { label: "Notes", value: row.notes || "—" },
+          ],
         },
       });
     } catch (mailError) {
