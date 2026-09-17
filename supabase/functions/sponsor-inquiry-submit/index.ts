@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
 
 const ALLOWED_ORIGINS = [
   "https://modernnostalgia.club",
@@ -94,28 +95,24 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     try {
-      await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "form-submission-alert",
-          recipientEmail: "ge@modernnostalgia.club",
-          idempotencyKey: `sponsor-inquiry-${inserted.id}`,
-          templateData: {
-            formName: "Sponsorship inquiry",
-            senderEmail: row.email,
-            submittedAt: new Date().toISOString(),
-            fields: [
-              { label: "Name", value: row.name },
-              { label: "Email", value: row.email },
-              { label: "Company", value: row.company },
-              { label: "Website", value: row.website || "—" },
-              { label: "Role", value: row.role || "—" },
-              { label: "Partnership type", value: row.partnership_type || "—" },
-              { label: "Budget range", value: row.budget_range || "—" },
-              { label: "Timeline", value: row.timeline || "—" },
-              { label: "Goals", value: row.goals },
-              { label: "How they heard about us", value: row.referral_source || "—" },
-            ],
-          },
+      await sendAndLogEmail(supabase, "form-submission-alert", "ge@modernnostalgia.club", {
+        idempotencyKey: `sponsor-inquiry-${inserted.id}`,
+        templateData: {
+          formName: "Sponsorship inquiry",
+          senderEmail: row.email,
+          submittedAt: new Date().toISOString(),
+          fields: [
+            { label: "Name", value: row.name },
+            { label: "Email", value: row.email },
+            { label: "Company", value: row.company },
+            { label: "Website", value: row.website || "—" },
+            { label: "Role", value: row.role || "—" },
+            { label: "Partnership type", value: row.partnership_type || "—" },
+            { label: "Budget range", value: row.budget_range || "—" },
+            { label: "Timeline", value: row.timeline || "—" },
+            { label: "Goals", value: row.goals },
+            { label: "How they heard about us", value: row.referral_source || "—" },
+          ],
         },
       });
     } catch (mailError) {

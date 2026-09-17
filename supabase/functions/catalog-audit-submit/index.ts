@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
 
 const ALLOWED_ORIGINS = [
   "https://modernnostalgia.club",
@@ -106,48 +107,40 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     try {
-      const [ownerAlert, confirmation] = await Promise.all([
-        supabase.functions.invoke("send-transactional-email", {
-          body: {
-            templateName: "form-submission-alert",
-            recipientEmail: "ge@modernnostalgia.club",
-            idempotencyKey: `catalog-audit-owner-${inserted.id}`,
-            templateData: {
-              formName: "Catalog audit request",
-              senderEmail: row.email,
-              submittedAt: new Date().toISOString(),
-              fields: [
-                { label: "Name", value: row.full_name },
-                { label: "Email", value: row.email },
-                { label: "Artist name", value: row.artist_name || "—" },
-                { label: "Catalog size", value: row.catalog_size || "—" },
-                { label: "Catalog link", value: row.catalog_link || "—" },
-                { label: "Ownership", value: row.ownership_status || "—" },
-                { label: "Splits documented", value: row.splits_documented || "—" },
-                { label: "PRO", value: row.pro_affiliation || "—" },
-                { label: "Goals", value: row.goals },
-                { label: "Notes", value: row.notes || "—" },
-              ],
-            },
+      const results = await Promise.allSettled([
+        sendAndLogEmail(supabase, "form-submission-alert", "ge@modernnostalgia.club", {
+          idempotencyKey: `catalog-audit-owner-${inserted.id}`,
+          templateData: {
+            formName: "Catalog audit request",
+            senderEmail: row.email,
+            submittedAt: new Date().toISOString(),
+            fields: [
+              { label: "Name", value: row.full_name },
+              { label: "Email", value: row.email },
+              { label: "Artist name", value: row.artist_name || "—" },
+              { label: "Catalog size", value: row.catalog_size || "—" },
+              { label: "Catalog link", value: row.catalog_link || "—" },
+              { label: "Ownership", value: row.ownership_status || "—" },
+              { label: "Splits documented", value: row.splits_documented || "—" },
+              { label: "PRO", value: row.pro_affiliation || "—" },
+              { label: "Goals", value: row.goals },
+              { label: "Notes", value: row.notes || "—" },
+            ],
           },
         }),
-        supabase.functions.invoke("send-transactional-email", {
-          body: {
-            templateName: "catalog-audit-confirmation",
-            recipientEmail: row.email,
-            idempotencyKey: `catalog-audit-confirmation-${inserted.id}`,
-            templateData: {
-              name: row.full_name,
-              artistName: row.artist_name,
-              catalogSize: row.catalog_size || "Not provided",
-              goals: row.goals,
-            },
+        sendAndLogEmail(supabase, "catalog-audit-confirmation", row.email, {
+          idempotencyKey: `catalog-audit-confirmation-${inserted.id}`,
+          templateData: {
+            name: row.full_name,
+            artistName: row.artist_name,
+            catalogSize: row.catalog_size || "Not provided",
+            goals: row.goals,
           },
         }),
       ]);
 
-      if (ownerAlert.error) console.error("Owner alert failed:", ownerAlert.error);
-      if (confirmation.error) console.error("Confirmation email failed:", confirmation.error);
+      if (results[0].status === "rejected") console.error("Owner alert failed:", results[0].reason);
+      if (results[1].status === "rejected") console.error("Confirmation email failed:", results[1].reason);
     } catch (mailError) {
       console.error("Catalog audit emails failed:", mailError);
     }
