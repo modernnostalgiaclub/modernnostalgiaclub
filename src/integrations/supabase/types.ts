@@ -533,6 +533,7 @@ export type Database = {
           phone: string | null
           preferred_date: string
           preferred_time: string
+          reminder_sent_at: string | null
           status: string
           timezone: string | null
           topic: string | null
@@ -551,6 +552,7 @@ export type Database = {
           phone?: string | null
           preferred_date: string
           preferred_time: string
+          reminder_sent_at?: string | null
           status?: string
           timezone?: string | null
           topic?: string | null
@@ -569,6 +571,7 @@ export type Database = {
           phone?: string | null
           preferred_date?: string
           preferred_time?: string
+          reminder_sent_at?: string | null
           status?: string
           timezone?: string | null
           topic?: string | null
@@ -1752,6 +1755,13 @@ export type Database = {
           twitter: string
           user_id: string
           youtube: string
+        }[]
+      }
+      get_booked_call_slots: {
+        Args: never
+        Returns: {
+          preferred_date: string
+          preferred_time: string
         }[]
       }
       get_chat_profiles: {
