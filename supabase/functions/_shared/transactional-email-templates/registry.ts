@@ -3,6 +3,7 @@ import { template as purchaseAlert } from './purchase-alert.tsx'
 import { template as formSubmissionAlert } from './form-submission-alert.tsx'
 import { template as discoveryCallConfirmation } from './discovery-call-confirmation.tsx'
 import { template as catalogAuditConfirmation } from './catalog-audit-confirmation.tsx'
+import { template as discoveryCallReminder } from './discovery-call-reminder.tsx'
 
 export interface TemplateEntry {
   component: React.ComponentType<any>
@@ -17,4 +18,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'form-submission-alert': formSubmissionAlert,
   'discovery-call-confirmation': discoveryCallConfirmation,
   'catalog-audit-confirmation': catalogAuditConfirmation,
+  'discovery-call-reminder': discoveryCallReminder,
 }
