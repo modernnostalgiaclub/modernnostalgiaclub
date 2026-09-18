@@ -73,9 +73,15 @@ serve(async (req) => {
       })
       .join(", ");
 
+    const rawEmail = typeof body.customer_email === "string" ? body.customer_email.trim() : "";
+    const customerEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(rawEmail) && rawEmail.length <= 254
+      ? rawEmail
+      : undefined;
+
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: "payment",
+      customer_email: customerEmail,
       success_url: `${origin}/store/success?session_id={CHECKOUT_SESSION_ID}&product=${productIds}`,
       cancel_url: `${origin}/store`,
       billing_address_collection: "auto",

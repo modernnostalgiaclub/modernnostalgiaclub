@@ -69,7 +69,8 @@ export const STORE_PRODUCTS: StoreProduct[] = [
     title: 'Catalog Audit for Sync',
     description: 'A professional review of your music catalog to identify ownership risks, sync blockers, and missed opportunities before pitching or licensing.',
     price: 249,
-    paymentLink: 'https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-catalog-audit-placeholder',
+    // Checkout is created server-side via the create-store-checkout function (Stripe)
+    paymentLink: '',
     downloadFiles: [],
     isBundle: false,
     isService: true,

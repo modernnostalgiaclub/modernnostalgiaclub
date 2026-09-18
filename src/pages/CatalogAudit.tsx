@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { CatalogAuditForm } from '@/components/CatalogAuditForm';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { 
   ClipboardCheck, 
   CheckCircle2, 
@@ -108,9 +110,24 @@ const stagger = {
 
 export default function CatalogAudit() {
   const [auditConfirmed, setAuditConfirmed] = useState(false);
+  const { toast } = useToast();
 
-  const handlePurchase = () => {
-    window.open('https://connect.intuit.com/portal/app/CommerceNetwork/view/scs-v1-catalog-audit-placeholder', '_blank', 'noopener,noreferrer');
+  const handlePurchase = async (email?: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-store-checkout', {
+        body: { product_id: 'catalog-audit', customer_email: email },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (!data?.url) throw new Error('Checkout could not be started.');
+      window.location.href = data.url;
+    } catch (err) {
+      toast({
+        title: 'Checkout unavailable',
+        description: err instanceof Error ? err.message : 'Please try again in a moment.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -449,7 +466,7 @@ export default function CatalogAudit() {
                 )}
 
                 <p className="text-xs text-muted-foreground mt-4">
-                  Secure checkout powered by Intuit.
+                  Secure checkout powered by Stripe.
                 </p>
               </Card>
             </motion.div>
