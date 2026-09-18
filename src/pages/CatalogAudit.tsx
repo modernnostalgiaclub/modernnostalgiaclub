@@ -466,7 +466,7 @@ export default function CatalogAudit() {
                 )}
 
                 <p className="text-xs text-muted-foreground mt-4">
-                  Secure checkout powered by Intuit.
+                  Secure checkout powered by Stripe.
                 </p>
               </Card>
             </motion.div>
