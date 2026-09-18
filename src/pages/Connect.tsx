@@ -17,6 +17,7 @@ import {
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import logoCream from '@/assets/mnc-logo-social.png';
+import { AdminDailyFormCounter } from '@/components/AdminDailyFormCounter';
 
 const SOCIAL_LINKS = [
   { label: 'Instagram', icon: Instagram, url: 'https://instagram.com/modernnostalgia.club' },
@@ -289,6 +290,8 @@ export default function Connect() {
                 <ExternalLink className="w-3.5 h-3.5 text-cream/40 flex-shrink-0" />
               </div>
             </motion.a>
+
+            <AdminDailyFormCounter />
 
             {FUNNEL_LINKS.map(({ label, sublabel, icon: Icon, to, external }, i) => {
               const inner = (
