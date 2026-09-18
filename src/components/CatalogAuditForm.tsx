@@ -14,7 +14,7 @@ const OWNERSHIP = ['I own everything', 'Mostly mine, some co-writes', 'Shared wi
 const SPLITS = ['Yes, all documented', 'Some documented', 'None documented', 'Not sure'];
 
 interface Props {
-  onContinueToPayment: () => void;
+  onContinueToPayment: (email?: string) => void;
   disabled?: boolean;
 }
 
@@ -57,7 +57,7 @@ export function CatalogAuditForm({ onContinueToPayment, disabled }: Props) {
       triggerCooldown();
       setSubmitted(true);
       toast({ title: 'Catalog details received', description: 'Check your email for a confirmation.' });
-      onContinueToPayment();
+      onContinueToPayment(form.email);
     } catch (err) {
       toast({
         title: 'Something went wrong',
@@ -77,7 +77,7 @@ export function CatalogAuditForm({ onContinueToPayment, disabled }: Props) {
         <p className="text-muted-foreground mb-6">
           A confirmation is on its way to {form.email}. Finish checkout to lock in your audit slot.
         </p>
-        <Button variant="maroon" size="lg" className="w-full" onClick={onContinueToPayment}>
+        <Button variant="maroon" size="lg" className="w-full" onClick={() => onContinueToPayment(form.email)}>
           Continue to payment - $249
           <ExternalLink className="w-5 h-5 ml-2" />
         </Button>
