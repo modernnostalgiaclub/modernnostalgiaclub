@@ -67,5 +67,8 @@ verify_jwt = false
 [functions.discovery-call-book]
 verify_jwt = false
 
+[functions.send-call-reminders]
+verify_jwt = false
+
 [functions.catalog-audit-submit]
 verify_jwt = false
