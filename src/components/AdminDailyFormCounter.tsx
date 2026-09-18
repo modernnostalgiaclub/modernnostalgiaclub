@@ -64,26 +64,26 @@ export function AdminDailyFormCounter() {
   if (!isAdmin) return null;
 
   return (
-    <div className="mb-8 rounded-xl border border-border bg-card p-5 text-left">
+    <div className="mb-4 rounded-xl border border-cream/15 bg-cream/5 p-4 text-left">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
-          <p className="font-poppins text-sm font-semibold text-foreground">Today's activity</p>
-          <p className="text-xs text-muted-foreground">Only visible to you as an admin</p>
+          <p className="font-poppins text-sm font-semibold text-cream">Today's activity</p>
+          <p className="text-xs text-cream/50">Only visible to you as an admin</p>
         </div>
-        <Button variant="ghost" size="sm" onClick={load} disabled={loading}>
+        <Button variant="ghost" size="sm" className="text-cream/70 hover:text-cream" onClick={load} disabled={loading}>
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
         </Button>
       </div>
 
       {rows === null ? (
-        <p className="text-sm text-muted-foreground">Loading counts...</p>
+        <p className="text-sm text-cream/60">Loading counts...</p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {rows.map((row) => (
-            <div key={row.label} className="rounded-lg bg-muted/50 p-3">
-              <p className="text-2xl font-semibold text-foreground">{row.today}</p>
-              <p className="text-xs font-medium text-foreground">{row.label}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">
+            <div key={row.label} className="rounded-lg bg-cream/10 p-3">
+              <p className="text-2xl font-semibold text-cream">{row.today}</p>
+              <p className="text-xs font-medium text-cream/90">{row.label}</p>
+              <p className="mt-1 text-[11px] text-cream/50">
                 {row.week} this week · {row.total} all time
               </p>
             </div>
