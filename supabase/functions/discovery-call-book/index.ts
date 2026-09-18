@@ -34,9 +34,15 @@ async function hashIdentifier(identifier: string): Promise<string> {
 }
 
 const TIME_SLOTS = [
-  "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
-  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
+  "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
+  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM",
 ];
+
+/** Calls run Monday through Thursday only. */
+function isBookableDay(dateStr: string): boolean {
+  const day = new Date(`${dateStr}T12:00:00Z`).getUTCDay();
+  return day >= 1 && day <= 4;
+}
 
 const TOPICS = [
   "Sync licensing strategy",
@@ -72,6 +78,9 @@ const handler = async (req: Request): Promise<Response> => {
     if (!isValidEmail(String(email))) return json({ error: "Invalid email format" }, 400);
     if (!isValidDate(String(preferred_date))) return json({ error: "Invalid preferred date" }, 400);
     if (!TIME_SLOTS.includes(String(preferred_time))) return json({ error: "Invalid preferred time" }, 400);
+    if (!isBookableDay(String(preferred_date))) {
+      return json({ error: "Calls are available Monday through Thursday" }, 400);
+    }
     if (alt_date && !isValidDate(String(alt_date))) return json({ error: "Invalid alternate date" }, 400);
     if (alt_time && !TIME_SLOTS.includes(String(alt_time))) return json({ error: "Invalid alternate time" }, 400);
     if (String(full_name).length > 100) return json({ error: "Name is too long" }, 400);
