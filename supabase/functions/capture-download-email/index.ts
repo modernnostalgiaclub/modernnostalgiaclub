@@ -152,6 +152,28 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Email captured: ${email} for track: ${trackId}`);
 
+    // Owner alert for the IP guide capture on the Connect page.
+    // Failure to send must not break the capture itself.
+    if (trackId === IP_GUIDE_TRACK_ID) {
+      try {
+        await sendAndLogEmail(supabase, 'form-submission-alert', OWNER_ALERT_EMAIL, {
+          templateData: {
+            formName: 'IP Guide download',
+            senderEmail: email.toLowerCase().trim(),
+            submittedAt: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }) + ' PT',
+            fields: [
+              { label: 'Email', value: email.toLowerCase().trim() },
+              { label: 'Guide', value: trackTitle || 'Monetizing Your IP: The Artist Resource Guide' },
+              { label: 'Source', value: 'Connect page email capture' },
+            ],
+          },
+          idempotencyKey: `ip-guide-capture-${trackId}-${email.toLowerCase().trim()}`,
+        });
+      } catch (alertError) {
+        console.error("Owner alert email failed:", alertError);
+      }
+    }
+
     return new Response(
       JSON.stringify({ success: true }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
