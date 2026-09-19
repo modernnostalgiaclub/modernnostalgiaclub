@@ -60,6 +60,18 @@ export default function StoreSuccess() {
     ? { title, isService, files: uniqueFiles }
     : undefined;
 
+  const sessionId = searchParams.get('session_id');
+
+  // Confirm the payment server-side so the owner sale alert always goes out,
+  // even if the Stripe webhook is delayed or missed.
+  useEffect(() => {
+    if (!sessionId) return;
+    supabase.functions
+      .invoke('verify-store-purchase', { body: { session_id: sessionId } })
+      .catch(() => {});
+  }, [sessionId]);
+
+
 
   return (
     <div className="min-h-screen bg-background studio-grain flex flex-col">
