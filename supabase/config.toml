@@ -72,3 +72,6 @@ verify_jwt = false
 
 [functions.catalog-audit-submit]
 verify_jwt = false
+
+[functions.verify-store-purchase]
+verify_jwt = false
