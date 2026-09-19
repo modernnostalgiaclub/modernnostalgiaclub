@@ -17,6 +17,7 @@ import {
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import logoCream from '@/assets/mnc-logo-social.png';
+import artistResourceGuide from '@/assets/monetizing-your-ip-guide.pdf.asset.json';
 import { AdminDailyFormCounter } from '@/components/AdminDailyFormCounter';
 
 const SOCIAL_LINKS = [
@@ -139,6 +140,12 @@ export default function Connect() {
   const [newsletterDone, setNewsletterDone] = useState(false);
   const newsletterAntiSpam = useAntiSpam({ storageKey: 'newsletter_cooldown', cooldownMs: 30000 });
 
+  // Featured panel guide
+  const [guideEmail, setGuideEmail] = useState('');
+  const [guideSubmitting, setGuideSubmitting] = useState(false);
+  const [guideDone, setGuideDone] = useState(false);
+  const guideAntiSpam = useAntiSpam({ storageKey: 'panel_guide_cooldown', cooldownMs: 15000 });
+
   // Contact form
   const [contactOpen, setContactOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -173,6 +180,45 @@ export default function Connect() {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setNewsletterSubmitting(false);
+    }
+  }
+
+  function downloadGuide() {
+    const link = document.createElement('a');
+    link.href = artistResourceGuide.url;
+    link.download = 'Monetizing Your IP - The Artist Resource Guide.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  async function handleGuideDownload(e: React.FormEvent) {
+    e.preventDefault();
+    const spamError = guideAntiSpam.validate();
+    if (spamError) { toast.error(spamError); return; }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(guideEmail)) { toast.error('Please enter a valid email'); return; }
+
+    setGuideSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('capture-download-email', {
+        body: {
+          email: guideEmail.trim().toLowerCase(),
+          trackId: 'monetizing-your-ip-artist-resource-guide',
+          trackTitle: 'Monetizing Your IP: The Artist Resource Guide',
+          ...guideAntiSpam.getSubmissionData(),
+        },
+      });
+      if (error || data?.error) throw error || new Error(data.error);
+
+      guideAntiSpam.triggerCooldown();
+      setGuideDone(true);
+      downloadGuide();
+      toast.success('Your artist resource guide is downloading!');
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setGuideSubmitting(false);
     }
   }
 
@@ -217,6 +263,7 @@ export default function Connect() {
 
   const contactDisabled = submitting || contactAntiSpam.isInCooldown;
   const newsletterDisabled = newsletterSubmitting || newsletterAntiSpam.isInCooldown;
+  const guideDisabled = guideSubmitting || guideAntiSpam.isInCooldown;
 
   return (
     <>
@@ -262,6 +309,60 @@ export default function Connect() {
               </a>
             ))}
           </motion.div>
+
+          {/* ── Featured Panel Guide ── */}
+          <motion.section
+            className="border border-maroon/50 bg-maroon/10 rounded-2xl p-5"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.12 }}
+          >
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/20">
+                <BookOpen className="w-5 h-5 text-maroon" />
+              </div>
+              <div>
+                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Today’s 1 PM Panel</p>
+                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Monetizing Your IP</h2>
+                <p className="text-cream/60 text-xs mt-1">Get the Artist Resource Guide from today’s panel.</p>
+              </div>
+            </div>
+
+            {guideDone ? (
+              <div className="flex items-center justify-between gap-3 border-t border-cream/10 pt-4">
+                <div className="flex items-center gap-2 text-sm text-cream">
+                  <CheckCircle className="w-4 h-4 text-maroon" />
+                  Your guide is ready.
+                </div>
+                <Button type="button" size="sm" onClick={downloadGuide} className="bg-maroon hover:bg-maroon/90 text-cream">
+                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleGuideDownload} className="space-y-2">
+                <input {...guideAntiSpam.honeypotProps} />
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    value={guideEmail}
+                    onChange={(e) => setGuideEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    aria-label="Email address for artist resource guide"
+                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
+                    required
+                    disabled={guideDisabled}
+                  />
+                  <Button type="submit" disabled={guideDisabled} className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0">
+                    {guideAntiSpam.isInCooldown ? (
+                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
+                    ) : guideSubmitting ? '...' : (
+                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-cream/40 text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
+              </form>
+            )}
+          </motion.section>
 
           {/* ── Funnel Links ── */}
           <motion.div
