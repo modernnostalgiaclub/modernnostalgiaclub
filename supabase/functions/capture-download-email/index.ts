@@ -1,5 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
+
+const OWNER_ALERT_EMAIL = "ge@modernnostalgia.club";
+const IP_GUIDE_TRACK_ID = "monetizing-your-ip-artist-resource-guide";
 
 // Restrict CORS to known origins
 const ALLOWED_ORIGINS = [
