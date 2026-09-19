@@ -1,5 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
+
+const OWNER_ALERT_EMAIL = "ge@modernnostalgia.club";
+const IP_GUIDE_TRACK_ID = "monetizing-your-ip-artist-resource-guide";
 
 // Restrict CORS to known origins
 const ALLOWED_ORIGINS = [
@@ -147,6 +151,28 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Email captured: ${email} for track: ${trackId}`);
+
+    // Owner alert for the IP guide capture on the Connect page.
+    // Failure to send must not break the capture itself.
+    if (trackId === IP_GUIDE_TRACK_ID) {
+      try {
+        await sendAndLogEmail(supabase, 'form-submission-alert', OWNER_ALERT_EMAIL, {
+          templateData: {
+            formName: 'IP Guide download',
+            senderEmail: email.toLowerCase().trim(),
+            submittedAt: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }) + ' PT',
+            fields: [
+              { label: 'Email', value: email.toLowerCase().trim() },
+              { label: 'Guide', value: trackTitle || 'Monetizing Your IP: The Artist Resource Guide' },
+              { label: 'Source', value: 'Connect page email capture' },
+            ],
+          },
+          idempotencyKey: `ip-guide-capture-${trackId}-${email.toLowerCase().trim()}`,
+        });
+      } catch (alertError) {
+        console.error("Owner alert email failed:", alertError);
+      }
+    }
 
     return new Response(
       JSON.stringify({ success: true }),
