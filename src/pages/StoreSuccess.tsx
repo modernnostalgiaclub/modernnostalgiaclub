@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -57,6 +59,18 @@ export default function StoreSuccess() {
   const product = purchased.length
     ? { title, isService, files: uniqueFiles }
     : undefined;
+
+  const sessionId = searchParams.get('session_id');
+
+  // Confirm the payment server-side so the owner sale alert always goes out,
+  // even if the Stripe webhook is delayed or missed.
+  useEffect(() => {
+    if (!sessionId) return;
+    supabase.functions
+      .invoke('verify-store-purchase', { body: { session_id: sessionId } })
+      .catch(() => {});
+  }, [sessionId]);
+
 
 
   return (
