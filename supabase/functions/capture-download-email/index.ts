@@ -3,12 +3,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // Restrict CORS to known origins
 const ALLOWED_ORIGINS = [
+  "https://modernnostalgia.club",
+  "https://www.modernnostalgia.club",
   "https://modernnostalgiaclub.lovable.app",
   "https://id-preview--d2e8cfe7-9d48-4ca0-8572-89bc493985c7.lovable.app",
 ];
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowedOrigin = origin && ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed.replace('id-preview--', '')))
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin)
     ? origin
     : ALLOWED_ORIGINS[0];
   
