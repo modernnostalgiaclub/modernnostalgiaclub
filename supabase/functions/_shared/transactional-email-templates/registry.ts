@@ -20,4 +20,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'discovery-call-confirmation': discoveryCallConfirmation,
   'catalog-audit-confirmation': catalogAuditConfirmation,
   'discovery-call-reminder': discoveryCallReminder,
+  'ip-guide-confirmation': ipGuideConfirmation,
 }

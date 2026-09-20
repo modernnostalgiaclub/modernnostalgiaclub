@@ -155,6 +155,16 @@ const handler = async (req: Request): Promise<Response> => {
     // Owner alert for the IP guide capture on the Connect page.
     // Failure to send must not break the capture itself.
     if (trackId === IP_GUIDE_TRACK_ID) {
+      // Auto-response to the signer: thank-you note with the PDF link.
+      // Failure must not break the capture itself.
+      try {
+        await sendAndLogEmail(supabase, 'ip-guide-confirmation', email.toLowerCase().trim(), {
+          idempotencyKey: `ip-guide-confirm-${trackId}-${email.toLowerCase().trim()}`,
+        });
+      } catch (confirmError) {
+        console.error("IP guide confirmation email failed:", confirmError);
+      }
+
       try {
         await sendAndLogEmail(supabase, 'form-submission-alert', OWNER_ALERT_EMAIL, {
           templateData: {
