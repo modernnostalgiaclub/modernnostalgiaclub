@@ -140,8 +140,19 @@ const handler = async (req: Request): Promise<Response> => {
       });
 
     if (insertError) {
-      // Unique constraint violation - email already captured for this track
+      // Unique constraint violation - email already captured for this track.
+      // Still (re)send the confirmation so people who signed up before the
+      // auto-response existed get it; the fixed idempotency key dedupes it.
       if (insertError.code === '23505') {
+        if (trackId === IP_GUIDE_TRACK_ID) {
+          try {
+            await sendAndLogEmail(supabase, 'ip-guide-confirmation', email.toLowerCase().trim(), {
+              idempotencyKey: `ip-guide-confirm-${trackId}-${email.toLowerCase().trim()}`,
+            });
+          } catch (confirmError) {
+            console.error("IP guide confirmation email failed (duplicate path):", confirmError);
+          }
+        }
         return new Response(
           JSON.stringify({ success: true, message: "Email already registered" }),
           { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
