@@ -321,9 +321,9 @@ export default function Connect() {
                 <BookOpen className="w-5 h-5 text-maroon" />
               </div>
               <div>
-                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Today’s 1 PM Panel</p>
-                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Monetizing Your IP</h2>
-                <p className="text-cream/60 text-xs mt-1">Get the Artist Resource Guide from today’s panel.</p>
+                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
+                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
+                <p className="text-cream/60 text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
               </div>
             </div>
 
