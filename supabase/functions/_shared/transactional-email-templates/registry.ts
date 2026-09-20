@@ -4,6 +4,7 @@ import { template as formSubmissionAlert } from './form-submission-alert.tsx'
 import { template as discoveryCallConfirmation } from './discovery-call-confirmation.tsx'
 import { template as catalogAuditConfirmation } from './catalog-audit-confirmation.tsx'
 import { template as discoveryCallReminder } from './discovery-call-reminder.tsx'
+import { template as ipGuideConfirmation } from './ip-guide-confirmation.tsx'
 
 export interface TemplateEntry {
   component: React.ComponentType<any>
