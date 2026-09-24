@@ -109,13 +109,14 @@ const FUNNEL_LINKS = [
 ] as const;
 
 
+const PLAYLISTPANDA_URL = 'https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au';
+
 const PLAYLIST_LINKS = [
-  { label: 'R&Baboy', sublabel: 'Filipino R&B Music', url: 'https://app.magicnothing.xyz/playlists/2652' },
-  { label: 'Tip You Creatives', sublabel: 'Rising Indie Stars', url: 'https://app.magicnothing.xyz/playlists/2653' },
-  { label: "Street's Choice", sublabel: 'Rising Hiphop/R&B Artists', url: 'https://app.magicnothing.xyz/playlists/2655' },
-  { label: 'Sample Our Childhood', sublabel: 'Sampled Based Hits', url: 'https://app.magicnothing.xyz/playlists/2690' },
-  { label: 'Sa(RAP)', sublabel: 'Filipino Hiphop Music', url: 'https://app.magicnothing.xyz/playlists/2654' },
-  { label: 'Top 26 Songs', sublabel: 'R&B — Updated Monthly', url: 'https://app.magicnothing.xyz/playlists/2656' },
+  { label: 'modernnostalgia.club: Hiphop/R&B', sublabel: 'Hip-Hop & R&B', url: 'https://open.spotify.com/playlist/2Pq5CADyfWQE31L5Epr8Od' },
+  { label: 'modernnostalgia.club: Pop/Alt', sublabel: 'Pop & Alternative', url: 'https://open.spotify.com/playlist/5QlRWcpSzGuvus7oBqS14e' },
+  { label: 'modernnostalgia.club: Artists to Watch', sublabel: 'Ones to keep an eye on', url: 'https://open.spotify.com/playlist/7jIfkBnyqqUtknJW2Z17f4' },
+  { label: "modernnostalgia.club: Ge Oh's Choice", sublabel: 'Hand-picked by Ge Oh', url: 'https://open.spotify.com/playlist/6pXEHvUutycpcYUNT6EMAk' },
+  { label: 'modernnostalgia.club: R&B(aboy)', sublabel: 'R&B', url: 'https://open.spotify.com/playlist/23H7AOjNmwl33goQTlmQNF' },
 ] as const;
 
 const roleOptions = [
@@ -450,11 +451,17 @@ export default function Connect() {
           >
             <div className="flex items-center gap-2">
               <Music className="w-4 h-4 text-maroon flex-shrink-0" />
-              <p className="text-cream font-semibold text-sm">Submit to Our Spotify Playlist Network</p>
+              <p className="text-cream font-semibold text-sm">Our Spotify Playlist Network</p>
             </div>
             <p className="text-cream/50 text-xs leading-relaxed">
-              Playlists currently accepting submissions. Read each description carefully on MagicNothing before submitting to make sure your music fits.
+              Follow the playlists below, and submit your music via Playlist Panda.
             </p>
+            <Button asChild size="sm" className="w-full bg-maroon hover:bg-maroon/90 text-cream font-semibold">
+              <a href={PLAYLISTPANDA_URL} target="_blank" rel="noopener noreferrer">
+                <Send className="w-3.5 h-3.5 mr-2" />
+                Submit via Playlist Panda
+              </a>
+            </Button>
             <div className="space-y-2 pt-1">
               {PLAYLIST_LINKS.map(({ label, sublabel, url }, i) => (
                 <motion.a
