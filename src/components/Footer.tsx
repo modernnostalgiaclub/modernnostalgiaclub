@@ -53,9 +53,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/playlist-submit" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <a href="https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-primary transition-colors">
                   Submit Music
-                </Link>
+                </a>
               </li>
               <li>
                 <Link to="/contact" className="text-sm text-white/70 hover:text-primary transition-colors">

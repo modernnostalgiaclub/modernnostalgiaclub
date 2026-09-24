@@ -75,8 +75,8 @@ const FUNNEL_LINKS = [
     label: 'Submit to Our Playlists',
     sublabel: 'Send us your song',
     icon: Send,
-    to: '/playlist-submit',
-    external: false,
+    to: 'https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au',
+    external: true,
   },
   {
     label: 'Sponsors',
