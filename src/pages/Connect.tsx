@@ -117,6 +117,7 @@ const PLAYLIST_LINKS = [
   { label: 'modernnostalgia.club: Artists to Watch', sublabel: 'Ones to keep an eye on', url: 'https://open.spotify.com/playlist/7jIfkBnyqqUtknJW2Z17f4' },
   { label: "modernnostalgia.club: Ge Oh's Choice", sublabel: 'Hand-picked by Ge Oh', url: 'https://open.spotify.com/playlist/6pXEHvUutycpcYUNT6EMAk' },
   { label: 'modernnostalgia.club: R&B(aboy)', sublabel: 'R&B', url: 'https://open.spotify.com/playlist/23H7AOjNmwl33goQTlmQNF' },
+  { label: 'modernnostalgia.club: SA(RAP)', sublabel: 'Rap & hip-hop', url: 'https://open.spotify.com/playlist/2vXjR8Th4LrRpIAa6vcW8P' },
 ] as const;
 
 const roleOptions = [
