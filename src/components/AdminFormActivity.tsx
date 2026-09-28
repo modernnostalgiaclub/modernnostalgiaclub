@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, Mail, RefreshCw } from 'lucide-react';
 
-type Kind = 'Sponsor inquiry' | 'Playlist submission' | 'Discovery call' | 'Catalog audit';
+type Kind = 'Sponsor inquiry' | 'Playlist submission' | 'Discovery call' | 'Catalog audit' | 'Interview request';
 
 interface Entry {
   id: string;
@@ -19,13 +19,14 @@ interface Entry {
   createdAt: string;
 }
 
-const KINDS: Kind[] = ['Sponsor inquiry', 'Playlist submission', 'Discovery call', 'Catalog audit'];
+const KINDS: Kind[] = ['Sponsor inquiry', 'Playlist submission', 'Discovery call', 'Catalog audit', 'Interview request'];
 
 const badgeColor: Record<Kind, string> = {
   'Sponsor inquiry': 'bg-primary/10 text-primary',
   'Playlist submission': 'bg-emerald-500/10 text-emerald-600',
   'Discovery call': 'bg-amber-500/10 text-amber-600',
   'Catalog audit': 'bg-purple-500/10 text-purple-600',
+  'Interview request': 'bg-sky-500/10 text-sky-600',
 };
 
 export function AdminFormActivity() {
@@ -36,11 +37,12 @@ export function AdminFormActivity() {
 
   const load = async () => {
     setLoading(true);
-    const [sponsors, playlists, calls, audits] = await Promise.all([
+    const [sponsors, playlists, calls, audits, interviews] = await Promise.all([
       supabase.from('sponsor_inquiries').select('id, name, email, company, partnership_type, created_at').order('created_at', { ascending: false }),
       supabase.from('playlist_submissions').select('id, name, email, artist_name, song_title, created_at').order('created_at', { ascending: false }),
       supabase.from('discovery_call_bookings').select('id, full_name, email, topic, preferred_date, preferred_time, created_at').order('created_at', { ascending: false }),
       supabase.from('catalog_audit_submissions').select('id, full_name, email, artist_name, catalog_size, created_at').order('created_at', { ascending: false }),
+      supabase.from('interview_requests' as never).select('id, name, email, artist_name, genre, created_at').order('created_at', { ascending: false }),
     ]);
 
     const all: Entry[] = [
@@ -59,6 +61,10 @@ export function AdminFormActivity() {
       ...(audits.data ?? []).map((r) => ({
         id: r.id, kind: 'Catalog audit' as Kind, name: r.full_name, email: r.email,
         detail: [r.artist_name, r.catalog_size].filter(Boolean).join(' · ') || '—', createdAt: r.created_at,
+      })),
+      ...((interviews.data ?? []) as unknown as Array<{ id: string; name: string; email: string; artist_name: string; genre: string | null; created_at: string }>).map((r) => ({
+        id: r.id, kind: 'Interview request' as Kind, name: r.name, email: r.email,
+        detail: [r.artist_name, r.genre].filter(Boolean).join(' · ') || '—', createdAt: r.created_at,
       })),
     ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
