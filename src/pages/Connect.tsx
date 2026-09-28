@@ -12,7 +12,7 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart, Building2, CalendarCheck
+  Youtube, Twitter, Heart, Building2, CalendarCheck, Mic
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
@@ -77,6 +77,13 @@ const FUNNEL_LINKS = [
     icon: Send,
     to: 'https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au',
     external: true,
+  },
+  {
+    label: 'Get Interviewed',
+    sublabel: 'Be featured on our Patreon',
+    icon: Mic,
+    to: '/interview',
+    external: false,
   },
   {
     label: 'Sponsors',
