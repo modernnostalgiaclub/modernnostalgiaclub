@@ -86,9 +86,9 @@ export default function InterviewRequest() {
 
       <Header />
 
-      <main className="flex-1">
+      <main className="flex-1 pt-20">
         <section className="container mx-auto px-6 py-16 max-w-2xl">
-          <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight leading-[1.05] text-gray-900">
+          <h1 className="font-anton text-4xl md:text-6xl uppercase tracking-tight leading-[1.15] text-gray-900">
             Get Interviewed
           </h1>
           <p className="mt-4 text-gray-600">
