@@ -30,6 +30,13 @@ const SOCIAL_LINKS = [
 
 const FUNNEL_LINKS = [
   {
+    label: 'Get Interviewed',
+    sublabel: 'Be featured on our Patreon',
+    icon: Mic,
+    to: '/interview',
+    external: false,
+  },
+  {
     label: 'Book a Discovery Call',
     sublabel: 'Choose a time to discuss your next step',
     icon: CalendarCheck,
@@ -77,13 +84,6 @@ const FUNNEL_LINKS = [
     icon: Send,
     to: 'https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au',
     external: true,
-  },
-  {
-    label: 'Get Interviewed',
-    sublabel: 'Be featured on our Patreon',
-    icon: Mic,
-    to: '/interview',
-    external: false,
   },
   {
     label: 'Sponsors',
