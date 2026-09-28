@@ -39,6 +39,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Contact from "./pages/Contact";
 import Sponsors from "./pages/Sponsors";
+import InterviewRequest from "./pages/InterviewRequest";
 import PlaylistSubmission from "./pages/PlaylistSubmission";
 import BookCall from "./pages/BookCall";
 import MemberDirectory from "./pages/MemberDirectory";
@@ -114,6 +115,7 @@ const App = () => (
             <Route path="/privacy" element={<AuthAwareLayout><PrivacyPolicy /></AuthAwareLayout>} />
             <Route path="/contact" element={<AuthAwareLayout><Contact /></AuthAwareLayout>} />
             <Route path="/sponsors" element={<Sponsors />} />
+            <Route path="/interview" element={<InterviewRequest />} />
             <Route path="/playlist-submit" element={<PlaylistSubmission />} />
             <Route path="/book-call" element={<BookCall />} />
             <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />

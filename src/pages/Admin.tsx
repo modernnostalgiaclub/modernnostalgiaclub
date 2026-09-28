@@ -40,6 +40,7 @@ import { AdminIncubatorApplications } from '@/components/AdminIncubatorApplicati
 import { AdminSponsorInquiries } from '@/components/AdminSponsorInquiries';
 import { AdminFormActivity } from '@/components/AdminFormActivity';
 import { AdminPlaylistSubmissions } from '@/components/AdminPlaylistSubmissions';
+import { AdminInterviewRequests } from '@/components/AdminInterviewRequests';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -179,6 +180,10 @@ export default function Admin() {
                 <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Playlist
               </TabsTrigger>
+              <TabsTrigger value="interviews" className="gap-2" aria-label="View interview requests">
+                <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Interviews
+              </TabsTrigger>
               <TabsTrigger value="inbox" className="gap-2" aria-label="View all form submissions">
                 <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Inbox
@@ -195,6 +200,10 @@ export default function Admin() {
 
             <TabsContent value="playlist">
               <AdminPlaylistSubmissions />
+            </TabsContent>
+
+            <TabsContent value="interviews">
+              <AdminInterviewRequests />
             </TabsContent>
 
             <TabsContent value="analytics">

@@ -786,6 +786,60 @@ export type Database = {
         }
         Relationships: []
       }
+      interview_requests: {
+        Row: {
+          artist_name: string
+          availability: string | null
+          created_at: string
+          email: string
+          genre: string | null
+          id: string
+          links: string | null
+          location: string | null
+          name: string
+          referral_source: string | null
+          release_status: string | null
+          status: string
+          story: string
+          topics: string | null
+          updated_at: string
+        }
+        Insert: {
+          artist_name: string
+          availability?: string | null
+          created_at?: string
+          email: string
+          genre?: string | null
+          id?: string
+          links?: string | null
+          location?: string | null
+          name: string
+          referral_source?: string | null
+          release_status?: string | null
+          status?: string
+          story: string
+          topics?: string | null
+          updated_at?: string
+        }
+        Update: {
+          artist_name?: string
+          availability?: string | null
+          created_at?: string
+          email?: string
+          genre?: string | null
+          id?: string
+          links?: string | null
+          location?: string | null
+          name?: string
+          referral_source?: string | null
+          release_status?: string | null
+          status?: string
+          story?: string
+          topics?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lessons: {
         Row: {
           content: string | null

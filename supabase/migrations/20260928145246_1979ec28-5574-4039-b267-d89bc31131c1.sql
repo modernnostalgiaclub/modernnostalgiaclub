@@ -1,0 +1,2 @@
+GRANT DELETE ON public.interview_requests TO authenticated;
+CREATE POLICY "Admins can delete interview requests" ON public.interview_requests FOR DELETE TO authenticated USING (public.has_role(auth.uid(), 'admin'));
