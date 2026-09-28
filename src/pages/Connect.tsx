@@ -86,13 +86,6 @@ const FUNNEL_LINKS = [
     external: true,
   },
   {
-    label: 'Get Interviewed',
-    sublabel: 'Be featured on our Patreon',
-    icon: Mic,
-    to: '/interview',
-    external: false,
-  },
-  {
     label: 'Sponsors',
     sublabel: 'Partner with the club',
     icon: Building2,
