@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import day63Cover from '@/assets/rb-aboy-day-63-cover.png.asset.json';
 
 export interface PatreonPost {
   id: string;
@@ -30,7 +31,13 @@ export function usePatreonPosts(pageSize = 9) {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      return data as PatreonPage;
+      const page = data as PatreonPage;
+      return {
+        ...page,
+        posts: page.posts.map((post) => post.id === '172159367'
+          ? { ...post, thumbnail: day63Cover.url }
+          : post),
+      };
     },
     getNextPageParam: (last) => last.nextOffset ?? undefined,
     staleTime: 5 * 60 * 1000,
