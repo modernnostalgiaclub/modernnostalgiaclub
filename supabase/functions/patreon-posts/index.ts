@@ -133,7 +133,7 @@ serve(async (req) => {
     const findImage = (post: any): string | null => {
       const html: string = post.attributes.content || "";
       const m = html.match(/<img[^>]+src="([^"]+)"/i);
-      if (m) return m[1];
+      if (m) return m[1].replace(/&amp;/g, "&");
       const embed = post.attributes.embed_data;
       if (embed && typeof embed === "object") {
         return embed.thumbnail_url || embed.image || null;
@@ -156,7 +156,7 @@ serve(async (req) => {
         id: post.id,
         title: (post.attributes.title || "").trim(),
         teaser: plain.length > 220 ? plain.substring(0, 220).trimEnd() + "…" : plain,
-        content: canSeeFull ? fullContent : null,
+        content: null,
         publishedAt: post.attributes.published_at,
         url: rawUrl.startsWith("http") ? rawUrl : `https://www.patreon.com${rawUrl}`,
         thumbnail: findImage(post),
