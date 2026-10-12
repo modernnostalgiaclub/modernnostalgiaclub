@@ -134,6 +134,11 @@ const roleOptions = [
   { value: 'Publisher / Sync', label: 'Publisher / Sync' },
   { value: 'Other', label: 'Other' },
 ];
+const FEATURED_PLAYLISTS = [
+  { id: '23H7AOjNmwl33goQTlmQNF', title: 'modernnostalgia.club: R&B(aboy)', src: 'https://open.spotify.com/embed/playlist/23H7AOjNmwl33goQTlmQNF?utm_source=generator&theme=0' },
+  { id: '2vXjR8Th4LrRpIAa6vcW8P', title: 'modernnostalgia.club: SA(RAP)', src: 'https://open.spotify.com/embed/playlist/2vXjR8Th4LrRpIAa6vcW8P?utm_source=generator' },
+];
+
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -319,59 +324,33 @@ export default function Connect() {
             ))}
           </motion.div>
 
-          {/* ── Featured Panel Guide ── */}
+{/* ── Featured Playlists ── */}
           <motion.section
-            className="border border-maroon/50 bg-maroon/10 rounded-2xl p-5"
+            className="space-y-3"
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.12 }}
           >
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/20">
-                <BookOpen className="w-5 h-5 text-maroon" />
-              </div>
-              <div>
-                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
-                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
-                <p className="text-cream/60 text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
-              </div>
+            <div className="flex items-center gap-2">
+              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
+              <p className="text-cream font-semibold text-sm">Featured Playlists</p>
             </div>
-
-            {guideDone ? (
-              <div className="flex items-center justify-between gap-3 border-t border-cream/10 pt-4">
-                <div className="flex items-center gap-2 text-sm text-cream">
-                  <CheckCircle className="w-4 h-4 text-maroon" />
-                  Your guide is ready.
-                </div>
-                <Button type="button" size="sm" onClick={downloadGuide} className="bg-maroon hover:bg-maroon/90 text-cream">
-                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleGuideDownload} className="space-y-2">
-                <input {...guideAntiSpam.honeypotProps} />
-                <div className="flex gap-2">
-                  <Input
-                    type="email"
-                    value={guideEmail}
-                    onChange={(e) => setGuideEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    aria-label="Email address for artist resource guide"
-                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
-                    required
-                    disabled={guideDisabled}
-                  />
-                  <Button type="submit" disabled={guideDisabled} className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0">
-                    {guideAntiSpam.isInCooldown ? (
-                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
-                    ) : guideSubmitting ? '...' : (
-                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
-                    )}
-                  </Button>
-                </div>
-                <p className="text-cream/40 text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
-              </form>
-            )}
+            <div className="space-y-3">
+              {FEATURED_PLAYLISTS.map((p) => (
+                <iframe
+                  key={p.id}
+                  title={p.title}
+                  src={p.src}
+                  width="100%"
+                  height="352"
+                  style={{ borderRadius: 12, border: 0 }}
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              ))}
+            </div>
           </motion.section>
+
 
           {/* ── Funnel Links ── */}
           <motion.div
@@ -493,6 +472,60 @@ export default function Connect() {
                 </motion.a>
               ))}
             </div>
+          </motion.section>
+
+          {/* ── Featured Panel Guide ── */}
+          <motion.section
+            className="border border-maroon/50 bg-maroon/10 rounded-2xl p-5"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.12 }}
+          >
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/20">
+                <BookOpen className="w-5 h-5 text-maroon" />
+              </div>
+              <div>
+                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
+                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
+                <p className="text-cream/60 text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
+              </div>
+            </div>
+
+            {guideDone ? (
+              <div className="flex items-center justify-between gap-3 border-t border-cream/10 pt-4">
+                <div className="flex items-center gap-2 text-sm text-cream">
+                  <CheckCircle className="w-4 h-4 text-maroon" />
+                  Your guide is ready.
+                </div>
+                <Button type="button" size="sm" onClick={downloadGuide} className="bg-maroon hover:bg-maroon/90 text-cream">
+                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleGuideDownload} className="space-y-2">
+                <input {...guideAntiSpam.honeypotProps} />
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    value={guideEmail}
+                    onChange={(e) => setGuideEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    aria-label="Email address for artist resource guide"
+                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
+                    required
+                    disabled={guideDisabled}
+                  />
+                  <Button type="submit" disabled={guideDisabled} className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0">
+                    {guideAntiSpam.isInCooldown ? (
+                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
+                    ) : guideSubmitting ? '...' : (
+                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-cream/40 text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
+              </form>
+            )}
           </motion.section>
 
           {/* ── Newsletter ── */}
