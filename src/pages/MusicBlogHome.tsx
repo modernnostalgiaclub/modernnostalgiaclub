@@ -402,135 +402,35 @@ function LatestPostsGrid() {
   );
 }
 
-// ── Latest Tracks ──────────────────────────────────────────────────────────────
-// Card grid backed by published artist_tracks. Clicking a card hands the queue
-// to the global persistent player.
-function LatestTracks() {
-  const { playQueue, current, isPlaying, togglePlay } = usePlayer();
+// ── Featured Playlists ─────────────────────────────────────────────────────────
+const FEATURED_PLAYLISTS = [
+  { id: '23H7AOjNmwl33goQTlmQNF', title: 'modernnostalgia.club: R&B(aboy)', src: 'https://open.spotify.com/embed/playlist/23H7AOjNmwl33goQTlmQNF?utm_source=generator&theme=0' },
+  { id: '2vXjR8Th4LrRpIAa6vcW8P', title: 'modernnostalgia.club: SA(RAP)', src: 'https://open.spotify.com/embed/playlist/2vXjR8Th4LrRpIAa6vcW8P?utm_source=generator' },
+];
 
-  const { data: tracks = [], isLoading } = useQuery({
-    queryKey: ['public-playable-tracks'],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_public_playable_tracks', { p_limit: 12 });
-      if (error) throw error;
-      return (data ?? []) as Array<{
-        id: string;
-        title: string;
-        artist_name: string | null;
-        cover_art_url: string | null;
-        duration: string | null;
-        audio_path: string | null;
-      }>;
-    },
-  });
-
-  if (!isLoading && tracks.length === 0) return null;
-
-  const queueTracks: PlayerTrack[] = tracks.map((t) => ({
-    id: t.id,
-    title: t.title,
-    artist_name: t.artist_name,
-    cover_art_url: t.cover_art_url,
-  }));
-
-  const descriptions: Record<string, string> = {
-    'Broke Baby Daddy (Clean)': 'A defiant anthem flipping the broke-dad trope into a hustler\'s declaration of devotion.',
-    'West Side': 'A sun-soaked west-coast ride drenched in cruising-hour nostalgia.',
-    'Constantine': 'Moody, cinematic bars with a noir bounce and a chip on its shoulder.',
-    'Wash Your Front (Skandal Riddim)': 'A dancehall-driven warning shot riding a scorching Skandal riddim.',
-    'Peach Mango Pie (prod by ELEV8 x Ge Oh)': 'A sweet, late-summer groove as warm and sticky as its namesake.',
-    'You Said': 'A bruised love letter to broken promises set over hazy R&B chords.',
-    'Sick ft Chozin': 'Trunk-rattling braggadocio with razor-sharp chemistry between two coasts.',
-    'Live it Up Tonight': 'A neon-lit party starter built for the last hour before sunrise.',
-    'Trophies': 'A victory-lap record honoring the receipts and the grind behind them.',
-    'Speed of Light ft. Eunice Janine': 'A weightless, future-funk duet about chasing love faster than logic.',
-    'So Connected ft. Maya La Maya': 'A silky slow burn about the kind of bond that doesn\'t need words.',
-    'D.I.L (Drop It Low)': 'A bass-heavy club command engineered for the floor.',
-    'Crossroads (Lord Knows I Ain\'t Done Yet) Prod Ge Oh': 'A soulful self-pep talk standing at the intersection of doubt and purpose.',
-  };
-
+function FeaturedPlaylists() {
   return (
     <section className="border-b border-border/40">
       <div className="container mx-auto px-6 py-16">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <SectionLabel className="mb-2">New Music</SectionLabel>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold">Latest Tracks</h2>
-          </div>
+        <div className="mb-10">
+          <SectionLabel className="mb-2">New Music</SectionLabel>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold">Featured Playlists</h2>
         </div>
-
-        {isLoading ? (
-          <ul className="divide-y divide-border/40 border-y border-border/40">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <li key={i} className="flex items-center gap-4 py-4 animate-pulse">
-                <div className="w-14 h-14 rounded-md bg-muted" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-muted rounded w-1/3" />
-                  <div className="h-3 bg-muted rounded w-2/3" />
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <ul className="divide-y divide-border/40 border-y border-border/40">
-            {tracks.map((t, i) => {
-              const isCurrent = current?.id === t.id;
-              const showPause = isCurrent && isPlaying;
-              return (
-                <motion.li
-                  key={t.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.03 }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isCurrent) togglePlay();
-                      else playQueue(queueTracks, i);
-                    }}
-                    aria-label={`${isCurrent && showPause ? 'Pause' : 'Play'} ${t.title} by ${t.artist_name || 'Modern Nostalgia Club'}`}
-                    className="w-full flex items-center gap-4 py-4 text-left group"
-                  >
-                    <span className="text-xs text-muted-foreground tabular-nums w-6 text-right">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div className="relative w-14 h-14 rounded-md overflow-hidden bg-muted border border-border/40 flex-shrink-0">
-                      <img src={mncLogo} alt={t.title} className="w-full h-full object-cover" />
-                      <div
-                        className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
-                          isCurrent ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                        }`}
-                      >
-                        {showPause ? (
-                          <Music className="w-4 h-4 text-white" />
-                        ) : (
-                          <Play className="w-4 h-4 text-white ml-0.5" />
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline gap-2 flex-wrap">
-                        <span className="font-bold text-sm md:text-base leading-snug group-hover:text-primary transition-colors">
-                          {t.artist_name || 'Modern Nostalgia Club'}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {t.title}
-                        </span>
-                      </div>
-                      {descriptions[t.title] && (
-                        <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                          {descriptions[t.title]}
-                        </p>
-                      )}
-                    </div>
-                  </button>
-                </motion.li>
-              );
-            })}
-          </ul>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {FEATURED_PLAYLISTS.map((p) => (
+            <iframe
+              key={p.id}
+              title={p.title}
+              src={p.src}
+              width="100%"
+              height="352"
+              style={{ borderRadius: 12, border: 0 }}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -603,7 +503,7 @@ export default function MusicBlogHome() {
         </div>
         <UpcomingEvents />
         <ArtistResources />
-        {!user && <LatestTracks />}
+        <FeaturedPlaylists />
         <PlaylistsSection />
         <LabCTA />
       </main>
