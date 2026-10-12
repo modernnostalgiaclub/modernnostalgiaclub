@@ -12,13 +12,14 @@ import {
   ExternalLink, Send, CheckCircle, Download, Target,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
-  Youtube, Twitter, Heart, Building2, CalendarCheck, Mic
+  Youtube, Twitter, Heart, Building2, CalendarCheck, Mic, Newspaper
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import logoCream from '@/assets/mnc-logo-social.png';
 import artistResourceGuide from '@/assets/monetizing-your-ip-guide.pdf.asset.json';
 import { AdminDailyFormCounter } from '@/components/AdminDailyFormCounter';
+import { usePatreonPosts, PATREON_URL } from '@/hooks/usePatreonPosts';
 
 const SOCIAL_LINKS = [
   { label: 'Instagram', icon: Instagram, url: 'https://instagram.com/modernnostalgia.club' },
@@ -159,6 +160,10 @@ export default function Connect() {
   const [guideSubmitting, setGuideSubmitting] = useState(false);
   const [guideDone, setGuideDone] = useState(false);
   const guideAntiSpam = useAntiSpam({ storageKey: 'panel_guide_cooldown', cooldownMs: 15000 });
+
+  // Latest Patreon post (shown under the featured playlists)
+  const latestPostQuery = usePatreonPosts(1);
+  const newestPost = latestPostQuery.data?.pages?.[0]?.posts?.[0];
 
   // Contact form
   const [contactOpen, setContactOpen] = useState(false);
@@ -349,6 +354,35 @@ export default function Connect() {
                 />
               ))}
             </div>
+            {newestPost ? (
+              <a
+                href={newestPost.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Latest Patreon post: ${newestPost.title}`}
+                className="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+              >
+                <span className="min-w-0">
+                  <span className="block text-cream/50 text-[11px] uppercase tracking-[0.14em] mb-0.5">
+                    Latest Patreon Post
+                  </span>
+                  <span className="block text-cream text-sm leading-snug line-clamp-2">
+                    {newestPost.title || 'Read the latest post'}
+                  </span>
+                </span>
+                <Newspaper className="w-4 h-4 text-maroon flex-shrink-0" />
+              </a>
+            ) : !latestPostQuery.isLoading ? (
+              <a
+                href={PATREON_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+              >
+                <span className="text-cream text-sm leading-snug">Read the latest on Patreon</span>
+                <Newspaper className="w-4 h-4 text-maroon flex-shrink-0" />
+              </a>
+            ) : null}
           </motion.section>
 
 
