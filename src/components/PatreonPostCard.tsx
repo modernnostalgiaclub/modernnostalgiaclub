@@ -24,7 +24,9 @@ export function PatreonPostCard({ post }: { post: PatreonPost }) {
               src={post.thumbnail}
               alt=""
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className={post.id === '172159367'
+                ? 'h-full w-full object-contain'
+                : 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[#1a1a1a]">
