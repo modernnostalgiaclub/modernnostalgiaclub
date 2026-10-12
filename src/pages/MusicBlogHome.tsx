@@ -36,7 +36,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
 function Masthead() {
   return (
     <section
-      className="relative border-b border-border/40 overflow-hidden min-h-[95vh] flex items-center justify-center"
+      className="relative border-b border-border/40 overflow-hidden flex items-center justify-center pt-20 pb-8 sm:pb-10 md:pt-0 md:pb-0 md:min-h-[95vh]"
     >
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
       <div className="absolute inset-0" style={{ background: 'rgba(10,10,10,0.6)' }} />
@@ -49,7 +49,7 @@ function Masthead() {
           className="flex flex-col items-center"
         >
           <motion.h1 variants={fadeIn}>
-            <img src={mncHeroLogo} alt="Modern Nostalgia Club" width={640} height={320} fetchPriority="high" decoding="async" className="h-20 md:h-32 lg:h-40 w-auto mx-auto" />
+            <img src={mncHeroLogo} alt="Modern Nostalgia Club" width={640} height={320} fetchPriority="high" decoding="async" className="h-11 sm:h-14 md:h-32 lg:h-40 w-auto mx-auto" />
           </motion.h1>
         </motion.div>
       </div>
