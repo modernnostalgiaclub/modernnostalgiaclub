@@ -35,7 +35,7 @@ serve(async (req) => {
   }
 
   try {
-    const { cursor } = await req.json().catch(() => ({}));
+    const { offset, pageSize } = await req.json().catch(() => ({}));
     
     const CREATOR_ACCESS_TOKEN = Deno.env.get("PATREON_CREATOR_ACCESS_TOKEN");
     if (!CREATOR_ACCESS_TOKEN) {
@@ -94,52 +94,81 @@ serve(async (req) => {
 
     console.log("Campaign ID:", campaignId);
 
-    // Fetch posts from the campaign - using only valid Patreon API v2 fields
-    let postsUrl = `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,is_public&page[count]=6`;
-    if (cursor) {
-      postsUrl += `&page[cursor]=${cursor}`;
+    // Patreon returns posts oldest-first, so fetch every page, then sort newest-first.
+    const all: any[] = [];
+    let pageCursor: string | null = null;
+    for (let i = 0; i < 20; i++) {
+      let postsUrl = `${PATREON_API_BASE}/campaigns/${campaignId}/posts?fields[post]=title,content,published_at,url,is_public,embed_data,embed_url&page[count]=100`;
+      if (pageCursor) postsUrl += `&page[cursor]=${encodeURIComponent(pageCursor)}`;
+      const postsResponse = await fetch(postsUrl, {
+        headers: { Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}` },
+      });
+      if (!postsResponse.ok) {
+        const errorText = await postsResponse.text();
+        console.error("Patreon posts error:", errorText);
+        throw new Error(`Failed to fetch Patreon posts: ${postsResponse.status}`);
+      }
+      const postsData = await postsResponse.json();
+      all.push(...(postsData.data || []));
+      pageCursor = postsData.meta?.pagination?.cursors?.next || null;
+      if (!pageCursor) break;
     }
-    
-    const postsResponse = await fetch(postsUrl, {
-      headers: {
-        Authorization: `Bearer ${CREATOR_ACCESS_TOKEN}`,
-      },
-    });
 
-    if (!postsResponse.ok) {
-      const errorText = await postsResponse.text();
-      console.error("Patreon posts error:", errorText);
-      throw new Error(`Failed to fetch Patreon posts: ${postsResponse.status}`);
-    }
+    all.sort((a, b) =>
+      new Date(b.attributes.published_at).getTime() - new Date(a.attributes.published_at).getTime()
+    );
 
-    const postsData = await postsResponse.json();
-    console.log("Fetched posts count:", postsData.data?.length || 0);
+    const stripHtml = (html: string) =>
+      (html || "")
+        .replace(/<br\s*\/?>/gi, " ")
+        .replace(/<\/p>/gi, " ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/\s+/g, " ")
+        .trim();
 
-    // Server-side gate: only authenticated users with a tier get full content
-    // for member-only (non-public) posts. Public posts remain accessible.
+    const findImage = (post: any): string | null => {
+      const html: string = post.attributes.content || "";
+      const m = html.match(/<img[^>]+src="([^"]+)"/i);
+      if (m) return m[1];
+      const embed = post.attributes.embed_data;
+      if (embed && typeof embed === "object") {
+        return embed.thumbnail_url || embed.image || null;
+      }
+      return null;
+    };
+
+    const limit = Math.min(Math.max(Number(pageSize) || 9, 1), 30);
+    const start = Math.max(Number(offset) || 0, 0);
+    const slice = all.slice(start, start + limit);
+
     const hasFullAccess = userTier !== "public";
-    const posts = postsData.data?.map((post: any) => {
+    const posts = slice.map((post: any) => {
       const isPublic = post.attributes.is_public;
-      const fullContent = post.attributes.content;
-      const teaser = fullContent?.substring(0, 200) || "";
+      const fullContent = post.attributes.content || "";
+      const plain = stripHtml(fullContent);
       const canSeeFull = isPublic || hasFullAccess;
+      const rawUrl: string = post.attributes.url || "";
       return {
         id: post.id,
-        title: post.attributes.title,
-        teaser,
+        title: (post.attributes.title || "").trim(),
+        teaser: plain.length > 220 ? plain.substring(0, 220).trimEnd() + "…" : plain,
         content: canSeeFull ? fullContent : null,
         publishedAt: post.attributes.published_at,
-        url: post.attributes.url,
+        url: rawUrl.startsWith("http") ? rawUrl : `https://www.patreon.com${rawUrl}`,
+        thumbnail: findImage(post),
         isPublic,
         isFullAccess: canSeeFull,
       };
-    }) || [];
+    });
 
-    // Get next cursor for pagination
-    const nextCursor = postsData.meta?.pagination?.cursors?.next || null;
+    const nextOffset = start + limit < all.length ? start + limit : null;
 
-    return new Response(JSON.stringify({ posts, userTier, nextCursor }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    return new Response(JSON.stringify({ posts, userTier, nextOffset, total: all.length }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "public, max-age=300" },
     });
 
   } catch (error) {
