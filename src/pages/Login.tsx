@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
+import { rememberPostAuthPath } from '@/lib/postAuthRedirect';
 import logoMnc from '@/assets/logo-mnc.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,11 +36,11 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      const redirectUri = redirectTo 
-        ? `${window.location.origin}${redirectTo}${searchParams.get('plan') ? `?plan=${searchParams.get('plan')}` : ''}`
-        : window.location.origin;
+      // Redirect to the public origin, then continue to the intended page once signed in.
+      const plan = searchParams.get('plan');
+      rememberPostAuthPath(redirectTo ? `${redirectTo}${plan ? `${redirectTo.includes('?') ? '&' : '?'}plan=${plan}` : ''}` : '/dashboard');
       const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: redirectUri,
+        redirect_uri: window.location.origin,
       });
       if (error) throw error;
     } catch (error: any) {

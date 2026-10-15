@@ -74,8 +74,9 @@ export default function MigrateToGoogle() {
   const handleGoogleSignIn = async () => {
     setSigningIn(true);
     try {
+      rememberPostAuthPath('/migrate');
       const result = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: `${window.location.origin}/migrate`,
+        redirect_uri: window.location.origin,
       });
       if (result.error) {
         toast.error('Sign in failed. Please try again.');
