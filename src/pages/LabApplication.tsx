@@ -98,8 +98,8 @@ const LabApplication = () => {
                 </p>
                 <p className="text-sm text-muted-foreground">
                   Questions? Email{" "}
-                  <a href="mailto:support@modernnostalgiaclub.com" className="text-primary hover:underline">
-                    support@modernnostalgiaclub.com
+                  <a href="mailto:support@modernnostalgia.club" className="text-primary hover:underline">
+                    support@modernnostalgia.club
                   </a>
                 </p>
               </motion.div>
@@ -282,10 +282,10 @@ const LabApplication = () => {
               <p className="text-sm text-muted-foreground">
                 Questions? Reach out to us at{" "}
                 <a
-                  href="mailto:support@modernnostalgiaclub.com"
+                  href="mailto:support@modernnostalgia.club"
                   className="text-primary hover:underline"
                 >
-                  support@modernnostalgiaclub.com
+                  support@modernnostalgia.club
                 </a>
               </p>
             </motion.div>

@@ -343,7 +343,7 @@ const TIERS = [
       'Weekly office hours for live feedback & connection',
       'Exclusive private livestreams',
       'Free access to all events',
-      'Monthly catalog audit & personalized feedback (valued at $250)',
+      'Monthly catalog audit & personalized feedback (valued at $249)',
     ],
     highlighted: false,
     badge: 'One-Time',
