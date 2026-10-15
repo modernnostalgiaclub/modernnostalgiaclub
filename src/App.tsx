@@ -9,6 +9,7 @@ import { PlayerProvider } from "@/contexts/PlayerContext";
 import { PersistentPlayer } from "@/components/PersistentPlayer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { PostAuthRedirect } from "@/components/PostAuthRedirect";
 import { SkipLink } from "@/components/SkipLink";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LabLayout } from "@/components/LabLayout";
@@ -71,6 +72,7 @@ const App = () => (
         <AuthProvider>
           <CartProvider>
           <PlayerProvider>
+          <PostAuthRedirect />
           <SkipLink />
           <Toaster />
           <Sonner />

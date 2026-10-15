@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
+import { rememberPostAuthPath } from '@/lib/postAuthRedirect';
 import logoMnc from '@/assets/logo-mnc.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -57,9 +58,9 @@ export default function Signup() {
     }
     setGoogleLoading(true);
     try {
-      const redirectUri = `${window.location.origin}/checkout?plan=${accountType}`;
+      rememberPostAuthPath(`/checkout?plan=${encodeURIComponent(accountType)}`);
       const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: redirectUri,
+        redirect_uri: window.location.origin,
       });
       if (error) throw error;
     } catch (error: any) {
