@@ -83,7 +83,7 @@ export function Header({ showNav = true }: HeaderProps) {
     : [
         { label: 'About', url: '/about' },
         { label: 'Blog', url: '/blog' },
-        { label: 'Join the Club', url: '/join' },
+        { label: 'Join the Club', url: 'https://www.patreon.com/modernnostalgiaclub' },
         { label: 'Artist Resources', url: '/artistresources' },
         { label: 'Store', url: '/store' },
         { label: 'Contact', url: '/contact' },
@@ -92,7 +92,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const DesktopNavLinks = () => (
     <>
       {navLinks.map((link) => (
-        <Link key={link.url} to={link.url} className={linkClasses}>{link.label}</Link>
+        link.url.startsWith('http') ? <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={linkClasses}>{link.label}</a> : <Link key={link.url} to={link.url} className={linkClasses}>{link.label}</Link>
       ))}
     </>
   );
@@ -100,7 +100,7 @@ export function Header({ showNav = true }: HeaderProps) {
   const MobileNavLinks = () => (
     <>
       {navLinks.map((link) => (
-        <Link key={link.url} to={link.url} className={mobileLinkClasses} onClick={closeMobileMenu}>{link.label}</Link>
+        link.url.startsWith('http') ? <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={mobileLinkClasses} onClick={closeMobileMenu}>{link.label}</a> : <Link key={link.url} to={link.url} className={mobileLinkClasses} onClick={closeMobileMenu}>{link.label}</Link>
       ))}
     </>
   );
@@ -237,7 +237,7 @@ export function Header({ showNav = true }: HeaderProps) {
                 variant="maroon"
                 size="sm"
                 className="w-24"
-                onClick={() => navigate('/join')}
+                onClick={() => window.open('https://www.patreon.com/modernnostalgiaclub', '_blank', 'noopener,noreferrer')}
               >
                 Join Now
               </Button>
@@ -307,7 +307,7 @@ export function Header({ showNav = true }: HeaderProps) {
                           variant="maroon"
                           className="w-full"
                           onClick={() => {
-                            navigate('/join');
+                            window.open('https://www.patreon.com/modernnostalgiaclub', '_blank', 'noopener,noreferrer');
                             closeMobileMenu();
                           }}
                         >

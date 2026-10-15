@@ -96,9 +96,9 @@ export default function BlogIndex() {
               Independent artist? Learn how to monetize your music beyond streaming.
             </p>
             <Button size="lg" asChild>
-              <Link to="/join">
+              <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer">
                 Join the Club <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
+              </a>
             </Button>
           </div>
         </section>
