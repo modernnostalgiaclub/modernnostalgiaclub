@@ -450,7 +450,7 @@ export default function Connect() {
           >
             <Button
               className="w-full bg-maroon hover:bg-maroon/90 text-cream font-semibold py-6 text-base rounded-xl"
-              onClick={() => navigate('/login?tab=signup')}
+              onClick={() => window.open('https://www.patreon.com/modernnostalgiaclub', '_blank', 'noopener,noreferrer')}
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Join the Club — It's Free

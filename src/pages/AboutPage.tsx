@@ -154,9 +154,9 @@ export default function AboutPage() {
                   style={{ background: 'hsl(var(--primary))', color: '#fff' }}
                   asChild
                 >
-                  <Link to="/join">
+                  <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer">
                     Join the Club <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
+                  </a>
                 </Button>
               </div>
               {/* Right: MNC logo */}

@@ -48,9 +48,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/join" className="text-sm text-white/70 hover:text-primary transition-colors">
-                  Join the Club
-                </Link>
+                <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-primary transition-colors">Join the Club</a>
               </li>
               <li>
                 <a href="https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-primary transition-colors">
