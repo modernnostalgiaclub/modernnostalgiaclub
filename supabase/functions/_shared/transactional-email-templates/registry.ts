@@ -5,6 +5,7 @@ import { template as discoveryCallConfirmation } from './discovery-call-confirma
 import { template as catalogAuditConfirmation } from './catalog-audit-confirmation.tsx'
 import { template as discoveryCallReminder } from './discovery-call-reminder.tsx'
 import { template as ipGuideConfirmation } from './ip-guide-confirmation.tsx'
+import { template as labUpdatesConfirmation } from './lab-updates-confirmation.tsx'
 
 export interface TemplateEntry {
   component: React.ComponentType<any>
@@ -21,4 +22,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'catalog-audit-confirmation': catalogAuditConfirmation,
   'discovery-call-reminder': discoveryCallReminder,
   'ip-guide-confirmation': ipGuideConfirmation,
+  'lab-updates-confirmation': labUpdatesConfirmation,
 }

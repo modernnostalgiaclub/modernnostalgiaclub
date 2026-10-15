@@ -3,6 +3,7 @@ import { useTheme } from 'next-themes';
 import { Twitter, Instagram, AtSign } from 'lucide-react';
 import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
+import { LabUpdatesSignup } from '@/components/LabUpdatesSignup';
 
 export function Footer() {
   const { resolvedTheme } = useTheme();
