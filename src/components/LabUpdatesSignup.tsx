@@ -66,7 +66,7 @@ export function LabUpdatesSignup({ variant = 'card' }: Props) {
         required
         maxLength={255}
         disabled={disabled}
-        className={isFooter ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40 h-10' : 'h-11 bg-white'}
+        className={isFooter ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40 h-10' : 'h-11 bg-white text-gray-900 border-gray-300 placeholder:text-gray-400'}
       />
       <Button type="submit" disabled={disabled} className="h-10 sm:h-auto sm:px-6 flex-shrink-0">
         {antiSpam.isInCooldown ? (
@@ -77,7 +77,7 @@ export function LabUpdatesSignup({ variant = 'card' }: Props) {
   );
 
   const doneMsg = (
-    <div className={`flex items-center gap-2 ${isFooter ? 'text-white' : 'text-foreground'}`} role="status">
+    <div className={`flex items-center gap-2 ${isFooter ? 'text-white' : 'text-gray-900'}`} role="status">
       <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
       <span className="text-sm font-semibold">You're on the list. Check your inbox for a quick hello.</span>
     </div>
@@ -98,12 +98,12 @@ export function LabUpdatesSignup({ variant = 'card' }: Props) {
   return (
     <section className="bg-white py-14 border-t border-border/30" aria-labelledby="lab-updates-heading">
       <div className="container mx-auto px-6">
-        <div className="max-w-2xl mx-auto text-center rounded-2xl border border-border bg-muted/40 p-8">
+        <div className="max-w-2xl mx-auto text-center rounded-2xl border border-gray-200 bg-gray-50 p-8">
           <Mail className="w-6 h-6 text-primary mx-auto mb-3" aria-hidden="true" />
-          <h2 id="lab-updates-heading" className="font-poppins text-xl font-bold mb-2 text-foreground">
+          <h2 id="lab-updates-heading" className="font-poppins text-xl font-bold mb-2 text-gray-900">
             Not ready for Patreon yet?
           </h2>
-          <p className="text-sm text-muted-foreground mb-5">
+          <p className="text-sm text-gray-600 mb-5">
             Get upcoming Lab events and resources by email. Events and resources only. Unsubscribe anytime.
           </p>
           {done ? <div className="flex justify-center">{doneMsg}</div> : form}
