@@ -41,6 +41,7 @@ import { AdminSponsorInquiries } from '@/components/AdminSponsorInquiries';
 import { AdminFormActivity } from '@/components/AdminFormActivity';
 import { AdminPlaylistSubmissions } from '@/components/AdminPlaylistSubmissions';
 import { AdminInterviewRequests } from '@/components/AdminInterviewRequests';
+import { AdminClassroomAccess } from '@/components/AdminClassroomAccess';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -215,6 +216,7 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="courses">
+              <AdminClassroomAccess />
               <CoursesManager />
             </TabsContent>
 
