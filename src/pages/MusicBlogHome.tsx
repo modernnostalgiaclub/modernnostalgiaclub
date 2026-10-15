@@ -19,6 +19,7 @@ import {
 import { MNCPlayer } from '@/components/MNCPlayer';
 import { PlaylistSubmit } from '@/components/PlaylistSubmit';
 import { ArtistResources } from '@/components/ArtistResources';
+import { LabUpdatesSignup } from '@/components/LabUpdatesSignup';
 import { SyncReadyCTA } from '@/components/SyncReadyCTA';
 import { EditorialArticles } from '@/components/EditorialArticles';
 import { useAuth } from '@/contexts/AuthContext';
@@ -502,6 +503,7 @@ export default function MusicBlogHome() {
           </Button>
         </div>
         <UpcomingEvents />
+        <LabUpdatesSignup />
         <ArtistResources />
         <PlaylistsSection />
         <LabCTA />

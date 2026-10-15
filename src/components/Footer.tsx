@@ -3,6 +3,7 @@ import { useTheme } from 'next-themes';
 import { Twitter, Instagram, AtSign } from 'lucide-react';
 import mncLogo from '@/assets/mnc-logo.png';
 import logoBlack from '@/assets/logo-black.png';
+import { LabUpdatesSignup } from '@/components/LabUpdatesSignup';
 
 export function Footer() {
   const { resolvedTheme } = useTheme();
@@ -115,6 +116,8 @@ export function Footer() {
             </ul>
           </nav>
         </div>
+
+        <LabUpdatesSignup variant="footer" />
         
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-white/80">

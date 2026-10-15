@@ -4,6 +4,7 @@ import { sendAndLogEmail } from "../_shared/send-and-log-email.ts";
 
 const OWNER_ALERT_EMAIL = "ge@modernnostalgia.club";
 const IP_GUIDE_TRACK_ID = "monetizing-your-ip-artist-resource-guide";
+const LAB_UPDATES_TRACK_ID = "lab-updates";
 
 // Restrict CORS to known origins
 const ALLOWED_ORIGINS = [
@@ -189,6 +190,36 @@ const handler = async (req: Request): Promise<Response> => {
             ],
           },
           idempotencyKey: `ip-guide-capture-${trackId}-${email.toLowerCase().trim()}`,
+        });
+      } catch (alertError) {
+        console.error("Owner alert email failed:", alertError);
+      }
+    }
+
+    // Lab events and resources signup: one-to-one confirmation + owner alert.
+    // Failure to send must not break the capture itself.
+    if (trackId === LAB_UPDATES_TRACK_ID) {
+      const cleanEmail = email.toLowerCase().trim();
+      try {
+        await sendAndLogEmail(supabase, 'lab-updates-confirmation', cleanEmail, {
+          idempotencyKey: `lab-updates-confirm-${cleanEmail}`,
+        });
+      } catch (confirmError) {
+        console.error("Lab updates confirmation email failed:", confirmError);
+      }
+      try {
+        await sendAndLogEmail(supabase, 'form-submission-alert', OWNER_ALERT_EMAIL, {
+          templateData: {
+            formName: 'Lab updates signup',
+            senderEmail: cleanEmail,
+            submittedAt: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }) + ' PT',
+            fields: [
+              { label: 'Email', value: cleanEmail },
+              { label: 'List', value: 'Lab events and resources' },
+              { label: 'Source', value: 'Site email signup' },
+            ],
+          },
+          idempotencyKey: `lab-updates-alert-${cleanEmail}`,
         });
       } catch (alertError) {
         console.error("Owner alert email failed:", alertError);
