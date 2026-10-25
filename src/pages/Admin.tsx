@@ -41,6 +41,7 @@ import { AdminSponsorInquiries } from '@/components/AdminSponsorInquiries';
 import { AdminFormActivity } from '@/components/AdminFormActivity';
 import { AdminPlaylistSubmissions } from '@/components/AdminPlaylistSubmissions';
 import { AdminInterviewRequests } from '@/components/AdminInterviewRequests';
+import { AdminCampApplications } from '@/components/AdminCampApplications';
 import { AdminClassroomAccess } from '@/components/AdminClassroomAccess';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -185,6 +186,10 @@ export default function Admin() {
                 <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Interviews
               </TabsTrigger>
+              <TabsTrigger value="camps" className="gap-2" aria-label="View camp applications">
+                <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Camps
+              </TabsTrigger>
               <TabsTrigger value="inbox" className="gap-2" aria-label="View all form submissions">
                 <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Inbox
@@ -201,6 +206,10 @@ export default function Admin() {
 
             <TabsContent value="playlist">
               <AdminPlaylistSubmissions />
+            </TabsContent>
+
+            <TabsContent value="camps">
+              <AdminCampApplications />
             </TabsContent>
 
             <TabsContent value="interviews">

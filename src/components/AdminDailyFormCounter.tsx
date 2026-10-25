@@ -35,6 +35,7 @@ export function AdminDailyFormCounter() {
       { label: 'Catalog audits', table: 'catalog_audit_submissions' as const },
       { label: 'Discovery calls', table: 'discovery_call_bookings' as const },
       { label: 'Interview requests', table: 'interview_requests' as never },
+      { label: 'Camp applications', table: 'camp_applications' as never },
     ];
 
     const results = await Promise.all(

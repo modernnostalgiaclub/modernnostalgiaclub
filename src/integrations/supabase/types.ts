@@ -265,6 +265,63 @@ export type Database = {
         }
         Relationships: []
       }
+      camp_applications: {
+        Row: {
+          artist_name: string
+          attendance: string | null
+          camp: string
+          city: string | null
+          created_at: string
+          details: Json
+          email: string
+          heritage: string | null
+          id: string
+          links: string
+          name: string
+          referral_source: string | null
+          roles: string[]
+          status: string
+          updated_at: string
+          why: string
+        }
+        Insert: {
+          artist_name: string
+          attendance?: string | null
+          camp: string
+          city?: string | null
+          created_at?: string
+          details?: Json
+          email: string
+          heritage?: string | null
+          id?: string
+          links: string
+          name: string
+          referral_source?: string | null
+          roles?: string[]
+          status?: string
+          updated_at?: string
+          why: string
+        }
+        Update: {
+          artist_name?: string
+          attendance?: string | null
+          camp?: string
+          city?: string | null
+          created_at?: string
+          details?: Json
+          email?: string
+          heritage?: string | null
+          id?: string
+          links?: string
+          name?: string
+          referral_source?: string | null
+          roles?: string[]
+          status?: string
+          updated_at?: string
+          why?: string
+        }
+        Relationships: []
+      }
       catalog_audit_submissions: {
         Row: {
           artist_name: string | null
