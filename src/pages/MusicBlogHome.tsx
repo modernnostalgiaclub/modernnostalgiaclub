@@ -503,6 +503,20 @@ export default function MusicBlogHome() {
           </Button>
         </div>
         <UpcomingEvents />
+        <section className="bg-white py-12">
+          <div className="container mx-auto px-6 max-w-5xl">
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 md:flex md:items-center md:justify-between md:gap-8">
+              <div>
+                <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Now accepting applications</p>
+                <h2 className="mt-2 font-anton text-3xl uppercase leading-[1.15] text-gray-900">Filipino Songwriting Camps</h2>
+                <p className="mt-2 text-gray-600 max-w-xl">Filipino artists, producers and instrumentalists: apply for our Sync Compilation Album and OPM Loop Pack camps.</p>
+              </div>
+              <Button asChild size="lg" className="mt-6 md:mt-0 shrink-0">
+                <Link to="/camps">Apply now <ArrowRight className="w-4 h-4 ml-2" /></Link>
+              </Button>
+            </div>
+          </div>
+        </section>
         <LabUpdatesSignup />
         <ArtistResources />
         <PlaylistsSection />

@@ -31,6 +31,13 @@ const SOCIAL_LINKS = [
 
 const FUNNEL_LINKS = [
   {
+    label: 'Apply: Filipino Songwriting Camps',
+    sublabel: 'Sync album and OPM loop pack camps',
+    icon: Mic,
+    to: '/camps',
+    external: false,
+  },
+  {
     label: 'Get Interviewed',
     sublabel: 'Be featured on our Patreon',
     icon: Mic,
