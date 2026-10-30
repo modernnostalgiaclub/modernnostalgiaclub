@@ -336,31 +336,21 @@ export default function Connect() {
             ))}
           </motion.div>
 
-{/* ── Featured Playlists ── */}
-          <motion.section
-            className="space-y-3"
-            initial="hidden" animate="visible" variants={fadeUp}
-            transition={{ duration: 0.45, delay: 0.12 }}
+          {/* ── Featured: Roll N Lumpia ── */}
+          <a
+            href="https://rollnlumpia.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-3 w-full rounded-xl bg-maroon hover:bg-maroon/90 text-cream px-5 py-4 font-semibold shadow-lg transition-colors"
           >
-            <div className="flex items-center gap-2">
-              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
-              <p className="text-cream font-semibold text-sm">Featured Playlists</p>
-            </div>
-            <div className="space-y-3">
-              {FEATURED_PLAYLISTS.map((p) => (
-                <iframe
-                  key={p.id}
-                  title={p.title}
-                  src={p.src}
-                  width="100%"
-                  height="352"
-                  style={{ borderRadius: 12, border: 0 }}
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  allowFullScreen
-                  loading="lazy"
-                />
-              ))}
-            </div>
+            <span>
+              <span className="block text-[11px] uppercase tracking-[0.14em] text-cream/80">Featured</span>
+              <span className="block text-base">Roll N Lumpia</span>
+            </span>
+            <ExternalLink className="w-4 h-4 flex-shrink-0" />
+          </a>
+
+          <div>
             {newestPost ? (
               <a
                 href={newestPost.url}
@@ -390,8 +380,133 @@ export default function Connect() {
                 <Newspaper className="w-4 h-4 text-maroon flex-shrink-0" />
               </a>
             ) : null}
+          </div>
+
+          {/* ── Featured Panel Guide ── */}
+          <motion.section
+            className="border border-maroon/50 bg-maroon/10 rounded-2xl p-5"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.12 }}
+          >
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/20">
+                <BookOpen className="w-5 h-5 text-maroon" />
+              </div>
+              <div>
+                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
+                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
+                <p className="text-cream/60 text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
+              </div>
+            </div>
+
+            {guideDone ? (
+              <div className="flex items-center justify-between gap-3 border-t border-cream/10 pt-4">
+                <div className="flex items-center gap-2 text-sm text-cream">
+                  <CheckCircle className="w-4 h-4 text-maroon" />
+                  Your guide is ready.
+                </div>
+                <Button type="button" size="sm" onClick={downloadGuide} className="bg-maroon hover:bg-maroon/90 text-cream">
+                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleGuideDownload} className="space-y-2">
+                <input {...guideAntiSpam.honeypotProps} />
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    value={guideEmail}
+                    onChange={(e) => setGuideEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    aria-label="Email address for artist resource guide"
+                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
+                    required
+                    disabled={guideDisabled}
+                  />
+                  <Button type="submit" disabled={guideDisabled} className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0">
+                    {guideAntiSpam.isInCooldown ? (
+                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
+                    ) : guideSubmitting ? '...' : (
+                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-cream/40 text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
+              </form>
+            )}
           </motion.section>
 
+{/* ── Featured Playlists ── */}
+          <motion.section
+            className="space-y-3"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.12 }}
+          >
+            <div className="flex items-center gap-2">
+              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
+              <p className="text-cream font-semibold text-sm">Featured Playlists</p>
+            </div>
+            <div className="space-y-3">
+              {FEATURED_PLAYLISTS.map((p) => (
+                <iframe
+                  key={p.id}
+                  title={p.title}
+                  src={p.src}
+                  width="100%"
+                  height="352"
+                  style={{ borderRadius: 12, border: 0 }}
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          </motion.section>
+
+
+          {/* ── Spotify Playlist Network ── */}
+          <motion.section
+            className="bg-cream/5 border border-cream/10 rounded-2xl p-5 space-y-3"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.35 }}
+          >
+            <div className="flex items-center gap-2">
+              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
+              <p className="text-cream font-semibold text-sm">Our Spotify Playlist Network</p>
+            </div>
+            <p className="text-cream/50 text-xs leading-relaxed">
+              Follow the playlists below, and submit your music via Playlist Panda.
+            </p>
+            <Button asChild size="sm" className="w-full bg-maroon hover:bg-maroon/90 text-cream font-semibold">
+              <a href={PLAYLISTPANDA_URL} target="_blank" rel="noopener noreferrer">
+                <Send className="w-3.5 h-3.5 mr-2" />
+                Submit via Playlist Panda
+              </a>
+            </Button>
+            <div className="space-y-2 pt-1">
+              {PLAYLIST_LINKS.map(({ label, sublabel, url }, i) => (
+                <motion.a
+                  key={label}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-3 py-2.5 bg-dark/40 hover:bg-dark/70 border border-cream/10 hover:border-maroon/60 rounded-lg transition-all duration-200"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.03 }}
+                >
+                  <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-md bg-maroon/15">
+                    <Music className="w-3.5 h-3.5 text-maroon" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-cream text-sm font-semibold leading-tight truncate">{label}</p>
+                    <p className="text-cream/50 text-xs leading-tight mt-0.5 truncate">{sublabel}</p>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
+                </motion.a>
+              ))}
+            </div>
+          </motion.section>
 
           {/* ── Funnel Links ── */}
           <motion.div
@@ -470,104 +585,6 @@ export default function Connect() {
               Already a member? Log in
             </button>
           </motion.div>
-
-          {/* ── Spotify Playlist Network ── */}
-          <motion.section
-            className="bg-cream/5 border border-cream/10 rounded-2xl p-5 space-y-3"
-            initial="hidden" animate="visible" variants={fadeUp}
-            transition={{ duration: 0.45, delay: 0.35 }}
-          >
-            <div className="flex items-center gap-2">
-              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
-              <p className="text-cream font-semibold text-sm">Our Spotify Playlist Network</p>
-            </div>
-            <p className="text-cream/50 text-xs leading-relaxed">
-              Follow the playlists below, and submit your music via Playlist Panda.
-            </p>
-            <Button asChild size="sm" className="w-full bg-maroon hover:bg-maroon/90 text-cream font-semibold">
-              <a href={PLAYLISTPANDA_URL} target="_blank" rel="noopener noreferrer">
-                <Send className="w-3.5 h-3.5 mr-2" />
-                Submit via Playlist Panda
-              </a>
-            </Button>
-            <div className="space-y-2 pt-1">
-              {PLAYLIST_LINKS.map(({ label, sublabel, url }, i) => (
-                <motion.a
-                  key={label}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-3 py-2.5 bg-dark/40 hover:bg-dark/70 border border-cream/10 hover:border-maroon/60 rounded-lg transition-all duration-200"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + i * 0.03 }}
-                >
-                  <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-md bg-maroon/15">
-                    <Music className="w-3.5 h-3.5 text-maroon" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-cream text-sm font-semibold leading-tight truncate">{label}</p>
-                    <p className="text-cream/50 text-xs leading-tight mt-0.5 truncate">{sublabel}</p>
-                  </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
-                </motion.a>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* ── Featured Panel Guide ── */}
-          <motion.section
-            className="border border-maroon/50 bg-maroon/10 rounded-2xl p-5"
-            initial="hidden" animate="visible" variants={fadeUp}
-            transition={{ duration: 0.45, delay: 0.12 }}
-          >
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/20">
-                <BookOpen className="w-5 h-5 text-maroon" />
-              </div>
-              <div>
-                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
-                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
-                <p className="text-cream/60 text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
-              </div>
-            </div>
-
-            {guideDone ? (
-              <div className="flex items-center justify-between gap-3 border-t border-cream/10 pt-4">
-                <div className="flex items-center gap-2 text-sm text-cream">
-                  <CheckCircle className="w-4 h-4 text-maroon" />
-                  Your guide is ready.
-                </div>
-                <Button type="button" size="sm" onClick={downloadGuide} className="bg-maroon hover:bg-maroon/90 text-cream">
-                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleGuideDownload} className="space-y-2">
-                <input {...guideAntiSpam.honeypotProps} />
-                <div className="flex gap-2">
-                  <Input
-                    type="email"
-                    value={guideEmail}
-                    onChange={(e) => setGuideEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    aria-label="Email address for artist resource guide"
-                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
-                    required
-                    disabled={guideDisabled}
-                  />
-                  <Button type="submit" disabled={guideDisabled} className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0">
-                    {guideAntiSpam.isInCooldown ? (
-                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
-                    ) : guideSubmitting ? '...' : (
-                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
-                    )}
-                  </Button>
-                </div>
-                <p className="text-cream/40 text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
-              </form>
-            )}
-          </motion.section>
 
           {/* ── Newsletter ── */}
           <motion.div
