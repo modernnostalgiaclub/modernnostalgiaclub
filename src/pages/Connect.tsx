@@ -346,6 +346,7 @@ export default function Connect() {
             <span>
               <span className="block text-[11px] uppercase tracking-[0.14em] text-cream/80">Featured</span>
               <span className="block text-base">Roll N Lumpia</span>
+              <span className="block text-xs font-normal text-cream/85 mt-1 leading-snug">The API entertainment network connecting Asian and Pacific Islander artists to shows, playlists and each other. Submit your music or find a show.</span>
             </span>
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
           </a>
