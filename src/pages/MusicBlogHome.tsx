@@ -509,7 +509,7 @@ export default function MusicBlogHome() {
               <div>
                 <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">New from the club</p>
                 <h2 className="mt-2 font-anton text-3xl uppercase leading-[1.15] text-gray-900">PitchClub</h2>
-                <p className="mt-2 text-gray-700">Free outreach emails, one-sheets and decks for artists without a full team. Answer a few guided questions and walk out in 15 minutes with a finished pitch and a step-by-step game plan.</p>
+                <p className="mt-2 text-gray-700">Free outreach emails, one-sheets and decks for artists without a full team. Answer a few guided questions and have a finished pitch and a step-by-step game plan.</p>
               </div>
               <Button size="lg" asChild className="mt-6 md:mt-0 shrink-0 bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white">
                 <a href="https://pitch.modernnostalgia.club" target="_blank" rel="noopener noreferrer">Visit PitchClub <ArrowRight className="w-4 h-4 ml-2" /></a>
