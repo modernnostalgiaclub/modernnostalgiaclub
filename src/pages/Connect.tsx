@@ -351,6 +351,19 @@ export default function Connect() {
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
           </a>
 
+          <a
+            href="https://pitch.modernnostalgia.club"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-3 w-full rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-cream px-5 py-4 font-semibold transition-colors"
+          >
+            <span>
+              <span className="block text-base">PitchClub by modernnostalgia.club</span>
+              <span className="block text-xs font-normal text-cream/85 mt-1 leading-snug">Pitch your music for sync and placement opportunities, curated by modernnostalgia.club.</span>
+            </span>
+            <ExternalLink className="w-4 h-4 flex-shrink-0" />
+          </a>
+
           <div>
             {newestPost ? (
               <a

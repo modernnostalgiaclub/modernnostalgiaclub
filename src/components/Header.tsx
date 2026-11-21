@@ -78,6 +78,7 @@ export function Header({ showNav = true }: HeaderProps) {
         { label: 'Events', url: '/events' },
         { label: 'Artist Resources', url: '/artistresources' },
         { label: 'Store', url: '/store' },
+        { label: 'PitchClub', url: 'https://pitch.modernnostalgia.club' },
         { label: 'Submit', url: '/feedback' },
       ]
     : [
@@ -86,6 +87,7 @@ export function Header({ showNav = true }: HeaderProps) {
         { label: 'Join the Club', url: 'https://www.patreon.com/modernnostalgiaclub' },
         { label: 'Artist Resources', url: '/artistresources' },
         { label: 'Store', url: '/store' },
+        { label: 'PitchClub', url: 'https://pitch.modernnostalgia.club' },
         { label: 'Contact', url: '/contact' },
       ];
 

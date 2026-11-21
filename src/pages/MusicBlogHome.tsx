@@ -507,6 +507,20 @@ export default function MusicBlogHome() {
           <div className="container mx-auto px-6 max-w-5xl">
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 md:flex md:items-center md:justify-between md:gap-8">
               <div>
+                <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">New from the club</p>
+                <h2 className="mt-2 font-anton text-3xl uppercase leading-[1.15] text-gray-900">PitchClub</h2>
+                <p className="mt-2 text-gray-700">Pitch your music for sync and placement opportunities, curated by modernnostalgia.club.</p>
+              </div>
+              <Button size="lg" asChild className="mt-6 md:mt-0 shrink-0 bg-[hsl(210,100%,53%)] hover:bg-[hsl(210,100%,45%)] text-white">
+                <a href="https://pitch.modernnostalgia.club" target="_blank" rel="noopener noreferrer">Visit PitchClub <ArrowRight className="w-4 h-4 ml-2" /></a>
+              </Button>
+            </div>
+          </div>
+        </section>
+        <section className="bg-white py-12">
+          <div className="container mx-auto px-6 max-w-5xl">
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 md:flex md:items-center md:justify-between md:gap-8">
+              <div>
                 <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Now accepting applications</p>
                 <h2 className="mt-2 font-anton text-3xl uppercase leading-[1.15] text-gray-900">Filipino Songwriting Camps</h2>
                 <p className="mt-2 text-gray-600 max-w-xl">Filipino artists, producers and instrumentalists: apply for our Sync Compilation Album and OPM Loop Pack camps.</p>
