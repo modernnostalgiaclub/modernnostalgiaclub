@@ -359,7 +359,7 @@ export default function Connect() {
           >
             <span>
               <span className="block text-base">PitchClub by modernnostalgia.club</span>
-              <span className="block text-xs font-normal text-cream/85 mt-1 leading-snug">Pitch your music for sync and placement opportunities, curated by modernnostalgia.club.</span>
+              <span className="block text-xs font-normal text-cream/85 mt-1 leading-snug">Free outreach emails, one-sheets and decks for artists without a full team. Answer a few guided questions and walk out in 15 minutes with a finished pitch and a step-by-step game plan.</span>
             </span>
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
           </a>
