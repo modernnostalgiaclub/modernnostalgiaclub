@@ -36,6 +36,7 @@ export function AdminDailyFormCounter() {
       { label: 'Discovery calls', table: 'discovery_call_bookings' as const },
       { label: 'Interview requests', table: 'interview_requests' as never },
       { label: 'Camp applications', table: 'camp_applications' as never },
+      { label: 'Workshop signups', table: 'workshop_signups' as const },
     ];
 
     const results = await Promise.all(

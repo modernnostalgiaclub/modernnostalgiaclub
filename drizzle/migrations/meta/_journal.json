@@ -15,6 +15,13 @@
       "when": 1795102197678,
       "tag": "0001_restrict_community_reads_to_members",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795617995930,
+      "tag": "0002_workshop_signups_and_event_listings",
+      "breakpoints": true
     }
   ]
 }

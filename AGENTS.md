@@ -7,3 +7,5 @@
 - Keep the public homepage header sticky in document flow and other page headers fixed; use section scroll margins so announcement dismissal does not cover content.
 - Resolve homepage URL hashes after the React view mounts so links from other pages reach their section rather than the top of the page.
 - Preserve service checkout and form handling during presentation-only restructures; homepage booking URLs remain configurable separately from checkout handlers.
+- Keep workshop signup validation shared between the public form and its dedicated handler; persist signups before sending fixed owner and confirmation templates so delivery failures never lose interest.
+- Import Eventbrite metadata by validated event ID in an admin-authenticated function; store listings per homepage slot and expose only live future events so ended sessions revert to native application links.

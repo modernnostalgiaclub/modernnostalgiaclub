@@ -747,6 +747,51 @@ export type Database = {
         }
         Relationships: []
       }
+      event_listings: {
+        Row: {
+          description: string
+          end_utc: string
+          eventbrite_id: string
+          id: string
+          slot: string
+          start_utc: string
+          status: string
+          timezone: string
+          title: string
+          updated_at: string
+          url: string
+          venue: string
+        }
+        Insert: {
+          description?: string
+          end_utc: string
+          eventbrite_id: string
+          id?: string
+          slot: string
+          start_utc: string
+          status: string
+          timezone?: string
+          title: string
+          updated_at?: string
+          url: string
+          venue?: string
+        }
+        Update: {
+          description?: string
+          end_utc?: string
+          eventbrite_id?: string
+          id?: string
+          slot?: string
+          start_utc?: string
+          status?: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+          url?: string
+          venue?: string
+        }
+        Relationships: []
+      }
       example_tracks: {
         Row: {
           artist: string
@@ -1820,6 +1865,48 @@ export type Database = {
           id?: string
           processed_at?: string
           source?: string
+        }
+        Relationships: []
+      }
+      workshop_signups: {
+        Row: {
+          artist_name: string
+          attendance: string
+          city: string
+          created_at: string
+          email: string
+          id: string
+          links: string
+          name: string
+          notes: string
+          status: string
+          topics: string[]
+        }
+        Insert: {
+          artist_name?: string
+          attendance: string
+          city?: string
+          created_at?: string
+          email: string
+          id?: string
+          links?: string
+          name: string
+          notes?: string
+          status?: string
+          topics: string[]
+        }
+        Update: {
+          artist_name?: string
+          attendance?: string
+          city?: string
+          created_at?: string
+          email?: string
+          id?: string
+          links?: string
+          name?: string
+          notes?: string
+          status?: string
+          topics?: string[]
         }
         Relationships: []
       }

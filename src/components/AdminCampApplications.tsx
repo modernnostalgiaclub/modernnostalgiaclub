@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { Search, RefreshCw, Music } from 'lucide-react';
 import { format } from 'date-fns';
 import { CAMPS, type CampSlug } from '@/lib/camps';
+import { AdminWorkshopSignups } from '@/components/AdminWorkshopSignups';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Row {
   id: string; camp: CampSlug; name: string; email: string; artist_name: string; roles: string[];
@@ -24,6 +26,7 @@ const DETAIL_LABELS: Record<string, string> = {
 };
 
 export function AdminCampApplications() {
+  const { hasRole } = useAuth();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -53,6 +56,7 @@ export function AdminCampApplications() {
     (!q || [r.name, r.email, r.artist_name, r.why].some((v) => v.toLowerCase().includes(q))));
 
   return (
+    <div className="space-y-8">
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -118,5 +122,7 @@ export function AdminCampApplications() {
         )}
       </CardContent>
     </Card>
+    {hasRole('admin') && <AdminWorkshopSignups />}
+    </div>
   );
 }

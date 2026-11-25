@@ -43,6 +43,7 @@ import Sponsors from "./pages/Sponsors";
 import InterviewRequest from "./pages/InterviewRequest";
 import Camps from "./pages/Camps";
 import CampApplication from "./pages/CampApplication";
+import Workshops from "./pages/Workshops";
 import PlaylistSubmission from "./pages/PlaylistSubmission";
 import BookCall from "./pages/BookCall";
 import MemberDirectory from "./pages/MemberDirectory";
@@ -122,6 +123,7 @@ const App = () => (
             <Route path="/interview" element={<InterviewRequest />} />
             <Route path="/camps" element={<Camps />} />
             <Route path="/camps/:camp" element={<CampApplication />} />
+            <Route path="/workshops" element={<Workshops />} />
             <Route path="/playlist-submit" element={<PlaylistSubmission />} />
             <Route path="/book-call" element={<BookCall />} />
             <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />

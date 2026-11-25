@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Settings, Mail, Bell, Calendar } from 'lucide-react';
+import { AdminEventListings } from '@/components/AdminEventListings';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SiteSetting {
   id: string;
@@ -16,6 +18,7 @@ interface SiteSetting {
 }
 
 export function AdminSiteSettings() {
+  const { hasRole } = useAuth();
   const [settings, setSettings] = useState<SiteSetting[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -106,6 +109,8 @@ export function AdminSiteSettings() {
   }
 
   return (
+    <div className="space-y-8">
+    {hasRole('admin') && <AdminEventListings />}
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -164,5 +169,6 @@ export function AdminSiteSettings() {
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 }

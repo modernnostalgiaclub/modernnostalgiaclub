@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, Mail, RefreshCw } from 'lucide-react';
 
-type Kind = 'Sponsor inquiry' | 'Playlist submission' | 'Discovery call' | 'Catalog audit' | 'Interview request' | 'Camp application';
+type Kind = 'Sponsor inquiry' | 'Playlist submission' | 'Discovery call' | 'Catalog audit' | 'Interview request' | 'Camp application' | 'Workshop signup';
 
 interface Entry {
   id: string;
@@ -19,7 +19,7 @@ interface Entry {
   createdAt: string;
 }
 
-const KINDS: Kind[] = ['Sponsor inquiry', 'Playlist submission', 'Discovery call', 'Catalog audit', 'Interview request', 'Camp application'];
+const KINDS: Kind[] = ['Sponsor inquiry', 'Playlist submission', 'Discovery call', 'Catalog audit', 'Interview request', 'Camp application', 'Workshop signup'];
 
 const badgeColor: Record<Kind, string> = {
   'Sponsor inquiry': 'bg-primary/10 text-primary',
@@ -28,6 +28,7 @@ const badgeColor: Record<Kind, string> = {
   'Catalog audit': 'bg-purple-500/10 text-purple-600',
   'Interview request': 'bg-sky-500/10 text-sky-600',
   'Camp application': 'bg-rose-500/10 text-rose-600',
+  'Workshop signup': 'bg-primary/10 text-primary',
 };
 
 export function AdminFormActivity() {
@@ -38,13 +39,14 @@ export function AdminFormActivity() {
 
   const load = async () => {
     setLoading(true);
-    const [sponsors, playlists, calls, audits, interviews, camps] = await Promise.all([
+    const [sponsors, playlists, calls, audits, interviews, camps, workshops] = await Promise.all([
       supabase.from('sponsor_inquiries').select('id, name, email, company, partnership_type, created_at').order('created_at', { ascending: false }),
       supabase.from('playlist_submissions').select('id, name, email, artist_name, song_title, created_at').order('created_at', { ascending: false }),
       supabase.from('discovery_call_bookings').select('id, full_name, email, topic, preferred_date, preferred_time, created_at').order('created_at', { ascending: false }),
       supabase.from('catalog_audit_submissions').select('id, full_name, email, artist_name, catalog_size, created_at').order('created_at', { ascending: false }),
       supabase.from('interview_requests' as never).select('id, name, email, artist_name, genre, created_at').order('created_at', { ascending: false }),
       supabase.from('camp_applications' as never).select('id, name, email, artist_name, camp, created_at').order('created_at', { ascending: false }),
+      supabase.from('workshop_signups').select('id, name, email, artist_name, topics, created_at').order('created_at', { ascending: false }),
     ]);
 
     const all: Entry[] = [
@@ -71,6 +73,10 @@ export function AdminFormActivity() {
       ...((camps.data ?? []) as unknown as Array<{ id: string; name: string; email: string; artist_name: string; camp: string; created_at: string }>).map((r) => ({
         id: r.id, kind: 'Camp application' as Kind, name: r.name, email: r.email,
         detail: [r.artist_name, r.camp === 'sync-album' ? 'Sync Album' : 'Loop Pack'].join(' · '), createdAt: r.created_at,
+      })),
+      ...(workshops.data ?? []).map((r) => ({
+        id: r.id, kind: 'Workshop signup' as Kind, name: r.name, email: r.email,
+        detail: [r.artist_name, r.topics.join(', ')].filter(Boolean).join(' · '), createdAt: r.created_at,
       })),
     ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
@@ -103,7 +109,7 @@ export function AdminFormActivity() {
   }, [entries, search, kindFilter]);
 
   const replyLink = (e: Entry) =>
-    `mailto:${e.email}?subject=${encodeURIComponent(`Re: your ${e.kind.toLowerCase()} — Modern Nostalgia Club`)}&body=${encodeURIComponent(`Hi ${e.name},\n\n`)}`;
+    `mailto:${encodeURIComponent(e.email)}?subject=${encodeURIComponent(`Re: your ${e.kind.toLowerCase()} | Modern Nostalgia Club`)}&body=${encodeURIComponent(`Hi ${e.name},\n\n`)}`;
 
   return (
     <div className="space-y-6">
@@ -122,7 +128,7 @@ export function AdminFormActivity() {
 
       <div className="flex flex-wrap items-center gap-3">
         <Tabs value={kindFilter} onValueChange={(v) => setKindFilter(v as 'all' | Kind)}>
-          <TabsList>
+          <TabsList className="h-auto flex flex-wrap justify-start gap-1">
             <TabsTrigger value="all">All</TabsTrigger>
             {KINDS.map((k) => <TabsTrigger key={k} value={k}>{k}</TabsTrigger>)}
           </TabsList>
