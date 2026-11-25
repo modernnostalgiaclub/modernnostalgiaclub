@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
-
 @font-face {
   font-family: 'Maximum Impact';
   src: url('/fonts/Maximum_Impact.ttf') format('truetype');
@@ -14,6 +12,18 @@
 
 @layer base {
   :root {
+    /* Public editorial roles, independent of the workspace theme. */
+    --paper: 0 0% 100%;
+    --paper-muted: 60 2% 97%;
+    --ink: 0 0% 7%;
+    --ink-muted: 0 0% 34%;
+    --rule: 60 2% 85%;
+    --khaki: 60 1% 28%;
+    --khaki-foreground: 0 0% 100%;
+    --inverse: 0 0% 100%;
+    --inverse-muted: 0 0% 76%;
+    --chrome: 0 0% 8%;
+    --veil: 0 0% 0%;
     /* Modern Nostalgia Club — Midnight Navy + Electric Blue */
     --background: 222 47% 4%;
     --foreground: 210 40% 92%;
@@ -312,6 +322,64 @@
 }
 
 @layer components {
+  .public-editorial {
+    overflow-x: clip;
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --primary: var(--khaki);
+    --primary-foreground: var(--inverse);
+    --card: var(--paper);
+    --card-foreground: var(--ink);
+    --secondary: var(--paper-muted);
+    --secondary-foreground: var(--ink);
+    --muted: var(--paper-muted);
+    --muted-foreground: var(--ink-muted);
+    --border: var(--rule);
+    --ring: var(--khaki);
+    --input: var(--rule);
+    letter-spacing: 0;
+  }
+
+  .public-editorial * {
+    letter-spacing: 0;
+  }
+
+  .site-chrome {
+    --background: var(--chrome);
+    --foreground: var(--inverse);
+    --primary: var(--khaki);
+    --primary-foreground: var(--inverse);
+    --secondary: var(--khaki);
+    --secondary-foreground: var(--inverse);
+    --accent: var(--khaki);
+    --accent-foreground: var(--inverse);
+    --popover: var(--chrome);
+    --popover-foreground: var(--inverse);
+    --border: 0 0% 24%;
+    --ring: var(--inverse);
+    color: hsl(var(--inverse));
+    background: hsl(var(--chrome));
+    letter-spacing: 0;
+  }
+
+  .site-chrome * {
+    letter-spacing: 0;
+  }
+
+  .home-section {
+    scroll-margin-top: 11rem;
+  }
+
+  .home-hero {
+    min-height: 28rem;
+  }
+
+  @media (min-width: 768px) {
+    .home-hero {
+      min-height: min(40rem, calc(100svh - 12rem));
+    }
+  }
+
   .section-label {
     @apply text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium;
   }

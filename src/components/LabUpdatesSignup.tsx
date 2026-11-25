@@ -66,9 +66,9 @@ export function LabUpdatesSignup({ variant = 'card' }: Props) {
         required
         maxLength={255}
         disabled={disabled}
-        className={isFooter ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40 h-10' : 'h-11 bg-white text-gray-900 border-gray-300 placeholder:text-gray-400'}
+        className={isFooter ? 'bg-inverse/10 border-inverse/30 text-inverse placeholder:text-inverse-muted h-11' : 'h-11 rounded-none bg-paper text-ink border-rule placeholder:text-ink-muted'}
       />
-      <Button type="submit" disabled={disabled} className="h-10 sm:h-auto sm:px-6 flex-shrink-0">
+      <Button type="submit" variant="editorial" disabled={disabled} className="h-11 sm:px-6 flex-shrink-0">
         {antiSpam.isInCooldown ? (
           <><Clock className="w-4 h-4 mr-1" />{antiSpam.cooldownRemaining}s</>
         ) : submitting ? '...' : 'Subscribe'}
@@ -77,18 +77,18 @@ export function LabUpdatesSignup({ variant = 'card' }: Props) {
   );
 
   const doneMsg = (
-    <div className={`flex items-center gap-2 ${isFooter ? 'text-white' : 'text-gray-900'}`} role="status">
-      <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+    <div className={`flex items-center gap-2 ${isFooter ? 'text-inverse' : 'text-ink'}`} role="status">
+      <CheckCircle className="w-5 h-5 flex-shrink-0" />
       <span className="text-sm font-semibold">You're on the list. Check your inbox for a quick hello.</span>
     </div>
   );
 
   if (isFooter) {
     return (
-      <div className="mt-10 pt-8 border-t border-white/10">
+      <div className="mt-10 pt-8 border-t border-inverse/10">
         <div className="max-w-xl">
-          <p className="text-sm font-semibold text-white mb-1">Not ready for Patreon? Get Lab events and resources by email.</p>
-          <p className="text-xs text-white/60 mb-3">Events and resources only. Unsubscribe anytime.</p>
+          <p className="text-sm font-semibold text-inverse mb-1">Not ready for Patreon? Get Lab events and resources by email.</p>
+          <p className="text-xs text-inverse-muted mb-3">Events and resources only. Unsubscribe anytime.</p>
           {done ? doneMsg : form}
         </div>
       </div>
@@ -96,14 +96,14 @@ export function LabUpdatesSignup({ variant = 'card' }: Props) {
   }
 
   return (
-    <section className="bg-white py-14 border-t border-border/30" aria-labelledby="lab-updates-heading">
+    <section className="bg-paper-muted py-14 md:py-20 border-t border-rule" aria-labelledby="lab-updates-heading">
       <div className="container mx-auto px-6">
-        <div className="max-w-2xl mx-auto text-center rounded-2xl border border-gray-200 bg-gray-50 p-8">
-          <Mail className="w-6 h-6 text-primary mx-auto mb-3" aria-hidden="true" />
-          <h2 id="lab-updates-heading" className="font-poppins text-xl font-bold mb-2 text-gray-900">
+        <div className="max-w-xl mx-auto text-center">
+          <Mail className="w-6 h-6 text-khaki mx-auto mb-3" aria-hidden="true" />
+          <h2 id="lab-updates-heading" className="font-serif text-2xl font-bold mb-3 text-ink">
             Not ready for Patreon yet?
           </h2>
-          <p className="text-sm text-gray-600 mb-5">
+          <p className="text-sm text-ink-muted mb-6">
             Get upcoming Lab events and resources by email. Events and resources only. Unsubscribe anytime.
           </p>
           {done ? <div className="flex justify-center">{doneMsg}</div> : form}

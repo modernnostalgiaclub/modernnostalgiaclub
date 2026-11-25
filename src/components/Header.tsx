@@ -1,327 +1,140 @@
 import React, { useState } from 'react';
 import mncLogo from '@/assets/mnc-logo.png';
-import logoBlack from '@/assets/logo-black.png';
-import mncTextLogo from '@/assets/mnc-text-logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, Instagram, Twitter, ShoppingCart, LayoutDashboard, Users, Settings } from 'lucide-react';
+import { Shield, ChevronDown, LogOut, Loader2, Menu, User, Moon, Sun, ShoppingCart, LayoutDashboard, Users, Settings, BookOpen, Music } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SidebarTrigger, SidebarContext } from '@/components/ui/sidebar';
 import { useTheme } from 'next-themes';
 import { NotificationBell } from '@/components/NotificationBell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
-const Header_PATREON_PAGE_URL = 'https://www.patreon.com/modernnostalgiaclub'; // kept for reference
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { PATREON_PAGE_URL, SITE_NAVIGATION } from '@/lib/siteNavigation';
 
 function SafeSidebarTrigger() {
   const ctx = React.useContext(SidebarContext);
   if (!ctx) return null;
-  return (
-    <div className="lg:hidden">
-      <SidebarTrigger className="text-blue hover:text-blue-glow h-6 w-6" />
-    </div>
-  );
+  return <div className="lg:hidden"><SidebarTrigger className="text-inverse" /></div>;
 }
+
+const NavLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { url: string; label: string }>(function NavLink({ url, label, ...props }, ref) {
+  if (url.startsWith('https://')) return <a ref={ref} href={url} target="_blank" rel="noopener noreferrer" {...props}>{label}</a>;
+  // Native anchors also work when arriving from a different public page.
+  if (url.includes('#')) return <a ref={ref} href={url} {...props}>{label}</a>;
+  return <Link ref={ref} to={url} {...props}>{label}</Link>;
+});
 
 interface HeaderProps {
   showNav?: boolean;
+  sticky?: boolean;
+  announcement?: React.ReactNode;
 }
 
-export function Header({ showNav = true }: HeaderProps) {
+export function Header({ showNav = true, sticky = false, announcement }: HeaderProps) {
   const { user, profile, loading, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
-  const isLoggedIn = !!user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  const logo = resolvedTheme === 'dark' ? mncLogo : logoBlack;
-  const isAdmin = hasRole('admin');
-  const isAdminOrMod = isAdmin || hasRole('moderator');
+  const isAdminOrMod = hasRole('admin') || hasRole('moderator');
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  const handleLogin = () => navigate('/login');
-  const handleSignUp = () => navigate('/login?tab=signup');
-
-  const handleSignOut = async () => {
+  async function handleSignOut() {
     try {
       await signOut();
       navigate('/');
-      setMobileMenuOpen(false);
-    } catch (error) {
-      console.error('Failed to sign out:', error);
-    }
-  };
+      closeMobileMenu();
+    } catch (error) { console.error('Failed to sign out:', error); }
+  }
 
-  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const memberLinks = [
+    { label: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+    { label: 'Community', url: '/community', icon: Users },
+    { label: 'Courses', url: '/courses', icon: BookOpen },
+    { label: 'Studio Floor', url: '/feedback', icon: Music },
+    { label: 'Profile', url: '/profile', icon: User },
+    { label: 'Settings', url: '/account', icon: Settings },
+  ];
 
-  const toggleTheme = () => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-  };
-
-  const linkClasses = "text-sm text-white hover:text-primary transition-colors";
-  const mobileLinkClasses = "block py-3 text-lg text-foreground hover:text-primary transition-colors";
-
-  const navLinks = isLoggedIn
-    ? [
-        { label: 'Home', url: '/' },
-        { label: 'Dashboard', url: '/dashboard' },
-        { label: 'Community', url: '/community' },
-        { label: 'Events', url: '/events' },
-        { label: 'Artist Resources', url: '/artistresources' },
-        { label: 'Store', url: '/store' },
-        { label: 'PitchClub', url: 'https://pitch.modernnostalgia.club' },
-        { label: 'Submit', url: '/feedback' },
-      ]
-    : [
-        { label: 'About', url: '/about' },
-        { label: 'Blog', url: '/blog' },
-        { label: 'Join the Club', url: 'https://www.patreon.com/modernnostalgiaclub' },
-        { label: 'Artist Resources', url: '/artistresources' },
-        { label: 'Store', url: '/store' },
-        { label: 'PitchClub', url: 'https://pitch.modernnostalgia.club' },
-        { label: 'Contact', url: '/contact' },
-      ];
-
-  const DesktopNavLinks = () => (
-    <>
-      {navLinks.map((link) => (
-        link.url.startsWith('http') ? <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={linkClasses}>{link.label}</a> : <Link key={link.url} to={link.url} className={linkClasses}>{link.label}</Link>
-      ))}
-    </>
-  );
-
-  const MobileNavLinks = () => (
-    <>
-      {navLinks.map((link) => (
-        link.url.startsWith('http') ? <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={mobileLinkClasses} onClick={closeMobileMenu}>{link.label}</a> : <Link key={link.url} to={link.url} className={mobileLinkClasses} onClick={closeMobileMenu}>{link.label}</Link>
-      ))}
-    </>
-  );
+  const cart = <Button variant="ghost" size="icon" className="relative text-inverse hover:bg-inverse/10" onClick={() => setCartOpen(true)} title="Shopping cart" aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}>
+    <ShoppingCart aria-hidden="true" />
+    {totalItems > 0 && <span className="absolute right-0 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-inverse px-1 text-[10px] font-bold text-ink">{totalItems}</span>}
+  </Button>;
 
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{ background: '#141414' }}
-      role="banner"
-    >
-      <div className="w-full px-4 md:px-6 h-20 relative flex items-center justify-between">
-        {/* Mobile sidebar trigger (logged-in only) */}
-        {isLoggedIn && (
-          <SafeSidebarTrigger />
-        )}
-
-        {/* Logo - centered on mobile when logged in, left-aligned on desktop */}
-        <Link
-          to="/"
-          className={`flex items-center shrink-0 ${isLoggedIn ? 'absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0' : ''}`}
-          aria-label="ModernNostalgia.club home"
-        >
-          <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
-          <span className="hidden sm:inline font-anton text-sm uppercase tracking-tight text-white -ml-1">Modern Nostalgia<span className="text-primary">.Club</span></span>
+    <header className={`site-chrome ${sticky ? 'sticky' : 'fixed'} top-0 left-0 right-0 z-50`} role="banner">
+      {announcement}
+      <div className="mx-auto flex h-20 w-full max-w-[1600px] items-center justify-between gap-3 px-4 md:gap-5 md:px-6">
+        {user && <SafeSidebarTrigger />}
+        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="ModernNostalgia.club home">
+          <img src={mncLogo} alt="" className="h-10 w-auto" aria-hidden="true" />
+          <span className="hidden xl:inline font-anton text-sm uppercase text-inverse">Modern Nostalgia.Club</span>
         </Link>
-        
-        {/* Desktop Navigation - truly centered */}
-        {showNav && (
-          <nav className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 pointer-events-none" aria-label="Main navigation">
-            <div className="flex items-center gap-6 pointer-events-auto">
-              <DesktopNavLinks />
-            </div>
-          </nav>
-        )}
-        
-        {/* Right side: social + auth buttons */}
-        <div className="flex items-center shrink-0 ml-auto relative z-10">
-          {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-          ) : isLoggedIn ? (
-            <div className="hidden lg:flex items-center gap-3">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setCartOpen(true)}
-                  className="relative text-white hover:text-blue transition-colors"
-                  aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
-                >
-                  <ShoppingCart className="h-4 w-4" />
-                  {totalItems > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                      {totalItems}
-                    </span>
-                  )}
-                </button>
-                <NotificationBell />
-                {/* User Avatar Dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center transition-colors">
-                    <Avatar className="h-8 w-8 border border-white/20">
+
+        {showNav && <nav className="hidden min-w-0 items-center gap-1 lg:flex" aria-label="Main navigation">
+          {SITE_NAVIGATION.map(group => <DropdownMenu key={group.label}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="gap-1 px-3 text-inverse hover:bg-inverse/10 data-[state=open]:bg-inverse/10">{group.label}<ChevronDown className="h-3 w-3" aria-hidden="true" /></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" sideOffset={12} className="site-chrome min-w-56 rounded-none border-border p-2">
+              {group.links.map(link => <DropdownMenuItem key={link.url} asChild className="min-h-11 cursor-pointer rounded-none px-3 text-inverse focus:bg-inverse/10 focus:text-inverse">
+                <NavLink {...link} />
+              </DropdownMenuItem>)}
+            </DropdownMenuContent>
+          </DropdownMenu>)}
+          <Button variant="ghost" asChild className="px-3 text-inverse hover:bg-inverse/10"><Link to="/contact">Contact</Link></Button>
+        </nav>}
+
+        <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
+          <div className="hidden items-center gap-2 lg:flex">
+            {cart}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin text-inverse-muted" /> : user ? <>
+              <NotificationBell />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-inverse/10" aria-label="Account menu" title="Account menu">
+                    <Avatar className="h-8 w-8 border border-inverse/20">
                       <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.name || 'Profile'} />
-                      <AvatarFallback className="bg-white/10 text-white text-xs">
-                        {(profile?.name || profile?.stage_name || user?.email?.charAt(0) || 'U').charAt(0).toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback className="bg-khaki text-xs text-inverse">{(profile?.name || profile?.stage_name || user.email || 'U').charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                  </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48" style={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
-                    <Link to="/profile" className="cursor-pointer flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
-                    <Link to="/dashboard" className="cursor-pointer flex items-center gap-2">
-                      <LayoutDashboard className="h-4 w-4" />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
-                    <Link to="/community" className="cursor-pointer flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      Community
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
-                    <Link to="/account" className="cursor-pointer flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  {isAdminOrMod && (
-                    <>
-                      <DropdownMenuSeparator className="bg-white/10" />
-                      <DropdownMenuItem asChild className="text-white/80 hover:text-white focus:text-white focus:bg-white/10">
-                        <Link to="/admin" className="cursor-pointer flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          Admin
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                  <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer flex items-center gap-2 text-red-400 focus:text-red-400 focus:bg-white/10">
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </DropdownMenuItem>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="site-chrome w-52 rounded-none border-border p-2">
+                  {memberLinks.map(({ label, url, icon: Icon }) => <DropdownMenuItem key={url} asChild className="min-h-11 rounded-none text-inverse focus:bg-inverse/10 focus:text-inverse"><Link to={url}><Icon aria-hidden="true" className="mr-2 h-4 w-4" />{label}</Link></DropdownMenuItem>)}
+                  {isAdminOrMod && <><DropdownMenuSeparator className="bg-inverse/20" /><DropdownMenuItem asChild className="min-h-11 rounded-none text-inverse focus:bg-inverse/10 focus:text-inverse"><Link to="/admin"><Shield className="mr-2 h-4 w-4" aria-hidden="true" />Admin</Link></DropdownMenuItem></>}
+                  <DropdownMenuSeparator className="bg-inverse/20" />
+                  <DropdownMenuItem onClick={handleSignOut} className="min-h-11 rounded-none text-inverse focus:bg-inverse/10 focus:text-inverse"><LogOut className="mr-2 h-4 w-4" aria-hidden="true" />Sign Out</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              </div>
-            </div>
-          ) : (
-            <div className="hidden lg:flex items-center gap-3 ml-4">
-              <button
-                onClick={() => setCartOpen(true)}
-                className="relative text-white hover:text-primary transition-colors"
-                aria-label={`Shopping cart${totalItems > 0 ? ` (${totalItems} items)` : ''}`}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-maroon text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
-              <Button 
-                variant="outline"
-                size="sm"
-                className="w-24 border-white text-white hover:bg-white hover:text-black"
-                onClick={handleLogin}
-              >
-                Log In
-              </Button>
-              <Button 
-                variant="maroon"
-                size="sm"
-                className="w-24"
-                onClick={() => window.open('https://www.patreon.com/modernnostalgiaclub', '_blank', 'noopener,noreferrer')}
-              >
-                Join Now
-              </Button>
-            </div>
-          )}
-
-          {/* Mobile Menu */}
-          {showNav && (
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon" className="text-blue hover:text-blue-glow">
-                  <Menu className="w-6 h-6" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] bg-background border-border">
-                <nav className="flex flex-col mt-8 space-y-2">
-                  <MobileNavLinks />
-                  
-                  <div className="pt-6 mt-6 border-t border-border">
-                    {loading ? (
-                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                    ) : isLoggedIn ? (
-                      <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                          Signed in as {profile?.name || user?.email?.split('@')[0]}
-                        </p>
-                        <Button 
-                          variant="outline" 
-                          className="w-full justify-start"
-                          onClick={toggleTheme}
-                        >
-                          {resolvedTheme === 'dark' ? (
-                            <>
-                              <Sun className="w-4 h-4 mr-2" />
-                              Light Mode
-                            </>
-                          ) : (
-                            <>
-                              <Moon className="w-4 h-4 mr-2" />
-                              Dark Mode
-                            </>
-                          )}
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full justify-start"
-                          onClick={handleSignOut}
-                        >
-                          <LogOut className="w-4 h-4 mr-2" />
-                          Sign Out
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <Button 
-                          variant="outline"
-                          className="w-full border-white text-white hover:bg-white hover:text-black"
-                          onClick={() => {
-                            handleLogin();
-                            closeMobileMenu();
-                          }}
-                        >
-                          Log In
-                        </Button>
-                        <Button 
-                          variant="maroon"
-                          className="w-full"
-                          onClick={() => {
-                            window.open('https://www.patreon.com/modernnostalgiaclub', '_blank', 'noopener,noreferrer');
-                            closeMobileMenu();
-                          }}
-                        >
-                          Join Now
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          )}
+            </> : <>
+              <Button variant="ghost" className="px-3 text-inverse hover:bg-inverse/10" onClick={() => navigate('/login')}>Log In</Button>
+              <Button variant="editorial" asChild><a href={PATREON_PAGE_URL} target="_blank" rel="noopener noreferrer">Join the Club</a></Button>
+            </>}
+          </div>
+          {showNav && <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild><Button variant="ghost" size="icon" className="text-inverse hover:bg-inverse/10 lg:hidden" aria-label="Open menu"><Menu aria-hidden="true" /></Button></SheetTrigger>
+            <SheetContent side="right" aria-describedby={undefined} className="site-chrome w-[min(360px,100%)] overflow-y-auto border-border">
+              <SheetTitle className="mb-6 text-left font-anton text-2xl uppercase text-inverse">Modern Nostalgia.Club</SheetTitle>
+              <nav aria-label="Mobile navigation" className="space-y-5">
+                {SITE_NAVIGATION.map(group => <div key={group.label} className="border-t border-inverse/20 pt-4">
+                  <p className="mb-2 text-xs font-bold uppercase text-inverse-muted">{group.label}</p>
+                  {group.links.map(link => <NavLink key={link.url} {...link} className="flex min-h-11 items-center py-2 text-sm text-inverse hover:underline" onClick={closeMobileMenu} />)}
+                </div>)}
+                <NavLink url="/contact" label="Contact" className="flex min-h-11 items-center border-t border-inverse/20 py-4 text-sm text-inverse" onClick={closeMobileMenu} />
+                <div className="border-t border-inverse/20 pt-4">
+                  <div className="mb-3 flex items-center justify-between"><span className="text-sm text-inverse-muted">Shopping cart</span>{cart}</div>
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : user ? <div className="space-y-2">
+                    {memberLinks.map(({ url, label }) => <NavLink key={url} url={url} label={label} className="flex min-h-11 items-center text-sm text-inverse" onClick={closeMobileMenu} />)}
+                    {isAdminOrMod && <NavLink url="/admin" label="Admin" className="flex min-h-11 items-center text-sm text-inverse" onClick={closeMobileMenu} />}
+                    <Button variant="inverseOutline" className="w-full justify-start" onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>{resolvedTheme === 'dark' ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}{resolvedTheme === 'dark' ? 'Light Mode' : 'Dark Mode'}</Button>
+                    <Button variant="inverseOutline" className="w-full justify-start" onClick={handleSignOut}><LogOut aria-hidden="true" />Sign Out</Button>
+                  </div> : <Button variant="inverseOutline" className="w-full" onClick={() => { navigate('/login'); closeMobileMenu(); }}>Log In</Button>}
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>}
         </div>
       </div>
     </header>

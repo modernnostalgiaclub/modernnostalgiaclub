@@ -1,27 +1,23 @@
 import { Link } from 'react-router-dom';
-import { useTheme } from 'next-themes';
 import { Twitter, Instagram, AtSign } from 'lucide-react';
 import mncLogo from '@/assets/mnc-logo.png';
-import logoBlack from '@/assets/logo-black.png';
 import { LabUpdatesSignup } from '@/components/LabUpdatesSignup';
 
-export function Footer() {
-  const { resolvedTheme } = useTheme();
-  const logo = resolvedTheme === 'dark' ? mncLogo : logoBlack;
+export function Footer({ showEmailSignup = true }: { showEmailSignup?: boolean }) {
 
   return (
-    <footer className="border-t border-white/10" style={{ background: '#1a1a1a' }} role="contentinfo">
+    <footer className="site-chrome border-t border-inverse/10" role="contentinfo">
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-start md:gap-16">
           <div className="max-w-sm">
             <Link to="/" className="flex items-center mb-4">
-              <img src={logo} alt="" className="h-10 w-auto" aria-hidden="true" />
-              <span className="font-anton text-sm uppercase tracking-tight text-white -ml-1">Modern Nostalgia<span className="text-primary">.Club</span></span>
+              <img src={mncLogo} alt="" className="h-10 w-auto" aria-hidden="true" />
+              <span className="font-anton text-sm uppercase text-inverse -ml-1">Modern Nostalgia.Club</span>
             </Link>
-            <p className="text-sm text-white/70 max-w-sm">
-              Modern Nostalgia Club is a creative economy designed for artists who want to build sustainable income through music. It combines training, systems, and real-world workflows to help artists move beyond just creating and into operating like modern, independent businesses.
+            <p className="text-sm text-inverse-muted max-w-sm">
+              Modern Nostalgia Club is a creative economy designed for artists who want to build sustainable income through music. It combines training, systems and practical workflows to help artists operate like modern, independent businesses.
             </p>
-            <p className="text-sm text-white/70 max-w-sm mt-3">
+            <p className="text-sm text-inverse-muted max-w-sm mt-3">
               It's not just about making music. It's about building a structure around your creativity so it can actually pay you.
             </p>
           </div>
@@ -29,40 +25,40 @@ export function Footer() {
           <nav aria-label="Site navigation" className="md:justify-self-center md:pt-1">
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/about" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/blog" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/artistresources" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/artistresources" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   Artist Resources
                 </Link>
               </li>
               <li>
-                <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-primary transition-colors">Join the Club</a>
+                <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer" className="text-sm text-inverse-muted hover:text-inverse transition-colors">Join the Club</a>
               </li>
               <li>
-                <a href="https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <a href="https://playlistpanda.com/c/modernnostalgiaclub?ref=cmufw676g00050agm7i23a7au" target="_blank" rel="noopener noreferrer" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   Submit Music
                 </a>
               </li>
               <li>
-                <Link to="/camps" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/camps" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   Songwriting Camps
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-sm text-white/70 hover:text-primary transition-colors">
+                <Link to="/contact" className="text-sm text-inverse-muted hover:text-inverse transition-colors">
                   Contact
                 </Link>
               </li>
@@ -71,7 +67,7 @@ export function Footer() {
                   href="/rss.xml"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-white/70 hover:text-primary transition-colors"
+                  className="text-sm text-inverse-muted hover:text-inverse transition-colors"
                   aria-label="Blog RSS feed (opens in new tab)"
                 >
                   RSS Feed
@@ -87,7 +83,7 @@ export function Footer() {
                   href="https://x.com/geohworks"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-primary transition-colors md:justify-end"
+                  className="inline-flex items-center gap-2 text-sm text-inverse-muted hover:text-inverse transition-colors md:justify-end"
                   aria-label="Follow Modern Nostalgia Club on Twitter/X (opens in new tab)"
                 >
                   <Twitter size={16} />
@@ -99,7 +95,7 @@ export function Footer() {
                   href="https://www.instagram.com/modernnostalgia.club/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-primary transition-colors md:justify-end"
+                  className="inline-flex items-center gap-2 text-sm text-inverse-muted hover:text-inverse transition-colors md:justify-end"
                   aria-label="Follow Modern Nostalgia Club on Instagram (opens in new tab)"
                 >
                   <Instagram size={16} />
@@ -111,7 +107,7 @@ export function Footer() {
                   href="https://www.threads.net/@modernnostalgia.club"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-primary transition-colors md:justify-end"
+                  className="inline-flex items-center gap-2 text-sm text-inverse-muted hover:text-inverse transition-colors md:justify-end"
                   aria-label="Follow Modern Nostalgia Club on Threads (opens in new tab)"
                 >
                   <AtSign size={16} />
@@ -122,20 +118,20 @@ export function Footer() {
           </nav>
         </div>
 
-        <LabUpdatesSignup variant="footer" />
+        {showEmailSignup && <LabUpdatesSignup variant="footer" />}
         
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-white/80">
+        <div className="mt-12 pt-8 border-t border-inverse/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-inverse-muted">
             © {new Date().getFullYear()} ModernNostalgia.club. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link to="/contact" className="text-xs text-white/80 hover:text-primary transition-colors">
+            <Link to="/contact" className="text-xs text-inverse-muted hover:text-inverse transition-colors">
               Contact
             </Link>
-            <Link to="/terms" className="text-xs text-white/80 hover:text-primary transition-colors">
+            <Link to="/terms" className="text-xs text-inverse-muted hover:text-inverse transition-colors">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="text-xs text-white/80 hover:text-primary transition-colors">
+            <Link to="/privacy" className="text-xs text-inverse-muted hover:text-inverse transition-colors">
               Privacy Policy
             </Link>
           </div>

@@ -2,7 +2,6 @@ import { Briefcase, Music, Mic, Monitor, ArrowRight, ExternalLink, Headphones } 
 import artistResourcesImg from '@/assets/artist-resources.jpg';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 const resources = [
   {
@@ -41,35 +40,25 @@ const resources = [
 
 export function ArtistResources() {
   return (
-    <section className="py-20 bg-primary">
+    <section id="resources" aria-labelledby="artist-resources-heading" className="home-section py-14 md:py-20 bg-primary">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           {/* Left side — phone mockup placeholder */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center"
-          >
+          <div className="flex min-w-0 justify-center">
             <img 
               src={artistResourcesImg} 
               alt="Artist working in a studio" 
-              className="rounded-2xl object-cover w-full max-w-md h-[480px] shadow-2xl"
+              className="rounded-lg object-cover w-full max-w-md h-[360px] md:h-[480px]"
+              loading="lazy"
             />
-          </motion.div>
+          </div>
 
           {/* Right side — text + feature list */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.25em] text-primary-foreground/60 mb-3">
               For Independent Artists
             </p>
-            <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight leading-[1.05] text-primary-foreground mb-6">
+            <h2 id="artist-resources-heading" className="font-anton text-4xl md:text-5xl uppercase leading-[1.15] text-primary-foreground mb-6">
               Artist Resources
             </h2>
 
@@ -80,7 +69,7 @@ export function ArtistResources() {
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary-foreground/10 flex items-center justify-center">
                     <resource.icon className="w-5 h-5 text-primary-foreground/80" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     {resource.url ? (
                       <a
                         href={resource.url}
@@ -108,7 +97,7 @@ export function ArtistResources() {
                 Explore Resources <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

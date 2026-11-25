@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "test": "bun test",
     "preview": "vite preview",
     "predev": "bunx tsx scripts/generate-sitemap.ts && bunx tsx scripts/generate-feed.ts",
     "prebuild": "bunx tsx scripts/generate-sitemap.ts && bunx tsx scripts/generate-feed.ts"
