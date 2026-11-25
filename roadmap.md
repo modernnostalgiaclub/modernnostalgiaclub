@@ -14,3 +14,9 @@
 - [x] Replace service placeholder buttons with a preselected service inquiry form for all three offers.
 - [x] Save requests privately, send owner email alerts and add admin review and reply controls under Admin Services and Inbox.
 - [x] Verify all service selections, real submission and owner email delivery, persisted admin status and notes, private access, and 320, 390 and 1210px layouts. All 27 related tests pass. Removed the test request.
+
+## About and Connect refresh
+
+- [x] Add Who We Are to the menu and replace founder content with pillars and contact.
+- [x] Put service offers first on Connect, add MixtapeClub, move panel guide down and align the styling.
+- [x] Verify offer rules, links and desktop/mobile layouts. All 12 offer tests pass; checked 390 and 1210px widths and all three preselected service forms.

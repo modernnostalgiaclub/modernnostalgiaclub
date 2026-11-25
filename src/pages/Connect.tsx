@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { useAntiSpam } from '@/hooks/useAntiSpam';
 import {
-  ExternalLink, Send, CheckCircle, Download, Target,
+  ExternalLink, Send, CheckCircle, Download,
   ShoppingBag, BookOpen, Music, Instagram, Clock,
   ChevronDown, ChevronUp, Mail, UserPlus, LogIn,
   Youtube, Twitter, Heart, Building2, CalendarCheck, Mic, Newspaper
@@ -20,6 +20,7 @@ import logoCream from '@/assets/mnc-logo-social.png';
 import artistResourceGuide from '@/assets/monetizing-your-ip-guide.pdf.asset.json';
 import { AdminDailyFormCounter } from '@/components/AdminDailyFormCounter';
 import { usePatreonPosts, PATREON_URL } from '@/hooks/usePatreonPosts';
+import { ConnectServices } from '@/components/ConnectServices';
 
 const SOCIAL_LINKS = [
   { label: 'Instagram', icon: Instagram, url: 'https://instagram.com/modernnostalgia.club' },
@@ -52,10 +53,10 @@ const FUNNEL_LINKS = [
     external: false,
   },
   {
-    label: 'Book a Catalog Audit',
-    sublabel: 'Get your music reviewed for sync',
-    icon: Target,
-    to: '/catalog-audit',
+    label: 'Bi-Weekly Artist Workshops',
+    sublabel: 'Working sessions for independent artists',
+    icon: CalendarCheck,
+    to: '/workshops',
     external: false,
   },
   {
@@ -299,7 +300,7 @@ export default function Connect() {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Helmet>
 
-      <div className="min-h-screen bg-dark text-cream">
+      <div className="site-chrome min-h-screen bg-chrome text-inverse">
         <div className="max-w-md mx-auto px-5 py-10 space-y-8">
 
           {/* ── Header ── */}
@@ -309,9 +310,9 @@ export default function Connect() {
             transition={{ duration: 0.45 }}
           >
             <img src={logoCream} alt="Modern Nostalgia Club" className="h-20 mx-auto mb-3" />
-            <p className="text-cream font-semibold text-lg tracking-wide">Ge Oh</p>
-            <p className="text-cream/70 text-sm tracking-wide">modernnostalgia.club</p>
-            <p className="text-cream/50 text-xs tracking-wide italic">
+            <p className="text-inverse font-semibold text-lg tracking-wide">Ge Oh</p>
+            <p className="text-inverse-muted text-sm tracking-wide">modernnostalgia.club</p>
+            <p className="text-inverse-muted text-xs tracking-wide italic">
               Infrastructure for independent artists and creative economies.
             </p>
           </motion.header>
@@ -329,24 +330,26 @@ export default function Connect() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-cream/5 hover:bg-cream/15 border border-cream/10 hover:border-maroon transition-all duration-200 text-cream/60 hover:text-cream"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-inverse/5 hover:bg-inverse/15 border border-inverse/10 hover:border-action transition-all duration-200 text-inverse-muted hover:text-inverse"
               >
                 <Icon className="w-4 h-4" />
               </a>
             ))}
           </motion.div>
 
+          <ConnectServices />
+
           {/* ── Featured: Roll N Lumpia ── */}
           <a
             href="https://rollnlumpia.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-3 w-full rounded-xl bg-maroon hover:bg-maroon/90 text-cream px-5 py-4 font-semibold shadow-lg transition-colors"
+            className="flex items-center justify-between gap-3 w-full rounded-lg bg-action hover:bg-action/90 text-action-foreground px-5 py-4 font-semibold shadow-lg transition-colors"
           >
             <span>
-              <span className="block text-[11px] uppercase tracking-[0.14em] text-cream/80">Featured</span>
+              <span className="block text-[11px] uppercase tracking-[0.14em] text-action-foreground">Featured</span>
               <span className="block text-base">Roll N Lumpia</span>
-              <span className="block text-xs font-normal text-cream/85 mt-1 leading-snug">The API entertainment network connecting Asian and Pacific Islander artists to shows, playlists and each other. Submit your music or find a show.</span>
+              <span className="block text-xs font-normal text-action-foreground mt-1 leading-snug">The API entertainment network connecting Asian and Pacific Islander artists to shows, playlists and each other. Submit your music or find a show.</span>
             </span>
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
           </a>
@@ -355,14 +358,24 @@ export default function Connect() {
             href="https://pitch.modernnostalgia.club"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-3 w-full rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-cream px-5 py-4 font-semibold transition-colors"
+            className="flex items-center justify-between gap-3 w-full rounded-lg border border-inverse/15 bg-inverse/5 hover:bg-inverse/10 text-inverse px-5 py-4 font-semibold transition-colors"
           >
             <span>
               <span className="block text-base">PitchClub by modernnostalgia.club</span>
-              <span className="block text-xs font-normal text-cream/85 mt-1 leading-snug">Free outreach emails, one-sheets and decks for artists without a full team. Answer a few guided questions and have a finished pitch and a step-by-step game plan.</span>
+              <span className="block text-xs font-normal text-inverse/85 mt-1 leading-snug">Free outreach emails, one-sheets and decks for artists without a full team. Answer a few guided questions and have a finished pitch and a step-by-step game plan.</span>
             </span>
             <ExternalLink className="w-4 h-4 flex-shrink-0" />
           </a>
+
+          <Button variant="inverseOutline" asChild className="w-full h-auto whitespace-normal justify-between text-left px-5 py-4">
+            <a href="https://mixtape.modernnostalgia.club" target="_blank" rel="noopener noreferrer">
+              <span>
+                <span className="block text-base font-semibold">MixtapeClub</span>
+                <span className="block text-xs font-normal text-inverse-muted mt-1 leading-snug">Organize your unreleased music and mixtape projects, then share them with collaborators and the people you want to reach.</span>
+              </span>
+              <ExternalLink className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            </a>
+          </Button>
 
           <div>
             {newestPost ? (
@@ -371,84 +384,30 @@ export default function Connect() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Latest Patreon post: ${newestPost.title}`}
-                className="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+                className="flex items-center justify-between gap-3 rounded-lg border border-inverse/15 bg-inverse/5 px-4 py-3 transition-colors hover:bg-inverse/10"
               >
                 <span className="min-w-0">
-                  <span className="block text-cream/50 text-[11px] uppercase tracking-[0.14em] mb-0.5">
+                  <span className="block text-inverse-muted text-[11px] uppercase tracking-[0.14em] mb-0.5">
                     Latest Patreon Post
                   </span>
-                  <span className="block text-cream text-sm leading-snug line-clamp-2">
+                  <span className="block text-inverse text-sm leading-snug line-clamp-2">
                     {newestPost.title || 'Read the latest post'}
                   </span>
                 </span>
-                <Newspaper className="w-4 h-4 text-maroon flex-shrink-0" />
+                <Newspaper className="w-4 h-4 text-action flex-shrink-0" />
               </a>
             ) : !latestPostQuery.isLoading ? (
               <a
                 href={PATREON_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+                className="flex items-center justify-between gap-3 rounded-lg border border-inverse/15 bg-inverse/5 px-4 py-3 transition-colors hover:bg-inverse/10"
               >
-                <span className="text-cream text-sm leading-snug">Read the latest on Patreon</span>
-                <Newspaper className="w-4 h-4 text-maroon flex-shrink-0" />
+                <span className="text-inverse text-sm leading-snug">Read the latest on Patreon</span>
+                <Newspaper className="w-4 h-4 text-action flex-shrink-0" />
               </a>
             ) : null}
           </div>
-
-          {/* ── Featured Panel Guide ── */}
-          <motion.section
-            className="border border-maroon/50 bg-maroon/10 rounded-2xl p-5"
-            initial="hidden" animate="visible" variants={fadeUp}
-            transition={{ duration: 0.45, delay: 0.12 }}
-          >
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/20">
-                <BookOpen className="w-5 h-5 text-maroon" />
-              </div>
-              <div>
-                <p className="text-maroon text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
-                <h2 className="text-cream font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
-                <p className="text-cream/60 text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
-              </div>
-            </div>
-
-            {guideDone ? (
-              <div className="flex items-center justify-between gap-3 border-t border-cream/10 pt-4">
-                <div className="flex items-center gap-2 text-sm text-cream">
-                  <CheckCircle className="w-4 h-4 text-maroon" />
-                  Your guide is ready.
-                </div>
-                <Button type="button" size="sm" onClick={downloadGuide} className="bg-maroon hover:bg-maroon/90 text-cream">
-                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleGuideDownload} className="space-y-2">
-                <input {...guideAntiSpam.honeypotProps} />
-                <div className="flex gap-2">
-                  <Input
-                    type="email"
-                    value={guideEmail}
-                    onChange={(e) => setGuideEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    aria-label="Email address for artist resource guide"
-                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
-                    required
-                    disabled={guideDisabled}
-                  />
-                  <Button type="submit" disabled={guideDisabled} className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0">
-                    {guideAntiSpam.isInCooldown ? (
-                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
-                    ) : guideSubmitting ? '...' : (
-                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
-                    )}
-                  </Button>
-                </div>
-                <p className="text-cream/40 text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
-              </form>
-            )}
-          </motion.section>
 
 {/* ── Featured Playlists ── */}
           <motion.section
@@ -457,8 +416,8 @@ export default function Connect() {
             transition={{ duration: 0.45, delay: 0.12 }}
           >
             <div className="flex items-center gap-2">
-              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
-              <p className="text-cream font-semibold text-sm">Featured Playlists</p>
+              <Music className="w-4 h-4 text-action flex-shrink-0" />
+              <p className="text-inverse font-semibold text-sm">Featured Playlists</p>
             </div>
             <div className="space-y-3">
               {FEATURED_PLAYLISTS.map((p) => (
@@ -480,18 +439,18 @@ export default function Connect() {
 
           {/* ── Spotify Playlist Network ── */}
           <motion.section
-            className="bg-cream/5 border border-cream/10 rounded-2xl p-5 space-y-3"
+            className="bg-inverse/5 border border-inverse/10 rounded-lg p-5 space-y-3"
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.35 }}
           >
             <div className="flex items-center gap-2">
-              <Music className="w-4 h-4 text-maroon flex-shrink-0" />
-              <p className="text-cream font-semibold text-sm">Our Spotify Playlist Network</p>
+              <Music className="w-4 h-4 text-action flex-shrink-0" />
+              <p className="text-inverse font-semibold text-sm">Our Spotify Playlist Network</p>
             </div>
-            <p className="text-cream/50 text-xs leading-relaxed">
+            <p className="text-inverse-muted text-xs leading-relaxed">
               Follow the playlists below, and submit your music via Playlist Panda.
             </p>
-            <Button asChild size="sm" className="w-full bg-maroon hover:bg-maroon/90 text-cream font-semibold">
+            <Button asChild size="sm" className="w-full bg-action hover:bg-action/90 text-action-foreground font-semibold">
               <a href={PLAYLISTPANDA_URL} target="_blank" rel="noopener noreferrer">
                 <Send className="w-3.5 h-3.5 mr-2" />
                 Submit via Playlist Panda
@@ -504,19 +463,19 @@ export default function Connect() {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-3 py-2.5 bg-dark/40 hover:bg-dark/70 border border-cream/10 hover:border-maroon/60 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-3 px-3 py-2.5 bg-chrome/40 hover:bg-chrome/70 border border-inverse/10 hover:border-action/60 rounded-lg transition-all duration-200"
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.03 }}
                 >
-                  <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-md bg-maroon/15">
-                    <Music className="w-3.5 h-3.5 text-maroon" />
+                  <div className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-md bg-action/15">
+                    <Music className="w-3.5 h-3.5 text-action" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-cream text-sm font-semibold leading-tight truncate">{label}</p>
-                    <p className="text-cream/50 text-xs leading-tight mt-0.5 truncate">{sublabel}</p>
+                    <p className="text-inverse text-sm font-semibold leading-tight truncate">{label}</p>
+                    <p className="text-inverse-muted text-xs leading-tight mt-0.5 truncate">{sublabel}</p>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
+                  <ExternalLink className="w-3.5 h-3.5 text-inverse/30 flex-shrink-0" />
                 </motion.a>
               ))}
             </div>
@@ -533,19 +492,19 @@ export default function Connect() {
             {FUNNEL_LINKS.map(({ label, sublabel, icon: Icon, to, external }, i) => {
               const inner = (
                 <div className="flex items-center gap-3 w-full">
-                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-maroon/15">
-                    <Icon className="w-4 h-4 text-maroon" />
+                  <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-lg bg-action/15">
+                    <Icon className="w-4 h-4 text-action" />
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="text-cream text-sm font-semibold leading-tight">{label}</p>
-                    <p className="text-cream/50 text-xs leading-tight mt-0.5">{sublabel}</p>
+                    <p className="text-inverse text-sm font-semibold leading-tight">{label}</p>
+                    <p className="text-inverse-muted text-xs leading-tight mt-0.5">{sublabel}</p>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-cream/30 flex-shrink-0" />
+                  <ExternalLink className="w-3.5 h-3.5 text-inverse/30 flex-shrink-0" />
                 </div>
               );
 
               const cls =
-                'flex items-center px-4 py-3.5 bg-cream/5 hover:bg-cream/10 border border-cream/10 hover:border-cream/25 rounded-xl transition-all duration-200 cursor-pointer w-full';
+                'flex items-center px-4 py-3.5 bg-inverse/5 hover:bg-inverse/10 border border-inverse/10 hover:border-inverse/25 rounded-lg transition-all duration-200 cursor-pointer w-full';
 
               return external ? (
                 <motion.a
@@ -578,6 +537,61 @@ export default function Connect() {
             })}
           </motion.div>
 
+          {/* ── Featured Panel Guide ── */}
+          <motion.section
+            className="border border-action/50 bg-action/10 rounded-lg p-5"
+            initial="hidden" animate="visible" variants={fadeUp}
+            transition={{ duration: 0.45, delay: 0.12 }}
+          >
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg bg-action/20">
+                <BookOpen className="w-5 h-5 text-action" />
+              </div>
+              <div>
+                <p className="text-action text-xs font-semibold uppercase tracking-wider">Fil Am CreatorCon Panel</p>
+                <h2 className="text-inverse font-semibold text-lg leading-tight mt-1">Download the PDF Breakdown of My Fil Am CreatorCon Panel</h2>
+                <p className="text-inverse-muted text-xs mt-1">Get the full panel breakdown as a free PDF.</p>
+              </div>
+            </div>
+
+            {guideDone ? (
+              <div className="flex items-center justify-between gap-3 border-t border-inverse/10 pt-4">
+                <div className="flex items-center gap-2 text-sm text-inverse">
+                  <CheckCircle className="w-4 h-4 text-action" />
+                  Your guide is ready.
+                </div>
+                <Button type="button" size="sm" onClick={downloadGuide} className="bg-action hover:bg-action/90 text-action-foreground">
+                  <Download className="w-3.5 h-3.5 mr-1.5" />Download
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleGuideDownload} className="space-y-2">
+                <input {...guideAntiSpam.honeypotProps} />
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    value={guideEmail}
+                    onChange={(e) => setGuideEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    aria-label="Email address for artist resource guide"
+                    className="flex-1 bg-chrome border-inverse/20 text-inverse placeholder:text-inverse/30 focus:border-action h-10 text-sm"
+                    required
+                    disabled={guideDisabled}
+                  />
+                  <Button type="submit" disabled={guideDisabled} className="bg-action hover:bg-action/90 text-action-foreground px-4 h-10 flex-shrink-0">
+                    {guideAntiSpam.isInCooldown ? (
+                      <><Clock className="w-3.5 h-3.5 mr-1" />{guideAntiSpam.cooldownRemaining}s</>
+                    ) : guideSubmitting ? '...' : (
+                      <><Download className="w-3.5 h-3.5 mr-1.5" />Get Guide</>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-inverse-muted text-[11px] leading-relaxed">By downloading, you’ll also receive occasional artist resources. Unsubscribe anytime.</p>
+              </form>
+            )}
+          </motion.section>
+
+
           {/* ── Join the Club ── */}
           <motion.div
             className="space-y-2"
@@ -585,40 +599,41 @@ export default function Connect() {
             transition={{ duration: 0.45, delay: 0.32 }}
           >
             <Button
-              className="w-full bg-maroon hover:bg-maroon/90 text-cream font-semibold py-6 text-base rounded-xl"
+              className="w-full bg-action hover:bg-action/90 text-action-foreground font-semibold py-6 text-base rounded-lg"
               onClick={() => window.open('https://www.patreon.com/modernnostalgiaclub', '_blank', 'noopener,noreferrer')}
             >
               <UserPlus className="w-4 h-4 mr-2" />
-              Join the Club — It's Free
+              Join the Club. It's Free
             </Button>
-            <button
-              className="w-full text-cream/40 hover:text-cream/70 text-sm transition-colors flex items-center justify-center gap-1.5 py-1"
+            <Button
+              variant="ghost"
+              className="w-full text-inverse-muted hover:text-inverse-muted text-sm transition-colors flex items-center justify-center gap-1.5 py-1"
               onClick={() => navigate('/login')}
             >
               <LogIn className="w-3.5 h-3.5" />
               Already a member? Log in
-            </button>
+            </Button>
           </motion.div>
 
           {/* ── Newsletter ── */}
           <motion.div
-            className="bg-cream/5 border border-cream/10 rounded-2xl p-5"
+            className="bg-inverse/5 border border-inverse/10 rounded-lg p-5"
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.38 }}
           >
             {newsletterDone ? (
               <div className="text-center py-2">
-                <CheckCircle className="w-8 h-8 text-maroon mx-auto mb-2" />
-                <p className="text-cream font-semibold text-sm">You're on the list.</p>
-                <p className="text-cream/50 text-xs mt-1">Expect real stuff — no fluff.</p>
+                <CheckCircle className="w-8 h-8 text-action mx-auto mb-2" />
+                <p className="text-inverse font-semibold text-sm">You're on the list.</p>
+                <p className="text-inverse-muted text-xs mt-1">Expect real stuff, no fluff.</p>
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-2 mb-1">
-                  <Mail className="w-4 h-4 text-maroon flex-shrink-0" />
-                  <p className="text-cream font-semibold text-sm">Stay in the loop.</p>
+                  <Mail className="w-4 h-4 text-action flex-shrink-0" />
+                  <p className="text-inverse font-semibold text-sm">Stay in the loop.</p>
                 </div>
-                <p className="text-cream/50 text-xs mb-4 leading-relaxed">
+                <p className="text-inverse-muted text-xs mb-4 leading-relaxed">
                   Strategy, tools, and opportunities for independent artists. No spam.
                 </p>
                 <form onSubmit={handleNewsletter} className="flex gap-2">
@@ -629,14 +644,14 @@ export default function Connect() {
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-10 text-sm"
+                    className="flex-1 bg-chrome border-inverse/20 text-inverse placeholder:text-inverse/30 focus:border-action h-10 text-sm"
                     required
                     disabled={newsletterDisabled}
                   />
                   <Button
                     type="submit"
                     disabled={newsletterDisabled}
-                    className="bg-maroon hover:bg-maroon/90 text-cream px-4 h-10 flex-shrink-0"
+                    className="bg-action hover:bg-action/90 text-action-foreground px-4 h-10 flex-shrink-0"
                   >
                     {newsletterAntiSpam.isInCooldown ? (
                       <><Clock className="w-3.5 h-3.5 mr-1" />{newsletterAntiSpam.cooldownRemaining}s</>
@@ -654,17 +669,19 @@ export default function Connect() {
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.44 }}
           >
-            <div className="border-t border-cream/10 pt-6">
-              <button
+            <div className="border-t border-inverse/10 pt-6">
+              <Button
+                variant="ghost"
+                aria-expanded={contactOpen}
                 onClick={() => setContactOpen(!contactOpen)}
-                className="w-full flex items-center justify-between text-cream/50 hover:text-cream/80 transition-colors py-1 group"
+                className="w-full flex items-center justify-between text-inverse-muted hover:text-inverse/80 transition-colors py-1 group"
               >
                 <span className="text-sm font-medium">Met me in person?</span>
                 {contactOpen
                   ? <ChevronUp className="w-4 h-4" />
                   : <ChevronDown className="w-4 h-4" />
                 }
-              </button>
+              </Button>
 
               <AnimatePresence>
                 {contactOpen && (
@@ -678,72 +695,72 @@ export default function Connect() {
                   >
                     <div className="pt-4">
                       {submitted ? (
-                        <div className="text-center py-8 px-4 bg-cream/5 rounded-2xl border border-cream/10">
-                          <CheckCircle className="w-12 h-12 text-maroon mx-auto mb-3" />
+                        <div className="text-center py-8 px-4 bg-inverse/5 rounded-lg border border-inverse/10">
+                          <CheckCircle className="w-12 h-12 text-action mx-auto mb-3" />
                           <h2 className="font-display text-xl mb-1">You're connected.</h2>
-                          <p className="text-cream/60 text-sm mb-5">I'll follow up properly.</p>
+                          <p className="text-inverse-muted text-sm mb-5">I'll follow up properly.</p>
                           <Button
                             variant="ghost"
                             onClick={() => {
                               setSubmitted(false);
                               setFormData({ name: '', email: '', company: '', role: '', notes: '' });
                             }}
-                            className="text-cream/40 hover:text-cream text-sm"
+                            className="text-inverse-muted hover:text-inverse text-sm"
                           >
                             Connect someone else
                           </Button>
                         </div>
                       ) : (
-                        <div className="bg-cream/5 rounded-2xl border border-cream/10 p-5">
-                          <p className="text-cream/60 text-sm text-center mb-5">
+                        <div className="bg-inverse/5 rounded-lg border border-inverse/10 p-5">
+                          <p className="text-inverse-muted text-sm text-center mb-5">
                             Drop your info — I'll follow up properly.
                           </p>
                           <form onSubmit={handleContactSubmit} className="space-y-3.5">
                             <input {...contactAntiSpam.honeypotProps} />
 
                             <div className="space-y-1.5">
-                              <Label htmlFor="name" className="text-cream/70 text-xs">Name *</Label>
+                              <Label htmlFor="name" className="text-inverse-muted text-xs">Name *</Label>
                               <Input id="name" value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 placeholder="Your name"
-                                className="bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-9 text-sm"
+                                className="bg-chrome border-inverse/20 text-inverse placeholder:text-inverse/30 focus:border-action h-9 text-sm"
                                 required disabled={contactDisabled}
                               />
                             </div>
 
                             <div className="space-y-1.5">
-                              <Label htmlFor="c-email" className="text-cream/70 text-xs">Email *</Label>
+                              <Label htmlFor="c-email" className="text-inverse-muted text-xs">Email *</Label>
                               <Input id="c-email" type="email" value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 placeholder="you@email.com"
-                                className="bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-9 text-sm"
+                                className="bg-chrome border-inverse/20 text-inverse placeholder:text-inverse/30 focus:border-action h-9 text-sm"
                                 required disabled={contactDisabled}
                               />
                             </div>
 
                             <div className="space-y-1.5">
-                              <Label htmlFor="company" className="text-cream/70 text-xs">Company / Artist Name</Label>
+                              <Label htmlFor="company" className="text-inverse-muted text-xs">Company / Artist Name</Label>
                               <Input id="company" value={formData.company}
                                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                                 placeholder="Optional"
-                                className="bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon h-9 text-sm"
+                                className="bg-chrome border-inverse/20 text-inverse placeholder:text-inverse/30 focus:border-action h-9 text-sm"
                                 disabled={contactDisabled}
                               />
                             </div>
 
                             <div className="space-y-1.5">
-                              <Label htmlFor="role" className="text-cream/70 text-xs">Role</Label>
+                              <Label htmlFor="role" className="text-inverse-muted text-xs">Role</Label>
                               <Select value={formData.role}
                                 onValueChange={(v) => setFormData({ ...formData, role: v })}
                                 disabled={contactDisabled}
                               >
-                                <SelectTrigger className="bg-dark border-cream/20 text-cream focus:border-maroon h-9 text-sm">
+                                <SelectTrigger className="bg-chrome border-inverse/20 text-inverse focus:border-action h-9 text-sm">
                                   <SelectValue placeholder="Select your role" />
                                 </SelectTrigger>
-                                <SelectContent className="!bg-[#1a1a1a] border-cream/20 z-50">
+                                <SelectContent className="!bg-[#1a1a1a] border-inverse/20 z-50">
                                   {roleOptions.map((o) => (
                                     <SelectItem key={o.value} value={o.value}
-                                      className="text-cream hover:!bg-cream/20 focus:!bg-cream/20">
+                                      className="text-inverse hover:!bg-inverse/20 focus:!bg-inverse/20">
                                       {o.label}
                                     </SelectItem>
                                   ))}
@@ -752,18 +769,18 @@ export default function Connect() {
                             </div>
 
                             <div className="space-y-1.5">
-                              <Label htmlFor="notes" className="text-cream/70 text-xs">Notes / Context</Label>
+                              <Label htmlFor="notes" className="text-inverse-muted text-xs">Notes / Context</Label>
                               <Textarea id="notes" value={formData.notes}
                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 placeholder="What are you working on? How can I help?"
                                 rows={3}
-                                className="bg-dark border-cream/20 text-cream placeholder:text-cream/30 focus:border-maroon resize-none text-sm"
+                                className="bg-chrome border-inverse/20 text-inverse placeholder:text-inverse/30 focus:border-action resize-none text-sm"
                                 disabled={contactDisabled}
                               />
                             </div>
 
                             <Button type="submit" disabled={contactDisabled}
-                              className="w-full bg-maroon hover:bg-maroon/90 text-cream font-medium py-5 text-sm"
+                              className="w-full bg-action hover:bg-action/90 text-action-foreground font-medium py-5 text-sm"
                             >
                               {contactAntiSpam.isInCooldown ? (
                                 <><Clock className="w-3.5 h-3.5 mr-2" />Wait {contactAntiSpam.cooldownRemaining}s</>
@@ -787,7 +804,7 @@ export default function Connect() {
             initial="hidden" animate="visible" variants={fadeUp}
             transition={{ duration: 0.45, delay: 0.5 }}
           >
-            <p className="text-cream/35 text-xs italic">
+            <p className="text-inverse-muted text-xs italic">
               "I help artists build sustainable income beyond streaming."
             </p>
           </motion.footer>

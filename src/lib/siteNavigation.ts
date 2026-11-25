@@ -29,6 +29,7 @@ export const SITE_NAVIGATION = [
   {
     label: 'Club & Media',
     links: [
+      { label: 'Who We Are', url: '/about' },
       { label: 'Join the Club / Patreon', url: PATREON_PAGE_URL },
       { label: 'Playlists', url: '/#playlists' },
       { label: 'Blog', url: '/blog' },

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import aboutHero from '@/assets/about-hero.jpg';
-import founderImg from '@/assets/founder.jpg';
 import mncLogo from '@/assets/mnc-circle-logo.png';
 
 const fadeIn = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
@@ -14,7 +13,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.15 } } };
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="public-editorial min-h-screen bg-background">
       <Header />
       <main id="main-content" role="main">
 
@@ -26,7 +25,7 @@ export default function AboutPage() {
         </section>
 
         {/* ── Who We Are (white editorial section) ─────────────────── */}
-        <section className="bg-white py-20">
+        <section className="bg-paper py-20">
           <div className="container mx-auto px-6">
             <motion.div
               className="text-center mb-16"
@@ -36,13 +35,13 @@ export default function AboutPage() {
               variants={stagger}
             >
               <motion.h1
-                className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05]"
+                className="font-anton text-3xl md:text-5xl lg:text-6xl text-ink uppercase  leading-[1.05]"
                 variants={fadeIn}
               >
                 Who We Are
               </motion.h1>
               <motion.p
-                className="mt-4 text-sm md:text-base text-gray-500 uppercase tracking-[0.2em]"
+                className="mt-4 text-sm md:text-base text-ink-muted uppercase tracking-[0.2em]"
                 variants={fadeIn}
               >
                 ModernNostalgia.club is a Creative Firm
@@ -56,22 +55,22 @@ export default function AboutPage() {
               viewport={{ once: true }}
               variants={stagger}
             >
-              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+              <motion.p className="text-sm md:text-base text-ink-muted leading-relaxed" variants={fadeIn}>
                 At the intersection of timeless artistry and the modern music economy, we curate, create, and educate, helping artists move beyond just making music and into building sustainable, independent careers.
               </motion.p>
-              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+              <motion.p className="text-sm md:text-base text-ink-muted leading-relaxed" variants={fadeIn}>
                 We believe the best music discovery still comes from human ears with taste. Our editorial playlists and blog exist to surface independent artists whose music deserves to be heard, not just streamed.
               </motion.p>
-              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+              <motion.p className="text-sm md:text-base text-ink-muted leading-relaxed" variants={fadeIn}>
                 MN.C works with independent artists to develop catalog intentionally, music crafted with placement, sync licensing, and closed audience discovery in mind. This is music built to work.
               </motion.p>
-              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+              <motion.p className="text-sm md:text-base text-ink-muted leading-relaxed" variants={fadeIn}>
                 The Creator Economy Lab gives artists the training, systems, and professional workflows to build income through sync licensing, direct to fan, and sustainable career infrastructure, not just Spotify streams.
               </motion.p>
-              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+              <motion.p className="text-sm md:text-base text-ink-muted leading-relaxed" variants={fadeIn}>
                 Modern Nostalgia Club is a creative economy designed for artists who want to turn their craft into income. Through training, systems, and real-world workflows, we equip artists with the tools to operate like modern businesses.
               </motion.p>
-              <motion.p className="text-sm md:text-base text-gray-500 leading-relaxed" variants={fadeIn}>
+              <motion.p className="text-sm md:text-base text-ink-muted leading-relaxed" variants={fadeIn}>
                 Because it's not just about creating music, it's about building a structure around your creativity so it can actually work for you.
               </motion.p>
             </motion.div>
@@ -79,45 +78,28 @@ export default function AboutPage() {
         </section>
 
 
-        {/* ── Meet the Founder (white background) ─────────────────── */}
-        <section className="bg-white py-20">
-          <div className="container mx-auto px-6">
-            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
-              <div className="lg:w-1/2">
-                <div className="rounded-xl overflow-hidden">
-                  <img
-                    src={founderImg}
-                    alt="Founder portrait"
-                    className="w-full h-auto object-cover aspect-[3/4]"
-                  />
+        <section aria-labelledby="pillars-heading" className="bg-paper py-16 md:py-20 border-t border-rule">
+          <div className="container mx-auto px-6 max-w-5xl">
+            <h2 id="pillars-heading" className="font-anton text-3xl md:text-5xl uppercase leading-[1.15] mb-10 text-ink">What We Stand For</h2>
+            <div className="border-t-2 border-khaki">
+              {[
+                { title: 'Human First Music', description: 'Music made by people, for people. We are open about how songs get made and we back artists who document their process.' },
+                { title: 'Ownership', description: 'Know what you own, register it properly and collect what you are owed. Publishing, splits and rights come before promotion.' },
+                { title: 'Income Beyond Streams', description: 'Sync licensing, direct to fan support and services that pay. Streaming is one channel, not the plan.' },
+                { title: 'Community Over Competition', description: 'Camps, workshops and playlists that put independent artists in the same room, with a focus on lifting Filipino and API creators.' },
+              ].map((pillar, index) => (
+                <div key={pillar.title} className="grid grid-cols-[2rem_1fr] md:grid-cols-[3rem_1fr_1.5fr] gap-x-5 gap-y-3 border-b border-rule py-7 md:py-9">
+                  <span className="text-ink-muted text-sm font-semibold pt-1">0{index + 1}</span>
+                  <h3 className="font-serif text-xl md:text-2xl font-semibold text-ink">{pillar.title}</h3>
+                  <p className="col-start-2 md:col-start-3 text-ink-muted text-sm md:text-base leading-relaxed">{pillar.description}</p>
                 </div>
-              </div>
-              <div className="lg:w-1/2">
-                <p className="text-xs uppercase tracking-[0.2em] font-semibold text-gray-400 mb-3">
-                  Behind the Vision
-                </p>
-                <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl uppercase tracking-tight text-black leading-[1.05] mb-6">
-                  Meet the Founder
-                </h2>
-                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  Eugene Andrew "Ge Oh" Sarmiento is a songwriter, producer, and sync licensing strategist focused on redefining how music creates value in the modern era. With a catalog of hundreds of pre cleared songs and years of experience navigating both the creative and business sides of the industry, his work sits at the intersection of artistry, ownership, and infrastructure.
-                </p>
-                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  As the founder of ModernNostalgia.club, Ge Oh built the platform to challenge a broken music economy, one where artists are often underpaid, undervalued, and disconnected from their audience. His approach centers on direct to fan monetization, sync licensing systems, and deal structures that prioritize independence without sacrificing scalability.
-                </p>
-                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-4">
-                  Beyond music creation, he develops frameworks that teach artists how to generate consistent income, while also educating listeners on the real economics behind the music they love. His mission is simple but ambitious: to rebuild the bridge between artist and audience, making music sustainable again for both sides.
-                </p>
-                <p className="text-sm md:text-base text-gray-500 leading-relaxed">
-                  Through ModernNostalgia.club, Ge Oh is creating more than a platform, he's building a blueprint for the future of independent music.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* ── Manifesto quote ──────────────────────────────────────── */}
-        <section className="py-28" style={{ background: 'hsl(var(--primary))' }}>
+        <section className="py-28 bg-action">
           <div className="container mx-auto px-6">
             <motion.blockquote
               className="max-w-3xl mx-auto text-center"
@@ -126,32 +108,44 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-2xl md:text-3xl font-serif font-bold italic leading-snug mb-6 text-white">
+              <p className="text-2xl md:text-3xl font-serif font-bold italic leading-snug mb-6 text-action-foreground">
                 "The future of music is independent artists with professional infrastructure."
               </p>
-              <cite className="text-sm text-white/70 not-italic uppercase tracking-widest">
-                — ModernNostalgia.club
+              <cite className="text-sm text-action-foreground not-italic uppercase tracking-widest">
+                ModernNostalgia.club
               </cite>
             </motion.blockquote>
           </div>
         </section>
 
+        <section aria-labelledby="about-contact-heading" className="bg-paper py-16 md:py-20 border-b border-rule">
+          <div className="container mx-auto px-6 max-w-5xl">
+            <h2 id="about-contact-heading" className="font-anton text-3xl md:text-5xl uppercase leading-[1.15] mb-5 text-ink">Contact</h2>
+            <p className="text-ink-muted max-w-xl leading-relaxed mb-4">Have a question, a project in mind or an idea for working together? Get in touch with the club.</p>
+            <a href="mailto:support@modernnostalgia.club" className="text-ink underline underline-offset-4 break-words">support@modernnostalgia.club</a>
+            <div className="flex flex-wrap gap-4 mt-7">
+              <Button variant="editorial" size="lg" asChild><Link to="/contact">Contact Us <ArrowRight aria-hidden="true" /></Link></Button>
+              <Button variant="editorialOutline" size="lg" asChild><Link to="/connect">Connect with the Club <ArrowRight aria-hidden="true" /></Link></Button>
+            </div>
+          </div>
+        </section>
+
         {/* ── Join the Club (split layout, white bg) ───────────── */}
-        <section className="bg-white py-20 border-t border-gray-200">
+        <section className="bg-paper py-20 border-t border-rule">
           <div className="container mx-auto px-6">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 max-w-5xl mx-auto">
               {/* Left: text + CTA */}
               <div className="lg:w-1/2">
-                <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-black uppercase tracking-tight leading-[1.05] mb-4">
+                <h2 className="font-anton text-3xl md:text-5xl lg:text-6xl text-ink uppercase  leading-[1.05] mb-4">
                   Join the Club
                 </h2>
-                <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-8 max-w-md">
+                <p className="text-sm md:text-base text-ink-muted leading-relaxed mb-8 max-w-md">
                   Become a member of MNC. This gives independent musicians the training, systems, and professional workflows to monetize their music beyond streaming.
                 </p>
                 <Button
                   size="lg"
                   className="text-base px-8 h-14 font-semibold"
-                  style={{ background: 'hsl(var(--primary))', color: '#fff' }}
+                  variant="editorial"
                   asChild
                 >
                   <a href="https://www.patreon.com/modernnostalgiaclub" target="_blank" rel="noopener noreferrer">
