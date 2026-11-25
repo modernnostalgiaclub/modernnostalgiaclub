@@ -15,9 +15,9 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-secondary hover:text-secondary-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        editorial: "rounded-none bg-khaki text-khaki-foreground hover:bg-ink shadow-none",
-        editorialOutline: "rounded-none border border-rule bg-transparent text-ink hover:bg-paper-muted shadow-none",
-        inverseOutline: "rounded-none border border-inverse/60 bg-transparent text-inverse hover:bg-inverse/10 shadow-none",
+        editorial: "rounded-none bg-action text-action-foreground hover:bg-action/90 shadow-none",
+        editorialOutline: "rounded-none border border-action bg-transparent text-ink hover:bg-action hover:text-action-foreground shadow-none",
+        inverseOutline: "rounded-none border border-action bg-transparent text-inverse hover:bg-action hover:text-action-foreground shadow-none",
         // Custom variants for ModernNostalgia
         hero: "bg-primary text-primary-foreground font-semibold hover:bg-maroon-glow shadow-lg glow-maroon hover:scale-[1.02]",
         heroOutline: "border-2 border-foreground/30 bg-transparent text-foreground hover:bg-foreground/5 hover:border-foreground/50",

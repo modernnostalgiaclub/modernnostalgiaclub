@@ -20,6 +20,8 @@
     --rule: 60 2% 85%;
     --khaki: 60 1% 28%;
     --khaki-foreground: 0 0% 100%;
+    --public-action: 206.9748 100% 53.3333%;
+    --public-action-foreground: var(--ink);
     --inverse: 0 0% 100%;
     --inverse-muted: 0 0% 76%;
     --chrome: 0 0% 8%;
@@ -326,8 +328,8 @@
     overflow-x: clip;
     --background: var(--paper);
     --foreground: var(--ink);
-    --primary: var(--khaki);
-    --primary-foreground: var(--inverse);
+    --primary: var(--public-action);
+    --primary-foreground: var(--public-action-foreground);
     --card: var(--paper);
     --card-foreground: var(--ink);
     --secondary: var(--paper-muted);
@@ -335,7 +337,7 @@
     --muted: var(--paper-muted);
     --muted-foreground: var(--ink-muted);
     --border: var(--rule);
-    --ring: var(--khaki);
+    --ring: var(--public-action);
     --input: var(--rule);
     letter-spacing: 0;
   }
@@ -347,8 +349,8 @@
   .site-chrome {
     --background: var(--chrome);
     --foreground: var(--inverse);
-    --primary: var(--khaki);
-    --primary-foreground: var(--inverse);
+    --primary: var(--public-action);
+    --primary-foreground: var(--public-action-foreground);
     --secondary: var(--khaki);
     --secondary-foreground: var(--inverse);
     --accent: var(--khaki);

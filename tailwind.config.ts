@@ -24,6 +24,7 @@ export default {
         ink: { DEFAULT: 'hsl(var(--ink))', muted: 'hsl(var(--ink-muted))' },
         rule: 'hsl(var(--rule))',
         khaki: { DEFAULT: 'hsl(var(--khaki))', foreground: 'hsl(var(--khaki-foreground))' },
+        action: { DEFAULT: 'hsl(var(--public-action))', foreground: 'hsl(var(--public-action-foreground))' },
         inverse: { DEFAULT: 'hsl(var(--inverse))', muted: 'hsl(var(--inverse-muted))' },
         chrome: 'hsl(var(--chrome))',
         veil: 'hsl(var(--veil))',

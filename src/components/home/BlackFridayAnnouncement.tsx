@@ -13,13 +13,13 @@ export function BlackFridayAnnouncement() {
   if (dismissed || getBlackFridayPhase() === 'ended') return null;
 
   return (
-    <aside aria-label="Black Friday announcement" className="border-b border-inverse/20 bg-khaki text-inverse">
+    <aside aria-label="Black Friday announcement" className="border-b border-action-foreground/20 bg-action text-action-foreground">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 sm:px-6">
         <a href="/#services" className="flex flex-1 items-center justify-center gap-3 py-3 text-xs sm:text-sm leading-relaxed">
           <span>Black Friday (Nov 27 to Nov 30): Mogul Publishing Audits &amp; Sync Consults are $99 each, or $179 together.</span>
           <ArrowRight className="hidden sm:block h-4 w-4 shrink-0" aria-hidden="true" />
         </a>
-        <Button variant="ghost" size="icon" className="shrink-0 text-inverse hover:bg-inverse/10" aria-label="Dismiss Black Friday announcement" title="Dismiss announcement" onClick={() => {
+        <Button variant="ghost" size="icon" className="shrink-0 text-action-foreground hover:bg-action-foreground/10 hover:text-action-foreground" aria-label="Dismiss Black Friday announcement" title="Dismiss announcement" onClick={() => {
           setDismissed(true);
           try { sessionStorage.setItem(DISMISS_KEY, 'true'); } catch { /* In-memory dismissal still works. */ }
         }}>
