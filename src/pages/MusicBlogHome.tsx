@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from '@/components/Header';
@@ -34,6 +34,23 @@ function Masthead() {
   );
 }
 
+function RollNLumpia() {
+  return (
+    <section className="border-b border-rule bg-paper py-10 md:py-14" aria-labelledby="roll-n-lumpia-heading">
+      <div className="container mx-auto flex flex-col items-start justify-between gap-6 px-6 md:flex-row md:items-center">
+        <div className="max-w-2xl">
+          <p className="mb-3 text-xs font-semibold uppercase text-ink-muted">Featured</p>
+          <h2 id="roll-n-lumpia-heading" className="font-anton text-4xl uppercase leading-[1.15] md:text-5xl">Roll N Lumpia</h2>
+          <p className="mt-4 leading-relaxed text-ink-muted">The API entertainment network connecting Asian and Pacific Islander artists to shows, playlists and each other. Submit your music or find a show.</p>
+        </div>
+        <Button variant="editorial" size="lg" asChild className="w-full shrink-0 sm:w-auto">
+          <a href="https://rollnlumpia.com" target="_blank" rel="noopener noreferrer">Visit Roll N Lumpia<ExternalLink aria-hidden="true" /></a>
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 function JoinTheClub() {
   return (
     <section className="border-b border-rule bg-paper py-14 md:py-20" aria-labelledby="club-heading">
@@ -62,6 +79,7 @@ export default function MusicBlogHome() {
       <Header sticky announcement={<BlackFridayAnnouncement />} />
       <main id="main-content" role="main">
         <Masthead />
+        <RollNLumpia />
         <HomeServices />
         <HomeEvents />
         <HomeTools />
