@@ -2,18 +2,18 @@ import { describe, expect, test } from 'bun:test';
 import { BLACK_FRIDAY_DISCOUNTS, displayedServicePrice, getBlackFridayPhase, HOME_SERVICES, WORKSHOP_PRICING } from './homepageOffers';
 
 describe('Home service prices', () => {
-  test('Mogul audit is $149 regular and $99 Black Friday', () => {
-    expect(HOME_SERVICES[0].regularPrice).toBe(149);
+  test('Mogul audit is $300 regular and $99 Black Friday', () => {
+    expect(HOME_SERVICES[0].regularPrice).toBe(300);
     expect(HOME_SERVICES[0].blackFridayPrice).toBe(99);
   });
-  test('Sync consult is $149 regular and $99 Black Friday', () => {
-    expect(HOME_SERVICES[1].regularPrice).toBe(149);
+  test('Sync consult is $300 regular and $99 Black Friday', () => {
+    expect(HOME_SERVICES[1].regularPrice).toBe(300);
     expect(HOME_SERVICES[1].blackFridayPrice).toBe(99);
   });
-  test('Bundle is $249 regular and $179 Black Friday with a $298 separate value', () => {
-    expect(HOME_SERVICES[2].regularPrice).toBe(249);
+  test('Bundle is $500 regular and $179 Black Friday with a $600 separate value', () => {
+    expect(HOME_SERVICES[2].regularPrice).toBe(500);
     expect(HOME_SERVICES[2].blackFridayPrice).toBe(179);
-    expect(HOME_SERVICES[2].separateValue).toBe(298);
+    expect(HOME_SERVICES[2].separateValue).toBe(600);
   });
   test('Sync consult reviews 3 to 5 tracks in 60 minutes', () => {
     expect(HOME_SERVICES[1].durationMinutes).toBe(60);
@@ -49,6 +49,6 @@ describe('Home service prices', () => {
     expect(getBlackFridayPhase(lastMinute)).toBe('active');
     expect(getBlackFridayPhase(ended)).toBe('ended');
     expect(HOME_SERVICES.map(service => displayedServicePrice(service, lastMinute))).toEqual([99, 99, 179]);
-    expect(HOME_SERVICES.map(service => displayedServicePrice(service, ended))).toEqual([149, 149, 249]);
+    expect(HOME_SERVICES.map(service => displayedServicePrice(service, ended))).toEqual([300, 300, 500]);
   });
 });

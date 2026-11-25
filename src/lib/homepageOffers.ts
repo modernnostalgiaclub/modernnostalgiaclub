@@ -14,7 +14,7 @@ export const HOME_SERVICES = [
   {
     id: 'book-audit',
     name: SERVICE_NAMES['book-audit'],
-    regularPrice: 149,
+    regularPrice: 300,
     blackFridayPrice: 99,
     description: 'Find out where your publishing money is going and what might be missing.',
     details: ['MLC, PRO and Songview checks', 'Split mismatches and uncollected royalties', 'A written action report with next steps'],
@@ -24,7 +24,7 @@ export const HOME_SERVICES = [
   {
     id: 'book-consult',
     name: SERVICE_NAMES['book-consult'],
-    regularPrice: 149,
+    regularPrice: 300,
     blackFridayPrice: 99,
     durationMinutes: 60,
     minimumTracks: 3,
@@ -37,9 +37,9 @@ export const HOME_SERVICES = [
   {
     id: 'book-bundle',
     name: SERVICE_NAMES['book-bundle'],
-    regularPrice: 249,
+    regularPrice: 500,
     blackFridayPrice: 179,
-    separateValue: 298,
+    separateValue: 600,
     description: 'Start with the paperwork, then work through the music. Both services in one booking.',
     details: ['The full Mogul Publishing Audit', 'The 60-minute 1-on-1 Sync Consult', 'One plan for your catalog and next pitches'],
     action: 'Request the Bundle',
