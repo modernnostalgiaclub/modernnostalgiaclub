@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 
@@ -43,6 +43,7 @@ import { AdminPlaylistSubmissions } from '@/components/AdminPlaylistSubmissions'
 import { AdminInterviewRequests } from '@/components/AdminInterviewRequests';
 import { AdminCampApplications } from '@/components/AdminCampApplications';
 import { AdminClassroomAccess } from '@/components/AdminClassroomAccess';
+import { AdminServiceRequests } from '@/components/AdminServiceRequests';
 import type { Database } from '@/integrations/supabase/types';
 
 type Course = Database['public']['Tables']['courses']['Row'];
@@ -55,7 +56,8 @@ type SubmissionStatus = Database['public']['Enums']['submission_status'];
 
 export default function Admin() {
   const { user, loading, hasRole } = useAuth();
-  const [activeTab, setActiveTab] = useState('courses');
+  const [params] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(params.get('tab') === 'service-requests' ? 'service-requests' : 'courses');
 
   if (loading) {
     return (
@@ -194,11 +196,18 @@ export default function Admin() {
                 <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
                 Inbox
               </TabsTrigger>
+              {hasRole('admin') && <TabsTrigger value="service-requests" className="gap-2" aria-label="View service booking requests">
+                <ClipboardList className="h-4 w-4 hidden sm:block" aria-hidden="true" />
+                Services
+              </TabsTrigger>}
             </TabsList>
 
             <TabsContent value="inbox">
               <AdminFormActivity />
             </TabsContent>
+            {hasRole('admin') && <TabsContent value="service-requests">
+              <AdminServiceRequests />
+            </TabsContent>}
 
             <TabsContent value="sponsors">
               <AdminSponsorInquiries />

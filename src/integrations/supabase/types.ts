@@ -1514,6 +1514,48 @@ export type Database = {
         }
         Relationships: []
       }
+      service_booking_requests: {
+        Row: {
+          admin_notes: string
+          artist_name: string
+          created_at: string
+          email: string
+          id: string
+          links: string
+          name: string
+          needs: string
+          preferred_timing: string
+          service: string
+          status: string
+        }
+        Insert: {
+          admin_notes?: string
+          artist_name?: string
+          created_at?: string
+          email: string
+          id?: string
+          links?: string
+          name: string
+          needs: string
+          preferred_timing?: string
+          service: string
+          status?: string
+        }
+        Update: {
+          admin_notes?: string
+          artist_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          links?: string
+          name?: string
+          needs?: string
+          preferred_timing?: string
+          service?: string
+          status?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string

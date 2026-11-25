@@ -44,6 +44,7 @@ import InterviewRequest from "./pages/InterviewRequest";
 import Camps from "./pages/Camps";
 import CampApplication from "./pages/CampApplication";
 import Workshops from "./pages/Workshops";
+import ServiceInquiry from "./pages/ServiceInquiry";
 import PlaylistSubmission from "./pages/PlaylistSubmission";
 import BookCall from "./pages/BookCall";
 import MemberDirectory from "./pages/MemberDirectory";
@@ -124,6 +125,7 @@ const App = () => (
             <Route path="/camps" element={<Camps />} />
             <Route path="/camps/:camp" element={<CampApplication />} />
             <Route path="/workshops" element={<Workshops />} />
+            <Route path="/service-inquiry" element={<ServiceInquiry />} />
             <Route path="/playlist-submit" element={<PlaylistSubmission />} />
             <Route path="/book-call" element={<BookCall />} />
             <Route path="/store" element={<AuthAwareLayout><Store /></AuthAwareLayout>} />

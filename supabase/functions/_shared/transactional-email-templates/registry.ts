@@ -8,6 +8,7 @@ import { template as ipGuideConfirmation } from './ip-guide-confirmation.tsx'
 import { template as labUpdatesConfirmation } from './lab-updates-confirmation.tsx'
 import { template as campApplicationConfirmation } from './camp-application-confirmation.tsx'
 import { template as workshopSignupConfirmation } from './workshop-signup-confirmation.tsx'
+import { template as serviceBookingAlert } from './service-booking-alert.tsx'
 
 export interface TemplateEntry {
   component: React.ComponentType<any>
@@ -27,4 +28,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'lab-updates-confirmation': labUpdatesConfirmation,
   'camp-application-confirmation': campApplicationConfirmation,
   'workshop-signup-confirmation': workshopSignupConfirmation,
+  'service-booking-alert': serviceBookingAlert,
 }

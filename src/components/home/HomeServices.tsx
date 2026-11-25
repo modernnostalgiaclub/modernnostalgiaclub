@@ -1,4 +1,5 @@
 import { ArrowRight, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { displayedServicePrice, getBlackFridayPhase, HOME_SERVICES } from '@/lib/homepageOffers';
 
@@ -30,7 +31,7 @@ export function HomeServices() {
                 {service.details.map(detail => <li key={detail} className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-khaki" aria-hidden="true" /><span>{detail}</span></li>)}
               </ul>
               <Button variant="editorial" size="lg" asChild className="mt-auto w-full">
-                <a href={service.bookingUrl}>{service.action}<ArrowRight aria-hidden="true" /></a>
+                <Link to={service.bookingUrl}>{service.action}<ArrowRight aria-hidden="true" /></Link>
               </Button>
             </article>
           ))}

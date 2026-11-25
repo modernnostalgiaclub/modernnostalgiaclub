@@ -8,3 +8,9 @@
 - [x] Add a native workshop interest form with saved signups, owner alerts and confirmations. Both test emails logged as sent.
 - [x] Add admin Eventbrite link import and automatically populated homepage event details. Imported real Eventbrite metadata, saved and read it back; past events stay hidden publicly.
 - [x] Link the existing camp applications and verify workshop submission, emails and event import. Verified saved signup in Camps and Inbox; 19 tests pass and 320, 390 and 1210px layouts have no overflow. Test entries removed.
+
+## Service booking inquiries
+
+- [x] Replace service placeholder buttons with a preselected service inquiry form for all three offers.
+- [x] Save requests privately, send owner email alerts and add admin review and reply controls under Admin Services and Inbox.
+- [x] Verify all service selections, real submission and owner email delivery, persisted admin status and notes, private access, and 320, 390 and 1210px layouts. All 27 related tests pass. Removed the test request.

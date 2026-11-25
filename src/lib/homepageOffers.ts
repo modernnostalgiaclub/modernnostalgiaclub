@@ -1,3 +1,5 @@
+import { SERVICE_NAMES } from '../../supabase/functions/_shared/service-inquiry-validation';
+
 // Pacific dates are explicit so the promotion ends at midnight in California.
 export const BLACK_FRIDAY_START = '2026-11-27T00:00:00-08:00';
 export const BLACK_FRIDAY_END = '2026-12-01T00:00:00-08:00';
@@ -11,17 +13,17 @@ export function getBlackFridayPhase(now: Date = new Date()): 'upcoming' | 'activ
 export const HOME_SERVICES = [
   {
     id: 'book-audit',
-    name: 'Mogul Publishing Audit',
+    name: SERVICE_NAMES['book-audit'],
     regularPrice: 149,
     blackFridayPrice: 99,
     description: 'Find out where your publishing money is going and what might be missing.',
     details: ['MLC, PRO and Songview checks', 'Split mismatches and uncollected royalties', 'A written action report with next steps'],
-    action: 'Book the Audit',
-    bookingUrl: '#book-audit',
+    action: 'Request the Audit',
+    bookingUrl: '/service-inquiry?service=book-audit',
   },
   {
     id: 'book-consult',
-    name: '1-on-1 Sync Consult',
+    name: SERVICE_NAMES['book-consult'],
     regularPrice: 149,
     blackFridayPrice: 99,
     durationMinutes: 60,
@@ -29,19 +31,19 @@ export const HOME_SERVICES = [
     maximumTracks: 5,
     description: 'A 60-minute live review of 3 to 5 tracks, with a clear plan for pitching your music.',
     details: ['One-stop clearance and rights review', 'Stems, instrumentals and metadata', 'Pitch targets that fit your tracks'],
-    action: 'Book the Consult',
-    bookingUrl: '#book-consult',
+    action: 'Request the Consult',
+    bookingUrl: '/service-inquiry?service=book-consult',
   },
   {
     id: 'book-bundle',
-    name: 'Audit + Consult Bundle',
+    name: SERVICE_NAMES['book-bundle'],
     regularPrice: 249,
     blackFridayPrice: 179,
     separateValue: 298,
     description: 'Start with the paperwork, then work through the music. Both services in one booking.',
     details: ['The full Mogul Publishing Audit', 'The 60-minute 1-on-1 Sync Consult', 'One plan for your catalog and next pitches'],
-    action: 'Book the Bundle',
-    bookingUrl: '#book-bundle',
+    action: 'Request the Bundle',
+    bookingUrl: '/service-inquiry?service=book-bundle',
   },
 ] as const;
 

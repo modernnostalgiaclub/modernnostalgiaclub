@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Loader2, Mail, RefreshCw } from 'lucide-react';
 
-type Kind = 'Sponsor inquiry' | 'Playlist submission' | 'Discovery call' | 'Catalog audit' | 'Interview request' | 'Camp application' | 'Workshop signup';
+type Kind = 'Sponsor inquiry' | 'Playlist submission' | 'Discovery call' | 'Catalog audit' | 'Interview request' | 'Camp application' | 'Workshop signup' | 'Service request';
 
 interface Entry {
   id: string;
@@ -19,7 +19,7 @@ interface Entry {
   createdAt: string;
 }
 
-const KINDS: Kind[] = ['Sponsor inquiry', 'Playlist submission', 'Discovery call', 'Catalog audit', 'Interview request', 'Camp application', 'Workshop signup'];
+const KINDS: Kind[] = ['Sponsor inquiry', 'Playlist submission', 'Discovery call', 'Catalog audit', 'Interview request', 'Camp application', 'Workshop signup', 'Service request'];
 
 const badgeColor: Record<Kind, string> = {
   'Sponsor inquiry': 'bg-primary/10 text-primary',
@@ -29,6 +29,7 @@ const badgeColor: Record<Kind, string> = {
   'Interview request': 'bg-sky-500/10 text-sky-600',
   'Camp application': 'bg-rose-500/10 text-rose-600',
   'Workshop signup': 'bg-primary/10 text-primary',
+  'Service request': 'bg-primary/10 text-primary',
 };
 
 export function AdminFormActivity() {
@@ -39,7 +40,7 @@ export function AdminFormActivity() {
 
   const load = async () => {
     setLoading(true);
-    const [sponsors, playlists, calls, audits, interviews, camps, workshops] = await Promise.all([
+    const [sponsors, playlists, calls, audits, interviews, camps, workshops, services] = await Promise.all([
       supabase.from('sponsor_inquiries').select('id, name, email, company, partnership_type, created_at').order('created_at', { ascending: false }),
       supabase.from('playlist_submissions').select('id, name, email, artist_name, song_title, created_at').order('created_at', { ascending: false }),
       supabase.from('discovery_call_bookings').select('id, full_name, email, topic, preferred_date, preferred_time, created_at').order('created_at', { ascending: false }),
@@ -47,6 +48,7 @@ export function AdminFormActivity() {
       supabase.from('interview_requests' as never).select('id, name, email, artist_name, genre, created_at').order('created_at', { ascending: false }),
       supabase.from('camp_applications' as never).select('id, name, email, artist_name, camp, created_at').order('created_at', { ascending: false }),
       supabase.from('workshop_signups').select('id, name, email, artist_name, topics, created_at').order('created_at', { ascending: false }),
+      supabase.from('service_booking_requests').select('id, name, email, service, needs, created_at').order('created_at', { ascending: false }),
     ]);
 
     const all: Entry[] = [
@@ -77,6 +79,10 @@ export function AdminFormActivity() {
       ...(workshops.data ?? []).map((r) => ({
         id: r.id, kind: 'Workshop signup' as Kind, name: r.name, email: r.email,
         detail: [r.artist_name, r.topics.join(', ')].filter(Boolean).join(' · '), createdAt: r.created_at,
+      })),
+      ...(services.data ?? []).map((r) => ({
+        id: r.id, kind: 'Service request' as Kind, name: r.name, email: r.email,
+        detail: [r.service, r.needs].join(' · '), createdAt: r.created_at,
       })),
     ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
